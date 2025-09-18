@@ -17,10 +17,10 @@ rotating_object_think() {
   revolutions = 1000;
   rotate_time = 12;
 
-  if(isdefined(self.script_noteworthy))
+  if(isDefined(self.script_noteworthy))
     axis = self.script_noteworthy;
 
-  if(isdefined(self.script_float))
+  if(isDefined(self.script_float))
     rotate_time = self.script_float;
 
   if(rotate_time == 0)
@@ -31,7 +31,7 @@ rotating_object_think() {
     rotate_time = rotate_time * -1;
   }
 
-  while (true) {
+  while(true) {
     switch (axis) {
       case "roll":
         self rotateroll(direction * revolutions, rotate_time * revolutions);

@@ -6,16 +6,16 @@
 #include maps\mp\_utility;
 
 setparent(element) {
-  if(isdefined(self.parent) && self.parent == element) {
+  if(isDefined(self.parent) && self.parent == element) {
     return;
   }
-  if(isdefined(self.parent))
+  if(isDefined(self.parent))
     self.parent removechild(self);
 
   self.parent = element;
   self.parent addchild(self);
 
-  if(isdefined(self.point))
+  if(isDefined(self.point))
     self setpoint(self.point, self.relativepoint, self.xoffset, self.yoffset);
   else
     self setpoint("TOP");
@@ -43,7 +43,7 @@ removechild(element) {
 }
 
 setpoint(point, relativepoint, xoffset, yoffset, movetime) {
-  if(!isdefined(movetime))
+  if(!isDefined(movetime))
     movetime = 0;
 
   element = self getparent();
@@ -51,12 +51,12 @@ setpoint(point, relativepoint, xoffset, yoffset, movetime) {
   if(movetime)
     self moveovertime(movetime);
 
-  if(!isdefined(xoffset))
+  if(!isDefined(xoffset))
     xoffset = 0;
 
   self.xoffset = xoffset;
 
-  if(!isdefined(yoffset))
+  if(!isDefined(yoffset))
     yoffset = 0;
 
   self.yoffset = yoffset;
@@ -104,11 +104,13 @@ setpoint(point, relativepoint, xoffset, yoffset, movetime) {
       self.alignx = "left";
       break;
     default:
+
       println("^3Warning: unknown point passed to setPoint(): " + point);
+
       break;
   }
 
-  if(!isdefined(relativepoint))
+  if(!isDefined(relativepoint))
     relativepoint = point;
 
   self.relativepoint = relativepoint;
@@ -155,7 +157,9 @@ setpoint(point, relativepoint, xoffset, yoffset, movetime) {
       relativex = "left";
       break;
     default:
+
       println("^3Warning: unknown relativePoint passed to setPoint(): " + relativepoint);
+
       break;
   }
 
@@ -259,7 +263,7 @@ updatebarscale(barfrac, rateofchange) {
   self.bar setshader(self.bar.shader, barwidth, self.height);
   assert(barwidth <= self.width, "barWidth <= self.width: " + barwidth + " <= " + self.width + " - barFrac was " + barfrac);
 
-  if(isdefined(rateofchange) && barwidth < self.width) {
+  if(isDefined(rateofchange) && barwidth < self.width) {
     if(rateofchange > 0) {
       assert((1 - barfrac) / rateofchange > 0, "barFrac: " + barfrac + "rateOfChange: " + rateofchange);
       self.bar scaleovertime((1 - barfrac) / rateofchange, self.width, self.height);
@@ -291,7 +295,7 @@ createfontstring(font, fontscale) {
 }
 
 createserverfontstring(font, fontscale, team) {
-  if(isdefined(team))
+  if(isDefined(team))
     fontelem = newteamhudelem(team);
   else
     fontelem = newhudelem();
@@ -312,7 +316,7 @@ createserverfontstring(font, fontscale, team) {
 }
 
 createservertimer(font, fontscale, team) {
-  if(isdefined(team))
+  if(isDefined(team))
     timerelem = newteamhudelem(team);
   else
     timerelem = newhudelem();
@@ -362,14 +366,14 @@ createicon(shader, width, height) {
   iconelem setparent(level.uiparent);
   iconelem.hidden = 0;
 
-  if(isdefined(shader))
+  if(isDefined(shader))
     iconelem setshader(shader, width, height);
 
   return iconelem;
 }
 
 createservericon(shader, width, height, team) {
-  if(isdefined(team))
+  if(isDefined(team))
     iconelem = newteamhudelem(team);
   else
     iconelem = newhudelem();
@@ -385,14 +389,14 @@ createservericon(shader, width, height, team) {
   iconelem setparent(level.uiparent);
   iconelem.hidden = 0;
 
-  if(isdefined(shader))
+  if(isDefined(shader))
     iconelem setshader(shader, width, height);
 
   return iconelem;
 }
 
 createserverbar(color, width, height, flashfrac, team, selected) {
-  if(isdefined(team))
+  if(isDefined(team))
     barelem = newteamhudelem(team);
   else
     barelem = newhudelem();
@@ -406,10 +410,10 @@ createserverbar(color, width, height, flashfrac, team, selected) {
   barelem setshader("progress_bar_fill", width, height);
   barelem.hidden = 0;
 
-  if(isdefined(flashfrac))
+  if(isDefined(flashfrac))
     barelem.flashfrac = flashfrac;
 
-  if(isdefined(team))
+  if(isDefined(team))
     barelemframe = newteamhudelem(team);
   else
     barelemframe = newhudelem();
@@ -428,14 +432,14 @@ createserverbar(color, width, height, flashfrac, team, selected) {
   barelemframe.color = (1, 1, 1);
   barelemframe setparent(level.uiparent);
 
-  if(isdefined(selected))
+  if(isDefined(selected))
     barelemframe setshader("progress_bar_fg_sel", width, height);
   else
     barelemframe setshader("progress_bar_fg", width, height);
 
   barelemframe.hidden = 0;
 
-  if(isdefined(team))
+  if(isDefined(team))
     barelembg = newteamhudelem(team);
   else
     barelembg = newhudelem();
@@ -470,7 +474,7 @@ createbar(color, width, height, flashfrac) {
   barelem setshader("progress_bar_fill", width, height);
   barelem.hidden = 0;
 
-  if(isdefined(flashfrac))
+  if(isDefined(flashfrac))
     barelem.flashfrac = flashfrac;
 
   barelemframe = newclienthudelem(self);
@@ -520,7 +524,7 @@ createbar(color, width, height, flashfrac) {
 getcurrentfraction() {
   frac = self.bar.frac;
 
-  if(isdefined(self.bar.rateofchange)) {
+  if(isDefined(self.bar.rateofchange)) {
     frac = frac + (gettime() - self.bar.lastupdatetime) * self.bar.rateofchange;
 
     if(frac > 1)
@@ -651,7 +655,7 @@ flashthread() {
   if(!self.hidden)
     self.alpha = 1;
 
-  while (true) {
+  while(true) {
     if(self.frac >= self.flashfrac) {
       if(!self.hidden) {
         self fadeovertime(0.3);
@@ -674,12 +678,12 @@ flashthread() {
 destroyelem() {
   tempchildren = [];
 
-  for (index = 0; index < self.children.size; index++) {
-    if(isdefined(self.children[index]))
+  for(index = 0; index < self.children.size; index++) {
+    if(isDefined(self.children[index]))
       tempchildren[tempchildren.size] = self.children[index];
   }
 
-  for (index = 0; index < tempchildren.size; index++)
+  for(index = 0; index < tempchildren.size; index++)
     tempchildren[index] setparent(self getparent());
 
   if(self.elemtype == "bar" || self.elemtype == "bar_shader") {
@@ -708,7 +712,7 @@ setsize(width, height) {
 }
 
 updatechildren() {
-  for (index = 0; index < self.children.size; index++) {
+  for(index = 0; index < self.children.size; index++) {
     child = self.children[index];
     child setpoint(child.point, child.relativepoint, child.xoffset, child.yoffset);
   }
@@ -769,7 +773,7 @@ showloadoutattribute(iconelem, icon, alpha, textelem, text) {
   if(alpha)
     iconelem setshader(icon, iconsize, iconsize);
 
-  if(isdefined(textelem)) {
+  if(isDefined(textelem)) {
     textelem.alpha = alpha;
 
     if(alpha)
@@ -778,18 +782,18 @@ showloadoutattribute(iconelem, icon, alpha, textelem, text) {
 }
 
 hideloadoutattribute(iconelem, fadetime, textelem, hidetextonly) {
-  if(isdefined(fadetime)) {
-    if(!isdefined(hidetextonly) || !hidetextonly)
+  if(isDefined(fadetime)) {
+    if(!isDefined(hidetextonly) || !hidetextonly)
       iconelem fadeovertime(fadetime);
 
-    if(isdefined(textelem))
+    if(isDefined(textelem))
       textelem fadeovertime(fadetime);
   }
 
-  if(!isdefined(hidetextonly) || !hidetextonly)
+  if(!isDefined(hidetextonly) || !hidetextonly)
     iconelem.alpha = 0;
 
-  if(isdefined(textelem))
+  if(isDefined(textelem))
     textelem.alpha = 0;
 }
 
@@ -799,7 +803,7 @@ showperks() {
   if(self issplitscreen())
     ypos = 5;
 
-  if(!isdefined(self.perkhudelem))
+  if(!isDefined(self.perkhudelem))
     self.perkhudelem = createloadouticon(self, 0, 0, 200, ypos);
   else
     self.perkhudelem setloadouticoncoords(self, 0, 0, 200, ypos);
@@ -815,13 +819,13 @@ showperks() {
 showperk(index, perk, ypos) {
   assert(game["state"] != "postgame");
 
-  if(!isdefined(self.perkicon)) {
+  if(!isDefined(self.perkicon)) {
     self.perkicon = [];
     self.perkname = [];
   }
 
-  if(!isdefined(self.perkicon[index])) {
-    assert(!isdefined(self.perkname[index]));
+  if(!isDefined(self.perkicon[index])) {
+    assert(!isDefined(self.perkname[index]));
     self.perkicon[index] = createloadouticon(self, index, 0, 200, ypos);
     self.perkname[index] = createloadouttext(self.perkicon[index], 160);
   } else {
@@ -832,7 +836,7 @@ showperk(index, perk, ypos) {
   if(perk == "perk_null" || perk == "weapon_null" || perk == "specialty_null")
     alpha = 0;
   else {
-    assert(isdefined(level.perknames[perk]), perk);
+    assert(isDefined(level.perknames[perk]), perk);
     alpha = 1;
   }
 
@@ -848,35 +852,35 @@ showperk(index, perk, ypos) {
 hideperks(fadetime) {
   if(level.perksenabled == 1) {
     if(game["state"] == "postgame") {
-      assert(!isdefined(self.perkhudelem));
+      assert(!isDefined(self.perkhudelem));
       return;
     }
   }
 
-  assert(isdefined(self.perkhudelem));
+  assert(isDefined(self.perkhudelem));
 
-  if(isdefined(self.perkhudelem))
+  if(isDefined(self.perkhudelem))
     hideloadoutattribute(self.perkhudelem, fadetime);
 }
 
 hideperk(index, fadetime, hidetextonly) {
-  if(!isdefined(fadetime))
+  if(!isDefined(fadetime))
     fadetime = 0.05;
 
   if(level.perksenabled == 1) {
     if(game["state"] == "postgame") {
-      if(isdefined(self.perkicon)) {
-        assert(!isdefined(self.perkicon[index]));
-        assert(!isdefined(self.perkname[index]));
+      if(isDefined(self.perkicon)) {
+        assert(!isDefined(self.perkicon[index]));
+        assert(!isDefined(self.perkname[index]));
       }
 
       return;
     }
 
-    assert(isdefined(self.perkicon[index]));
-    assert(isdefined(self.perkname[index]));
+    assert(isDefined(self.perkicon[index]));
+    assert(isDefined(self.perkname[index]));
 
-    if(isdefined(self.perkicon) && isdefined(self.perkicon[index]) && isdefined(self.perkname) && isdefined(self.perkname[index]))
+    if(isDefined(self.perkicon) && isDefined(self.perkicon[index]) && isDefined(self.perkname) && isDefined(self.perkname[index]))
       hideloadoutattribute(self.perkicon[index], fadetime, self.perkname[index], hidetextonly);
   }
 }
@@ -889,16 +893,16 @@ hideallperks(fadetime, hidetextonly) {
 showkillstreak(index, killstreak, xpos, ypos) {
   assert(game["state"] != "postgame");
 
-  if(!isdefined(self.killstreakicon))
+  if(!isDefined(self.killstreakicon))
     self.killstreakicon = [];
 
-  if(!isdefined(self.killstreakicon[index]))
+  if(!isDefined(self.killstreakicon[index]))
     self.killstreakicon[index] = createloadouticon(self, 3, self.killstreak.size - 1 - index, xpos, ypos);
 
   if(killstreak == "killstreak_null" || killstreak == "weapon_null")
     alpha = 0;
   else {
-    assert(isdefined(level.killstreakicons[killstreak]), killstreak);
+    assert(isDefined(level.killstreakicons[killstreak]), killstreak);
     alpha = 1;
   }
 
@@ -908,11 +912,11 @@ showkillstreak(index, killstreak, xpos, ypos) {
 hidekillstreak(index, fadetime) {
   if(iskillstreaksenabled()) {
     if(game["state"] == "postgame") {
-      assert(!isdefined(self.killstreakicon[index]));
+      assert(!isDefined(self.killstreakicon[index]));
       return;
     }
 
-    assert(isdefined(self.killstreakicon[index]));
+    assert(isDefined(self.killstreakicon[index]));
     hideloadoutattribute(self.killstreakicon[index], fadetime);
   }
 }

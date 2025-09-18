@@ -17,7 +17,7 @@
 box_lock_condition() {
   box = level.chests[level.chest_index];
 
-  if(!isdefined(box))
+  if(!isDefined(box))
     return false;
 
   self sloth_debug_context(box, sqrt(32400));
@@ -49,9 +49,10 @@ common_abort_box(box) {
     return true;
   }
 
-  if(isdefined(box)) {
+  if(isDefined(box)) {
     if(is_true(box._box_open) || is_true(box._box_opened_by_fire_sale)) {
       sloth_print("box was opened...abort");
+
       self.context_done = 1;
       return true;
     }
@@ -63,7 +64,7 @@ common_abort_box(box) {
 common_move_to_maze(box) {
   self endon("death");
 
-  while (true) {
+  while(true) {
     if(self common_abort_box(box))
       return false;
 
@@ -81,7 +82,7 @@ common_move_to_maze(box) {
 common_move_to_courtyard(box) {
   self endon("death");
 
-  while (true) {
+  while(true) {
     if(self common_abort_box(box))
       return false;
 
@@ -97,7 +98,7 @@ common_move_to_courtyard(box) {
 }
 
 common_move_to_box(box, range, ignore_open, asd_name) {
-  if(isdefined(asd_name)) {
+  if(isDefined(asd_name)) {
     anim_id = self getanimfromasd(asd_name, 0);
     start_org = getstartorigin(box.origin, box.angles, anim_id);
     start_ang = getstartangles(box.origin, box.angles, anim_id);
@@ -110,7 +111,7 @@ common_move_to_box(box, range, ignore_open, asd_name) {
     self setgoalpos(ground_pos);
   }
 
-  while (true) {
+  while(true) {
     if(flag("moving_chest_now")) {
       self.context_done = 1;
       return false;
@@ -118,6 +119,7 @@ common_move_to_box(box, range, ignore_open, asd_name) {
 
     if(!is_true(ignore_open) && (is_true(box._box_open) || is_true(box._box_opened_by_fire_sale))) {
       sloth_print("box was opened...abort");
+
       self.context_done = 1;
       return false;
     }
@@ -131,7 +133,7 @@ common_move_to_box(box, range, ignore_open, asd_name) {
     wait 0.1;
   }
 
-  if(isdefined(asd_name)) {
+  if(isDefined(asd_name)) {
     self setgoalpos(self.origin);
     self sloth_face_object(box, "angle", start_ang[1], 0.9);
   } else {
@@ -168,7 +170,9 @@ box_lock_action() {
   }
 
   setdvar("magic_chest_movable", "0");
+
   sloth_print("box will not move");
+
   maps\mp\zombies\_zm_ai_sloth::unregister_candy_context("box_lock");
   maps\mp\zombies\_zm_ai_sloth::unregister_candy_context("box_move");
   self.context_done = 1;
@@ -203,7 +207,7 @@ box_move_condition() {
       return false;
   }
 
-  for (i = 0; i < level.chests.size; i++) {
+  for(i = 0; i < level.chests.size; i++) {
     if(i == level.chest_index) {
       continue;
     }
@@ -226,6 +230,7 @@ box_move_action() {
   self endon("death");
   self endon("stop_action");
   self maps\mp\zombies\_zm_ai_sloth::common_context_action();
+
   sloth_print("moving box from: " + self.box_current.script_noteworthy + " to: " + self.box_move.script_noteworthy);
 
   if(!self common_move_to_box(self.box_move, 1024, 0, "zm_magicbox_point")) {
@@ -254,7 +259,7 @@ box_move_action() {
     return;
   }
 
-  if(isdefined(level.sloth.custom_box_move_func))
+  if(isDefined(level.sloth.custom_box_move_func))
     self thread[[level.sloth.custom_box_move_func]](0);
 
   level.sloth_moving_box = 1;
@@ -287,7 +292,7 @@ box_move_action() {
   self.context_done = 1;
   level.sloth_moving_box = undefined;
 
-  if(isdefined(level.sloth.custom_box_move_func))
+  if(isDefined(level.sloth.custom_box_move_func))
     self thread[[level.sloth.custom_box_move_func]](1);
 }
 
@@ -301,7 +306,7 @@ box_notetracks(note, box) {
     twr_origin = self gettagorigin(tag_name);
     twr_angles = self gettagangles(tag_name);
 
-    if(!isdefined(self.box_model)) {
+    if(!isDefined(self.box_model)) {
       self.box_model = spawn("script_model", twr_origin);
       self.box_model.angles = twr_angles;
       self.box_model setmodel(level.small_magic_box);
@@ -317,7 +322,7 @@ box_notetracks(note, box) {
     playfx(level._effect["fx_buried_sloth_box_slam"], box.origin);
     self box_model_hide();
 
-    if(isdefined(self.box_move.zbarrier)) {
+    if(isDefined(self.box_move.zbarrier)) {
       self.box_move.zbarrier maps\mp\zombies\_zm_magicbox::set_magic_box_zbarrier_state("initial");
       self.box_move.hidden = 0;
       self.box_move thread[[level.pandora_show_func]]();
@@ -328,22 +333,22 @@ box_notetracks(note, box) {
 }
 
 box_model_hide() {
-  if(isdefined(self.box_model)) {
+  if(isDefined(self.box_model)) {
     self.box_model ghost();
     self.box_model_visible = 0;
   }
 }
 
 box_move_interrupt() {
-  if(isdefined(self.box_current)) {
-    if(isdefined(self.box_current.zbarrier)) {
+  if(isDefined(self.box_current)) {
+    if(isDefined(self.box_current.zbarrier)) {
       self.box_current.zbarrier maps\mp\zombies\_zm_magicbox::set_magic_box_zbarrier_state("initial");
       self.box_current.hidden = 0;
       self.box_current thread[[level.pandora_show_func]]();
     }
   }
 
-  if(isdefined(level.sloth.custom_box_move_func))
+  if(isDefined(level.sloth.custom_box_move_func))
     self thread[[level.sloth.custom_box_move_func]](1);
 
   level.sloth_moving_box = undefined;
@@ -399,7 +404,7 @@ box_kick(note, hackable) {
 }
 
 box_trigger() {
-  if(isdefined(self.chest)) {
+  if(isDefined(self.chest)) {
     thread maps\mp\zombies\_zm_unitrigger::unregister_unitrigger(self.chest.unitrigger_stub);
     self.chest.zbarrier waittill("randomization_done");
 
@@ -409,8 +414,8 @@ box_trigger() {
 }
 
 box_spin_qualifier(hackable) {
-  if(isdefined(hackable.chest)) {
-    if(!isdefined(hackable.chest.chest_user)) {
+  if(isDefined(hackable.chest)) {
+    if(!isDefined(hackable.chest.chest_user)) {
       self.context_done = 1;
       return false;
     }
@@ -418,6 +423,7 @@ box_spin_qualifier(hackable) {
 
   if(!hackable maps\mp\zombies\_zm_hackables_box::hack_box_qualifier(self.candy_player)) {
     sloth_print("hack_box_qualifier failed");
+
     self.context_done = 1;
     return false;
   }

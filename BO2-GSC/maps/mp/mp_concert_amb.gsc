@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\mp_concert_amb.gsc
-***************************************/
+**************************************/
 
 #include maps\mp\_utility;
 #include maps\mp\_ambientpackage;
@@ -17,7 +17,7 @@ instruments_init() {
 }
 
 play_instrument() {
-  while (true) {
+  while(true) {
     self waittill("damage");
     self playsound(self.script_noteworthy);
     wait 0.1;

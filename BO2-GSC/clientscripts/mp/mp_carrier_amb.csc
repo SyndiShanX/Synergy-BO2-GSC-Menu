@@ -46,7 +46,6 @@ main() {
 }
 
 snd_play_loopers() {
-
 }
 
 snd_start_autofcarrier_audio() {

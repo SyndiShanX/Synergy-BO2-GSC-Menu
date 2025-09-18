@@ -170,7 +170,7 @@ finalizecratecategory(category) {
   level.cratecategoryweights[category] = 0;
   cratetypekeys = getarraykeys(level.cratetypes[category]);
 
-  for (cratetype = 0; cratetype < cratetypekeys.size; cratetype++) {
+  for(cratetype = 0; cratetype < cratetypekeys.size; cratetype++) {
     typekey = cratetypekeys[cratetype];
     level.cratetypes[category][typekey].previousweight = level.cratecategoryweights[category];
     level.cratecategoryweights[category] = level.cratecategoryweights[category] + level.cratetypes[category][typekey].weight;
@@ -182,7 +182,7 @@ advancedfinalizecratecategory(category) {
   level.cratecategorytypeweights[category] = 0;
   cratetypekeys = getarraykeys(level.categorytypeweight[category]);
 
-  for (cratetype = 0; cratetype < cratetypekeys.size; cratetype++) {
+  for(cratetype = 0; cratetype < cratetypekeys.size; cratetype++) {
     typekey = cratetypekeys[cratetype];
     level.cratecategorytypeweights[category] = level.cratecategorytypeweights[category] + level.categorytypeweight[category][typekey].weight;
     level.categorytypeweight[category][typekey].weight = level.cratecategorytypeweights[category];
@@ -192,7 +192,7 @@ advancedfinalizecratecategory(category) {
 }
 
 setcategorytypeweight(category, type, weight) {
-  if(!isdefined(level.categorytypeweight[category]))
+  if(!isDefined(level.categorytypeweight[category]))
     level.categorytypeweight[category] = [];
 
   level.categorytypeweight[category][type] = spawnstruct();
@@ -203,18 +203,19 @@ setcategorytypeweight(category, type, weight) {
   finalindex = undefined;
   cratenamekeys = getarraykeys(level.cratetypes[category]);
 
-  for (cratename = 0; cratename < cratenamekeys.size; cratename++) {
+  for(cratename = 0; cratename < cratenamekeys.size; cratename++) {
     namekey = cratenamekeys[cratename];
 
     if(level.cratetypes[category][namekey].type == type) {
       count++;
       totalweight = totalweight + level.cratetypes[category][namekey].weight;
 
-      if(!isdefined(startindex))
+      if(!isDefined(startindex))
         startindex = cratename;
 
-      if(isdefined(finalindex) && finalindex + 1 != cratename) {
+      if(isDefined(finalindex) && finalindex + 1 != cratename) {
         maps\mp\_utility::error("Crate type declaration must be contiguous");
+
         maps\mp\gametypes\_callbacksetup::abortlevel();
         return;
       }
@@ -230,7 +231,7 @@ setcategorytypeweight(category, type, weight) {
 }
 
 registercratetype(category, type, name, weight, hint, hint_gambler, sharestat, givefunction, landfunctionoverride) {
-  if(!isdefined(level.cratetypes[category]))
+  if(!isDefined(level.cratetypes[category]))
     level.cratetypes[category] = [];
 
   cratetype = spawnstruct();
@@ -242,7 +243,7 @@ registercratetype(category, type, name, weight, hint, hint_gambler, sharestat, g
   cratetype.sharestat = sharestat;
   cratetype.givefunction = givefunction;
 
-  if(isdefined(landfunctionoverride))
+  if(isDefined(landfunctionoverride))
     cratetype.landfunctionoverride = landfunctionoverride;
 
   level.cratetypes[category][name] = cratetype;
@@ -250,20 +251,20 @@ registercratetype(category, type, name, weight, hint, hint_gambler, sharestat, g
 }
 
 getrandomcratetype(category, gambler_crate_name) {
-  assert(isdefined(level.cratetypes));
-  assert(isdefined(level.cratetypes[category]));
-  assert(isdefined(level.cratecategoryweights[category]));
+  assert(isDefined(level.cratetypes));
+  assert(isDefined(level.cratetypes[category]));
+  assert(isDefined(level.cratecategoryweights[category]));
   typekey = undefined;
   cratetypestart = 0;
   randomweightend = randomintrange(1, level.cratecategoryweights[category] + 1);
   find_another = 0;
   cratenamekeys = getarraykeys(level.cratetypes[category]);
 
-  if(isdefined(level.categorytypeweight[category])) {
+  if(isDefined(level.categorytypeweight[category])) {
     randomweightend = randomint(level.cratecategorytypeweights[category]) + 1;
     cratetypekeys = getarraykeys(level.categorytypeweight[category]);
 
-    for (cratetype = 0; cratetype < cratetypekeys.size; cratetype++) {
+    for(cratetype = 0; cratetype < cratetypekeys.size; cratetype++) {
       typekey = cratetypekeys[cratetype];
 
       if(level.categorytypeweight[category][typekey].weight < randomweightend) {
@@ -276,13 +277,13 @@ getrandomcratetype(category, gambler_crate_name) {
     }
   }
 
-  for (cratetype = cratetypestart; cratetype < cratenamekeys.size; cratetype++) {
+  for(cratetype = cratetypestart; cratetype < cratenamekeys.size; cratetype++) {
     typekey = cratenamekeys[cratetype];
 
     if(level.cratetypes[category][typekey].weight < randomweightend) {
       continue;
     }
-    if(isdefined(gambler_crate_name) && level.cratetypes[category][typekey].name == gambler_crate_name)
+    if(isDefined(gambler_crate_name) && level.cratetypes[category][typekey].name == gambler_crate_name)
       find_another = 1;
 
     if(find_another) {
@@ -297,40 +298,41 @@ getrandomcratetype(category, gambler_crate_name) {
     break;
   }
 
-  if(isdefined(level.dev_gui_supply_drop) && level.dev_gui_supply_drop != "random")
+  if(isDefined(level.dev_gui_supply_drop) && level.dev_gui_supply_drop != "random")
     typekey = level.dev_gui_supply_drop;
+
   return level.cratetypes[category][typekey];
 }
 
 validate_crate_type(killstreak_name, weapon_name, crate_type_name) {
   players = get_players();
 
-  for (i = 0; i < players.size; i++) {
+  for(i = 0; i < players.size; i++) {
     if(isalive(players[i])) {
-      for (j = 0; j < players[i].pers["killstreaks"].size; j++) {
+      for(j = 0; j < players[i].pers["killstreaks"].size; j++) {
         if(players[i].pers["killstreaks"][j] == killstreak_name)
           return true;
       }
 
       primary_weapons = players[i] getweaponslistprimaries();
 
-      for (j = 0; j < primary_weapons.size; j++) {
+      for(j = 0; j < primary_weapons.size; j++) {
         if(primary_weapons[j] == weapon_name)
           return true;
       }
 
       ents = getentarray("weapon_" + weapon_name, "classname");
 
-      if(isdefined(ents) && ents.size > 0)
+      if(isDefined(ents) && ents.size > 0)
         return true;
 
       crate_ents = getentarray("care_package", "script_noteworthy");
 
-      for (j = 0; j < crate_ents.size; j++) {
-        if(!isdefined(crate_ents[j].cratetype)) {
+      for(j = 0; j < crate_ents.size; j++) {
+        if(!isDefined(crate_ents[j].cratetype)) {
           continue;
         }
-        if(isdefined(crate_ents[j].cratetype.name)) {
+        if(isDefined(crate_ents[j].cratetype.name)) {
           if(crate_ents[j].cratetype.name == crate_type_name)
             return true;
         }
@@ -351,7 +353,7 @@ givecrateitem(crate) {
 givecratekillstreakwaiter(event, removecrate, extraendon) {
   self endon("give_crate_killstreak_done");
 
-  if(isdefined(extraendon))
+  if(isDefined(extraendon))
     self endon(extraendon);
 
   self waittill(event);
@@ -397,7 +399,7 @@ givecrateweapon(weapon) {
     return true;
   }
 
-  if(issupplydropweapon(currentweapon) || isdefined(level.grenade_array[currentweapon]) || isdefined(level.inventory_array[currentweapon])) {
+  if(issupplydropweapon(currentweapon) || isDefined(level.grenade_array[currentweapon]) || isDefined(level.inventory_array[currentweapon])) {
     self takeweapon(self.lastdroppableweapon);
     self giveweapon(weapon);
     self switchtoweapon(weapon);
@@ -416,7 +418,7 @@ givecrateweapon(weapon) {
 givecrateammo(ammo) {
   weaponslist = self getweaponslist();
 
-  for (idx = 0; idx < weaponslist.size; idx++) {
+  for(idx = 0; idx < weaponslist.size; idx++) {
     weapon = weaponslist[idx];
 
     if(maps\mp\killstreaks\_killstreaks::iskillstreakweapon(weapon)) {
@@ -440,7 +442,7 @@ givecrateammo(ammo) {
         stock = self getweaponammostock(weapon);
         maxammo = self.grenadetypeprimarycount;
 
-        if(!isdefined(maxammo))
+        if(!isDefined(maxammo))
           maxammo = 0;
 
         if(stock < maxammo)
@@ -457,7 +459,7 @@ givecrateammo(ammo) {
         stock = self getweaponammostock(weapon);
         maxammo = self.tacticalgrenadecount;
 
-        if(!isdefined(maxammo))
+        if(!isDefined(maxammo))
           maxammo = 0;
 
         if(stock < maxammo)
@@ -491,13 +493,13 @@ usesupplydropmarker(package_contents_id) {
 
   notifystring = self waitforgrenadefire();
 
-  if(!isdefined(notifystring) || notifystring != "grenade_fire")
+  if(!isDefined(notifystring) || notifystring != "grenade_fire")
     return false;
 
-  if(!isdefined(supplydropweapon))
+  if(!isDefined(supplydropweapon))
     return false;
 
-  if(isdefined(self)) {
+  if(isDefined(self)) {
     notifystring = self waittill_any_return("weapon_change", "death");
     self takeweapon(supplydropweapon);
 
@@ -509,7 +511,7 @@ usesupplydropmarker(package_contents_id) {
 }
 
 issupplydropgrenadeallowed(hardpointtype, killstreakweapon) {
-  if(!isdefined(killstreakweapon))
+  if(!isDefined(killstreakweapon))
     killstreakweapon = hardpointtype;
 
   if(self maps\mp\killstreaks\_killstreakrules::iskillstreakallowed(hardpointtype, self.team) == 0) {
@@ -527,7 +529,7 @@ usekillstreaksupplydrop(hardpointtype) {
   result = self usesupplydropmarker();
   self notify("supply_drop_marker_done");
 
-  if(!isdefined(result) || !result)
+  if(!isDefined(result) || !result)
     return 0;
 
   return result;
@@ -540,7 +542,7 @@ use_killstreak_death_machine(hardpointtype) {
   weapon = "minigun_mp";
   currentweapon = self getcurrentweapon();
 
-  if(issupplydropweapon(currentweapon) || isdefined(level.grenade_array[currentweapon]) || isdefined(level.inventory_array[currentweapon])) {
+  if(issupplydropweapon(currentweapon) || isDefined(level.grenade_array[currentweapon]) || isDefined(level.inventory_array[currentweapon])) {
     self takeweapon(self.lastdroppableweapon);
     self giveweapon(weapon);
     self switchtoweapon(weapon);
@@ -564,7 +566,7 @@ use_killstreak_grim_reaper(hardpointtype) {
   weapon = "m202_flash_mp";
   currentweapon = self getcurrentweapon();
 
-  if(issupplydropweapon(currentweapon) || isdefined(level.grenade_array[currentweapon]) || isdefined(level.inventory_array[currentweapon])) {
+  if(issupplydropweapon(currentweapon) || isDefined(level.grenade_array[currentweapon]) || isDefined(level.inventory_array[currentweapon])) {
     self takeweapon(self.lastdroppableweapon);
     self giveweapon(weapon);
     self switchtoweapon(weapon);
@@ -590,7 +592,7 @@ use_killstreak_tv_guided_missile(hardpointtype) {
   weapon = "m220_tow_mp";
   currentweapon = self getcurrentweapon();
 
-  if(issupplydropweapon(currentweapon) || isdefined(level.grenade_array[currentweapon]) || isdefined(level.inventory_array[currentweapon])) {
+  if(issupplydropweapon(currentweapon) || isDefined(level.grenade_array[currentweapon]) || isDefined(level.inventory_array[currentweapon])) {
     self takeweapon(self.lastdroppableweapon);
     self giveweapon(weapon);
     self switchtoweapon(weapon);
@@ -616,7 +618,7 @@ use_killstreak_mp40(hardpointtype) {
   weapon = "mp40_blinged_mp";
   currentweapon = self getcurrentweapon();
 
-  if(issupplydropweapon(currentweapon) || isdefined(level.grenade_array[currentweapon]) || isdefined(level.inventory_array[currentweapon])) {
+  if(issupplydropweapon(currentweapon) || isDefined(level.grenade_array[currentweapon]) || isDefined(level.inventory_array[currentweapon])) {
     self takeweapon(self.lastdroppableweapon);
     self giveweapon(weapon);
     self switchtoweapon(weapon);
@@ -660,7 +662,7 @@ supplydropwatcher(package_contents_id) {
   self thread cleanupwatcherondeath(team, killstreak_id);
   self waittill("grenade_fire", weapon, weapname);
 
-  if(isdefined(self) && issupplydropweapon(weapname)) {
+  if(isDefined(self) && issupplydropweapon(weapname)) {
     self thread dosupplydrop(weapon, weapname, self, killstreak_id, package_contents_id);
     weapon thread do_supply_drop_detonation(weapname, self);
     weapon thread supplydropgrenadetimeout(team, killstreak_id, weapname);
@@ -686,7 +688,7 @@ supplydropgrenadetimeout(team, killstreak_id, weapname) {
   grenade_lifetime = 10;
   wait(grenade_lifetime);
 
-  if(!isdefined(self)) {
+  if(!isDefined(self)) {
     return;
   }
   self notify("grenade_timeout");
@@ -723,7 +725,7 @@ supplydropgrenadepullwatcher(killstreak_id) {
   if(issupplydropweapon(weapon))
     killstreak = maps\mp\killstreaks\_killstreaks::getkillstreakforweapon(weapon);
 
-  if(!isdefined(self.usingkillstreakfrominventory) || self.usingkillstreakfrominventory == 0)
+  if(!isDefined(self.usingkillstreakfrominventory) || self.usingkillstreakfrominventory == 0)
     self changekillstreakquantity(weapon, -1);
   else
     maps\mp\killstreaks\_killstreaks::removeusedkillstreak(killstreak, killstreak_id);
@@ -750,7 +752,7 @@ playerchangeweaponwaiter() {
   self endon("spawned_player");
   currentweapon = self getcurrentweapon();
 
-  while (issupplydropweapon(currentweapon))
+  while(issupplydropweapon(currentweapon))
     self waittill("weapon_change", currentweapon);
 
   waittillframeend;
@@ -816,7 +818,7 @@ crateactivate(hacker) {
   self setcursorhint("HINT_NOICON");
   self sethintstring(self.cratetype.hint);
 
-  if(isdefined(self.cratetype.hint_gambler))
+  if(isDefined(self.cratetype.hint_gambler))
     self sethintstringforperk("specialty_showenemyequipment", self.cratetype.hint_gambler);
 
   crateobjid = maps\mp\gametypes\_gameobjects::getnextobjid();
@@ -827,7 +829,7 @@ crateactivate(hacker) {
   self.enemyobjid = [];
   icon = self geticonforcrate();
 
-  if(isdefined(hacker))
+  if(isDefined(hacker))
     self thread attachreconmodel(level.cratemodelhacker, hacker);
 
   if(level.teambased) {
@@ -840,7 +842,7 @@ crateactivate(hacker) {
       crateobjid = maps\mp\gametypes\_gameobjects::getnextobjid();
       objective_add(crateobjid, "invisible", self.origin);
 
-      if(isdefined(self.hacker))
+      if(isDefined(self.hacker))
         objective_icon(crateobjid, "compass_supply_drop_black");
       else
         objective_icon(crateobjid, "compass_supply_drop_red");
@@ -866,7 +868,7 @@ crateactivate(hacker) {
     if(isplayer(self.owner))
       objective_setvisibletoplayer(crateobjid, self.owner);
 
-    if(isdefined(self.hacker)) {
+    if(isDefined(self.hacker)) {
       objective_setinvisibletoplayer(crateobjid, self.hacker);
       crateobjid = maps\mp\gametypes\_gameobjects::getnextobjid();
       objective_add(crateobjid, "invisible", self.origin);
@@ -878,26 +880,26 @@ crateactivate(hacker) {
     }
   }
 
-  if(!self.visibletoall && isdefined(icon))
+  if(!self.visibletoall && isDefined(icon))
     self thread maps\mp\_entityheadicons::setentityheadicon(self.team, self, level.crate_headicon_offset, icon, 1);
 
-  if(isdefined(self.owner) && isplayer(self.owner) && self.owner is_bot())
+  if(isDefined(self.owner) && isplayer(self.owner) && self.owner is_bot())
     self.owner notify("bot_crate_landed", self);
 
-  if(isdefined(self.owner))
+  if(isDefined(self.owner))
     self.owner notify("crate_landed", self);
 }
 
 cratedeactivate() {
   self makeunusable();
 
-  if(isdefined(self.friendlyobjid)) {
+  if(isDefined(self.friendlyobjid)) {
     objective_delete(self.friendlyobjid);
     maps\mp\gametypes\_gameobjects::releaseobjid(self.friendlyobjid);
     self.friendlyobjid = undefined;
   }
 
-  if(isdefined(self.enemyobjid)) {
+  if(isDefined(self.enemyobjid)) {
     foreach(objid in self.enemyobjid) {
       objective_delete(objid);
       maps\mp\gametypes\_gameobjects::releaseobjid(objid);
@@ -906,7 +908,7 @@ cratedeactivate() {
     self.enemyobjid = [];
   }
 
-  if(isdefined(self.hackerobjid)) {
+  if(isDefined(self.hackerobjid)) {
     objective_delete(self.hackerobjid);
     maps\mp\gametypes\_gameobjects::releaseobjid(self.hackerobjid);
     self.hackerobjid = undefined;
@@ -916,7 +918,7 @@ cratedeactivate() {
 ownerteamchangewatcher() {
   self endon("death");
 
-  if(!level.teambased || !isdefined(self.owner)) {
+  if(!level.teambased || !isDefined(self.owner)) {
     return;
   }
   self.owner waittill("joined_team");
@@ -945,7 +947,7 @@ dropcratestoground(origin, radius) {
   crate_ents = getentarray("care_package", "script_noteworthy");
   radius_sq = radius * radius;
 
-  for (i = 0; i < crate_ents.size; i++) {
+  for(i = 0; i < crate_ents.size; i++) {
     if(distancesquared(origin, crate_ents[i].origin) < radius_sq)
       crate_ents[i] thread dropcratetoground();
   }
@@ -954,7 +956,7 @@ dropcratestoground(origin, radius) {
 dropcratetoground() {
   self endon("death");
 
-  if(isdefined(self.droppingtoground)) {
+  if(isDefined(self.droppingtoground)) {
     return;
   }
   self.droppingtoground = 1;
@@ -978,7 +980,7 @@ cratespawn(category, owner, team, drop_origin, drop_angle) {
 
   crate.script_noteworthy = "care_package";
 
-  if(!level.teambased || isdefined(owner) && owner.team == team)
+  if(!level.teambased || isDefined(owner) && owner.team == team)
     crate.owner = owner;
 
   crate thread ownerteamchangewatcher();
@@ -1022,16 +1024,16 @@ cratespawn(category, owner, team, drop_origin, drop_angle) {
 }
 
 cratedelete(drop_all_to_ground) {
-  if(!isdefined(drop_all_to_ground))
+  if(!isDefined(drop_all_to_ground))
     drop_all_to_ground = 1;
 
-  if(isdefined(self.friendlyobjid)) {
+  if(isDefined(self.friendlyobjid)) {
     objective_delete(self.friendlyobjid);
     maps\mp\gametypes\_gameobjects::releaseobjid(self.friendlyobjid);
     self.friendlyobjid = undefined;
   }
 
-  if(isdefined(self.enemyobjid)) {
+  if(isDefined(self.enemyobjid)) {
     foreach(objid in self.enemyobjid) {
       objective_delete(objid);
       maps\mp\gametypes\_gameobjects::releaseobjid(objid);
@@ -1040,7 +1042,7 @@ cratedelete(drop_all_to_ground) {
     self.enemyobjid = undefined;
   }
 
-  if(isdefined(self.hackerobjid)) {
+  if(isDefined(self.hackerobjid)) {
     objective_delete(self.hackerobjid);
     maps\mp\gametypes\_gameobjects::releaseobjid(self.hackerobjid);
     self.hackerobjid = undefined;
@@ -1049,7 +1051,7 @@ cratedelete(drop_all_to_ground) {
   if(drop_all_to_ground)
     level thread dropalltogroundaftercratedelete(self, self.origin);
 
-  if(isdefined(self.killcament))
+  if(isDefined(self.killcament))
     self.killcament thread deleteaftertime(5);
 
   self delete();
@@ -1085,7 +1087,7 @@ play_impact_sound() {
   self endon("death");
   wait 0.5;
 
-  while (abs(self.velocity[2]) > 5)
+  while(abs(self.velocity[2]) > 5)
     wait 0.1;
 
   self playsound("phy_impact_supply");
@@ -1097,7 +1099,7 @@ update_crate_velocity() {
   self.velocity = (0, 0, 0);
   self.old_origin = self.origin;
 
-  while (isdefined(self)) {
+  while(isDefined(self)) {
     self.velocity = self.origin - self.old_origin;
     self.old_origin = self.origin;
     wait 0.05;
@@ -1124,7 +1126,7 @@ do_supply_drop_detonation(weapname, owner) {
   fuse_time = getweaponfusetime(weapname) / 1000;
   wait(fuse_time);
 
-  if(!isdefined(owner) || owner maps\mp\killstreaks\_emp::isenemyempkillstreakactive() == 0) {
+  if(!isDefined(owner) || owner maps\mp\killstreaks\_emp::isenemyempkillstreakactive() == 0) {
     thread playsmokesound(self.origin, 6, level.sound_smoke_start, level.sound_smoke_stop, level.sound_smoke_loop);
     playfxontag(level._supply_drop_smoke_fx, self, "tag_fx");
     proj_explosion_sound = getweaponprojexplosionsound(weapname);
@@ -1154,15 +1156,16 @@ watchexplode(weaponname, owner, killstreak_id, package_contents_id) {
 }
 
 cratetimeoutthreader() {
-  if(getdvarintdefault("scr_crate_notimeout", 0))
+  if(getdvarintdefault("scr_crate_notimeout", 0)) {
     return;
+  }
   self thread cratetimeout(90);
 }
 
 dropcrate(origin, angle, category, owner, team, killcament, killstreak_id, package_contents_id, crate) {
   angle = (angle[0] * 0.5, angle[1] * 0.5, angle[2] * 0.5);
 
-  if(isdefined(crate)) {
+  if(isDefined(crate)) {
     origin = crate.origin;
     angle = crate.angles;
     crate delete();
@@ -1182,14 +1185,14 @@ dropcrate(origin, angle, category, owner, team, killcament, killstreak_id, packa
   crate cratetimeoutthreader();
   crate thread maps\mp\_hacker_tool::registerwithhackertool(level.carepackagehackertoolradius, level.carepackagehackertooltimems);
 
-  if(isdefined(crate.cratetype.landfunctionoverride))
+  if(isDefined(crate.cratetype.landfunctionoverride))
     [[crate.cratetype.landfunctionoverride]](crate, category, owner, team);
   else {
     crate crateactivate();
     crate thread crateusethink();
     crate thread crateusethinkowner();
 
-    if(isdefined(crate.cratetype.hint_gambler))
+    if(isDefined(crate.cratetype.hint_gambler))
       crate thread crategamblerthink();
 
     default_land_function(crate, category, owner, team);
@@ -1206,7 +1209,7 @@ unlinkonrotation(crate) {
   cosine = 1;
   currentdirection = vectornormalize(anglestoforward(crate.angles));
 
-  while (cosine > mincos) {
+  while(cosine > mincos) {
     olddirection = currentdirection;
     wait 0.05;
     currentdirection = vectornormalize(anglestoforward(crate.angles));
@@ -1217,12 +1220,12 @@ unlinkonrotation(crate) {
 }
 
 default_land_function(crate, weaponname, owner, team) {
-  while (true) {
+  while(true) {
     crate waittill("captured", player, remote_hack);
     player maps\mp\_challenges::capturedcrate();
     deletecrate = player givecrateitem(crate);
 
-    if(isdefined(deletecrate) && !deletecrate) {
+    if(isDefined(deletecrate) && !deletecrate) {
       continue;
     }
     if((player hasperk("specialty_showenemyequipment") || remote_hack == 1) && owner != player && (level.teambased && team != player.team || !level.teambased)) {
@@ -1265,7 +1268,7 @@ watch_explosive_crate() {
     self thread maps\mp\_entityheadicons::setentityheadicon(player.team, player, level.crate_headicon_offset, "headicon_dead", 1);
     self loop_sound("wpn_semtex_alert", 0.15);
 
-    if(!isdefined(self.hacker))
+    if(!isDefined(self.hacker))
       self.hacker = self;
 
     self radiusdamage(self.origin, 256, 300, 75, self.hacker, "MOD_EXPLOSIVE", "supplydrop_mp");
@@ -1285,7 +1288,7 @@ watch_explosive_crate() {
 loop_sound(alias, interval) {
   self endon("death");
 
-  while (true) {
+  while(true) {
     playsoundatposition(alias, self.origin);
     wait(interval);
     interval = interval / 1.2;
@@ -1303,10 +1306,10 @@ cratekill() {
   maxframestillstationary = 20;
   numframesstationary = 0;
 
-  while (true) {
+  while(true) {
     vel = 0;
 
-    if(isdefined(self.velocity))
+    if(isDefined(self.velocity))
       vel = abs(self.velocity[2]);
 
     if(vel > killthreshold)
@@ -1329,11 +1332,11 @@ cratedroptogroundkill() {
   self endon("death");
   self endon("stationary");
 
-  for (;;) {
+  for(;;) {
     players = get_players();
     dotrace = 0;
 
-    for (i = 0; i < players.size; i++) {
+    for(i = 0; i < players.size; i++) {
       if(players[i].sessionstate != "playing") {
         continue;
       }
@@ -1386,7 +1389,7 @@ cratedroptogroundtrace(start) {
   end = start + vectorscale((0, 0, -1), 8000.0);
   trace = bullettrace(start, end, 1, self, 1, 1);
 
-  if(isdefined(trace["entity"]) && isplayer(trace["entity"]) && isalive(trace["entity"])) {
+  if(isDefined(trace["entity"]) && isplayer(trace["entity"]) && isalive(trace["entity"])) {
     player = trace["entity"];
 
     if(player.sessionstate != "playing") {
@@ -1407,9 +1410,9 @@ is_touching_crate() {
   extraboundary = vectorscale((1, 1, 1), 10.0);
   players = get_players();
 
-  for (i = 0; i < players.size; i++) {
-    if(isdefined(players[i]) && isalive(players[i]) && self istouching(players[i], extraboundary)) {
-      attacker = isdefined(self.owner) ? self.owner : self;
+  for(i = 0; i < players.size; i++) {
+    if(isDefined(players[i]) && isalive(players[i]) && self istouching(players[i], extraboundary)) {
+      attacker = isDefined(self.owner) ? self.owner : self;
       players[i] dodamage(players[i].health + 1, players[i].origin, attacker, self, "none", "MOD_HIT_BY_OBJECT", 0, "supplydrop_mp");
       players[i] playsound("mpl_supply_crush");
       players[i] playsound("phy_impact_supply");
@@ -1422,15 +1425,15 @@ is_touching_crate() {
 is_equipment_touching_crate(player) {
   extraboundary = vectorscale((1, 1, 1), 10.0);
 
-  if(isdefined(player) && isdefined(player.weaponobjectwatcherarray)) {
-    for (watcher = 0; watcher < player.weaponobjectwatcherarray.size; watcher++) {
+  if(isDefined(player) && isDefined(player.weaponobjectwatcherarray)) {
+    for(watcher = 0; watcher < player.weaponobjectwatcherarray.size; watcher++) {
       objectwatcher = player.weaponobjectwatcherarray[watcher];
       objectarray = objectwatcher.objectarray;
 
-      if(isdefined(objectarray)) {
-        for (weaponobject = 0; weaponobject < objectarray.size; weaponobject++) {
-          if(isdefined(objectarray[weaponobject]) && self istouching(objectarray[weaponobject], extraboundary)) {
-            if(isdefined(objectwatcher.detonate)) {
+      if(isDefined(objectarray)) {
+        for(weaponobject = 0; weaponobject < objectarray.size; weaponobject++) {
+          if(isDefined(objectarray[weaponobject]) && self istouching(objectarray[weaponobject], extraboundary)) {
+            if(isDefined(objectwatcher.detonate)) {
               objectwatcher thread maps\mp\gametypes\_weaponobjects::waitanddetonate(objectarray[weaponobject], 0);
               continue;
             }
@@ -1444,7 +1447,7 @@ is_equipment_touching_crate(player) {
 
   extraboundary = vectorscale((1, 1, 1), 15.0);
 
-  if(isdefined(player) && isdefined(player.tacticalinsertion) && self istouching(player.tacticalinsertion, extraboundary))
+  if(isDefined(player) && isDefined(player.tacticalinsertion) && self istouching(player.tacticalinsertion, extraboundary))
     player.tacticalinsertion thread maps\mp\_tacticalinsertion::fizzle();
 }
 
@@ -1472,7 +1475,7 @@ useentownerdeathwaiter(owner) {
 }
 
 crateusethink() {
-  while (isdefined(self)) {
+  while(isDefined(self)) {
     self waittill("trigger", player);
 
     if(!isalive(player)) {
@@ -1481,19 +1484,19 @@ crateusethink() {
     if(!player isonground()) {
       continue;
     }
-    if(isdefined(self.owner) && self.owner == player) {
+    if(isDefined(self.owner) && self.owner == player) {
       continue;
     }
     useent = self spawnuseent();
     result = 0;
 
-    if(isdefined(self.hacker))
+    if(isDefined(self.hacker))
       useent.hacker = self.hacker;
 
     self.useent = useent;
     result = useent useholdthink(player, level.cratenonownerusetime);
 
-    if(isdefined(useent))
+    if(isDefined(useent))
       useent delete();
 
     if(result) {
@@ -1504,17 +1507,17 @@ crateusethink() {
 }
 
 givecratecapturemedal(crate, capturer) {
-  if(isdefined(crate.owner) && isplayer(crate.owner)) {
+  if(isDefined(crate.owner) && isplayer(crate.owner)) {
     if(level.teambased) {
       if(capturer.team != crate.owner.team) {
         crate.owner playlocalsound("mpl_crate_enemy_steals");
 
-        if(!isdefined(crate.hacker))
+        if(!isDefined(crate.hacker))
           maps\mp\_scoreevents::processscoreevent("capture_enemy_crate", capturer);
-      } else if(isdefined(crate.owner) && capturer != crate.owner) {
+      } else if(isDefined(crate.owner) && capturer != crate.owner) {
         crate.owner playlocalsound("mpl_crate_friendly_steals");
 
-        if(!isdefined(crate.hacker)) {
+        if(!isDefined(crate.hacker)) {
           level.globalsharepackages++;
           maps\mp\_scoreevents::processscoreevent(crate.cratetype.sharestat, crate.owner);
         }
@@ -1522,7 +1525,7 @@ givecratecapturemedal(crate, capturer) {
     } else if(capturer != crate.owner) {
       crate.owner playlocalsound("mpl_crate_enemy_steals");
 
-      if(!isdefined(crate.hacker))
+      if(!isDefined(crate.hacker))
         maps\mp\_scoreevents::processscoreevent("capture_enemy_crate", capturer);
     }
   }
@@ -1531,7 +1534,7 @@ givecratecapturemedal(crate, capturer) {
 crateusethinkowner() {
   self endon("joined_team");
 
-  while (isdefined(self)) {
+  while(isDefined(self)) {
     self waittill("trigger", player);
 
     if(!isalive(player)) {
@@ -1540,7 +1543,7 @@ crateusethinkowner() {
     if(!player isonground()) {
       continue;
     }
-    if(!isdefined(self.owner)) {
+    if(!isDefined(self.owner)) {
       continue;
     }
     if(self.owner != player) {
@@ -1564,27 +1567,27 @@ useholdthink(player, usetime) {
   player thread personalusebar(self);
   result = useholdthinkloop(player);
 
-  if(isdefined(player))
+  if(isDefined(player))
     player notify("done_using");
 
-  if(isdefined(player)) {
+  if(isDefined(player)) {
     if(isalive(player)) {
       player _enableweapon();
       player freeze_player_controls(0);
     }
   }
 
-  if(isdefined(self))
+  if(isDefined(self))
     self.inuse = 0;
 
-  if(isdefined(result) && result)
+  if(isDefined(result) && result)
     return true;
 
   return false;
 }
 
 continueholdthinkloop(player) {
-  if(!isdefined(self))
+  if(!isDefined(self))
     return false;
 
   if(self.curprogress >= self.usetime)
@@ -1620,7 +1623,7 @@ useholdthinkloop(player) {
   self.owner endon("crate_use_interrupt");
   timedout = 0;
 
-  while (self continueholdthinkloop(player)) {
+  while(self continueholdthinkloop(player)) {
     timedout = timedout + 0.05;
     self.curprogress = self.curprogress + 50 * self.userate;
     self.userate = 1;
@@ -1641,14 +1644,14 @@ useholdthinkloop(player) {
 crategamblerthink() {
   self endon("death");
 
-  for (;;) {
+  for(;;) {
     self waittill("trigger_use_doubletap", player);
 
     if(!player hasperk("specialty_showenemyequipment")) {
       continue;
     }
-    if(isdefined(self.useent) && self.useent.inuse) {
-      if(isdefined(self.owner) && self.owner != player)
+    if(isDefined(self.useent) && self.useent.inuse) {
+      if(isDefined(self.owner) && self.owner != player)
         continue;
     }
 
@@ -1671,16 +1674,16 @@ cratereactivate() {
 personalusebar(object) {
   self endon("disconnect");
 
-  if(isdefined(self.usebar)) {
+  if(isDefined(self.usebar)) {
     return;
   }
   self.usebar = createsecondaryprogressbar();
   self.usebartext = createsecondaryprogressbartext();
 
-  if(self hasperk("specialty_showenemyequipment") && object.owner != self && !isdefined(object.hacker) && (level.teambased && object.owner.team != self.team || !level.teambased)) {
+  if(self hasperk("specialty_showenemyequipment") && object.owner != self && !isDefined(object.hacker) && (level.teambased && object.owner.team != self.team || !level.teambased)) {
     self.usebartext settext(&"KILLSTREAK_HACKING_CRATE");
     self playlocalsound("evt_hacker_hacking");
-  } else if(self hasperk("specialty_showenemyequipment") && isdefined(object.hacker) && (object.owner == self || level.teambased && object.owner.team == self.team)) {
+  } else if(self hasperk("specialty_showenemyequipment") && isDefined(object.hacker) && (object.owner == self || level.teambased && object.owner.team == self.team)) {
     self.usebartext settext(level.disarmingcrate);
     self playlocalsound("evt_hacker_hacking");
   } else
@@ -1688,7 +1691,7 @@ personalusebar(object) {
 
   lastrate = -1;
 
-  while (isalive(self) && isdefined(object) && object.inuse && !level.gameended) {
+  while(isalive(self) && isDefined(object) && object.inuse && !level.gameended) {
     if(lastrate != object.userate) {
       if(object.curprogress > object.usetime)
         object.curprogress = object.usetime;
@@ -1715,7 +1718,7 @@ personalusebar(object) {
 spawn_helicopter(owner, team, origin, angles, model, targetname, killstreak_id) {
   chopper = spawnhelicopter(owner, origin, angles, model, targetname);
 
-  if(!isdefined(chopper)) {
+  if(!isDefined(chopper)) {
     if(isplayer(owner))
       maps\mp\killstreaks\_killstreakrules::killstreakstop("supply_drop_mp", team, killstreak_id);
 
@@ -1769,6 +1772,7 @@ gethelistart(drop_origin, drop_direction) {
   direction = drop_direction + (0, randomintrange(-2, 3), 0);
   start_origin = drop_origin + anglestoforward(direction) * dist;
   start_origin = start_origin + ((randomfloat(2) - 1) * pathrandomness, (randomfloat(2) - 1) * pathrandomness, 0);
+
   if(getdvarintdefault("scr_noflyzones_debug", 0)) {
     if(level.noflyzones.size) {
       index = randomintrange(0, level.noflyzones.size);
@@ -1778,6 +1782,7 @@ gethelistart(drop_origin, drop_direction) {
       start_origin = drop_origin + delta * dist;
     }
   }
+
   return start_origin;
 }
 
@@ -1808,19 +1813,21 @@ supplydrophelistartpath(goal, goal_offset) {
   goalpath = spawnstruct();
   drop_direction = getdropdirection();
 
-  while (tries < total_tries) {
+  while(tries < total_tries) {
     goalpath.start = gethelistart(goal, drop_direction);
     goalpath.path = gethelipath(goalpath.start, goal);
     startnoflyzones = insidenoflyzones(goalpath.start, 0);
 
-    if(isdefined(goalpath.path) && startnoflyzones.size == 0) {
+    if(isDefined(goalpath.path) && startnoflyzones.size == 0) {
       if(goalpath.path.size > 1)
         direction = goalpath.path[goalpath.path.size - 1] - goalpath.path[goalpath.path.size - 2];
       else
         direction = goalpath.path[goalpath.path.size - 1] - goalpath.start;
 
       goalpath.path[goalpath.path.size - 1] = addoffsetontopoint(goalpath.path[goalpath.path.size - 1], direction, goal_offset);
+
       sphere(goalpath.path[goalpath.path.size - 1], 10, (0, 0, 1), 1, 1, 10, 1000);
+
       return goalpath;
     }
 
@@ -1841,11 +1848,11 @@ supplydropheliendpath(origin, drop_direction) {
   tries = 0;
   goalpath = spawnstruct();
 
-  while (tries < total_tries) {
+  while(tries < total_tries) {
     goal = getheliend(origin, drop_direction);
     goalpath.path = gethelipath(origin, goal);
 
-    if(isdefined(goalpath.path))
+    if(isDefined(goalpath.path))
       return goalpath;
 
     tries++;
@@ -1856,7 +1863,7 @@ supplydropheliendpath(origin, drop_direction) {
   foreach(node in leave_nodes) {
     goalpath.path = gethelipath(origin, node.origin);
 
-    if(isdefined(goalpath.path))
+    if(isDefined(goalpath.path))
       return goalpath;
   }
 
@@ -1866,7 +1873,7 @@ supplydropheliendpath(origin, drop_direction) {
 }
 
 inccratekillstreakusagestat(weaponname) {
-  if(!isdefined(weaponname)) {
+  if(!isDefined(weaponname)) {
     return;
   }
   if(weaponname == "turret_drop_mp")
@@ -1901,7 +1908,9 @@ helidelivercrate(origin, weaponname, owner, team, killstreak_id, package_content
   drop_origin = origin;
   drop_height = getdropheight(drop_origin);
   heli_drop_goal = (drop_origin[0], drop_origin[1], drop_height);
+
   sphere(heli_drop_goal, 10, (0, 1, 0), 1, 1, 10, 1000);
+
   goalpath = supplydrophelistartpath(heli_drop_goal, (rear_hatch_offset_local, 0, 0));
   drop_direction = vectortoangles((heli_drop_goal[0], heli_drop_goal[1], 0) - (goalpath.start[0], goalpath.start[1], 0));
   chopper = spawn_helicopter(owner, team, goalpath.start, drop_direction, level.suppydrophelicoptervehicleinfo, level.supplydrophelicopterfriendly, killstreak_id);
@@ -1922,7 +1931,7 @@ helidelivercrate(origin, weaponname, owner, team, killstreak_id, package_content
     chopper thread samturretwatcher(drop_origin);
   }
 
-  if(!isdefined(chopper)) {
+  if(!isDefined(chopper)) {
     return;
   }
   chopper thread helidropcrate(weaponname, owner, rear_hatch_offset_local, killcament, killstreak_id, package_contents_id);
@@ -1930,7 +1939,9 @@ helidelivercrate(origin, weaponname, owner, team, killstreak_id, package_content
   chopper thread followpath(goalpath.path, "drop_goal", 1);
   chopper thread speedregulator(heli_drop_goal);
   chopper waittill("drop_goal");
+
   println("Chopper Incoming Time: " + (gettime() - chopper.spawntime));
+
   wait 1.2;
   chopper notify("drop_crate", chopper.origin, chopper.angles);
   chopper.droptime = gettime();
@@ -1941,7 +1952,9 @@ helidelivercrate(origin, weaponname, owner, team, killstreak_id, package_content
   chopper setspeed(supplydropspeed, supplydropaccel);
   goalpath = supplydropheliendpath(chopper.origin, (0, chopper.angles[1], 0));
   chopper followpath(goalpath.path, undefined, 0);
+
   println("Chopper Outgoing Time: " + (gettime() - chopper.droptime));
+
   chopper notify("leaving");
   chopper delete();
 }
@@ -1952,7 +1965,7 @@ samturretwatcher(destination) {
   self endon("death");
   sam_turret_aquire_dist = 1500;
 
-  while (true) {
+  while(true) {
     if(distance(destination, self.origin) < sam_turret_aquire_dist) {
       break;
     }
@@ -1996,7 +2009,7 @@ helidropcrate(category, owner, offset, killcament, killstreak_id, package_conten
   team = self.team;
   self waittill("drop_crate", origin, angles);
 
-  if(isdefined(self)) {
+  if(isDefined(self)) {
     if(category == "inventory_supplydrop_mp" || category == "supplydrop_mp")
       self setclientfield("supplydrop_care_package_state", 0);
     else if(category == "inventory_ai_tank_drop_mp" || category == "ai_tank_drop_mp")
@@ -2014,7 +2027,7 @@ helidestroyed() {
   self endon("helicopter_gone");
   self endon("death");
 
-  while (true) {
+  while(true) {
     if(self.damagetaken > self.maxhealth) {
       break;
     }
@@ -2022,7 +2035,7 @@ helidestroyed() {
     wait 0.05;
   }
 
-  if(!isdefined(self)) {
+  if(!isDefined(self)) {
     return;
   }
   self setspeed(25, 5);
@@ -2046,7 +2059,7 @@ lbspin(speed) {
   playfxontag(level.chopper_fx["fire"]["trail"]["large"], self, "tail_rotor_jnt");
   self setyawspeed(speed, speed, speed);
 
-  while (isdefined(self)) {
+  while(isDefined(self)) {
     self settargetyaw(self.angles[1] + speed * 0.9);
     wait 1;
   }
@@ -2058,7 +2071,7 @@ refcountdecchopper(team, killstreak_id) {
 }
 
 attachreconmodel(modelname, owner) {
-  if(!isdefined(self)) {
+  if(!isDefined(self)) {
     return;
   }
   reconmodel = spawn("script_model", self.origin);
@@ -2074,16 +2087,16 @@ attachreconmodel(modelname, owner) {
 }
 
 resetreconmodelvisibility(owner) {
-  if(!isdefined(self)) {
+  if(!isDefined(self)) {
     return;
   }
   self setinvisibletoall();
   self setforcenocull();
 
-  if(!isdefined(owner)) {
+  if(!isDefined(owner)) {
     return;
   }
-  for (i = 0; i < level.players.size; i++) {
+  for(i = 0; i < level.players.size; i++) {
     if(!level.players[i] hasperk("specialty_detectexplosive") && !level.players[i] hasperk("specialty_showenemyequipment")) {
       continue;
     }
@@ -2112,10 +2125,10 @@ watchreconmodelfordeath(parentent) {
 resetreconmodelonevent(eventname, owner) {
   self endon("death");
 
-  for (;;) {
+  for(;;) {
     level waittill(eventname, newowner);
 
-    if(isdefined(newowner))
+    if(isDefined(newowner))
       owner = newowner;
 
     self resetreconmodelvisibility(owner);
@@ -2125,7 +2138,7 @@ resetreconmodelonevent(eventname, owner) {
 supply_drop_dev_gui() {
   setdvar("scr_supply_drop_gui", "");
 
-  while (true) {
+  while(true) {
     wait 0.5;
     devgui_string = getdvar(#"scr_supply_drop_gui");
 
@@ -2212,4 +2225,5 @@ supply_drop_dev_gui() {
         break;
     }
   }
+
 }

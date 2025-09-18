@@ -48,12 +48,14 @@ main() {
   level thread clientscripts\mp\zm_transit_dr_ffotd::main_end();
   waitforclient(0);
   level._power_on = 0;
+
   println("*** Client : zm_transit running...");
+
   clientscripts\mp\_teamset_cdc::level_init();
   level thread init_fog_vol_to_visionset();
 
   if(level.scr_zm_ui_gametype == "zclassic") {
-    if(isdefined(level.createfxexploders))
+    if(isDefined(level.createfxexploders))
       clientscripts\mp\_fx::activate_exploder(1966);
   }
 
@@ -81,12 +83,12 @@ lerp_infog_alpha(up) {
   self endon("entityshutdown");
 
   if(up) {
-    for (i = 0; i < 21; i++) {
+    for(i = 0; i < 21; i++) {
       self setalphafadeforname(i * 0.05);
       wait 0.05;
     }
   } else {
-    for (i = 20; i > -1; i--) {
+    for(i = 20; i > -1; i--) {
       self setalphafadeforname(i * 0.05);
       wait 0.05;
     }
@@ -95,16 +97,13 @@ lerp_infog_alpha(up) {
 
 register_client_fields() {
   if(level.scr_zm_ui_gametype == "zclassic") {
-
   }
 }
 
 register_client_flags() {
-
 }
 
 register_clientflag_callbacks() {
-
 }
 
 start_zombie_stuff() {
@@ -229,33 +228,34 @@ init_fog_vol_to_visionset() {
 transit_vision_change(ent_player) {
   ent_player endon("entityshutdown");
 
-  while (true) {
+  while(true) {
     self waittill("trigger", who);
 
-    if(!isdefined(who) || !who islocalplayer()) {
+    if(!isDefined(who) || !who islocalplayer()) {
       continue;
     }
     local_clientnum = who getlocalclientnumber();
     visionset = "zm_transit_base";
 
-    if(isdefined(self.script_string))
+    if(isDefined(self.script_string))
       visionset = self.script_string;
 
-    if(isdefined(who._previous_vision) && visionset == who._previous_vision) {
+    if(isDefined(who._previous_vision) && visionset == who._previous_vision) {
       continue;
     }
-    if(isdefined(self.script_float))
+    if(isDefined(self.script_float))
       trans_time = self.script_float;
     else
       trans_time = 2;
 
-    if(!isdefined(who._previous_vision))
+    if(!isDefined(who._previous_vision))
       who._previous_vision = visionset;
     else
       who clientscripts\mp\zombies\_zm::zombie_vision_set_remove(who._previous_vision, trans_time, local_clientnum);
 
-    if(isdefined(self.script_string))
+    if(isDefined(self.script_string))
       println("*** Client : Changing vision set " + self.script_string);
+
     who clientscripts\mp\zombies\_zm::zombie_vision_set_apply(visionset, 1, trans_time, local_clientnum);
     who._previous_vision = visionset;
   }

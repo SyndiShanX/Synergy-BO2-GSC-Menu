@@ -44,9 +44,7 @@ cdc() {
 }
 
 allies() {
-
 }
 
 axis() {
-
 }

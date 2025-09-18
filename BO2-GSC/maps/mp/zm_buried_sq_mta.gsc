@@ -32,13 +32,13 @@ init_stage() {
 
 stage_logic() {
   iprintlnbold("MTA Started");
+
   flag_wait_any("sq_amplifiers_on", "sq_amplifiers_broken");
   wait_network_frame();
   stage_completed("sq", level._cur_stage_name);
 }
 
 exit_stage(success) {
-
 }
 
 stage_vo_max() {
@@ -84,7 +84,7 @@ mta_amplifier_found_watcher() {
   trigger = spawn("trigger_radius", self.origin, 0, 128, 72);
   trigger waittill("trigger", who);
 
-  if(isdefined(level.rich_sq_player) && who == level.rich_sq_player)
+  if(isDefined(level.rich_sq_player) && who == level.rich_sq_player)
     level notify("mta_amp_found_by_sam");
   else
     level notify("mta_amp_found", self);
@@ -103,7 +103,9 @@ mta_amplifier_init() {
 
 mta_amplifier_subwoofer_watch() {
   self waittill("damaged_by_subwoofer");
+
   iprintlnbold("Amplifier Broken");
+
   self.amplifier_state = "broken";
   self setmodel("p6_zm_bu_ether_amplifier_dmg");
   self stoploopsound(0.1);
@@ -116,7 +118,7 @@ mta_amplifier_damage_watch() {
   self endon("damaged_by_subwoofer");
   n_slowgun_count = 0;
 
-  while (true) {
+  while(true) {
     self waittill("damage", n_damage, e_attacker, v_direction, v_point, str_type, str_tag, str_model, str_part, str_weapon);
 
     if(str_weapon == "slowgun_zm" || str_weapon == "slowgun_upgraded_zm") {
@@ -126,6 +128,7 @@ mta_amplifier_damage_watch() {
 
       if(n_slowgun_count >= 25) {
         iprintlnbold("Amplifier Filled");
+
         self thread mta_amplifier_filled_fx();
         self.amplifier_state = "filled";
         self playsound("zmb_sq_amplifier_fill");
@@ -143,7 +146,7 @@ mta_amplifier_damage_watch() {
 }
 
 mta_amplifier_filled_fx() {
-  while (true) {
+  while(true) {
     playfx(level._effect["sq_ether_amp_trail"], self.origin + vectorscale((0, 0, 1), 46.0));
     wait 1;
   }

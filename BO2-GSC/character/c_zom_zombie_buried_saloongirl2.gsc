@@ -1,7 +1,7 @@
-/*********************************************************
+/*************************************************************
  * Decompiled and Edited by SyndiShanX
  * Script: character\c_zom_zombie_buried_saloongirl2.gsc
-*********************************************************/
+*************************************************************/
 
 #include codescripts\character;
 #include xmodelalias\c_zom_zombie_buried_female_heads_als;

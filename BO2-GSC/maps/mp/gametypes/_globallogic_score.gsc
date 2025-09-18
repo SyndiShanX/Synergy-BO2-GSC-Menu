@@ -27,7 +27,7 @@ updatematchbonusscores(winner) {
   if(!level.rankedmatch) {
     return;
   }
-  if(level.teambased && isdefined(winner)) {
+  if(level.teambased && isDefined(winner)) {
     if(winner == "endregulation")
       return;
   }
@@ -61,7 +61,7 @@ updatematchbonusscores(winner) {
 
     players = level.players;
 
-    for (i = 0; i < players.size; i++) {
+    for(i = 0; i < players.size; i++) {
       player = players[i];
 
       if(player.timeplayed["total"] < 1 || player.pers["participation"] < 1) {
@@ -89,21 +89,21 @@ updatematchbonusscores(winner) {
         continue;
       }
 
-      if(isdefined(player.pers["team"]) && player.pers["team"] == winningteam) {
+      if(isDefined(player.pers["team"]) && player.pers["team"] == winningteam) {
         playerscore = int(winnerscale * (gamelength / 60 * spm) * (totaltimeplayed / gamelength));
         player thread givematchbonus("win", playerscore);
         player.matchbonus = playerscore;
         continue;
       }
 
-      if(isdefined(player.pers["team"]) && player.pers["team"] != "spectator") {
+      if(isDefined(player.pers["team"]) && player.pers["team"] != "spectator") {
         playerscore = int(loserscale * (gamelength / 60 * spm) * (totaltimeplayed / gamelength));
         player thread givematchbonus("loss", playerscore);
         player.matchbonus = playerscore;
       }
     }
   } else {
-    if(isdefined(winner)) {
+    if(isDefined(winner)) {
       winnerscale = 1.0;
       loserscale = 0.5;
     } else {
@@ -113,7 +113,7 @@ updatematchbonusscores(winner) {
 
     players = level.players;
 
-    for (i = 0; i < players.size; i++) {
+    for(i = 0; i < players.size; i++) {
       player = players[i];
 
       if(player.timeplayed["total"] < 1 || player.pers["participation"] < 1) {
@@ -129,7 +129,7 @@ updatematchbonusscores(winner) {
       spm = player maps\mp\gametypes\_rank::getspm();
       iswinner = 0;
 
-      for (pidx = 0; pidx < min(level.placement["all"][0].size, 3); pidx++) {
+      for(pidx = 0; pidx < min(level.placement["all"][0].size, 3); pidx++) {
         if(level.placement["all"][pidx] != player) {
           continue;
         }
@@ -169,14 +169,14 @@ gethighestscoringplayer() {
   winner = undefined;
   tie = 0;
 
-  for (i = 0; i < players.size; i++) {
-    if(!isdefined(players[i].pointstowin)) {
+  for(i = 0; i < players.size; i++) {
+    if(!isDefined(players[i].pointstowin)) {
       continue;
     }
     if(players[i].pointstowin < 1) {
       continue;
     }
-    if(!isdefined(winner) || players[i].pointstowin > winner.pointstowin) {
+    if(!isDefined(winner) || players[i].pointstowin > winner.pointstowin) {
       winner = players[i];
       tie = 0;
       continue;
@@ -186,7 +186,7 @@ gethighestscoringplayer() {
       tie = 1;
   }
 
-  if(tie || !isdefined(winner))
+  if(tie || !isDefined(winner))
     return undefined;
   else
     return winner;
@@ -220,16 +220,16 @@ roundtonearestfive(score) {
 giveplayermomentumnotification(score, label, descvalue, countstowardrampage) {
   rampagebonus = 0;
 
-  if(isdefined(level.usingrampage) && level.usingrampage) {
+  if(isDefined(level.usingrampage) && level.usingrampage) {
     if(countstowardrampage) {
-      if(!isdefined(self.scorechain))
+      if(!isDefined(self.scorechain))
         self.scorechain = 0;
 
       self.scorechain++;
       self thread scorechaintimer();
     }
 
-    if(isdefined(self.scorechain) && self.scorechain >= 999)
+    if(isDefined(self.scorechain) && self.scorechain >= 999)
       rampagebonus = roundtonearestfive(int(score * level.rampagebonusscale + 0.5));
   }
 
@@ -248,18 +248,18 @@ giveplayermomentumnotification(score, label, descvalue, countstowardrampage) {
 }
 
 resetplayermomentumonspawn() {
-  if(isdefined(level.usingscorestreaks) && level.usingscorestreaks) {
+  if(isDefined(level.usingscorestreaks) && level.usingscorestreaks) {
     _setplayermomentum(self, 0);
     self thread resetscorechain();
   }
 }
 
 giveplayermomentum(event, player, victim, weapon, descvalue) {
-  if(isdefined(level.disablemomentum) && level.disablemomentum == 1) {
+  if(isDefined(level.disablemomentum) && level.disablemomentum == 1) {
     return;
   }
   score = maps\mp\gametypes\_rank::getscoreinfovalue(event);
-  assert(isdefined(score));
+  assert(isDefined(score));
   label = maps\mp\gametypes\_rank::getscoreinfolabel(event);
   countstowardrampage = maps\mp\gametypes\_rank::doesscoreinfocounttowardrampage(event);
 
@@ -269,8 +269,9 @@ giveplayermomentum(event, player, victim, weapon, descvalue) {
   if(score == 0) {
     return;
   }
-  if(!isdefined(label)) {
+  if(!isDefined(label)) {
     assertmsg(event + " label undefined");
+
     player giveplayermomentumnotification(score, "", descvalue, countstowardrampage);
     return;
   }
@@ -324,7 +325,7 @@ giveplayerscore(event, player, victim, weapon, descvalue) {
       player addplayerstat("CAREER_SCORE_MULTITEAM", scorediff);
   }
 
-  if(!level.disablestattracking && isdefined(player.pers["lastHighestScore"]) && newscore > player.pers["lastHighestScore"])
+  if(!level.disablestattracking && isDefined(player.pers["lastHighestScore"]) && newscore > player.pers["lastHighestScore"])
     player setdstat("HighestStats", "highest_score", newscore);
 
   player maps\mp\gametypes\_persistence::addrecentstat(0, 0, "score", scorediff);
@@ -334,7 +335,7 @@ giveplayerscore(event, player, victim, weapon, descvalue) {
 
 default_onplayerscore(event, player, victim) {
   score = maps\mp\gametypes\_rank::getscoreinfovalue(event);
-  assert(isdefined(score));
+  assert(isDefined(score));
 
   if(level.wagermatch)
     player thread maps\mp\gametypes\_rank::updaterankscorehud(score);
@@ -365,15 +366,15 @@ playtop3sounds() {
   wait 0.05;
   maps\mp\gametypes\_globallogic::updateplacement();
 
-  for (i = 0; i < level.placement["all"].size; i++) {
+  for(i = 0; i < level.placement["all"].size; i++) {
     prevscoreplace = level.placement["all"][i].prevscoreplace;
 
-    if(!isdefined(prevscoreplace))
+    if(!isDefined(prevscoreplace))
       prevscoreplace = 1;
 
     currentscoreplace = i + 1;
 
-    for (j = i - 1; j >= 0; j--) {
+    for(j = i - 1; j >= 0; j--) {
       if(level.placement["all"][i].score == level.placement["all"][j].score)
         currentscoreplace--;
     }
@@ -409,15 +410,15 @@ _setplayermomentum(player, momentum) {
     highestmomentumcost = 0;
     numkillstreaks = 0;
 
-    if(isdefined(player.killstreak))
+    if(isDefined(player.killstreak))
       numkillstreaks = player.killstreak.size;
 
     killstreaktypearray = [];
 
-    for (currentkillstreak = 0; currentkillstreak < numkillstreaks; currentkillstreak++) {
+    for(currentkillstreak = 0; currentkillstreak < numkillstreaks; currentkillstreak++) {
       killstreaktype = maps\mp\killstreaks\_killstreaks::getkillstreakbymenuname(player.killstreak[currentkillstreak]);
 
-      if(isdefined(killstreaktype)) {
+      if(isDefined(killstreaktype)) {
         momentumcost = level.killstreaks[killstreaktype].momentumcost;
 
         if(momentumcost > highestmomentumcost)
@@ -429,7 +430,7 @@ _setplayermomentum(player, momentum) {
 
     _giveplayerkillstreakinternal(player, momentum, oldmomentum, killstreaktypearray);
 
-    while (highestmomentumcost > 0 && momentum >= highestmomentumcost) {
+    while(highestmomentumcost > 0 && momentum >= highestmomentumcost) {
       oldmomentum = 0;
       momentum = momentum - highestmomentumcost;
       _giveplayerkillstreakinternal(player, momentum, oldmomentum, killstreaktypearray);
@@ -441,19 +442,19 @@ _setplayermomentum(player, momentum) {
 }
 
 _giveplayerkillstreakinternal(player, momentum, oldmomentum, killstreaktypearray) {
-  for (killstreaktypeindex = 0; killstreaktypeindex < killstreaktypearray.size; killstreaktypeindex++) {
+  for(killstreaktypeindex = 0; killstreaktypeindex < killstreaktypearray.size; killstreaktypeindex++) {
     killstreaktype = killstreaktypearray[killstreaktypeindex];
     momentumcost = level.killstreaks[killstreaktype].momentumcost;
 
     if(momentumcost > oldmomentum && momentumcost <= momentum) {
       weapon = maps\mp\killstreaks\_killstreaks::getkillstreakweapon(killstreaktype);
 
-      if(isdefined(level.usingscorestreaks) && level.usingscorestreaks) {
+      if(isDefined(level.usingscorestreaks) && level.usingscorestreaks) {
         if(maps\mp\killstreaks\_killstreak_weapons::isheldkillstreakweapon(weapon)) {
-          if(!isdefined(player.pers["held_killstreak_ammo_count"][weapon]))
+          if(!isDefined(player.pers["held_killstreak_ammo_count"][weapon]))
             player.pers["held_killstreak_ammo_count"][weapon] = 0;
 
-          if(!isdefined(player.pers["killstreak_quantity"][weapon]))
+          if(!isDefined(player.pers["killstreak_quantity"][weapon]))
             player.pers["killstreak_quantity"][weapon] = 0;
 
           currentweapon = player getcurrentweapon();
@@ -478,7 +479,7 @@ _giveplayerkillstreakinternal(player, momentum, oldmomentum, killstreaktypearray
       player maps\mp\killstreaks\_killstreaks::addkillstreaktoqueue(level.killstreaks[killstreaktype].menuname, 0, killstreaktype);
       activeeventname = "reward_active";
 
-      if(isdefined(weapon)) {
+      if(isDefined(weapon)) {
         neweventname = weapon + "_active";
 
         if(maps\mp\_scoreevents::isregisteredevent(neweventname))
@@ -491,20 +492,21 @@ _giveplayerkillstreakinternal(player, momentum, oldmomentum, killstreaktypearray
 setplayermomentumdebug() {
   setdvar("sv_momentumPercent", 0.0);
 
-  while (true) {
+  while(true) {
     wait 1;
     momentumpercent = getdvarfloatdefault("sv_momentumPercent", 0.0);
 
     if(momentumpercent != 0.0) {
       player = gethostplayer();
 
-      if(!isdefined(player)) {
+      if(!isDefined(player)) {
         return;
       }
-      if(isdefined(player.killstreak))
+      if(isDefined(player.killstreak))
         _setplayermomentum(player, int(2000 * (momentumpercent / 100)));
     }
   }
+
 }
 
 giveteamscore(event, team, player, victim) {
@@ -545,7 +547,7 @@ postprocessteamscores(teams) {
 }
 
 giveteamscoreforobjective(team, score) {
-  if(!isdefined(level.teams[team])) {
+  if(!isDefined(level.teams[team])) {
     return;
   }
   teamscore = game["teamScores"][team];
@@ -570,7 +572,7 @@ _setteamscore(team, teamscore) {
 }
 
 resetteamscores() {
-  if(!isdefined(level.roundscorecarry) || level.roundscorecarry == 0 || maps\mp\_utility::isfirstround()) {
+  if(!isDefined(level.roundscorecarry) || level.roundscorecarry == 0 || maps\mp\_utility::isfirstround()) {
     foreach(team in level.teams)
     game["teamScores"][team] = 0;
   }
@@ -588,8 +590,8 @@ resetplayerscores() {
   winner = undefined;
   tie = 0;
 
-  for (i = 0; i < players.size; i++) {
-    if(isdefined(players[i].pers["score"]))
+  for(i = 0; i < players.size; i++) {
+    if(isDefined(players[i].pers["score"]))
       _setplayerscore(players[i], 0);
   }
 }
@@ -632,7 +634,7 @@ areteamarraysequal(teamsa, teamsb) {
     return false;
 
   foreach(team in teamsa) {
-    if(!isdefined(teamsb[team]))
+    if(!isDefined(teamsb[team]))
       return false;
   }
 
@@ -676,7 +678,7 @@ onteamscore_postprocess(team) {
     level.laststatustime = gettime();
 
     foreach(team in iswinning) {
-      if(isdefined(level.waswinning[team])) {
+      if(isDefined(level.waswinning[team])) {
         if(level.waswinning.size == 1)
           continue;
       }
@@ -688,7 +690,7 @@ onteamscore_postprocess(team) {
 
   if(level.waswinning.size == 1) {
     foreach(team in level.waswinning) {
-      if(isdefined(iswinning[team])) {
+      if(isDefined(iswinning[team])) {
         if(iswinning.size == 1) {
           continue;
         }
@@ -705,15 +707,15 @@ onteamscore_postprocess(team) {
 
 default_onteamscore(event, team) {
   score = maps\mp\gametypes\_rank::getscoreinfovalue(event);
-  assert(isdefined(score));
+  assert(isDefined(score));
   onteamscore(score, team);
 }
 
 initpersstat(dataname, record_stats) {
-  if(!isdefined(self.pers[dataname]))
+  if(!isDefined(self.pers[dataname]))
     self.pers[dataname] = 0;
 
-  if(!isdefined(record_stats) || record_stats == 1)
+  if(!isDefined(record_stats) || record_stats == 1)
     recordplayerstats(self, dataname, int(self.pers[dataname]));
 }
 
@@ -725,12 +727,12 @@ incpersstat(dataname, increment, record_stats, includegametype) {
   pixbeginevent("incPersStat");
   self.pers[dataname] = self.pers[dataname] + increment;
 
-  if(isdefined(includegametype) && includegametype)
+  if(isDefined(includegametype) && includegametype)
     self addplayerstatwithgametype(dataname, increment);
   else
     self addplayerstat(dataname, increment);
 
-  if(!isdefined(record_stats) || record_stats == 1)
+  if(!isDefined(record_stats) || record_stats == 1)
     self thread threadedrecordplayerstats(dataname);
 
   pixendevent();
@@ -795,9 +797,9 @@ updatewinlossstats(winner) {
   }
   players = level.players;
 
-  if(!isdefined(winner) || isdefined(winner) && !isplayer(winner) && winner == "tie") {
-    for (i = 0; i < players.size; i++) {
-      if(!isdefined(players[i].pers["team"])) {
+  if(!isDefined(winner) || isDefined(winner) && !isplayer(winner) && winner == "tie") {
+    for(i = 0; i < players.size; i++) {
+      if(!isDefined(players[i].pers["team"])) {
         continue;
       }
       if(level.hostforcedend && players[i] ishost()) {
@@ -815,14 +817,14 @@ updatewinlossstats(winner) {
       placement = level.placement["all"];
       topthreeplayers = min(3, placement.size);
 
-      for (index = 1; index < topthreeplayers; index++) {
+      for(index = 1; index < topthreeplayers; index++) {
         nexttopplayer = placement[index];
         updatewinstats(nexttopplayer);
       }
     }
   } else {
-    for (i = 0; i < players.size; i++) {
-      if(!isdefined(players[i].pers["team"])) {
+    for(i = 0; i < players.size; i++) {
+      if(!isDefined(players[i].pers["team"])) {
         continue;
       }
       if(level.hostforcedend && players[i] ishost()) {
@@ -878,13 +880,13 @@ trackattackerkill(name, rank, xp, prestige, xuid) {
   waittillframeend;
   pixbeginevent("trackAttackerKill");
 
-  if(!isdefined(attacker.pers["killed_players"][name]))
+  if(!isDefined(attacker.pers["killed_players"][name]))
     attacker.pers["killed_players"][name] = 0;
 
-  if(!isdefined(attacker.killedplayerscurrent[name]))
+  if(!isDefined(attacker.killedplayerscurrent[name]))
     attacker.killedplayerscurrent[name] = 0;
 
-  if(!isdefined(attacker.pers["nemesis_tracking"][name]))
+  if(!isDefined(attacker.pers["nemesis_tracking"][name]))
     attacker.pers["nemesis_tracking"][name] = 0;
 
   attacker.pers["killed_players"][name]++;
@@ -900,12 +902,12 @@ trackattackerkill(name, rank, xp, prestige, xuid) {
     attacker.pers["nemesis_rankIcon"] = prestige;
     attacker.pers["nemesis_xp"] = xp;
     attacker.pers["nemesis_xuid"] = xuid;
-  } else if(isdefined(attacker.pers["nemesis_name"]) && attacker.pers["nemesis_name"] == name) {
+  } else if(isDefined(attacker.pers["nemesis_name"]) && attacker.pers["nemesis_name"] == name) {
     attacker.pers["nemesis_rank"] = rank;
     attacker.pers["nemesis_xp"] = xp;
   }
 
-  if(!isdefined(attacker.lastkilledvictim) || !isdefined(attacker.lastkilledvictimcount)) {
+  if(!isDefined(attacker.lastkilledvictim) || !isDefined(attacker.lastkilledvictimcount)) {
     attacker.lastkilledvictim = name;
     attacker.lastkilledvictimcount = 0;
   }
@@ -930,12 +932,12 @@ trackattackeedeath(attackername, rank, xp, prestige, xuid) {
   waittillframeend;
   pixbeginevent("trackAttackeeDeath");
 
-  if(!isdefined(self.pers["killed_by"][attackername]))
+  if(!isDefined(self.pers["killed_by"][attackername]))
     self.pers["killed_by"][attackername] = 0;
 
   self.pers["killed_by"][attackername]++;
 
-  if(!isdefined(self.pers["nemesis_tracking"][attackername]))
+  if(!isDefined(self.pers["nemesis_tracking"][attackername]))
     self.pers["nemesis_tracking"][attackername] = 0;
 
   self.pers["nemesis_tracking"][attackername] = self.pers["nemesis_tracking"][attackername] + 1.5;
@@ -946,7 +948,7 @@ trackattackeedeath(attackername, rank, xp, prestige, xuid) {
     self.pers["nemesis_rankIcon"] = prestige;
     self.pers["nemesis_xp"] = xp;
     self.pers["nemesis_xuid"] = xuid;
-  } else if(isdefined(self.pers["nemesis_name"]) && self.pers["nemesis_name"] == attackername) {
+  } else if(isDefined(self.pers["nemesis_name"]) && self.pers["nemesis_name"] == attackername) {
     self.pers["nemesis_rank"] = rank;
     self.pers["nemesis_xp"] = xp;
   }
@@ -969,6 +971,7 @@ givekillstats(smeansofdeath, sweapon, evictim) {
 
   if(level.rankedmatch && self[[level.iskillboosting]]()) {
     self iprintlnbold("GAMETYPE DEBUG: NOT GIVING YOU OFFENSIVE CREDIT AS BOOSTING PREVENTION");
+
     return;
   }
 
@@ -982,7 +985,7 @@ givekillstats(smeansofdeath, sweapon, evictim) {
     attacker thread incpersstat("headshots", 1, 1, 0);
     attacker.headshots = attacker.pers["headshots"];
 
-    if(isdefined(evictim))
+    if(isDefined(evictim))
       evictim recordkillmodifier("headshot");
   }
 
@@ -990,27 +993,27 @@ givekillstats(smeansofdeath, sweapon, evictim) {
 }
 
 inctotalkills(team) {
-  if(level.teambased && isdefined(level.teams[team]))
+  if(level.teambased && isDefined(level.teams[team]))
     game["totalKillsTeam"][team]++;
 
   game["totalKills"]++;
 }
 
 setinflictorstat(einflictor, eattacker, sweapon) {
-  if(!isdefined(eattacker)) {
+  if(!isDefined(eattacker)) {
     return;
   }
-  if(!isdefined(einflictor)) {
+  if(!isDefined(einflictor)) {
     eattacker addweaponstat(sweapon, "hits", 1);
     return;
   }
 
-  if(!isdefined(einflictor.playeraffectedarray))
+  if(!isDefined(einflictor.playeraffectedarray))
     einflictor.playeraffectedarray = [];
 
   foundnewplayer = 1;
 
-  for (i = 0; i < einflictor.playeraffectedarray.size; i++) {
+  for(i = 0; i < einflictor.playeraffectedarray.size; i++) {
     if(einflictor.playeraffectedarray[i] == self) {
       foundnewplayer = 0;
       break;
@@ -1033,7 +1036,7 @@ processshieldassist(killedplayer) {
   wait 0.05;
   maps\mp\gametypes\_globallogic_utils::waittillslowprocessallowed();
 
-  if(!isdefined(level.teams[self.pers["team"]])) {
+  if(!isDefined(level.teams[self.pers["team"]])) {
     return;
   }
   if(self.pers["team"] == killedplayer.pers["team"]) {
@@ -1053,7 +1056,7 @@ processassist(killedplayer, damagedone, weapon) {
   wait 0.05;
   maps\mp\gametypes\_globallogic_utils::waittillslowprocessallowed();
 
-  if(!isdefined(level.teams[self.pers["team"]])) {
+  if(!isDefined(level.teams[self.pers["team"]])) {
     return;
   }
   if(self.pers["team"] == killedplayer.pers["team"]) {
@@ -1074,7 +1077,7 @@ processassist(killedplayer, damagedone, weapon) {
   self maps\mp\gametypes\_globallogic_score::incpersstat("assists", 1, 1, 1);
   self.assists = self maps\mp\gametypes\_globallogic_score::getpersstat("assists");
 
-  if(isdefined(weapon))
+  if(isDefined(weapon))
     self addweaponstat(weapon, "assists", 1);
 
   switch (weapon) {
@@ -1098,7 +1101,7 @@ processassist(killedplayer, damagedone, weapon) {
 }
 
 processkillstreakassists(attacker, inflictor, weaponname) {
-  if(!isdefined(attacker) || !isdefined(attacker.team) || self isenemyplayer(attacker) == 0) {
+  if(!isDefined(attacker) || !isDefined(attacker.team) || self isenemyplayer(attacker) == 0) {
     return;
   }
   if(self == attacker || (attacker.classname == "trigger_hurt" || attacker.classname == "worldspawn")) {
@@ -1129,14 +1132,14 @@ processkillstreakassists(attacker, inflictor, weaponname) {
     if(player.sessionstate != "playing") {
       continue;
     }
-    assert(isdefined(player.activecounteruavs));
-    assert(isdefined(player.activeuavs));
-    assert(isdefined(player.activesatellites));
+    assert(isDefined(player.activecounteruavs));
+    assert(isDefined(player.activeuavs));
+    assert(isDefined(player.activesatellites));
 
     if(player.activecounteruavs > 0 && !maps\mp\killstreaks\_killstreaks::iskillstreakweapon(weaponname)) {
       scoregiven = thread maps\mp\_scoreevents::processscoreevent("counter_uav_assist", player);
 
-      if(isdefined(scoregiven))
+      if(isDefined(scoregiven))
         player maps\mp\_challenges::earnedcuavassistscore(scoregiven);
     }
 
@@ -1144,14 +1147,14 @@ processkillstreakassists(attacker, inflictor, weaponname) {
       if(player.activeuavs > 0 && !maps\mp\killstreaks\_killstreaks::iskillstreakweapon(weaponname)) {
         scoregiven = thread maps\mp\_scoreevents::processscoreevent("uav_assist", player);
 
-        if(isdefined(scoregiven))
+        if(isDefined(scoregiven))
           player maps\mp\_challenges::earneduavassistscore(scoregiven);
       }
 
       if(player.activesatellites > 0 && !maps\mp\killstreaks\_killstreaks::iskillstreakweapon(weaponname)) {
         scoregiven = thread maps\mp\_scoreevents::processscoreevent("satellite_assist", player);
 
-        if(isdefined(scoregiven))
+        if(isDefined(scoregiven))
           player maps\mp\_challenges::earnedsatelliteassistscore(scoregiven);
       }
     }
@@ -1166,12 +1169,12 @@ processkillstreakassists(attacker, inflictor, weaponname) {
     }
     activeempowner = level.empowners[assistteam];
 
-    if(isdefined(activeempowner) && isplayer(activeempowner)) {
-      if(isdefined(attacker) && activeempowner != attacker) {
-        if(isdefined(activeempowner.emptime) && activeempowner.spawntime < activeempowner.emptime) {
+    if(isDefined(activeempowner) && isplayer(activeempowner)) {
+      if(isDefined(attacker) && activeempowner != attacker) {
+        if(isDefined(activeempowner.emptime) && activeempowner.spawntime < activeempowner.emptime) {
           scoregiven = maps\mp\_scoreevents::processscoreevent("emp_assist", activeempowner);
 
-          if(isdefined(scoregiven))
+          if(isDefined(scoregiven))
             activeempowner maps\mp\_challenges::earnedempassistscore(scoregiven);
         }
       }
@@ -1184,13 +1187,14 @@ xpratethread() {
   self endon("disconnect");
   level endon("game_ended");
 
-  while (level.inprematchperiod)
+  while(level.inprematchperiod)
     wait 0.05;
 
-  for (;;) {
+  for(;;) {
     wait 5.0;
 
-    if(isdefined(level.teams[level.players[0].pers["team"]]))
+    if(isDefined(level.teams[level.players[0].pers["team"]]))
       self maps\mp\gametypes\_rank::giverankxp("kill", int(min(getdvarint(#"_id_F8D00F60"), 50)));
   }
+
 }

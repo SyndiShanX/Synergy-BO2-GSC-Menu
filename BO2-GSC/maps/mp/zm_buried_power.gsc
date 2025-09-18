@@ -22,7 +22,7 @@ electric_switch() {
   master_switch playsound("zmb_poweron");
   level delay_thread(11.8, ::sndpoweronmusicstinger);
 
-  if(isdefined(user))
+  if(isDefined(user))
     user thread maps\mp\zombies\_zm_audio::create_and_play_dialog("power", "power_on");
 
   level thread maps\mp\zombies\_zm_perks::perk_unpause_all_perks();

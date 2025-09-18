@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\_compass.gsc
-***************************************/
+**************************************/
 
 setupminimap(material) {
   requiredmapaspectratio = getdvarfloat(#"scr_RequiredMapAspectratio");
@@ -9,6 +9,7 @@ setupminimap(material) {
 
   if(corners.size != 2) {
     println("^1Error: There are not exactly two \"minimap_corner\" entities in the map. Could not set up minimap.");
+
     return;
   }
 

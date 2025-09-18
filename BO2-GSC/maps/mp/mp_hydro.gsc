@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\mp_hydro.gsc
-***************************************/
+**************************************/
 
 #include maps\mp\_utility;
 #include common_scripts\utility;
@@ -26,7 +26,9 @@ main() {
   maps\mp\mp_hydro_amb::main();
   maps\mp\_compass::setupminimap("compass_map_mp_hydro");
   maps\mp\mp_hydro_amb::main();
+
   execdevgui("devgui_mp_hydro");
+
   registerclientfield("world", "pre_wave", 1, 1, "int");
   registerclientfield("world", "big_wave", 1, 1, "int");
   setdvar("compassmaxrange", "2300");
@@ -82,7 +84,7 @@ levelspawndvars(reset_dvars) {
 }
 
 leveloverridetime(defaulttime) {
-  if(isdefined(self.lastattacker) && isdefined(self.lastattacker.targetname) && self.lastattacker.targetname == "water_kill_trigger")
+  if(isDefined(self.lastattacker) && isDefined(self.lastattacker.targetname) && self.lastattacker.targetname == "water_kill_trigger")
     return 0.4;
 
   return defaulttime;
@@ -176,7 +178,7 @@ initwatertriggers() {
 watchwatertrigger(water_mover, water_kill_triggers, water_pa_1, water_pa_2, water_pa_3, water_ambient_back, water_ambient_box, water_ambient_mover) {
   thread watchdevnotify();
 
-  for (;;) {
+  for(;;) {
     level waittill_any("hydro_water_rush", "dev_water_rush");
     setclientfield("pre_wave", 1);
     level thread waterkilltriggerthink(water_kill_triggers);
@@ -210,7 +212,9 @@ watchwatertrigger(water_mover, water_kill_triggers, water_pa_1, water_pa_2, wate
     water_mover moveto(vectorscale((0, 1, 0), 2100.0), 2.5);
     water_ambient_mover moveto(vectorscale((0, 0, 1), 20.0), 2.5);
     water_kill_triggers[2].origin = water_kill_triggers[2].origin + vectorscale((0, 0, 1), 1000.0);
+
     maps\mp\killstreaks\_airsupport::debug_cylinder(water_kill_triggers[2].origin, 450, 40, (1, 0.1, 0.1), 1, 2500);
+
     level thread waterfxloopstarter(water_fx1, water_fx2, 5);
     thread play_exploder();
     waterlevel = -24;
@@ -224,7 +228,9 @@ watchwatertrigger(water_mover, water_kill_triggers, water_pa_1, water_pa_2, wate
     water_pa_3 playsound("evt_pa_offline");
     wait 1;
     water_kill_triggers[2].origin = water_kill_triggers[2].origin - vectorscale((0, 0, 1), 1000.0);
+
     maps\mp\killstreaks\_airsupport::debug_cylinder(water_kill_triggers[2].origin, 450, 40, (1, 0.1, 0.1), 0, 2500);
+
     water_mover moveto(vectorscale((0, 1, 0), 4100.0), 2.5);
     water_ambient_mover moveto((0, 0, 0), 2.5);
     water_fx1 stoploopsound(2);
@@ -260,7 +266,7 @@ play_exploder() {
 watchdevnotify() {
   startvalue = getdvar(#"scr_hydro_water_rush");
 
-  for (;;) {
+  for(;;) {
     should_water_rush = getdvar(#"scr_hydro_water_rush");
 
     if(should_water_rush != startvalue) {
@@ -292,7 +298,7 @@ waterfxloop(fx1, fx2) {
 waterkilltriggerthink(triggers) {
   level endon("water_stop");
 
-  for (;;) {
+  for(;;) {
     wait 0.1;
     entities = getdamageableentarray(triggers[0].origin, 2000);
 
@@ -308,7 +314,7 @@ waterkilltriggerthink(triggers) {
         }
       }
 
-      if(isdefined(entity.model) && entity.model == "t6_wpn_tac_insert_world") {
+      if(isDefined(entity.model) && entity.model == "t6_wpn_tac_insert_world") {
         entity maps\mp\_tacticalinsertion::destroy_tactical_insertion();
         continue;
       }
@@ -316,7 +322,7 @@ waterkilltriggerthink(triggers) {
       if(!isalive(entity)) {
         continue;
       }
-      if(isdefined(entity.targetname)) {
+      if(isDefined(entity.targetname)) {
         if(entity.targetname == "talon") {
           entity notify("death");
           continue;
@@ -329,17 +335,17 @@ waterkilltriggerthink(triggers) {
         }
       }
 
-      if(isdefined(entity.helitype) && entity.helitype == "qrdrone") {
+      if(isDefined(entity.helitype) && entity.helitype == "qrdrone") {
         watcher = entity.owner maps\mp\gametypes\_weaponobjects::getweaponobjectwatcher("qrdrone");
         watcher thread maps\mp\gametypes\_weaponobjects::waitanddetonate(entity, 0.0, undefined);
         continue;
       }
 
       if(entity.classname == "grenade") {
-        if(!isdefined(entity.name)) {
+        if(!isDefined(entity.name)) {
           continue;
         }
-        if(!isdefined(entity.owner)) {
+        if(!isDefined(entity.owner)) {
           continue;
         }
         if(entity.name == "proximity_grenade_mp") {
@@ -353,7 +359,7 @@ waterkilltriggerthink(triggers) {
         }
         watcher = entity.owner getwatcherforweapon(entity.name);
 
-        if(!isdefined(watcher)) {
+        if(!isDefined(watcher)) {
           continue;
         }
         watcher thread maps\mp\gametypes\_weaponobjects::waitanddetonate(entity, 0.0, undefined, "script_mover_mp");
@@ -361,7 +367,7 @@ waterkilltriggerthink(triggers) {
       }
 
       if(entity.classname == "auto_turret") {
-        if(!isdefined(entity.damagedtodeath) || !entity.damagedtodeath)
+        if(!isDefined(entity.damagedtodeath) || !entity.damagedtodeath)
           entity domaxdamage(triggers[triggertouched].origin + (0, 0, 1), triggers[triggertouched], triggers[triggertouched], 0, "MOD_CRUSH");
 
         continue;
@@ -379,13 +385,13 @@ waterkilltriggerthink(triggers) {
 }
 
 getwatcherforweapon(weapname) {
-  if(!isdefined(self))
+  if(!isDefined(self))
     return undefined;
 
   if(!isplayer(self))
     return undefined;
 
-  for (i = 0; i < self.weaponobjectwatcherarray.size; i++) {
+  for(i = 0; i < self.weaponobjectwatcherarray.size; i++) {
     if(self.weaponobjectwatcherarray[i].weapon != weapname) {
       continue;
     }
@@ -397,11 +403,11 @@ getwatcherforweapon(weapname) {
 
 removeobjectsondemovertime() {
   if(level.gametype == "dem") {
-    if(isdefined(game["overtime_round"])) {
+    if(isDefined(game["overtime_round"])) {
       objects = getentarray("delete_dem_overtime", "script_noteworthy");
 
-      if(isdefined(objects)) {
-        for (i = 0; i < objects.size; i++)
+      if(isDefined(objects)) {
+        for(i = 0; i < objects.size; i++)
           objects[i] delete();
       }
     }

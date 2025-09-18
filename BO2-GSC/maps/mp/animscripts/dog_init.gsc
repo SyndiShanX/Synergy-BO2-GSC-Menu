@@ -40,7 +40,7 @@ main() {
   level.lastdogmeleeplayertime = 0;
   level.dogmeleeplayercounter = 0;
 
-  if(!isdefined(level.dog_hits_before_kill))
+  if(!isDefined(level.dog_hits_before_kill))
     level.dog_hits_before_kill = 1;
 }
 
@@ -52,7 +52,7 @@ set_anim_playback_rate() {
 setmeleeattackdist() {
   self endon("death");
 
-  while (true) {
+  while(true) {
     self.meleeattackdist = 0;
 
     if(self maps\mp\animscripts\dog_combat::use_low_attack())

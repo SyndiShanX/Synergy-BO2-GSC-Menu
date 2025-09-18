@@ -27,7 +27,7 @@ maze_effects_thread(localclientnum, fieldname) {
   struct = level._maze_structs_indexed_for_callback[fieldname];
   self thread kill_maze_effects_thread(localclientnum, struct);
 
-  if(!isdefined(struct.loopfx_ids)) {
+  if(!isDefined(struct.loopfx_ids)) {
     struct.loopfx_ids = [];
     struct.angles_to_foward = anglestoforward(struct.angles);
     struct.angles_to_up = anglestoup(struct.angles);
@@ -37,7 +37,7 @@ maze_effects_thread(localclientnum, fieldname) {
 kill_maze_effects_thread(localclientnum, struct) {
   self waittill("kill_maze_effects_thread");
 
-  if(isdefined(struct.loopfx_ids) && isdefined(struct.loopfx_ids[localclientnum])) {
+  if(isDefined(struct.loopfx_ids) && isDefined(struct.loopfx_ids[localclientnum])) {
     deletefx(localclientnum, struct.loopfx_ids[localclientnum]);
     struct.loopfx_ids[localclientnum] = undefined;
   }

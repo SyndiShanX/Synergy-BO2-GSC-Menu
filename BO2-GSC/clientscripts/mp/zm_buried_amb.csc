@@ -135,7 +135,7 @@ audio_snapshot_clientfield_callback(localclientnum, oldval, newval, bnewent, bin
 }
 
 add_fxanim_stop_loop(fieldname, soundname, origin, start_sound_on_register) {
-  if(!isdefined(start_sound_on_register))
+  if(!isDefined(start_sound_on_register))
     start_sound_on_register = 1;
 
   s = spawnstruct();
@@ -155,14 +155,14 @@ add_fxanim_start_loop(fieldname, soundname, origin) {
 }
 
 fxanim_loop_audio(fieldname, val) {
-  if(isdefined(level.fxanim_stop_loops[fieldname])) {
+  if(isDefined(level.fxanim_stop_loops[fieldname])) {
     s = level.fxanim_stop_loops[fieldname];
 
     if(val)
       stoploopat(s.soundname, s.origin);
     else
       playloopat(s.soundname, s.origin);
-  } else if(isdefined(level.fxanim_start_loops[fieldname])) {
+  } else if(isDefined(level.fxanim_start_loops[fieldname])) {
     s = level.fxanim_start_loops[fieldname];
 
     if(val)
@@ -186,10 +186,10 @@ init_fxanim_loops() {
 sndslidetrigger() {
   trig = getent(0, "sndSlide", "targetname");
 
-  if(!isdefined(trig)) {
+  if(!isDefined(trig)) {
     return;
   }
-  while (true) {
+  while(true) {
     trig waittill("trigger", who);
 
     if(who isplayer() && !is_true(who.issliding)) {
@@ -207,11 +207,12 @@ sndslidetriggeraudio(trig) {
   ent linkto(self);
   ent playloopsound("zmb_slide_loop", 0.25);
 
-  while (self istouching(trig)) {
+  while(self istouching(trig)) {
     wait 0.1;
 
-    if(!isdefined(self)) {
+    if(!isDefined(self)) {
       println("*** Sliding player gone into spectate.Cleanup.");
+
       ent notify("player_in_spectate");
       trig notify("player_in_spectate");
       return;
@@ -220,8 +221,9 @@ sndslidetriggeraudio(trig) {
     if(self islocalplayer()) {
       clientnum = self getlocalclientnumber();
 
-      if(!isdefined(clientnum)) {
+      if(!isDefined(clientnum)) {
         println("*** Sliding player gone into spectate.Cleanup.");
+
         ent notify("player_in_spectate");
         trig notify("player_in_spectate");
         return;
@@ -313,7 +315,7 @@ snd_start_autofx_audio() {
 }
 
 sndbackgroundtrack(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump) {
-  if(!isdefined(self.sndbackgroundtrack))
+  if(!isDefined(self.sndbackgroundtrack))
     self.sndbackgroundtrack = spawn(0, (0, 0, 0), "script_origin");
 
   if(newval == oldval) {

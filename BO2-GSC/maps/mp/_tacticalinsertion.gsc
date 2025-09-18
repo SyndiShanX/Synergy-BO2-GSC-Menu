@@ -28,7 +28,7 @@ istacspawntouchingcrates(origin, angles) {
   mins = (-17, -17, -40);
   maxs = (17, 17, 40);
 
-  for (i = 0; i < crate_ents.size; i++) {
+  for(i = 0; i < crate_ents.size; i++) {
     if(crate_ents[i] istouchingvolume(origin + vectorscale((0, 0, 1), 40.0), mins, maxs))
       return true;
   }
@@ -37,7 +37,7 @@ istacspawntouchingcrates(origin, angles) {
 }
 
 overridespawn(ispredictedspawn) {
-  if(!isdefined(self.tacticalinsertion))
+  if(!isDefined(self.tacticalinsertion))
     return false;
 
   origin = self.tacticalinsertion.origin;
@@ -70,7 +70,7 @@ waitanddelete(time) {
 }
 
 watch(player) {
-  if(isdefined(player.tacticalinsertion))
+  if(isDefined(player.tacticalinsertion))
     player.tacticalinsertion destroy_tactical_insertion();
 
   player thread spawntacticalinsertion();
@@ -80,7 +80,7 @@ watch(player) {
 watchusetrigger(trigger, callback, playersoundonuse, npcsoundonuse) {
   self endon("delete");
 
-  while (true) {
+  while(true) {
     trigger waittill("trigger", player);
 
     if(!isalive(player)) {
@@ -89,20 +89,20 @@ watchusetrigger(trigger, callback, playersoundonuse, npcsoundonuse) {
     if(!player isonground()) {
       continue;
     }
-    if(isdefined(trigger.triggerteam) && player.team != trigger.triggerteam) {
+    if(isDefined(trigger.triggerteam) && player.team != trigger.triggerteam) {
       continue;
     }
-    if(isdefined(trigger.triggerteamignore) && player.team == trigger.triggerteamignore) {
+    if(isDefined(trigger.triggerteamignore) && player.team == trigger.triggerteamignore) {
       continue;
     }
-    if(isdefined(trigger.claimedby) && player != trigger.claimedby) {
+    if(isDefined(trigger.claimedby) && player != trigger.claimedby) {
       continue;
     }
     if(player usebuttonpressed() && !player.throwinggrenade && !player meleebuttonpressed()) {
-      if(isdefined(playersoundonuse))
+      if(isDefined(playersoundonuse))
         player playlocalsound(playersoundonuse);
 
-      if(isdefined(npcsoundonuse))
+      if(isDefined(npcsoundonuse))
         player playsound(npcsoundonuse);
 
       self thread[[callback]](player);
@@ -123,7 +123,7 @@ destroy_tactical_insertion(attacker) {
   self.friendlytrigger delete();
   self.enemytrigger delete();
 
-  if(isdefined(attacker) && isdefined(attacker.pers["team"]) && isdefined(self.owner) && isdefined(self.owner.pers["team"])) {
+  if(isDefined(attacker) && isDefined(attacker.pers["team"]) && isDefined(self.owner) && isDefined(self.owner.pers["team"])) {
     if(level.teambased) {
       if(attacker.pers["team"] != self.owner.pers["team"]) {
         attacker notify("destroyed_explosive");
@@ -143,14 +143,14 @@ destroy_tactical_insertion(attacker) {
 }
 
 fizzle(attacker) {
-  if(isdefined(self.fizzle) && self.fizzle) {
+  if(isDefined(self.fizzle) && self.fizzle) {
     return;
   }
   self.fizzle = 1;
   playfx(level._effect["tacticalInsertionFizzle"], self.origin);
   self playsound("dst_tac_insert_break");
 
-  if(isdefined(attacker) && attacker != self.owner)
+  if(isDefined(attacker) && attacker != self.owner)
     self.owner maps\mp\gametypes\_globallogic_audio::leaderdialogonplayer("tact_destroyed", "item_destroyed");
 
   self destroy_tactical_insertion(attacker);
@@ -206,7 +206,7 @@ spawntacticalinsertion() {
   self.tacticalinsertion thread watchusetrigger(self.tacticalinsertion.friendlytrigger, ::pickup, watcher.pickupsoundplayer, watcher.pickupsound);
   self.tacticalinsertion thread watchusetrigger(self.tacticalinsertion.enemytrigger, ::fizzle);
 
-  if(isdefined(self.tacticalinsertioncount))
+  if(isDefined(self.tacticalinsertioncount))
     self.tacticalinsertioncount++;
   else
     self.tacticalinsertioncount = 1;
@@ -214,10 +214,10 @@ spawntacticalinsertion() {
   self.tacticalinsertion setcandamage(1);
   self.tacticalinsertion.health = 1;
 
-  while (true) {
+  while(true) {
     self.tacticalinsertion waittill("damage", damage, attacker, direction, point, type, tagname, modelname, partname, weaponname, idflags);
 
-    if(level.teambased && (!isdefined(attacker) || !isplayer(attacker) || attacker.team == self.team) && attacker != self) {
+    if(level.teambased && (!isDefined(attacker) || !isplayer(attacker) || attacker.team == self.team) && attacker != self) {
       continue;
     }
     if(attacker != self) {
@@ -226,7 +226,7 @@ spawntacticalinsertion() {
       maps\mp\_scoreevents::processscoreevent("destroyed_tac_insert", attacker);
     }
 
-    if(isdefined(weaponname)) {
+    if(isDefined(weaponname)) {
       switch (weaponname) {
         case "concussion_grenade_mp":
         case "flash_grenade_mp":
@@ -247,7 +247,7 @@ spawntacticalinsertion() {
       }
     }
 
-    if(isdefined(attacker) && attacker != self)
+    if(isDefined(attacker) && attacker != self)
       self maps\mp\gametypes\_globallogic_audio::leaderdialogonplayer("tact_destroyed", "item_destroyed");
 
     self.tacticalinsertion thread fizzle();
@@ -255,7 +255,7 @@ spawntacticalinsertion() {
 }
 
 cancel_button_think() {
-  if(!isdefined(self.tacticalinsertion)) {
+  if(!isDefined(self.tacticalinsertion)) {
     return;
   }
   text = cancel_text_create();
@@ -265,7 +265,7 @@ cancel_button_think() {
   if(event == "tactical_insertion_canceled")
     self.tacticalinsertion destroy_tactical_insertion();
 
-  if(isdefined(text))
+  if(isDefined(text))
     text destroy();
 }
 
@@ -281,7 +281,7 @@ cancel_button_press() {
   self endon("end_killcam");
   self endon("abort_killcam");
 
-  while (true) {
+  while(true) {
     wait 0.05;
 
     if(self canceltackinsertionbutton()) {
@@ -320,7 +320,7 @@ gettacticalinsertions() {
   tac_inserts = [];
 
   foreach(player in level.players) {
-    if(isdefined(player.tacticalinsertion))
+    if(isDefined(player.tacticalinsertion))
       tac_inserts[tac_inserts.size] = player.tacticalinsertion;
   }
 
@@ -330,14 +330,14 @@ gettacticalinsertions() {
 tacticalinsertiondestroyedbytrophysystem(attacker, trophysystem) {
   owner = self.owner;
 
-  if(isdefined(attacker)) {
+  if(isDefined(attacker)) {
     attacker maps\mp\_challenges::destroyedequipment(trophysystem.name);
     attacker maps\mp\_challenges::destroyedtacticalinsert();
   }
 
   self thread fizzle();
 
-  if(isdefined(owner)) {
+  if(isDefined(owner)) {
     owner endon("death");
     owner endon("disconnect");
     wait 0.05;

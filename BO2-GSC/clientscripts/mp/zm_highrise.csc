@@ -46,11 +46,11 @@ main() {
   zombe_gametype_premain();
   claymores = getstructarray("claymore_purchase", "targetname");
 
-  if(isdefined(claymores)) {
+  if(isDefined(claymores)) {
     foreach(struct in claymores) {
       weapon_model = getstruct(struct.target, "targetname");
 
-      if(isdefined(weapon_model))
+      if(isDefined(weapon_model))
         weapon_model.script_vector = vectorscale((0, -1, 0), 90.0);
     }
   }
@@ -99,11 +99,9 @@ start_zombie_stuff() {
 }
 
 init_clientflag_variables() {
-
 }
 
 register_clientflag_callbacks() {
-
 }
 
 include_weapons() {
@@ -201,7 +199,7 @@ highrise_watch_for_power() {
   if(is_true(level.createfx_enabled)) {
     return;
   }
-  for (looped_once = 0; 1; looped_once = 1) {
+  for(looped_once = 0; 1; looped_once = 1) {
     if(!level getclientfield("zombie_power_on")) {
       level.power_on = 0;
 
@@ -219,7 +217,7 @@ highrise_watch_for_power() {
     fog_vol_to_visionset_set_suffix("_on");
     players = getlocalplayers();
 
-    for (i = 0; i < players.size; i++) {
+    for(i = 0; i < players.size; i++) {
       level.current_fog = 2;
       setworldfogactivebank(i, level.current_fog);
     }

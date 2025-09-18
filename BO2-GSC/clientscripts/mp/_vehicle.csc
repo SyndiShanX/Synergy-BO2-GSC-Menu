@@ -20,42 +20,42 @@ init_vehicles() {
 vehicle_rumble(localclientnum) {
   self endon("entityshutdown");
 
-  if(!isdefined(level.vehicle_rumble)) {
+  if(!isDefined(level.vehicle_rumble)) {
     return;
   }
   type = self.vehicletype;
 
-  if(!isdefined(level.vehicle_rumble[type])) {
+  if(!isDefined(level.vehicle_rumble[type])) {
     return;
   }
   rumblestruct = level.vehicle_rumble[type];
   height = rumblestruct.radius * 2;
   zoffset = -1 * rumblestruct.radius;
 
-  if(!isdefined(self.rumbleon))
+  if(!isDefined(self.rumbleon))
     self.rumbleon = 1;
 
-  if(isdefined(rumblestruct.scale))
+  if(isDefined(rumblestruct.scale))
     self.rumble_scale = rumblestruct.scale;
   else
     self.rumble_scale = 0.15;
 
-  if(isdefined(rumblestruct.duration))
+  if(isDefined(rumblestruct.duration))
     self.rumble_duration = rumblestruct.duration;
   else
     self.rumble_duration = 4.5;
 
-  if(isdefined(rumblestruct.radius))
+  if(isDefined(rumblestruct.radius))
     self.rumble_radius = rumblestruct.radius;
   else
     self.rumble_radius = 600;
 
-  if(isdefined(rumblestruct.basetime))
+  if(isDefined(rumblestruct.basetime))
     self.rumble_basetime = rumblestruct.basetime;
   else
     self.rumble_basetime = 1;
 
-  if(isdefined(rumblestruct.randomaditionaltime))
+  if(isDefined(rumblestruct.randomaditionaltime))
     self.rumble_randomaditionaltime = rumblestruct.randomaditionaltime;
   else
     self.rumble_randomaditionaltime = 1;
@@ -63,20 +63,20 @@ vehicle_rumble(localclientnum) {
   self.player_touching = 0;
   radius_squared = rumblestruct.radius * rumblestruct.radius;
 
-  while (true) {
+  while(true) {
     if(distancesquared(self.origin, level.localplayers[localclientnum].origin) > radius_squared || self getspeed() < 35) {
       wait 0.2;
       continue;
     }
 
-    if(isdefined(self.rumbleon) && !self.rumbleon) {
+    if(isDefined(self.rumbleon) && !self.rumbleon) {
       wait 0.2;
       continue;
     }
 
     self playrumblelooponentity(localclientnum, level.vehicle_rumble[type].rumble);
 
-    while (distancesquared(self.origin, level.localplayers[localclientnum].origin) < radius_squared && self getspeed() > 5)
+    while(distancesquared(self.origin, level.localplayers[localclientnum].origin) < radius_squared && self getspeed() > 5)
       wait(self.rumble_basetime + randomfloat(self.rumble_randomaditionaltime));
 
     self stoprumble(localclientnum, level.vehicle_rumble[type].rumble);
@@ -84,10 +84,10 @@ vehicle_rumble(localclientnum) {
 }
 
 vehicle_treads(localclientnum) {
-  if(!isdefined(self.treadfx))
+  if(!isDefined(self.treadfx))
     self.treadfx = [];
 
-  if(!isdefined(level.vehicles_inited)) {
+  if(!isDefined(level.vehicles_inited)) {
     return;
   }
   self thread tread(localclientnum, "tag_wheel_back_left", "back_left");
@@ -107,7 +107,7 @@ tread(localclientnum, tagname, side, relativeoffset) {
   if(treadfx == -1) {
     return;
   }
-  for (;;) {
+  for(;;) {
     speed = self getspeed();
 
     if(speed < 25) {
@@ -140,15 +140,16 @@ tread(localclientnum, tagname, side, relativeoffset) {
 treadget(vehicle, side) {
   surface = self getwheelsurface(side);
 
-  if(!isdefined(vehicle.treadfx)) {
+  if(!isDefined(vehicle.treadfx)) {
     println("clientside treadfx not setup for vehicle type: ", vehicle.vehicletype);
+
     wait 10;
     return -1;
   }
 
   treadfx = vehicle.treadfx[surface];
 
-  if(!isdefined(treadfx))
+  if(!isDefined(treadfx))
     treadfx = -1;
 
   return treadfx;
@@ -160,11 +161,12 @@ playtankexhaust(localclientnum) {
   level endon("stop_exhaust_fx");
   exhaustdelay = 0.1;
 
-  for (;;) {
-    if(!isdefined(self) || !self isalive())
+  for(;;) {
+    if(!isDefined(self) || !self isalive())
       return;
-    else if(!isdefined(level.vehicle_exhaust) || !isdefined(level.vehicle_exhaust[self.model])) {
+    else if(!isDefined(level.vehicle_exhaust) || !isDefined(level.vehicle_exhaust[self.model])) {
       println("clientside exhaustfx not set up for vehicle model: " + self.model);
+
       return;
     }
 
@@ -188,13 +190,13 @@ playtankexhaust(localclientnum) {
 build_exhaust(model, effect, one_exhaust) {
   println("building exhaust for " + model);
 
-  if(!isdefined(level.vehicle_exhaust))
+  if(!isDefined(level.vehicle_exhaust))
     level.vehicle_exhaust = [];
 
   level.vehicle_exhaust[model] = spawnstruct();
   level.vehicle_exhaust[model].exhaust_fx = loadfx(effect);
 
-  if(isdefined(one_exhaust) && one_exhaust)
+  if(isDefined(one_exhaust) && one_exhaust)
     level.vehicle_exhaust[model].one_exhaust = 1;
   else
     level.vehicle_exhaust[model].one_exhaust = 0;
@@ -203,8 +205,8 @@ build_exhaust(model, effect, one_exhaust) {
 build_gear(vehicletype, model, tag) {
   index = 0;
 
-  if(isdefined(level.vehiclegearmodels)) {
-    if(isdefined(level.vehiclegearmodels[vehicletype]))
+  if(isDefined(level.vehiclegearmodels)) {
+    if(isDefined(level.vehiclegearmodels[vehicletype]))
       index = level.vehiclegearmodels[vehicletype].size;
   }
 
@@ -218,10 +220,10 @@ build_quake(scale, duration, radius, basetime, randomaditionaltime) {
   struct.duration = duration;
   struct.radius = radius;
 
-  if(isdefined(basetime))
+  if(isDefined(basetime))
     struct.basetime = basetime;
 
-  if(isdefined(randomaditionaltime))
+  if(isDefined(randomaditionaltime))
     struct.randomaditionaltime = randomaditionaltime;
 
   return struct;
@@ -230,11 +232,11 @@ build_quake(scale, duration, radius, basetime, randomaditionaltime) {
 build_rumble(type, rumble, scale, duration, radius, basetime, randomaditionaltime) {
   println("*** Client : Building rumble for " + type);
 
-  if(!isdefined(level.vehicle_rumble))
+  if(!isDefined(level.vehicle_rumble))
     level.vehicle_rumble = [];
 
   struct = build_quake(scale, duration, radius, basetime, randomaditionaltime);
-  assert(isdefined(rumble));
+  assert(isDefined(rumble));
   struct.rumble = precacherumble(rumble);
   level.vehicle_rumble[type] = struct;
 }
@@ -242,14 +244,13 @@ build_rumble(type, rumble, scale, duration, radius, basetime, randomaditionaltim
 set_static_amount(staticamount) {
   driverlocalclient = self getlocalclientdriver();
 
-  if(isdefined(driverlocalclient)) {
+  if(isDefined(driverlocalclient)) {
     driver = getlocalplayer(driverlocalclient);
 
-    if(isdefined(driver))
+    if(isDefined(driver))
       driver set_filter_pass_constant(4, 0, 1, staticamount);
   }
 }
 
 vehicle_variants(localclientnum) {
-
 }

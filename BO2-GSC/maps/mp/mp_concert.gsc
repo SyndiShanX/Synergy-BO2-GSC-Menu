@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\mp_concert.gsc
-***************************************/
+**************************************/
 
 #include maps\mp\_utility;
 #include maps\mp\mp_concert_fx;
@@ -57,7 +57,7 @@ water_trigger_init() {
 }
 
 player_splash_think() {
-  for (;;) {
+  for(;;) {
     self waittill("trigger", entity);
 
     if(isplayer(entity) && isalive(entity))
@@ -76,7 +76,7 @@ player_water_fx(player, endon_condition) {
 }
 
 water_trigger_think() {
-  for (;;) {
+  for(;;) {
     self waittill("trigger", entity);
 
     if(isplayer(entity)) {

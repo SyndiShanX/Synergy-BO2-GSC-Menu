@@ -62,7 +62,7 @@ sq_buried_clientfield_init() {
   registerclientfield("world", "buried_sq_bp_light_08", 13000, 2, "int", ::sq_bp_tag08, 0);
   registerclientfield("world", "buried_sq_bp_light_09", 13000, 2, "int", ::sq_bp_tag09, 0);
 
-  if(!isdefined(level.gamedifficulty) || level.gamedifficulty != 0)
+  if(!isDefined(level.gamedifficulty) || level.gamedifficulty != 0)
     clientscripts\mp\_visionset_mgr::vsmgr_register_visionset_info("cheat_bw", 12000, 1, "cheat_bw", "cheat_bw");
 }
 
@@ -75,18 +75,18 @@ sq_wisp_fx_think() {
 }
 
 wisp_fx_enable(localclientnumber) {
-  if(isdefined(level.perk_vulture.vulture_vision.custom["wisp"]))
+  if(isDefined(level.perk_vulture.vulture_vision.custom["wisp"]))
     level.perk_vulture.vulture_vision.custom["wisp"] _enable_wisp_fx(localclientnumber);
 }
 
 wisp_fx_disable(localclientnumber) {
-  if(isdefined(level.perk_vulture.vulture_vision.custom["wisp"]) && isdefined(level.perk_vulture.vulture_vision.custom["wisp"].vulture_fx) && isdefined(level.perk_vulture.vulture_vision.custom["wisp"].vulture_fx[localclientnumber]))
+  if(isDefined(level.perk_vulture.vulture_vision.custom["wisp"]) && isDefined(level.perk_vulture.vulture_vision.custom["wisp"].vulture_fx) && isDefined(level.perk_vulture.vulture_vision.custom["wisp"].vulture_fx[localclientnumber]))
     deletefx(localclientnumber, level.perk_vulture.vulture_vision.custom["wisp"].vulture_fx[localclientnumber], 1);
 }
 
 toggle_wisp_fx(localclientnumber, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump) {
   if(newval) {
-    if(!isdefined(level.perk_vulture.vulture_vision.custom["wisp"]))
+    if(!isDefined(level.perk_vulture.vulture_vision.custom["wisp"]))
       level.perk_vulture.vulture_vision.custom["wisp"] = self;
 
     self _enable_wisp_fx(localclientnumber);
@@ -97,7 +97,7 @@ toggle_wisp_fx(localclientnumber, oldval, newval, bnewent, binitialsnap, fieldna
 }
 
 amplifer_shader_cb(localclientnumber, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump) {
-  if(!isdefined(self.mapped_const)) {
+  if(!isDefined(self.mapped_const)) {
     self mapshaderconstant(localclientnumber, 0, "ScriptVector0");
     self.mapped_const = 1;
   }
@@ -116,10 +116,10 @@ _enable_wisp_fx(localclientnumber) {
   level endon("sq_stop_wisp");
   self endon("entityshutdown");
 
-  if(!isdefined(self.vulture_fx))
+  if(!isDefined(self.vulture_fx))
     self.vulture_fx = [];
 
-  if(!isdefined(self.m_client)) {
+  if(!isDefined(self.m_client)) {
     self.m_client = spawn(localclientnumber, self.origin, "script_model");
     self.m_client setmodel(self.model);
     self.m_client linkto(self);
@@ -130,12 +130,12 @@ _enable_wisp_fx(localclientnumber) {
   self.m_client setflaggedanim("buried_fxanim", level.scr_anim["fxanim_props"]["sq_orbs"], 1.0, 0.0, 1.0);
   self.m_client playloopsound("zmb_sq_wisp_loop_guillotine");
 
-  while (isdefined(self)) {
+  while(isDefined(self)) {
     if(clientscripts\mp\zombies\_zm_perk_vulture::_player_has_vulture(localclientnumber)) {
       if(!level.sq_wisp_at_tower)
         playfxontag(localclientnumber, level._effect["vulture_fx_wisp"], self, "tag_origin");
 
-      for (i = 1; i <= level.sq_wisp_orb_count; i++)
+      for(i = 1; i <= level.sq_wisp_orb_count; i++)
         playfxontag(localclientnumber, level._effect["vulture_fx_wisp_orb"], self.m_client, "tag_orb_fx" + i);
     }
 
@@ -146,7 +146,7 @@ _enable_wisp_fx(localclientnumber) {
 cleanup_m_client(owner) {
   self endon("entityshutdown");
 
-  while (isdefined(owner))
+  while(isDefined(owner))
     wait 0.1;
 
   self delete();
@@ -155,7 +155,7 @@ cleanup_m_client(owner) {
 _disable_wisp_fx(localclientnumber) {
   level notify("sq_stop_wisp");
 
-  if(isdefined(self.m_client))
+  if(isDefined(self.m_client))
     self.m_client stoploopsound(0.5);
 }
 
@@ -167,7 +167,7 @@ toggle_sq_special_round(localclientnumber, oldval, newval, bnewent, binitialsnap
 }
 
 sq_setup_player_connect(clientnum) {
-  if(isdefined(level.gamedifficulty) && level.gamedifficulty == 0) {
+  if(isDefined(level.gamedifficulty) && level.gamedifficulty == 0) {
     return;
   }
   a_button_structs = getstructarray("sq_bp_button", "targetname");
@@ -177,7 +177,7 @@ sq_setup_player_connect(clientnum) {
 }
 
 sq_bp_spawn_button(clientnum) {
-  if(!isdefined(self.angles))
+  if(!isDefined(self.angles))
     self.angles = (0, 0, 0);
 
   m_button = spawn(clientnum, self.origin, "script_model");
@@ -190,7 +190,7 @@ sq_bp_spawn_button(clientnum) {
 sq_spawn_model_at_struct(clientnum, str_struct, str_model) {
   s_struct = getstruct(str_struct, "targetname");
 
-  if(!isdefined(s_struct))
+  if(!isDefined(s_struct))
     return undefined;
 
   m_prop = spawn(clientnum, s_struct.origin, "script_model");
@@ -206,7 +206,7 @@ sq_gallows_light_tubes(localclientnum, oldval, newval, bnewent, binitialsnap, fi
   if(bwasdemojump)
     i = 0;
 
-  while (i < newval) {
+  while(i < newval) {
     thread ctw_light_tube_think(localclientnum, i + 1);
     i++;
   }
@@ -215,14 +215,14 @@ sq_gallows_light_tubes(localclientnum, oldval, newval, bnewent, binitialsnap, fi
 ctw_light_tube_think(clientnum, newval) {
   m_gallows = getent(clientnum, "sq_gallows", "targetname");
 
-  while (!isdefined(m_gallows)) {
+  while(!isDefined(m_gallows)) {
     m_gallows = getent(clientnum, "sq_gallows", "targetname");
     wait 0.5;
   }
 
   str_tag = "j_vaccume_0" + newval;
 
-  while (true) {
+  while(true) {
     playfx(clientnum, level._effect["fx_wisp_m"], m_gallows gettagorigin(str_tag));
     waitrealtime(0.5);
     m_gallows playloopsound("zmb_sq_wisp_loop");
@@ -252,7 +252,7 @@ sq_gallows_build_wire_spool(localclientnum, oldval, newval, bnewent, binitialsna
 build_tower_think(clientnum, event) {
   m_tower = getent(clientnum, "sq_gallows", "targetname");
 
-  while (!isdefined(m_tower)) {
+  while(!isDefined(m_tower)) {
     m_tower = getent(clientnum, "sq_gallows", "targetname");
     wait 0.5;
   }
@@ -297,11 +297,11 @@ sq_endgamemachine_animate(localclientnum, oldval, newval, bnewent, binitialsnap,
 sq_endgamemachine_toggle_light(localclientnum, fxbit, tag) {
   endgamemachine = getent(localclientnum, "sq_endgame_machine", "targetname");
 
-  if(!isdefined(endgamemachine._lights))
+  if(!isDefined(endgamemachine._lights))
     endgamemachine._lights = [];
 
   if(fxbit == 0) {
-    if(isdefined(endgamemachine._lights[tag]))
+    if(isDefined(endgamemachine._lights[tag]))
       deletefx(localclientnum, endgamemachine._lights[tag]);
 
     return;
@@ -379,14 +379,14 @@ sq_endgamemachine_3_2(localclientnum, oldval, newval, bnewent, binitialsnap, fie
 }
 
 sq_bp_toggle_light(localclientnum, fxbit, tag) {
-  if(!isdefined(level.m_lightboard._lights)) {
+  if(!isDefined(level.m_lightboard._lights)) {
     level.m_lightboard._lights = [];
 
-    if(!isdefined(level.m_lightboard._lights[tag]))
+    if(!isDefined(level.m_lightboard._lights[tag]))
       level.m_lightboard._lights[tag] = [];
   }
 
-  if(isdefined(level.m_lightboard._lights[tag]) && isdefined(level.m_lightboard._lights[tag][localclientnum]))
+  if(isDefined(level.m_lightboard._lights[tag]) && isDefined(level.m_lightboard._lights[tag][localclientnum]))
     deletefx(localclientnum, level.m_lightboard._lights[tag][localclientnum]);
 
   if(fxbit == 0) {
@@ -457,10 +457,10 @@ run_richtofen_earthquake_and_rumble(localclientnumber) {
   foreach(player in a_players)
   player earthquake(0.5, 12, player.origin, 99999);
 
-  for (i = 0; i < 9; i = i + 0.25) {
+  for(i = 0; i < 9; i = i + 0.25) {
     a_players = getlocalplayers();
 
-    for (j = 0; j < a_players.size; j++) {
+    for(j = 0; j < a_players.size; j++) {
       str_rumble = random(a_rumbles);
       a_players[j] playrumbleonentity(a_players[j] getlocalclientnumber(), "grenade_rumble");
     }
@@ -486,7 +486,7 @@ run_maxis_earthquake_and_rumble(localclientnumber) {
   self endon("maxis_ending_done");
   a_rumbles = get_rumble_array();
 
-  while (true) {
+  while(true) {
     str_rumble = random(a_rumbles);
     wait(randomfloatrange(3.0, 7.0));
     size = randomfloatrange(0.2, 0.4);
@@ -504,7 +504,7 @@ run_maxis_earthquake_and_rumble(localclientnumber) {
 }
 
 set_zombie_eyeball_color(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump) {
-  if(isdefined(self)) {
+  if(isDefined(self)) {
     if(newval) {
       self.zombie_eyeball_color_override = 0;
       self._eyeglow_fx_override = level._effect["blue_eyes"];

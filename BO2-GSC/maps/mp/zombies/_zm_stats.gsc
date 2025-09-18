@@ -187,10 +187,10 @@ player_stats_init() {
   self incrementplayerstat("score", self.score);
   self maps\mp\gametypes_zm\_globallogic_score::initpersstat("zteam", 0);
 
-  if(isdefined(level.level_specific_stats_init))
+  if(isDefined(level.level_specific_stats_init))
     [[level.level_specific_stats_init]]();
 
-  if(!isdefined(self.stats_this_frame)) {
+  if(!isDefined(self.stats_this_frame)) {
     self.pers_upgrade_force_test = 1;
     self.stats_this_frame = [];
     self.pers_upgrades_awarded = [];
@@ -208,7 +208,7 @@ update_players_stats_at_match_end(players) {
   if(map_location_name == "")
     map_location_name = "default";
 
-  if(isdefined(level.gamemodulewinningteam)) {
+  if(isDefined(level.gamemodulewinningteam)) {
     if(level.gamemodulewinningteam == "B")
       matchrecorderincrementheaderstat("winningTeam", 1);
     else if(level.gamemodulewinningteam == "A")
@@ -218,7 +218,7 @@ update_players_stats_at_match_end(players) {
   recordmatchsummaryzombieendgamedata(game_mode, game_mode_group, map_location_name, level.round_number);
   newtime = gettime();
 
-  for (i = 0; i < players.size; i++) {
+  for(i = 0; i < players.size; i++) {
     player = players[i];
 
     if(player is_bot()) {
@@ -231,7 +231,7 @@ update_players_stats_at_match_end(players) {
     recordplayerstats(player, "presentAtEnd", 1);
     player maps\mp\zombies\_zm_weapons::updateweapontimingszm(newtime);
 
-    if(isdefined(level._game_module_stat_update_func))
+    if(isDefined(level._game_module_stat_update_func))
       player[[level._game_module_stat_update_func]]();
 
     old_high_score = player get_game_mode_stat(game_mode, "score");
@@ -242,11 +242,11 @@ update_players_stats_at_match_end(players) {
     if(gamemodeismode(level.gamemode_public_match)) {
       player gamehistoryfinishmatch(4, 0, 0, 0, 0, 0);
 
-      if(isdefined(player.pers["matchesPlayedStatsTracked"])) {
+      if(isDefined(player.pers["matchesPlayedStatsTracked"])) {
         gamemode = maps\mp\gametypes_zm\_globallogic::getcurrentgamemode();
         player maps\mp\gametypes_zm\_globallogic::incrementmatchcompletionstat(gamemode, "played", "completed");
 
-        if(isdefined(player.pers["matchesHostedStatsTracked"])) {
+        if(isDefined(player.pers["matchesHostedStatsTracked"])) {
           player maps\mp\gametypes_zm\_globallogic::incrementmatchcompletionstat(gamemode, "hosted", "completed");
           player.pers["matchesHostedStatsTracked"] = undefined;
         }
@@ -255,7 +255,7 @@ update_players_stats_at_match_end(players) {
       }
     }
 
-    if(!isdefined(player.pers["previous_distance_traveled"]))
+    if(!isDefined(player.pers["previous_distance_traveled"]))
       player.pers["previous_distance_traveled"] = 0;
 
     distancethisround = int(player.pers["distance_traveled"] - player.pers["previous_distance_traveled"]);
@@ -272,14 +272,14 @@ update_playing_utc_time(matchendutctime) {
   timestamp_name = "";
 
   if(diff_days > 0) {
-    for (i = 5; i > diff_days; i--) {
+    for(i = 5; i > diff_days; i--) {
       timestamp_name = "TIMESTAMPLASTDAY" + (i - diff_days);
       timestamp_name_to = "TIMESTAMPLASTDAY" + i;
       timestamp_value = self get_global_stat(timestamp_name);
       self set_global_stat(timestamp_name_to, timestamp_value);
     }
 
-    for (i = 2; i <= diff_days && i < 6; i++) {
+    for(i = 2; i <= diff_days && i < 6; i++) {
       timestamp_name = "TIMESTAMPLASTDAY" + i;
       self set_global_stat(timestamp_name, 0);
     }
@@ -289,11 +289,9 @@ update_playing_utc_time(matchendutctime) {
 }
 
 survival_classic_custom_stat_update() {
-
 }
 
 grief_custom_stat_update() {
-
 }
 
 add_game_mode_group_stat(game_mode, stat_name, value) {
@@ -351,14 +349,14 @@ add_global_stat(stat_name, value) {
 }
 
 get_map_stat(stat_name, map) {
-  if(!isdefined(map))
+  if(!isDefined(map))
     map = level.script;
 
   return self getdstat("PlayerStatsByMap", map, stat_name);
 }
 
 set_map_stat(stat_name, value, map) {
-  if(!isdefined(map))
+  if(!isDefined(map))
     map = level.script;
 
   if(is_true(level.zm_disable_recording_stats)) {
@@ -368,7 +366,7 @@ set_map_stat(stat_name, value, map) {
 }
 
 add_map_stat(stat_name, value, map) {
-  if(!isdefined(map))
+  if(!isDefined(map))
     map = level.script;
 
   if(is_true(level.zm_disable_recording_stats)) {
@@ -396,27 +394,27 @@ add_location_gametype_stat(start_location, game_type, stat_name, value) {
 }
 
 get_map_weaponlocker_stat(stat_name, map) {
-  if(!isdefined(map))
+  if(!isDefined(map))
     map = level.script;
 
   return self getdstat("PlayerStatsByMap", map, "weaponLocker", stat_name);
 }
 
 set_map_weaponlocker_stat(stat_name, value, map) {
-  if(!isdefined(map))
+  if(!isDefined(map))
     map = level.script;
 
   if(is_true(level.zm_disable_recording_stats)) {
     return;
   }
-  if(isdefined(value))
+  if(isDefined(value))
     self setdstat("PlayerStatsByMap", map, "weaponLocker", stat_name, value);
   else
     self setdstat("PlayerStatsByMap", map, "weaponLocker", stat_name, 0);
 }
 
 add_map_weaponlocker_stat(stat_name, value, map) {
-  if(!isdefined(map))
+  if(!isDefined(map))
     map = level.script;
 
   if(is_true(level.zm_disable_recording_stats)) {
@@ -426,19 +424,19 @@ add_map_weaponlocker_stat(stat_name, value, map) {
 }
 
 has_stored_weapondata(map) {
-  if(!isdefined(map))
+  if(!isDefined(map))
     map = level.script;
 
   storedweapon = self get_map_weaponlocker_stat("name", map);
 
-  if(!isdefined(storedweapon) || isstring(storedweapon) && storedweapon == "" || isint(storedweapon) && storedweapon == 0)
+  if(!isDefined(storedweapon) || isstring(storedweapon) && storedweapon == "" || isint(storedweapon) && storedweapon == 0)
     return false;
 
   return true;
 }
 
 get_stored_weapondata(map) {
-  if(!isdefined(map))
+  if(!isDefined(map))
     map = level.script;
 
   if(self has_stored_weapondata(map)) {
@@ -456,7 +454,7 @@ get_stored_weapondata(map) {
 }
 
 clear_stored_weapondata(map) {
-  if(!isdefined(map))
+  if(!isDefined(map))
     map = level.script;
 
   self set_map_weaponlocker_stat("name", "", map);
@@ -468,7 +466,7 @@ clear_stored_weapondata(map) {
 }
 
 set_stored_weapondata(weapondata, map) {
-  if(!isdefined(map))
+  if(!isDefined(map))
     map = level.script;
 
   self set_map_weaponlocker_stat("name", weapondata["name"], map);
@@ -483,7 +481,7 @@ add_client_stat(stat_name, stat_value, include_gametype) {
   if(getdvar(#"ui_zm_mapstartlocation") == "" || is_true(level.zm_disable_recording_stats)) {
     return;
   }
-  if(!isdefined(include_gametype))
+  if(!isDefined(include_gametype))
     include_gametype = 1;
 
   self maps\mp\gametypes_zm\_globallogic_score::incpersstat(stat_name, stat_value, 0, include_gametype);
@@ -906,7 +904,7 @@ get_specific_stat(stat_category, stat_name) {
 }
 
 do_stats_for_gibs(zombie, limb_tags_array) {
-  if(isdefined(zombie) && isdefined(zombie.attacker) && isplayer(zombie.attacker)) {
+  if(isDefined(zombie) && isDefined(zombie.attacker) && isplayer(zombie.attacker)) {
     foreach(limb in limb_tags_array) {
       stat_name = undefined;
 
@@ -921,7 +919,7 @@ do_stats_for_gibs(zombie, limb_tags_array) {
       else if(limb == level._zombie_gib_piece_index_head)
         stat_name = "head_gibs";
 
-      if(!isdefined(stat_name)) {
+      if(!isDefined(stat_name)) {
         continue;
       }
       zombie.attacker increment_client_stat(stat_name, 0);
@@ -940,8 +938,9 @@ initializematchstats() {
 }
 
 adjustrecentstats() {
-  if(getdvarint(#"scr_writeConfigStrings") == 1 || getdvarint(#"scr_hostmigrationtest") == 1)
+  if(getdvarint(#"scr_writeConfigStrings") == 1 || getdvarint(#"scr_hostmigrationtest") == 1) {
     return;
+  }
   initializematchstats();
 }
 

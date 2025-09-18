@@ -39,13 +39,12 @@ stage_logic() {
 }
 
 exit_stage(success) {
-
 }
 
 stage_vo_max() {
   level endon("sq_wisp_failed");
 
-  while (!isdefined(level.vh_wisp))
+  while(!isDefined(level.vh_wisp))
     wait 1;
 
   level.vh_wisp endon("delete");
@@ -71,7 +70,7 @@ wisp_move_from_sign_to_start(s_start) {
 }
 
 ctw_ric_start_wisp() {
-  if(!isdefined(level.m_sq_start_sign)) {
+  if(!isDefined(level.m_sq_start_sign)) {
     return;
   }
   s_start = getstruct(level.m_sq_start_sign.target, "targetname");
@@ -93,7 +92,7 @@ ctw_ric_move_wisp(s_current) {
     ctw_ric_watch_wisp_dist();
     s_current = ctw_ric_get_next_wisp_struct(s_current);
   }
-  while (isdefined(s_current));
+  while(isDefined(s_current));
 
   self endon("ctw_wisp_moved");
   self ctw_ric_power_towers();
@@ -101,7 +100,7 @@ ctw_ric_move_wisp(s_current) {
 }
 
 ctw_ric_get_next_wisp_struct(s_current) {
-  if(!isdefined(s_current.target))
+  if(!isDefined(s_current.target))
     return undefined;
 
   a_structs = getstructarray(s_current.target, "targetname");
@@ -120,7 +119,7 @@ ctw_ric_watch_wisp_dist(s_current) {
   self endon("ctw_wisp_timeout");
   is_near_wisp = 0;
 
-  while (!is_near_wisp) {
+  while(!is_near_wisp) {
     players = getplayers();
 
     foreach(player in players) {
@@ -147,10 +146,10 @@ ctw_ric_power_towers() {
   self.origin = m_tower gettagorigin("j_crystal_01");
   m_tower thread ctw_ric_guillotine_glow(v_guillotine_spot);
 
-  for (i = 0; i < 5; i++) {
+  for(i = 0; i < 5; i++) {
     wait 3;
 
-    for (e_powered_zombie = undefined; !isdefined(e_powered_zombie); e_powered_zombie = array_randomize(a_zombies)[0]) {
+    for(e_powered_zombie = undefined; !isDefined(e_powered_zombie); e_powered_zombie = array_randomize(a_zombies)[0]) {
       wait 1;
       a_zombies = ctw_find_zombies_for_powerup(self.origin, 512, m_tower);
     }
@@ -166,12 +165,12 @@ ctw_ric_power_towers() {
 ctw_ric_guillotine_glow(v_spot) {
   level endon("stop_ctw_ric_guillotine_glow");
 
-  if(!isdefined(self.m_glow)) {
+  if(!isDefined(self.m_glow)) {
     self.m_glow = spawn("script_model", v_spot);
     self.m_glow setmodel("tag_origin");
   }
 
-  while (true) {
+  while(true) {
     playfxontag(level._effect["vulture_fx_wisp"], self.m_glow, "tag_origin");
     wait 0.25;
     self.m_glow playloopsound("zmb_sq_wisp_loop_guillotine");
@@ -185,7 +184,7 @@ ctw_power_up_ric_zombie(m_wisp) {
     v_move_spot = m_wisp.origin + v_to_zombie * 32;
     m_wisp.origin = v_move_spot;
   }
-  while (distancesquared(m_wisp.origin, self gettagorigin("J_SpineLower")) > 1024);
+  while(distancesquared(m_wisp.origin, self gettagorigin("J_SpineLower")) > 1024);
 
   self ctw_power_up_zombie();
 }
@@ -200,7 +199,7 @@ ctw_return_wisp_to_guillotine(v_spot, v_start) {
     v_move_spot = self.m_glow.origin + v_to_tower * 32;
     self.m_glow.origin = v_move_spot;
   }
-  while (distancesquared(self.m_glow.origin, v_spot) > 1024);
+  while(distancesquared(self.m_glow.origin, v_spot) > 1024);
 
   self.m_glow.origin = v_spot;
 }
@@ -230,14 +229,14 @@ ctw_max_start_wisp() {
   vh_wisp clearvehgoalpos();
   vh_wisp delete();
 
-  if(isdefined(level.vh_wisp))
+  if(isDefined(level.vh_wisp))
     level.vh_wisp delete();
 }
 
 ctw_max_wisp_play_fx() {
   self playloopsound("zmb_sq_wisp_loop");
 
-  while (isdefined(self)) {
+  while(isDefined(self)) {
     playfxontag(level._effect["fx_wisp_m"], self, "tag_origin");
 
     if(!flag("sq_m_wisp_weak"))
@@ -250,7 +249,9 @@ ctw_max_wisp_play_fx() {
 ctw_max_success_watch() {
   self endon("death");
   self waittill("reached_end_node");
+
   iprintlnbold("Wisp Success!");
+
   flag_set("sq_wisp_success");
   level thread ctw_light_tube();
 }
@@ -271,6 +272,7 @@ ctw_max_fail_watch() {
     foreach(player in a_players) {
       if(distancesquared(self.origin, player.origin) < 16384) {
         iprintlnbold("Too Close to Wisp");
+
       }
     }
 
@@ -291,8 +293,9 @@ ctw_max_fail_watch() {
       flag_clear("sq_m_wisp_weak");
 
     iprintlnbold(self.n_sq_energy);
+
   }
-  while (n_starter_dist < 262144);
+  while(n_starter_dist < 262144);
 
   level thread ctw_max_fail_vo();
   flag_set("sq_wisp_failed");
@@ -305,7 +308,7 @@ ctw_max_fail_vo() {
 ctw_max_wisp_enery_watch() {
   self endon("death");
 
-  while (true) {
+  while(true) {
     if(self.n_sq_energy <= 0)
       flag_set("sq_wisp_failed");
 
@@ -316,14 +319,15 @@ ctw_max_wisp_enery_watch() {
 debug_origin() {
   self endon("death");
 
-  while (true) {
+  while(true) {
     debugstar(self.origin, 1, (1, 0, 0));
     wait 0.05;
   }
+
 }
 
 ctw_find_zombies_for_powerup(v_origin, n_radius, m_ignore) {
-  if(!isdefined(m_ignore))
+  if(!isDefined(m_ignore))
     m_ignore = undefined;
 
   a_zombies = getaispeciesarray(level.zombie_team, "zombie");
@@ -331,7 +335,7 @@ ctw_find_zombies_for_powerup(v_origin, n_radius, m_ignore) {
   a_near_zombies = [];
 
   foreach(e_zombie in a_zombies) {
-    if(distancesquared(e_zombie.origin, v_origin) < n_radius_sq && !isdefined(e_zombie.sq_wisp_powered)) {
+    if(distancesquared(e_zombie.origin, v_origin) < n_radius_sq && !isDefined(e_zombie.sq_wisp_powered)) {
       if(sighttracepassed(v_origin, e_zombie gettagorigin("J_SpineLower"), 1, m_ignore))
         a_near_zombies[a_near_zombies.size] = e_zombie;
     }
@@ -368,7 +372,7 @@ ctw_power_up_zombie_m_fx(str_fx) {
   self endon("delete");
   self endon("death");
 
-  while (isdefined(self) && isalive(self)) {
+  while(isDefined(self) && isalive(self)) {
     playfxontag(level._effect[str_fx], self, "J_Wrist_RI");
     wait 0.25;
     playfxontag(level._effect[str_fx], self, "J_Wrist_LE");

@@ -1,7 +1,7 @@
-/******************************************************
+/*******************************************************
  * Decompiled and Edited by SyndiShanX
  * Script: clientscripts\mp\zombies\_zm_afterlife.csc
-******************************************************/
+*******************************************************/
 
 #include clientscripts\mp\_utility;
 #include clientscripts\mp\_filter;
@@ -58,7 +58,7 @@ afterlife_watch_spectator(localclientnum) {
   self.last_camera_mode = "normal";
   self thread track_camera_mode(localclientnum);
 
-  while (true) {
+  while(true) {
     if(self.camera_mode != self.last_camera_mode) {
       switch (self.camera_mode) {
         case "normal":
@@ -84,16 +84,16 @@ track_camera_mode(localclientnum) {
   self endon("entityshutdown");
   self endon("death_or_disconnect");
 
-  while (true) {
+  while(true) {
     if(isdemoplaying() || isspectating(localclientnum)) {
       player = playerbeingspectated(localclientnum);
 
       if(isspectating(localclientnum, 1)) {
-        if(isdefined(player.afterlife) && player.afterlife)
+        if(isDefined(player.afterlife) && player.afterlife)
           self.camera_mode = "spectating_3rd_afterlife";
         else
           self.camera_mode = "normal";
-      } else if(isdefined(player.afterlife) && player.afterlife)
+      } else if(isDefined(player.afterlife) && player.afterlife)
         self.camera_mode = "spectating_1st_afterlife";
       else
         self.camera_mode = "normal";
@@ -108,10 +108,10 @@ afterlife_mana_rumble() {
   self endon("disconnect");
   level endon("end_game");
 
-  while (isdefined(self) && self islocalplayer() && (isdefined(self.afterlife) && self.afterlife)) {
+  while(isDefined(self) && self islocalplayer() && (isDefined(self.afterlife) && self.afterlife)) {
     localclientnum = self getlocalclientnumber();
 
-    if(isdefined(localclientnum)) {
+    if(isDefined(localclientnum)) {
       if(self.mana > 0 && self.mana < 0.4) {
         if(self.mana < 0.1) {
           self playrumbleonentity(localclientnum, "damage_heavy");
@@ -172,7 +172,7 @@ player_afterlife_first_fx(localclientnum) {
   if(isdemoplaying()) {
     return;
   }
-  while (true) {
+  while(true) {
     playviewmodelfx(localclientnum, level._effect["fx_alcatraz_ghost_vm_wrist"], "j_wrist_le");
     playviewmodelfx(localclientnum, level._effect["fx_alcatraz_ghost_vm_wrist_r"], "j_wrist_ri");
     wait 0.1;
@@ -195,7 +195,7 @@ player_afterlife_third_fx(localclientnum) {
   ent playloopsound("zmb_afterlife_ghost_loop");
   self thread snddeleteent(ent);
 
-  while (true) {
+  while(true) {
     playfxontag(localclientnum, level._effect["afterlife_ghost_fx"], self, "J_spine4");
     playfxontag(localclientnum, level._effect["afterlife_ghost_h_fx"], self, "J_head");
     playfxontag(localclientnum, level._effect["afterlife_ghost_arm_fx"], self, "J_elbow_ri");
@@ -217,7 +217,7 @@ player_afterlife_spectator_fx(localclientnum) {
   ent playloopsound("zmb_afterlife_ghost_loop");
   self thread snddeleteent(ent);
 
-  while (true) {
+  while(true) {
     player = playerbeingspectated(localclientnum);
     playfx(localclientnum, level._effect["fx_alcatraz_ghost_spectate"], player.origin + vectorscale((0, 0, 1), 40.0));
     wait 0.05;
@@ -229,7 +229,7 @@ afterlife_damage_fx() {
   self endon("disconnect");
   self endon("stop_damage_fx");
 
-  while (true) {
+  while(true) {
     level waittill("al_d", localclientnum);
     playsound(0, "zmb_afterlife_impact", (0, 0, 0));
     playviewmodelfx(localclientnum, level._effect["afterlife_damage"], "tag_weapon");
@@ -239,7 +239,7 @@ afterlife_damage_fx() {
 afterlife_transition_fx() {
   self endon("disconnect");
 
-  while (true) {
+  while(true) {
     level waittill("al_t", localclientnum);
     playviewmodelfx(localclientnum, level._effect["afterlife_transition"], "tag_weapon");
   }
@@ -274,9 +274,9 @@ sndafterlifeleak(localclientnum) {
   id = undefined;
   wait 2;
 
-  while (isdefined(self) && self islocalplayer() && (isdefined(self.afterlife) && self.afterlife) && !isspectating(localclientnum)) {
-    if(isdefined(self) && self.mana <= 0.5) {
-      if(!isdefined(id)) {
+  while(isDefined(self) && self islocalplayer() && (isDefined(self.afterlife) && self.afterlife) && !isspectating(localclientnum)) {
+    if(isDefined(self) && self.mana <= 0.5) {
+      if(!isDefined(id)) {
         ent = spawn(0, (0, 0, 0), "script_origin");
         id = ent playloopsound("zmb_afterlife_leak", 0.5);
         self thread sndafterlifeleakdelete(ent);

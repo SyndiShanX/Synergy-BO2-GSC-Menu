@@ -83,11 +83,11 @@ splitscreen_optimize() {
   a_players = getlocalplayers();
 
   if(a_players.size > 2) {
-    for (localclientnum = 0; localclientnum < a_players.size; localclientnum++) {
+    for(localclientnum = 0; localclientnum < a_players.size; localclientnum++) {
       a_fxanim = getentarray(localclientnum, "fxanim", "targetname");
 
-      for (i = 0; i < a_fxanim.size; i++) {
-        if(isdefined(a_fxanim[i].script_noteworthy) && a_fxanim[i].script_noteworthy == "no_delete") {
+      for(i = 0; i < a_fxanim.size; i++) {
+        if(isDefined(a_fxanim[i].script_noteworthy) && a_fxanim[i].script_noteworthy == "no_delete") {
           continue;
         }
         if(a_fxanim[i].model == "fxanim_zom_al_chain_short_hook_mod")
@@ -102,7 +102,7 @@ cafeteria_clock() {
   wait 0.5;
   players = getlocalplayers();
 
-  for (localclientnum = 0; localclientnum < players.size; localclientnum++) {
+  for(localclientnum = 0; localclientnum < players.size; localclientnum++) {
     clock = getent(localclientnum, "clock_second_hand", "targetname");
     clock thread cafeteria_clock_tick();
   }
@@ -112,7 +112,7 @@ cafeteria_clock_tick() {
   self rotatepitch(200, 0.05);
   self waittill("rotatedone");
 
-  while (true) {
+  while(true) {
     self rotatepitch(50, 5);
     self waittill("rotatedone");
     self rotatepitch(-50, 0.05);
@@ -125,7 +125,7 @@ golden_gate_lighthouse() {
   wait 0.5;
   players = getlocalplayers();
 
-  for (localclientnum = 0; localclientnum < players.size; localclientnum++) {
+  for(localclientnum = 0; localclientnum < players.size; localclientnum++) {
     m_light_house_fx = spawn(localclientnum, (-1848, 9006, 2467), "script_model");
     m_light_house_fx setmodel("tag_origin");
     m_light_house_fx.angles = (0, 0, 0);
@@ -137,7 +137,7 @@ golden_gate_lighthouse() {
 golden_gate_lighthouse_rotate() {
   self endon("entity_shutdown");
 
-  while (true) {
+  while(true) {
     self rotateyaw(360, 25);
     self waittill("rotatedone");
   }
@@ -264,7 +264,7 @@ include_weapons() {
   include_weapon("blundersplat_zm", 0);
   include_weapon("blundersplat_upgraded_zm", 0);
 
-  if(isdefined(level.raygun2_included) && level.raygun2_included && !isdemoplaying()) {
+  if(isDefined(level.raygun2_included) && level.raygun2_included && !isdemoplaying()) {
     include_weapon("raygun_mark2_zm", hasdlcavailable("dlc3"));
     include_weapon("raygun_mark2_upgraded_zm", 0);
   }
@@ -283,8 +283,9 @@ include_equipment_for_level() {
 }
 
 entityspawned_alcatraz(localclientnum) {
-  if(!isdefined(self.type)) {
+  if(!isDefined(self.type)) {
     println("Entity type undefined!");
+
     return;
   }
 
@@ -440,18 +441,18 @@ setup_personality_character_exerts() {
 toggle_player_lightning(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump) {
   self waittill_dobj(localclientnum);
 
-  if(!isdefined(self.b_lightning))
+  if(!isDefined(self.b_lightning))
     self.b_lightning = 0;
 
   if(newval == 1) {
-    if(isdefined(self.b_lightning) && !self.b_lightning)
+    if(isDefined(self.b_lightning) && !self.b_lightning)
       self thread player_lightning(localclientnum);
   } else
     self.b_lightning = 0;
 }
 
 toggle_futz_on_world(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump) {
-  if(!isdefined(level.sndsqfinalent))
+  if(!isDefined(level.sndsqfinalent))
     level.sndsqfinalent = spawn(0, (0, 0, 0), "script_origin");
 
   if(newval == 1) {
@@ -469,15 +470,15 @@ dryer_stage_notifies(localclientnum, oldval, newval, bnewent, binitialsnap, fiel
   m_dryer_prop = undefined;
   fxanim_props = getentarray(localclientnum, "fxanim", "targetname");
 
-  for (i = 0; i < fxanim_props.size; i++) {
-    if(isdefined(fxanim_props[i].fxanim_waittill_1)) {
+  for(i = 0; i < fxanim_props.size; i++) {
+    if(isDefined(fxanim_props[i].fxanim_waittill_1)) {
       if(fxanim_props[i].fxanim_scene_1 == "dryer_start")
         m_dryer_prop = fxanim_props[i];
     }
   }
 
-  if(isdefined(m_dryer_prop)) {
-    if(isdefined(level.dryer_light))
+  if(isDefined(m_dryer_prop)) {
+    if(isDefined(level.dryer_light))
       stopfx(localclientnum, level.dryer_light);
 
     switch (newval) {
@@ -516,7 +517,7 @@ flicker_in_and_out(localclientnum) {
   level endon("demo_jump");
   s_timer = new_timer(localclientnum);
 
-  while (true) {
+  while(true) {
     serverwait(localclientnum, randomfloatrange(0.5, 2.0));
     n_phase_in = randomfloatrange(0.1, 0.3);
 
@@ -526,7 +527,7 @@ flicker_in_and_out(localclientnum) {
       n_delta_val = lerpfloat(0, 1, n_current_time / n_phase_in);
       self setshaderconstant(localclientnum, 1, n_delta_val, 1, 0, 0);
     }
-    while (n_current_time < n_phase_in);
+    while(n_current_time < n_phase_in);
 
     self playsound(0, "evt_perk_warp");
     s_timer reset_timer();
@@ -538,7 +539,7 @@ flicker_in_and_out(localclientnum) {
       n_delta_val = lerpfloat(1, 0, n_current_time / n_phase_in);
       self setshaderconstant(localclientnum, 1, n_delta_val, 1, 0, 0);
     }
-    while (n_current_time < n_phase_in);
+    while(n_current_time < n_phase_in);
 
     s_timer reset_timer();
   }
@@ -559,10 +560,10 @@ player_lightning(localclientnum) {
   self endon("disconnect");
   self.b_lightning = 1;
 
-  if(isdefined(localclientnum)) {
+  if(isDefined(localclientnum)) {
     self waittill_dobj(localclientnum);
 
-    while (isdefined(self.b_lightning) && self.b_lightning) {
+    while(isDefined(self.b_lightning) && self.b_lightning) {
       v_p_angles = self.angles;
       v_forward = anglestoforward(self.angles) * 25000;
       v_end_pos = self.origin + (v_forward[0], v_forward[1], 0);
@@ -575,7 +576,7 @@ player_lightning(localclientnum) {
       n_level_exposure = getdvarfloat(#"r_exposureValue");
       n_strikes = randomintrange(3, 5);
 
-      for (i = 0; i < n_strikes; i++) {
+      for(i = 0; i < n_strikes; i++) {
         serverwait(localclientnum, 0.1);
         n_blend_time = randomfloatrange(0.1, 0.35);
         setdvar("r_exposureTweak", 1);
@@ -603,7 +604,7 @@ scripted_player_lightning(localclientnum) {
   players = level.localplayers;
 
   foreach(player in players) {
-    if(isdefined(player) && isalive(player) && isdefined(localclientnum)) {
+    if(isDefined(player) && isalive(player) && isDefined(localclientnum)) {
       player waittill_dobj(localclientnum);
       player thread scripted_player_lightning_strike();
     }
@@ -619,7 +620,7 @@ scripted_player_lightning_strike() {
   }
   localclientnum = self getlocalclientnumber();
 
-  if(!isdefined(localclientnum)) {
+  if(!isDefined(localclientnum)) {
     return;
   }
   v_p_angles = self.angles;
@@ -633,7 +634,7 @@ scripted_player_lightning_strike() {
   n_level_exposure = getdvarfloat(#"r_exposureValue");
   n_strikes = randomintrange(3, 5);
 
-  for (i = 0; i < n_strikes; i++) {
+  for(i = 0; i < n_strikes; i++) {
     serverwait(localclientnum, 0.1);
     n_blend_time = randomfloatrange(0.05, 0.1);
     setdvar("r_exposureTweak", 1);
@@ -674,18 +675,18 @@ lerp_dvar(str_dvar, n_val, n_lerp_time, b_saved_dvar, localclientnum) {
     n_time_delta = n_time_delta + 0.05;
     n_curr_val = lerpfloat(n_start_val, n_val, n_time_delta / n_lerp_time);
 
-    if(isdefined(b_saved_dvar) && b_saved_dvar) {
+    if(isDefined(b_saved_dvar) && b_saved_dvar) {
       setsaveddvar(str_dvar, n_curr_val);
       continue;
     }
 
     setdvar(str_dvar, n_curr_val);
   }
-  while (n_time_delta < n_lerp_time);
+  while(n_time_delta < n_lerp_time);
 }
 
 timer_increment_loop(localclientnum) {
-  while (isdefined(self)) {
+  while(isDefined(self)) {
     serverwait(localclientnum, 0.016);
     self.n_time_current = self.n_time_current + 0.016;
   }
@@ -717,8 +718,8 @@ rumble_gondola(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname,
   if(newval == 1) {
     self endon("rumble_gondola_finished");
 
-    while (true) {
-      if(isdefined(self) && self islocalplayer() && isdefined(localclientnum)) {
+    while(true) {
+      if(isDefined(self) && self islocalplayer() && isDefined(localclientnum)) {
         self earthquake(0.1, 1, self.origin, 1500);
         self playrumbleonentity(localclientnum, "reload_small");
       }
@@ -728,7 +729,7 @@ rumble_gondola(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname,
   } else {
     self notify("rumble_gondola_finished");
 
-    if(isdefined(self) && self islocalplayer() && isdefined(localclientnum)) {
+    if(isDefined(self) && self islocalplayer() && isDefined(localclientnum)) {
       self earthquake(0.25, 0.25, self.origin, 1500);
       self playrumbleonentity(localclientnum, "damage_heavy");
     }
@@ -742,8 +743,8 @@ rumble_fan_trap(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname
   if(newval == 1) {
     self endon("rumble_fan_trap_finished");
 
-    while (true) {
-      if(isdefined(self) && self islocalplayer() && isdefined(localclientnum)) {
+    while(true) {
+      if(isDefined(self) && self islocalplayer() && isDefined(localclientnum)) {
         self earthquake(0.15, 1, self.origin, 1500);
         self playrumbleonentity(localclientnum, "damage_light");
       }
@@ -761,8 +762,8 @@ rumble_sq_bg(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, b
   if(newval == 1) {
     self endon("rumble_sq_bg_finished");
 
-    for (i = 0; i <= 10; i++) {
-      if(isdefined(self) && self islocalplayer() && isdefined(localclientnum)) {
+    for(i = 0; i <= 10; i++) {
+      if(isDefined(self) && self islocalplayer() && isDefined(localclientnum)) {
         self earthquake(0.15, 1, self.origin, 1500);
         self playrumbleonentity(localclientnum, "damage_heavy");
       }

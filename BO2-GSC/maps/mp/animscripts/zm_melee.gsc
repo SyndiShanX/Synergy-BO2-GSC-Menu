@@ -20,40 +20,40 @@ meleecombat() {
   else
     self animmode("zonly_physics");
 
-  for (;;) {
-    if(isdefined(self.marked_for_death)) {
+  for(;;) {
+    if(isDefined(self.marked_for_death)) {
       return;
     }
-    if(isdefined(self.enemy)) {
+    if(isDefined(self.enemy)) {
       angles = vectortoangles(self.enemy.origin - self.origin);
       self orientmode("face angle", angles[1]);
     }
 
-    if(isdefined(self.zmb_vocals_attack))
+    if(isDefined(self.zmb_vocals_attack))
       self playsound(self.zmb_vocals_attack);
 
-    if(isdefined(self.nochangeduringmelee) && self.nochangeduringmelee)
+    if(isDefined(self.nochangeduringmelee) && self.nochangeduringmelee)
       self.safetochangescript = 0;
 
-    if(isdefined(self.is_inert) && self.is_inert) {
+    if(isDefined(self.is_inert) && self.is_inert) {
       return;
     }
     set_zombie_melee_anim_state(self);
 
-    if(isdefined(self.melee_anim_func))
+    if(isDefined(self.melee_anim_func))
       self thread[[self.melee_anim_func]]();
 
-    while (true) {
+    while(true) {
       self waittill("melee_anim", note);
 
       if(note == "end") {
         break;
       } else if(note == "fire") {
-        if(!isdefined(self.enemy)) {
+        if(!isDefined(self.enemy)) {
           break;
         }
 
-        if(isdefined(self.dont_die_on_me) && self.dont_die_on_me) {
+        if(isDefined(self.dont_die_on_me) && self.dont_die_on_me) {
           break;
         }
 
@@ -61,14 +61,14 @@ meleecombat() {
         oldhealth = self.enemy.health;
         self melee();
 
-        if(!isdefined(self.enemy)) {
+        if(!isDefined(self.enemy)) {
           break;
         }
 
         if(self.enemy.health >= oldhealth) {
-          if(isdefined(self.melee_miss_func))
+          if(isDefined(self.melee_miss_func))
             self[[self.melee_miss_func]]();
-          else if(isdefined(level.melee_miss_func))
+          else if(isDefined(level.melee_miss_func))
             self[[level.melee_miss_func]]();
         }
 
@@ -82,6 +82,7 @@ meleecombat() {
             iprintln("melee HIT " + dist);
           }
         }
+
       } else if(note == "stop") {
         if(!cancontinuetomelee()) {
           break;
@@ -94,8 +95,8 @@ meleecombat() {
     else
       self orientmode("face default");
 
-    if(isdefined(self.nochangeduringmelee) && self.nochangeduringmelee || is_true(self.sliding_on_goo)) {
-      if(isdefined(self.enemy)) {
+    if(isDefined(self.nochangeduringmelee) && self.nochangeduringmelee || is_true(self.sliding_on_goo)) {
+      if(isDefined(self.enemy)) {
         dist_sq = distancesquared(self.origin, self.enemy.origin);
 
         if(dist_sq > self.meleeattackdist * self.meleeattackdist) {
@@ -142,7 +143,7 @@ canmeleeinternal(state) {
   if(!isalive(self.enemy))
     return false;
 
-  if(isdefined(self.disablemelee)) {
+  if(isDefined(self.disablemelee)) {
     assert(self.disablemelee);
     return false;
   }
@@ -176,14 +177,14 @@ canmeleeinternal(state) {
   if(state == "already started")
     return false;
 
-  if(isdefined(self.check_melee_path) && self.check_melee_path) {
+  if(isDefined(self.check_melee_path) && self.check_melee_path) {
     if(!ismeleepathclear(vectoenemy, enemypoint)) {
       self notify("melee_path_blocked");
       return false;
     }
   }
 
-  if(isdefined(level.can_melee)) {
+  if(isDefined(level.can_melee)) {
     if(!self[[level.can_melee]]())
       return false;
   }
@@ -204,14 +205,14 @@ ismeleepathclear(vectoenemy, enemypoint) {
   trace1 = bullettrace(self.origin + vectorscale((0, 0, 1), 20.0), meleepoint + vectorscale((0, 0, 1), 20.0), 1, self);
   trace2 = bullettrace(self.origin + vectorscale((0, 0, 1), 72.0), meleepoint + vectorscale((0, 0, 1), 72.0), 1, self);
 
-  if(isdefined(trace1["fraction"]) && trace1["fraction"] == 1 && isdefined(trace2["fraction"]) && trace2["fraction"] == 1)
+  if(isDefined(trace1["fraction"]) && trace1["fraction"] == 1 && isDefined(trace2["fraction"]) && trace2["fraction"] == 1)
     return true;
 
-  if(isdefined(trace1["entity"]) && trace1["entity"] == self.enemy && isdefined(trace2["entity"]) && trace2["entity"] == self.enemy)
+  if(isDefined(trace1["entity"]) && trace1["entity"] == self.enemy && isDefined(trace2["entity"]) && trace2["entity"] == self.enemy)
     return true;
 
-  if(isdefined(level.zombie_melee_in_water) && level.zombie_melee_in_water) {
-    if(isdefined(trace1["surfacetype"]) && trace1["surfacetype"] == "water" && isdefined(trace2["fraction"]) && trace2["fraction"] == 1)
+  if(isDefined(level.zombie_melee_in_water) && level.zombie_melee_in_water) {
+    if(isDefined(trace1["surfacetype"]) && trace1["surfacetype"] == "water" && isDefined(trace2["fraction"]) && trace2["fraction"] == 1)
       return true;
   }
 
@@ -219,10 +220,10 @@ ismeleepathclear(vectoenemy, enemypoint) {
 }
 
 set_zombie_melee_anim_state(zombie) {
-  if(isdefined(level.melee_anim_state))
+  if(isDefined(level.melee_anim_state))
     melee_anim_state = self[[level.melee_anim_state]]();
 
-  if(!isdefined(melee_anim_state)) {
+  if(!isDefined(melee_anim_state)) {
     if(!zombie.has_legs && zombie.a.gib_ref == "no_legs")
       melee_anim_state = "zm_stumpy_melee";
     else {

@@ -34,23 +34,23 @@ blundersplat_on_player_connect() {
 zombie_wait_for_blundersplat_hit() {
   self endon("death");
 
-  while (true) {
+  while(true) {
     self waittill("damage", amount, inflictor, direction, point, type, tagname, modelname, partname, weaponname, idflags);
 
     if(weaponname == "blundersplat_bullet_zm") {
-      if(!isdefined(self.titus_tagged)) {
+      if(!isDefined(self.titus_tagged)) {
         a_grenades = getentarray("grenade", "classname");
 
-        if(!isdefined(a_grenades) || a_grenades.size <= 0) {
+        if(!isDefined(a_grenades) || a_grenades.size <= 0) {
           continue;
         }
         self.titus_tagged = 1;
 
         foreach(e_grenade in a_grenades) {
-          if(isdefined(e_grenade.model) && e_grenade.model == "t6_wpn_zmb_projectile_blundergat") {
+          if(isDefined(e_grenade.model) && e_grenade.model == "t6_wpn_zmb_projectile_blundergat") {
             if(e_grenade islinkedto(self)) {
-              while (true) {
-                if(!isdefined(e_grenade.fuse_time))
+              while(true) {
+                if(!isDefined(e_grenade.fuse_time))
                   wait_network_frame();
                 else
                   break;
@@ -73,7 +73,7 @@ wait_for_blundersplat_fired() {
   self endon("disconnect");
   self waittill("spawned_player");
 
-  for (;;) {
+  for(;;) {
     self waittill("weapon_fired", str_weapon);
 
     if(str_weapon == "blundersplat_zm") {
@@ -93,7 +93,7 @@ wait_for_blundersplat_upgraded_fired() {
   self endon("disconnect");
   self waittill("spawned_player");
 
-  for (;;) {
+  for(;;) {
     self waittill("weapon_fired", str_weapon);
 
     if(str_weapon == "blundersplat_upgraded_zm") {
@@ -108,7 +108,7 @@ wait_for_blundersplat_upgraded_fired() {
 }
 
 _titus_locate_target(is_not_upgraded) {
-  if(!isdefined(is_not_upgraded))
+  if(!isDefined(is_not_upgraded))
     is_not_upgraded = 1;
 
   fire_angles = self getplayerangles();
@@ -124,7 +124,7 @@ _titus_locate_target(is_not_upgraded) {
   foreach(target in a_targets) {
     if(within_fov(fire_origin, fire_angles, target.origin, cos(30))) {
       if(isai(target)) {
-        if(!isdefined(target.titusmarked)) {
+        if(!isDefined(target.titusmarked)) {
           a_tags = [];
           a_tags[0] = "j_hip_le";
           a_tags[1] = "j_hip_ri";
@@ -184,14 +184,14 @@ _titus_target_check_for_grenade_hits() {
   self endon("death");
   self endon("titus_target_timeout");
 
-  while (true) {
+  while(true) {
     self waittill("damage", amount, inflictor, direction, point, type, tagname, modelname, partname, weaponname, idflags);
 
     if(weaponname == "blundersplat_bullet_zm") {
       a_grenades = getentarray("grenade", "classname");
 
       foreach(e_grenade in a_grenades) {
-        if(isdefined(e_grenade.model) && e_grenade.model == "t6_wpn_zmb_projectile_blundergat") {
+        if(isDefined(e_grenade.model) && e_grenade.model == "t6_wpn_zmb_projectile_blundergat") {
           if(e_grenade islinkedto(self))
             e_grenade thread _titus_grenade_detonate_on_target_death(self);
         }
@@ -221,17 +221,17 @@ _titus_grenade_detonate_on_target_death(target) {
 }
 
 _titus_reset_grenade_fuse(n_fuse_timer, is_not_upgraded) {
-  if(!isdefined(is_not_upgraded))
+  if(!isDefined(is_not_upgraded))
     is_not_upgraded = 1;
 
-  if(!isdefined(n_fuse_timer))
+  if(!isDefined(n_fuse_timer))
     n_fuse_timer = randomfloatrange(1, 1.5);
 
   self waittill("death");
   a_grenades = getentarray("grenade", "classname");
 
   foreach(e_grenade in a_grenades) {
-    if(isdefined(e_grenade.model) && e_grenade.model == "t6_wpn_zmb_projectile_blundergat" && !isdefined(e_grenade.fuse_reset)) {
+    if(isDefined(e_grenade.model) && e_grenade.model == "t6_wpn_zmb_projectile_blundergat" && !isDefined(e_grenade.fuse_reset)) {
       e_grenade.fuse_reset = 1;
       e_grenade.fuse_time = n_fuse_timer;
       e_grenade resetmissiledetonationtime(n_fuse_timer);
@@ -249,7 +249,7 @@ _titus_reset_grenade_fuse(n_fuse_timer, is_not_upgraded) {
 gib_on_blundergat_damage(refs, point, weaponname) {
   new_gib_ref = [];
 
-  if(isdefined(level.no_gib_in_wolf_area)) {
+  if(isDefined(level.no_gib_in_wolf_area)) {
     if([
         [level.no_gib_in_wolf_area]
       ]())
@@ -269,10 +269,10 @@ gib_on_blundergat_damage(refs, point, weaponname) {
 _blundersplat_target_acid_stun_anim() {
   self endon("death");
 
-  while (true) {
+  while(true) {
     ground_ent = self getgroundent();
 
-    if(isdefined(ground_ent) && !is_true(ground_ent.classname == "worldspawn"))
+    if(isDefined(ground_ent) && !is_true(ground_ent.classname == "worldspawn"))
       self linkto(ground_ent);
 
     if(is_true(self.has_legs))

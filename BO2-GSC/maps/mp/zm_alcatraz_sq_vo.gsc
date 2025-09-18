@@ -21,7 +21,7 @@ vo_see_map_trigger() {
   t_map_vo_trigger = getent("map_vo_trigger", "targetname");
   b_has_line_played = 0;
 
-  while (!b_has_line_played) {
+  while(!b_has_line_played) {
     t_map_vo_trigger waittill("trigger", e_triggerer);
     players = getplayers();
 
@@ -32,7 +32,7 @@ vo_see_map_trigger() {
       arrayremovevalue(players, e_triggerer);
       closest_other_player = getclosest(e_triggerer.origin, players);
 
-      if(isdefined(closest_other_player))
+      if(isDefined(closest_other_player))
         closest_other_player do_player_general_vox("quest", "response_map", undefined, 100);
 
       b_has_line_played = 1;
@@ -301,7 +301,7 @@ vo_bridge_soliloquy() {
   if(level.n_quest_iteration_count < 3) {
     convo = level.soliloquy_convos["purgatory_" + self.character_name + "_visit" + level.n_quest_iteration_count + "_alt" + randomintrange(1, 3)];
 
-    if(isdefined(convo))
+    if(isDefined(convo))
       self vo_play_soliloquy(convo);
   }
 }
@@ -310,7 +310,7 @@ vo_bridge_four_part_convo() {
   if(level.n_quest_iteration_count < 3) {
     convo = level.four_part_convos["bridge_visit" + level.n_quest_iteration_count + "_alt" + randomintrange(1, 5)];
 
-    if(isdefined(convo))
+    if(isDefined(convo))
       vo_play_four_part_conversation(convo);
   }
 }
@@ -318,7 +318,7 @@ vo_bridge_four_part_convo() {
 vo_play_soliloquy(convo) {
   self endon("disconnect");
 
-  if(!isdefined(convo)) {
+  if(!isDefined(convo)) {
     return;
   }
   if(!flag("story_vo_playing")) {
@@ -327,8 +327,8 @@ vo_play_soliloquy(convo) {
     self.dontspeak = 1;
     self setclientfieldtoplayer("isspeaking", 1);
 
-    for (i = 0; i < convo.size; i++) {
-      if(isdefined(self.afterlife) && self.afterlife) {
+    for(i = 0; i < convo.size; i++) {
+      if(isDefined(self.afterlife) && self.afterlife) {
         self.dontspeak = 0;
         self setclientfieldtoplayer("isspeaking", 0);
         flag_clear("story_vo_playing");
@@ -356,7 +356,7 @@ vo_play_soliloquy_disconnect_listener() {
 }
 
 vo_play_four_part_conversation(convo) {
-  if(!isdefined(convo)) {
+  if(!isDefined(convo)) {
     return;
   }
   players = getplayers();
@@ -373,7 +373,7 @@ vo_play_four_part_conversation(convo) {
     e_finn = undefined;
 
     foreach(player in players) {
-      if(isdefined(player)) {
+      if(isDefined(player)) {
         switch (player.character_name) {
           case "Arlington":
             e_arlington = player;
@@ -391,23 +391,23 @@ vo_play_four_part_conversation(convo) {
       }
     }
 
-    if(!isdefined(e_arlington) || !isdefined(e_sal) || !isdefined(e_billy) || !isdefined(e_finn))
+    if(!isDefined(e_arlington) || !isDefined(e_sal) || !isDefined(e_billy) || !isDefined(e_finn))
       return;
     else {
       foreach(player in players) {
-        if(isdefined(player)) {
+        if(isDefined(player)) {
           player.dontspeak = 1;
           player setclientfieldtoplayer("isspeaking", 1);
         }
       }
     }
 
-    for (i = 0; i < convo.size; i++) {
+    for(i = 0; i < convo.size; i++) {
       players = getplayers();
 
       if(players.size != 4) {
         foreach(player in players) {
-          if(isdefined(player)) {
+          if(isDefined(player)) {
             player.dontspeak = 0;
             player setclientfieldtoplayer("isspeaking", 0);
           }
@@ -426,12 +426,12 @@ vo_play_four_part_conversation(convo) {
       else if(issubstr(convo[i], "plr_3"))
         speaking_player = e_arlington;
 
-      if(isdefined(old_speaking_player))
+      if(isDefined(old_speaking_player))
         n_dist = distance(old_speaking_player.origin, speaking_player.origin);
 
       if(speaking_player.afterlife || n_dist > n_max_reply_dist) {
         foreach(player in players) {
-          if(isdefined(player)) {
+          if(isDefined(player)) {
             player.dontspeak = 0;
             player setclientfieldtoplayer("isspeaking", 0);
           }
@@ -449,7 +449,7 @@ vo_play_four_part_conversation(convo) {
     }
 
     foreach(player in players) {
-      if(isdefined(player)) {
+      if(isDefined(player)) {
         player.dontspeak = 0;
         player setclientfieldtoplayer("isspeaking", 0);
       }
@@ -470,7 +470,7 @@ electric_chair_vo() {
         vo_play_four_part_conversation(level.four_part_convos["chair_combat_" + randomintrange(1, 3)]);
       else
         vo_play_four_part_conversation(level.four_part_convos["chair" + randomintrange(1, 3)]);
-    } else if(isdefined(players[0]) && players[0] istouching(e_nml_zone)) {
+    } else if(isDefined(players[0]) && players[0] istouching(e_nml_zone)) {
       character_name = players[0].character_name;
       players[0] vo_play_soliloquy(level.soliloquy_convos["electric_chair_" + character_name]);
     }
@@ -482,7 +482,7 @@ escape_flight_vo() {
   players = getplayers();
   player = players[randomintrange(0, players.size)];
 
-  if(isdefined(player) && player istouching(e_roof_zone))
+  if(isDefined(player) && player istouching(e_roof_zone))
     player thread do_player_general_vox("quest", "build_plane", undefined, 100);
 
   flag_wait("plane_boarded");
@@ -490,7 +490,7 @@ escape_flight_vo() {
   if(level.final_flight_activated) {
     return;
   }
-  while (level.characters_in_nml.size == 0)
+  while(level.characters_in_nml.size == 0)
     wait 0.1;
 
   wait 1;
@@ -500,7 +500,7 @@ escape_flight_vo() {
     players = getplayers();
 
     foreach(player in players) {
-      if(isdefined(player) && player.character_name == character_name)
+      if(isDefined(player) && player.character_name == character_name)
         player thread do_player_general_vox("quest", "plane_takeoff");
     }
   }
@@ -513,7 +513,7 @@ escape_flight_vo() {
     players = getplayers();
 
     foreach(player in players) {
-      if(isdefined(player) && player.character_name == character_name)
+      if(isDefined(player) && player.character_name == character_name)
         player playsound("vox_plr_" + player.characterindex + "_plane_flight_0");
     }
   }
@@ -526,7 +526,7 @@ escape_flight_vo() {
     players = getplayers();
 
     foreach(player in players) {
-      if(isdefined(player) && player.character_name == character_name)
+      if(isDefined(player) && player.character_name == character_name)
         player playsound("vox_plr_" + player.characterindex + "_plane_crash_0");
     }
   }
@@ -535,7 +535,7 @@ escape_flight_vo() {
   players = getplayers();
 
   foreach(player in players) {
-    if(isdefined(player) && isinarray(level.characters_in_nml, player.character_name))
+    if(isDefined(player) && isinarray(level.characters_in_nml, player.character_name))
       player thread player_scream_thread();
   }
 }
@@ -546,7 +546,7 @@ player_scream_thread() {
   players = getplayers();
 
   foreach(player in players) {
-    if(isdefined(player) && isinarray(level.characters_in_nml, player.character_name))
+    if(isDefined(player) && isinarray(level.characters_in_nml, player.character_name))
       player playsoundtoplayer("vox_plr_" + player.characterindex + "_free_fall_0", self);
   }
 
@@ -559,7 +559,7 @@ player_scream_thread() {
 sndhitelectrifiedpulley(str_master_key_location) {
   self endon("master_key_pulley_" + str_master_key_location);
 
-  while (true) {
+  while(true) {
     self waittill("trigger", e_triggerer);
     self playsound("fly_elec_sparks_key");
     wait 1;
@@ -567,13 +567,13 @@ sndhitelectrifiedpulley(str_master_key_location) {
 }
 
 is_player_character_present(character_name) {
-  if(!isdefined(character_name))
+  if(!isDefined(character_name))
     return false;
 
   players = getplayers();
 
   foreach(player in players) {
-    if(isdefined(player.character_name) && player.character_name == character_name)
+    if(isDefined(player.character_name) && player.character_name == character_name)
       return true;
   }
 
@@ -583,11 +583,11 @@ is_player_character_present(character_name) {
 get_players_touching(scr_touched_name) {
   n_touching_count = 0;
   e_touched = getent(scr_touched_name, "targetname");
-  assert(isdefined(e_touched));
+  assert(isDefined(e_touched));
   a_players = getplayers();
 
   foreach(player in a_players) {
-    if(isdefined(player) && player istouching(e_touched))
+    if(isDefined(player) && player istouching(e_touched))
       n_touching_count++;
   }
 
@@ -597,13 +597,13 @@ get_players_touching(scr_touched_name) {
 count_zombies_in_zone(volume) {
   e_zone = getent(volume, "targetname");
 
-  if(!isdefined(e_zone)) {
+  if(!isDefined(e_zone)) {
     return;
   }
   n_zombie_count = 0;
   zombies = getaispeciesarray("axis", "all");
 
-  for (i = 0; i < zombies.size; i++) {
+  for(i = 0; i < zombies.size; i++) {
     if(zombies[i] istouching(e_zone))
       n_zombie_count++;
   }

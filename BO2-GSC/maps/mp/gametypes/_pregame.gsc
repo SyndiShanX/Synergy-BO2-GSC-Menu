@@ -18,7 +18,9 @@
 
 main() {
   level.pregame = 1;
+
   println("Pregame main() level.pregame = " + level.pregame + "\\n");
+
   maps\mp\gametypes\_globallogic::init();
   maps\mp\gametypes\_callbacksetup::setupcallbacks();
   maps\mp\gametypes\_globallogic::setupcallbacks();
@@ -114,7 +116,7 @@ endpregame() {
   level.pregame = 0;
   players = level.players;
 
-  for (index = 0; index < players.size; index++) {
+  for(index = 0; index < players.size; index++) {
     player = players[index];
     player maps\mp\gametypes\_globallogic_player::freezeplayerforroundend();
   }
@@ -129,7 +131,7 @@ getplayersneededcount() {
   players = level.players;
   count = 0;
 
-  for (i = 0; i < players.size; i++) {
+  for(i = 0; i < players.size; i++) {
     player = players[i];
     team = player.team;
     class = player.class;
@@ -144,15 +146,15 @@ getplayersneededcount() {
 saveplayerspregameinfo() {
   players = level.players;
 
-  for (i = 0; i < players.size; i++) {
+  for(i = 0; i < players.size; i++) {
     player = players[i];
     team = player.team;
     class = player.pregameclassresponse;
 
-    if(isdefined(team) && team != "")
+    if(isDefined(team) && team != "")
       player setpregameteam(team);
 
-    if(isdefined(class) && class != "")
+    if(isDefined(class) && class != "")
       player setpregameclass(class);
   }
 }
@@ -197,7 +199,7 @@ pregamemain() {
   level.pregameplayercount maps\mp\gametypes\_hud::fontpulseinit();
   oldcount = -1;
 
-  for (;;) {
+  for(;;) {
     wait 1;
     count = getplayersneededcount();
 
@@ -221,7 +223,7 @@ pregamemain() {
   level.pregamesubtitle settext(game["strings"]["pregameover"]);
   players = level.players;
 
-  for (index = 0; index < players.size; index++) {
+  for(index = 0; index < players.size; index++) {
     player = players[index];
     player maps\mp\gametypes\_globallogic_player::freezeplayerforroundend();
     player maps\mp\gametypes\_globallogic_ui::freegameplayhudelems();
@@ -248,7 +250,7 @@ ontimelimit() {
   } else {
     winner = maps\mp\gametypes\_globallogic_score::gethighestscoringplayer();
 
-    if(isdefined(winner))
+    if(isDefined(winner))
       logstring("time limit, win: " + winner.name);
     else
       logstring("time limit, tie");
@@ -262,7 +264,7 @@ ontimelimit() {
 get_pregame_class() {
   pclass = self getpregameclass();
 
-  if(isdefined(pclass) && pclass[0] != "")
+  if(isDefined(pclass) && pclass[0] != "")
     return pclass;
   else
     return "smg_mp,0";

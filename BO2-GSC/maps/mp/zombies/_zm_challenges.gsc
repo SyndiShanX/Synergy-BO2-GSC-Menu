@@ -24,6 +24,7 @@ init() {
   registerclientfield("toplayer", "challenge_complete_2", 14000, 1, "int");
   registerclientfield("toplayer", "challenge_complete_3", 14000, 1, "int");
   registerclientfield("toplayer", "challenge_complete_4", 14000, 1, "int");
+
   level thread challenges_devgui();
 }
 
@@ -45,7 +46,7 @@ onplayerconnect() {
 onplayerspawned() {
   self endon("disconnect");
 
-  for (;;) {
+  for(;;) {
     self waittill("spawned_player");
 
     foreach(s_stat in level._challenges.a_players[self.characterindex].a_stats) {
@@ -67,30 +68,30 @@ onplayerspawned() {
 stats_init() {
   level._challenges.a_stats = [];
 
-  if(isdefined(level.challenges_add_stats))
+  if(isDefined(level.challenges_add_stats))
     [[level.challenges_add_stats]]();
 
   foreach(stat in level._challenges.a_stats) {
-    if(isdefined(stat.fp_init_stat))
+    if(isDefined(stat.fp_init_stat))
       level thread[[stat.fp_init_stat]]();
   }
 
   level._challenges.a_players = [];
 
-  for (i = 0; i < 4; i++)
+  for(i = 0; i < 4; i++)
     player_stats_init(i);
 
   team_stats_init();
 }
 
 add_stat(str_name, b_team, str_hint, n_goal, str_reward_model, fp_give_reward, fp_init_stat) {
-  if(!isdefined(b_team))
+  if(!isDefined(b_team))
     b_team = 0;
 
-  if(!isdefined(str_hint))
+  if(!isDefined(str_hint))
     str_hint = & "";
 
-  if(!isdefined(n_goal))
+  if(!isDefined(n_goal))
     n_goal = 1;
 
   stat = spawnstruct();
@@ -101,7 +102,7 @@ add_stat(str_name, b_team, str_hint, n_goal, str_reward_model, fp_give_reward, f
   stat.str_reward_model = str_reward_model;
   stat.fp_give_reward = fp_give_reward;
 
-  if(isdefined(fp_init_stat))
+  if(isDefined(fp_init_stat))
     stat.fp_init_stat = fp_init_stat;
 
   level._challenges.a_stats[str_name] = stat;
@@ -112,7 +113,7 @@ player_stats_init(n_index) {
   a_characters = array("d", "n", "r", "t");
   str_character = a_characters[n_index];
 
-  if(!isdefined(level._challenges.a_players[n_index])) {
+  if(!isDefined(level._challenges.a_players[n_index])) {
     level._challenges.a_players[n_index] = spawnstruct();
     level._challenges.a_players[n_index].a_stats = [];
   }
@@ -122,7 +123,7 @@ player_stats_init(n_index) {
 
   foreach(s_challenge in level._challenges.a_stats) {
     if(!s_challenge.b_team) {
-      if(!isdefined(s_player_set.a_stats[s_challenge.str_name]))
+      if(!isDefined(s_player_set.a_stats[s_challenge.str_name]))
         s_player_set.a_stats[s_challenge.str_name] = spawnstruct();
 
       s_stat = s_player_set.a_stats[s_challenge.str_name];
@@ -143,7 +144,7 @@ player_stats_init(n_index) {
 }
 
 team_stats_init(n_index) {
-  if(!isdefined(level._challenges.s_team)) {
+  if(!isDefined(level._challenges.s_team)) {
     level._challenges.s_team = spawnstruct();
     level._challenges.s_team.a_stats = [];
   }
@@ -152,7 +153,7 @@ team_stats_init(n_index) {
 
   foreach(s_challenge in level._challenges.a_stats) {
     if(s_challenge.b_team) {
-      if(!isdefined(s_team_set.a_stats[s_challenge.str_name]))
+      if(!isDefined(s_team_set.a_stats[s_challenge.str_name]))
         s_team_set.a_stats[s_challenge.str_name] = spawnstruct();
 
       s_stat = s_team_set.a_stats[s_challenge.str_name];
@@ -172,7 +173,7 @@ team_stats_init(n_index) {
 }
 
 challenge_exists(str_name) {
-  if(isdefined(level._challenges.a_stats[str_name]))
+  if(isDefined(level._challenges.a_stats[str_name]))
     return true;
   else
     return false;
@@ -180,8 +181,8 @@ challenge_exists(str_name) {
 
 get_stat(str_stat, player) {
   s_parent_stat = level._challenges.a_stats[str_stat];
-  assert(isdefined(s_parent_stat), "Challenge stat: " + str_stat + " does not exist");
-  assert(s_parent_stat.b_team || isdefined(player), "Challenge stat: " + str_stat + " is a player stat, but no player passed in");
+  assert(isDefined(s_parent_stat), "Challenge stat: " + str_stat + " does not exist");
+  assert(s_parent_stat.b_team || isDefined(player), "Challenge stat: " + str_stat + " is a player stat, but no player passed in");
 
   if(s_parent_stat.b_team)
     s_stat = level._challenges.s_team.a_stats[str_stat];
@@ -192,7 +193,7 @@ get_stat(str_stat, player) {
 }
 
 increment_stat(str_stat, n_increment) {
-  if(!isdefined(n_increment))
+  if(!isDefined(n_increment))
     n_increment = 1;
 
   s_stat = get_stat(str_stat, self);
@@ -246,7 +247,7 @@ check_stat_complete(s_stat) {
         self notify("all_challenges_complete");
     } else {
       foreach(player in get_players()) {
-        if(isdefined(player.characterindex)) {
+        if(isDefined(player.characterindex)) {
           if(level._challenges.a_players[player.characterindex].n_completed + level._challenges.s_team.n_completed == level._challenges.a_stats.size)
             player notify("all_challenges_complete");
         }
@@ -347,10 +348,10 @@ box_init() {
   s_unitrigger_stub.m_box = self;
   s_unitrigger_stub.b_disable_trigger = 0;
 
-  if(isdefined(self.script_string))
+  if(isDefined(self.script_string))
     s_unitrigger_stub.str_location = self.script_string;
 
-  if(isdefined(s_unitrigger_stub.m_box.target)) {
+  if(isDefined(s_unitrigger_stub.m_box.target)) {
     s_unitrigger_stub.m_board = getent(s_unitrigger_stub.m_box.target, "targetname");
     s_unitrigger_stub board_init(s_unitrigger_stub.m_board);
   }
@@ -376,13 +377,13 @@ update_box_prompt(player) {
   m_board = self.stub.m_board;
   self sethintstring(str_hint);
 
-  while (true) {
+  while(true) {
     s_hint_tag = undefined;
     b_showing_stat = 0;
     self.b_can_open = 0;
 
     if(self.stub.b_busy) {
-      if(self.stub ent_flag("waiting_for_grab") && (!isdefined(self.stub.player_using) || self.stub.player_using == player))
+      if(self.stub ent_flag("waiting_for_grab") && (!isDefined(self.stub.player_using) || self.stub.player_using == player))
         str_hint = & "ZM_TOMB_CH_G";
       else
         str_hint = & "";
@@ -436,14 +437,13 @@ update_box_prompt(player) {
       str_old_hint = str_hint;
       self.stub.hint_string = str_hint;
 
-      if(isdefined(s_hint_tag)) {
+      if(isDefined(s_hint_tag)) {
         str_name = s_hint_tag.s_stat.s_parent.str_name;
         n_character_index = s_hint_tag.n_character_index;
 
         if(n_character_index != 4)
           s_player_stat = level._challenges.a_players[n_character_index].a_stats[str_name];
         else {
-
         }
       }
 
@@ -458,7 +458,7 @@ box_think() {
   self endon("kill_trigger");
   s_team = level._challenges.s_team;
 
-  while (true) {
+  while(true) {
     self waittill("trigger", player);
 
     if(!is_player_valid(player)) {
@@ -467,13 +467,13 @@ box_think() {
     if(self.stub.b_busy) {
       current_weapon = player getcurrentweapon();
 
-      if(isdefined(player.intermission) && player.intermission || is_placeable_mine(current_weapon) || is_equipment_that_blocks_purchase(current_weapon) || current_weapon == "none" || player maps\mp\zombies\_zm_laststand::player_is_in_laststand() || player isthrowinggrenade() || player in_revive_trigger() || player isswitchingweapons() || player.is_drinking > 0) {
+      if(isDefined(player.intermission) && player.intermission || is_placeable_mine(current_weapon) || is_equipment_that_blocks_purchase(current_weapon) || current_weapon == "none" || player maps\mp\zombies\_zm_laststand::player_is_in_laststand() || player isthrowinggrenade() || player in_revive_trigger() || player isswitchingweapons() || player.is_drinking > 0) {
         wait 0.1;
         continue;
       }
 
       if(self.stub ent_flag("waiting_for_grab")) {
-        if(!isdefined(self.stub.player_using))
+        if(!isDefined(self.stub.player_using))
           self.stub.player_using = player;
 
         if(player == self.stub.player_using)
@@ -493,7 +493,7 @@ box_think() {
 }
 
 get_reward_category(player, s_select_stat) {
-  if(isdefined(s_select_stat) && s_select_stat.s_parent.b_team || level._challenges.s_team.n_medals_held > 0)
+  if(isDefined(s_select_stat) && s_select_stat.s_parent.b_team || level._challenges.s_team.n_medals_held > 0)
     return level._challenges.s_team;
 
   if(level._challenges.a_players[player.characterindex].n_medals_held > 0)
@@ -518,20 +518,20 @@ get_reward_stat(s_category) {
 open_box(player, ut_stub, fp_reward_override, param1) {
   m_box = ut_stub.m_box;
 
-  while (ut_stub.b_busy)
+  while(ut_stub.b_busy)
     wait 1;
 
   ut_stub.b_busy = 1;
   ut_stub.player_using = player;
 
-  if(isdefined(player) && isdefined(player.s_lookat_stat))
+  if(isDefined(player) && isDefined(player.s_lookat_stat))
     s_select_stat = player.s_lookat_stat;
 
   m_box setanim( % o_zombie_dlc4_challenge_box_open);
   m_box delay_thread(0.75, ::setclientfield, "foot_print_box_glow", 1);
   wait 0.5;
 
-  if(isdefined(fp_reward_override))
+  if(isDefined(fp_reward_override))
     ut_stub[[fp_reward_override]](player, param1);
   else
     ut_stub spawn_reward(player, s_select_stat);
@@ -545,23 +545,23 @@ open_box(player, ut_stub, fp_reward_override, param1) {
 }
 
 spawn_reward(player, s_select_stat) {
-  if(isdefined(player)) {
+  if(isDefined(player)) {
     player endon("death_or_disconnect");
 
-    if(isdefined(s_select_stat)) {
+    if(isDefined(s_select_stat)) {
       s_category = get_reward_category(player, s_select_stat);
 
       if(stat_reward_available(s_select_stat, player))
         s_stat = s_select_stat;
     }
 
-    if(!isdefined(s_stat)) {
+    if(!isDefined(s_stat)) {
       s_category = get_reward_category(player);
       s_stat = player get_reward_stat(s_category);
     }
 
     if(self[[s_stat.s_parent.fp_give_reward]](player, s_stat)) {
-      if(isdefined(s_stat.s_parent.cf_complete))
+      if(isDefined(s_stat.s_parent.cf_complete))
         player setclientfieldtoplayer(s_stat.s_parent.cf_complete, 0);
 
       if(s_stat.s_parent.b_team) {
@@ -581,7 +581,7 @@ spawn_reward(player, s_select_stat) {
 }
 
 reward_grab_wait(n_timeout) {
-  if(!isdefined(n_timeout))
+  if(!isDefined(n_timeout))
     n_timeout = 10;
 
   self ent_flag_clear("reward_timeout");
@@ -597,10 +597,10 @@ reward_grab_wait(n_timeout) {
 }
 
 reward_sink(n_delay, n_z, n_time) {
-  if(isdefined(n_delay)) {
+  if(isDefined(n_delay)) {
     wait(n_delay);
 
-    if(isdefined(self))
+    if(isDefined(self))
       self movez(n_z * -1, n_time);
   }
 }
@@ -634,7 +634,7 @@ challenges_devgui() {
 }
 
 watch_devgui_award_challenges() {
-  while (true) {
+  while(true) {
     n_award_challenge = getdvarint(#"_id_AF0D5C36");
 
     if(n_award_challenge != 0) {
@@ -644,6 +644,7 @@ watch_devgui_award_challenges() {
 
     wait 0.5;
   }
+
 }
 
 devgui_award_challenge(n_index) {
@@ -681,4 +682,5 @@ devgui_award_challenge(n_index) {
       m_board showpart(s_stat.str_glow_tag);
     }
   }
+
 }

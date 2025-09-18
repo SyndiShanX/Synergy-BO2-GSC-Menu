@@ -9,7 +9,7 @@ init() {
 }
 
 onplayerconnect() {
-  for (;;) {
+  for(;;) {
     level waittill("connecting", player);
     player.clientid = level.clientid;
     level.clientid++;

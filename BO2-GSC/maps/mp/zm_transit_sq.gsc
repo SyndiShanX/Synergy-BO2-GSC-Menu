@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\zm_transit_sq.gsc
-***************************************/
+**************************************/
 
 #include common_scripts\utility;
 #include maps\mp\_utility;
@@ -21,7 +21,7 @@ init() {
   if(level.createfx_enabled) {
     return;
   }
-  if(isdefined(level.gamedifficulty) && level.gamedifficulty == 0) {
+  if(isDefined(level.gamedifficulty) && level.gamedifficulty == 0) {
     level thread sq_easy_cleanup();
     return;
   }
@@ -30,7 +30,7 @@ init() {
   level.sq_clip = getent("sq_common_clip", "targetname");
   register_map_navcard("navcard_held_zm_transit", "navcard_held_zm_buried");
 
-  if(isdefined(level.sq_clip)) {
+  if(isDefined(level.sq_clip)) {
     level.sq_clip connectpaths();
     level.sq_clip trigger_off();
   }
@@ -103,7 +103,7 @@ sidequest_logic() {
   level thread sidequest_main();
   wait_for_buildable("sq_common");
 
-  if(!(isdefined(level.navcomputer_spawned) && level.navcomputer_spawned))
+  if(!(isDefined(level.navcomputer_spawned) && level.navcomputer_spawned))
     update_sidequest_stats("sq_transit_started");
 
   level thread navcomputer_waitfor_navcard();
@@ -113,7 +113,7 @@ sidequest_logic() {
 
   hint_said = 0;
 
-  while (!hint_said) {
+  while(!hint_said) {
     level waittill("maxi_terminal_vox");
 
     if(flag("power_on"))
@@ -126,7 +126,6 @@ sidequest_logic() {
 }
 
 complete_sidequest() {
-
 }
 
 sidequest_main() {
@@ -164,14 +163,14 @@ sidequest_main() {
     return;
   }
 
-  while (true) {
+  while(true) {
     level thread maxis_sidequest();
     flag_wait("power_on");
 
-    if(!(isdefined(level.maxcompleted) && level.maxcompleted))
+    if(!(isDefined(level.maxcompleted) && level.maxcompleted))
       update_sidequest_stats("sq_transit_maxis_reset");
 
-    if(!(isdefined(level.maxis_sq_intro_said) && level.maxis_sq_intro_said) && !(isdefined(level.maxcompleted) && level.maxcompleted)) {
+    if(!(isDefined(level.maxis_sq_intro_said) && level.maxis_sq_intro_said) && !(isDefined(level.maxcompleted) && level.maxcompleted)) {
       wait 2;
       level.maxis_sq_intro_said = 1;
       level thread maxissay("vox_maxi_power_on_0", (12072, 8496, -704), undefined, undefined, 1);
@@ -180,7 +179,7 @@ sidequest_main() {
     level thread richtofen_sidequest();
     flag_waitopen("power_on");
 
-    if(!(isdefined(level.richcompleted) && level.richcompleted))
+    if(!(isDefined(level.richcompleted) && level.richcompleted))
       update_sidequest_stats("sq_transit_rich_reset");
   }
 }
@@ -208,6 +207,7 @@ sidequest_init_tracker() {
   level.sq_progress["rich"]["C_screecher_light"] = 0;
   level.sq_progress["rich"]["C_complete"] = 0;
   level.sq_progress["rich"]["FINISHED"] = 0;
+
   if(getdvarint(#"_id_113D490F") > 0)
     level thread sidequest_debug_tracker();
 }
@@ -216,7 +216,7 @@ sidequest_debug_tracker() {
   arraymainkeys = getarraykeys(level.sq_progress);
   index = 0;
 
-  for (x = 0; x < arraymainkeys.size; x++) {
+  for(x = 0; x < arraymainkeys.size; x++) {
     arraysubkeys = getarraykeys(level.sq_progress[arraymainkeys[x]]);
 
     foreach(key in arraysubkeys) {
@@ -233,17 +233,18 @@ sidequest_debug_tracker() {
       index++;
     }
   }
+
 }
 
 sidequest_debug_tracker_update(mainkey, subkey) {
-  while (true) {
+  while(true) {
     value = level.sq_progress[mainkey][subkey];
     str = mainkey + " -- " + subkey + ": ";
 
-    if(isdefined(value) && !isint(value) && isdefined(value.classname))
+    if(isDefined(value) && !isint(value) && isDefined(value.classname))
       self settext(str + "[X]");
-    else if(isdefined(value)) {
-      if(!isint(value) && !isdefined(value.classname) && isdefined(value.targetname) && value.targetname == "screecher_escape")
+    else if(isDefined(value)) {
+      if(!isint(value) && !isDefined(value.classname) && isDefined(value.targetname) && value.targetname == "screecher_escape")
         self settext(str + "[X]");
       else
         self settext(str + value);
@@ -252,6 +253,7 @@ sidequest_debug_tracker_update(mainkey, subkey) {
 
     wait 1;
   }
+
 }
 
 generic_stage_start() {
@@ -265,7 +267,7 @@ generic_stage_complete() {
 maxis_sidequest() {
   level endon("power_on");
 
-  if(flag("power_on") || isdefined(level.maxcompleted) && level.maxcompleted) {
+  if(flag("power_on") || isDefined(level.maxcompleted) && level.maxcompleted) {
     return;
   }
   update_sidequest_stats("sq_transit_maxis_stage_1");
@@ -281,7 +283,7 @@ turbine_power_watcher(player) {
   self.powered = undefined;
   turbine_failed_vo = undefined;
 
-  while (isdefined(self)) {
+  while(isDefined(self)) {
     wait 2;
 
     if(is_true(player.turbine_power_is_on) && !is_true(player.turbine_emped))
@@ -290,7 +292,7 @@ turbine_power_watcher(player) {
       wait 2;
       self.powered = 0;
 
-      if(!isdefined(turbine_failed_vo)) {
+      if(!isDefined(turbine_failed_vo)) {
         level thread maxissay("vox_maxi_turbines_out_0", self.origin);
         turbine_failed_vo = 1;
       }
@@ -303,24 +305,24 @@ maxis_sidequest_a() {
   level.sq_progress["maxis"]["A_turbine_1"] = undefined;
   level.sq_progress["maxis"]["A_turbine_2"] = undefined;
 
-  if(!(isdefined(level.sq_progress["maxis"]["B_complete"]) && level.sq_progress["maxis"]["B_complete"]))
+  if(!(isDefined(level.sq_progress["maxis"]["B_complete"]) && level.sq_progress["maxis"]["B_complete"]))
     level.sq_progress["maxis"]["A_complete"] = 0;
 
-  while (true) {
+  while(true) {
     players = get_players();
 
     foreach(player in players) {
-      if(isdefined(player.buildableturbine) && player.buildableturbine istouching(level.sq_volume)) {
+      if(isDefined(player.buildableturbine) && player.buildableturbine istouching(level.sq_volume)) {
         level notify("maxi_terminal_vox");
         player.buildableturbine thread turbine_watch_cleanup();
 
-        if(!isdefined(level.sq_progress["maxis"]["A_turbine_1"])) {
+        if(!isDefined(level.sq_progress["maxis"]["A_turbine_1"])) {
           level.sq_progress["maxis"]["A_turbine_1"] = player.buildableturbine;
           level.sq_progress["maxis"]["A_turbine_1"] thread turbine_power_watcher(player);
           continue;
         }
 
-        if(!isdefined(level.sq_progress["maxis"]["A_turbine_2"])) {
+        if(!isDefined(level.sq_progress["maxis"]["A_turbine_2"])) {
           level.sq_progress["maxis"]["A_turbine_2"] = player.buildableturbine;
           level.sq_progress["maxis"]["A_turbine_2"] thread turbine_power_watcher(player);
         }
@@ -352,11 +354,11 @@ maxis_sidequest_a() {
 maxis_sidequest_b() {
   level endon("power_on");
 
-  while (true) {
+  while(true) {
     level waittill("stun_avogadro", avogadro);
 
-    if(isdefined(level.sq_progress["maxis"]["A_turbine_1"]) && is_true(level.sq_progress["maxis"]["A_turbine_1"].powered) && (isdefined(level.sq_progress["maxis"]["A_turbine_2"]) && is_true(level.sq_progress["maxis"]["A_turbine_2"].powered))) {
-      if(isdefined(avogadro) && avogadro istouching(level.sq_volume)) {
+    if(isDefined(level.sq_progress["maxis"]["A_turbine_1"]) && is_true(level.sq_progress["maxis"]["A_turbine_1"].powered) && (isDefined(level.sq_progress["maxis"]["A_turbine_2"]) && is_true(level.sq_progress["maxis"]["A_turbine_2"].powered))) {
+      if(isDefined(avogadro) && avogadro istouching(level.sq_volume)) {
         level notify("end_avogadro_turbines");
         break;
       }
@@ -385,25 +387,25 @@ maxis_sidequest_c() {
   turbine_2_talked = 0;
   screech_zones = getstructarray("screecher_escape", "targetname");
 
-  while (true) {
-    if(!isdefined(level.sq_progress["maxis"]["C_turbine_1"]))
+  while(true) {
+    if(!isDefined(level.sq_progress["maxis"]["C_turbine_1"]))
       level.sq_progress["maxis"]["C_screecher_1"] = undefined;
 
-    if(!isdefined(level.sq_progress["maxis"]["C_turbine_2"]))
+    if(!isDefined(level.sq_progress["maxis"]["C_turbine_2"]))
       level.sq_progress["maxis"]["C_screecher_2"] = undefined;
 
     players = get_players();
 
     foreach(player in players) {
-      if(isdefined(player.buildableturbine)) {
-        for (x = 0; x < screech_zones.size; x++) {
+      if(isDefined(player.buildableturbine)) {
+        for(x = 0; x < screech_zones.size; x++) {
           zone = screech_zones[x];
 
           if(distancesquared(player.buildableturbine.origin, zone.origin) < zone.radius * zone.radius) {
             player.buildableturbine thread turbine_watch_cleanup();
 
-            if(!isdefined(level.sq_progress["maxis"]["C_turbine_1"])) {
-              if(!isdefined(level.sq_progress["maxis"]["C_screecher_2"]) || zone != level.sq_progress["maxis"]["C_screecher_2"]) {
+            if(!isDefined(level.sq_progress["maxis"]["C_turbine_1"])) {
+              if(!isDefined(level.sq_progress["maxis"]["C_screecher_2"]) || zone != level.sq_progress["maxis"]["C_screecher_2"]) {
                 level.sq_progress["maxis"]["C_turbine_1"] = player.buildableturbine;
                 level.sq_progress["maxis"]["C_screecher_1"] = zone;
               }
@@ -411,8 +413,8 @@ maxis_sidequest_c() {
               continue;
             }
 
-            if(!isdefined(level.sq_progress["maxis"]["C_turbine_2"])) {
-              if(!isdefined(level.sq_progress["maxis"]["C_screecher_1"]) || zone != level.sq_progress["maxis"]["C_screecher_1"]) {
+            if(!isDefined(level.sq_progress["maxis"]["C_turbine_2"])) {
+              if(!isDefined(level.sq_progress["maxis"]["C_screecher_1"]) || zone != level.sq_progress["maxis"]["C_screecher_1"]) {
                 level.sq_progress["maxis"]["C_turbine_2"] = player.buildableturbine;
                 level.sq_progress["maxis"]["C_screecher_2"] = zone;
               }
@@ -425,12 +427,12 @@ maxis_sidequest_c() {
     if(get_how_many_progressed_from("maxis", "C_turbine_1", "C_turbine_2") == 1) {
       zone = undefined;
 
-      if(isdefined(level.sq_progress["maxis"]["C_turbine_1"]))
+      if(isDefined(level.sq_progress["maxis"]["C_turbine_1"]))
         zone = level.sq_progress["maxis"]["C_screecher_1"];
       else
         zone = level.sq_progress["maxis"]["C_screecher_2"];
 
-      if(isdefined(zone) && !turbine_1_talked) {
+      if(isDefined(zone) && !turbine_1_talked) {
         turbine_1_talked = 1;
         level thread maxissay("vox_maxi_turbine_1light_0", zone.origin);
       }
@@ -439,12 +441,12 @@ maxis_sidequest_c() {
     if(get_how_many_progressed_from("maxis", "C_turbine_1", "C_turbine_2") == 2) {
       zone = undefined;
 
-      if(isdefined(level.sq_progress["maxis"]["C_turbine_1"]))
+      if(isDefined(level.sq_progress["maxis"]["C_turbine_1"]))
         zone = level.sq_progress["maxis"]["C_screecher_1"];
       else
         zone = level.sq_progress["maxis"]["C_screecher_2"];
 
-      if(isdefined(zone)) {
+      if(isDefined(zone)) {
         if(level.sq_progress["maxis"]["B_complete"] && level.sq_progress["maxis"]["A_complete"]) {
           if(!turbine_2_talked) {
             level thread maxissay("vox_maxi_turbine_2light_on_0", zone.origin);
@@ -476,10 +478,10 @@ maxis_sidequest_complete() {
   turbinescriptnoteworthy1 = undefined;
   turbinescriptnoteworthy2 = undefined;
 
-  if(isdefined(level.sq_progress["maxis"]["C_screecher_1"]) && isdefined(level.sq_progress["maxis"]["C_screecher_1"].script_noteworthy))
+  if(isDefined(level.sq_progress["maxis"]["C_screecher_1"]) && isDefined(level.sq_progress["maxis"]["C_screecher_1"].script_noteworthy))
     turbinescriptnoteworthy1 = level.sq_progress["maxis"]["C_screecher_1"].script_noteworthy;
 
-  if(isdefined(level.sq_progress["maxis"]["C_screecher_2"]) && isdefined(level.sq_progress["maxis"]["C_screecher_2"].script_noteworthy))
+  if(isDefined(level.sq_progress["maxis"]["C_screecher_2"]) && isDefined(level.sq_progress["maxis"]["C_screecher_2"].script_noteworthy))
     turbinescriptnoteworthy2 = level.sq_progress["maxis"]["C_screecher_2"].script_noteworthy;
 
   update_sidequest_stats("sq_transit_maxis_complete");
@@ -488,7 +490,7 @@ maxis_sidequest_complete() {
   level.maxcompleted = 1;
   clientnotify("sq_kfx");
 
-  if(isdefined(level.richcompleted) && level.richcompleted)
+  if(isDefined(level.richcompleted) && level.richcompleted)
     level clientnotify("sq_krt");
 
   wait 1;
@@ -507,10 +509,10 @@ maxis_sidequest_complete() {
 richtofen_sidequest() {
   level endon("power_turned_off");
 
-  if(!flag("power_on") || isdefined(level.richcompleted) && level.richcompleted) {
+  if(!flag("power_on") || isDefined(level.richcompleted) && level.richcompleted) {
     return;
   }
-  if(!(isdefined(level.richtofen_sq_intro_said) && level.richtofen_sq_intro_said))
+  if(!(isDefined(level.richtofen_sq_intro_said) && level.richtofen_sq_intro_said))
     level thread wait_for_richtoffen_intro();
 
   update_sidequest_stats("sq_transit_rich_stage_1");
@@ -522,7 +524,7 @@ richtofen_sidequest() {
 richtofen_sidequest_power_state() {
   flag_wait("power_on");
 
-  while (true) {
+  while(true) {
     flag_waitopen("power_on");
     level notify("power_turned_off");
     level notify("power_off");
@@ -544,31 +546,31 @@ richtofen_sidequest_a() {
   ric_fail_out = undefined;
   ric_fail_heat = undefined;
 
-  if(!(isdefined(level.buildables_built["jetgun_zm"]) && level.buildables_built["jetgun_zm"]))
+  if(!(isDefined(level.buildables_built["jetgun_zm"]) && level.buildables_built["jetgun_zm"]))
     wait_for_buildable("jetgun_zm");
 
   level.sq_progress["rich"]["A_jetgun_built"] = 1;
 
-  while (true) {
+  while(true) {
     level.sq_volume waittill("trigger", who);
 
-    if(isplayer(who) && isalive(who) && who getcurrentweapon() == "jetgun_zm" && (!isdefined(who.jetgun_heatval) || who.jetgun_heatval < 1)) {
+    if(isplayer(who) && isalive(who) && who getcurrentweapon() == "jetgun_zm" && (!isDefined(who.jetgun_heatval) || who.jetgun_heatval < 1)) {
       who thread left_sq_area_watcher(level.sq_volume);
       notifystring = who waittill_any_return("disconnect", "weapon_change", "death", "player_downed", "jetgun_overheated", "left_sg_area");
 
-      if(notifystring == "jetgun_overheated" && isdefined(who) && who istouching(level.sq_volume)) {
+      if(notifystring == "jetgun_overheated" && isDefined(who) && who istouching(level.sq_volume)) {
         self.checking_jetgun_fire = 0;
         break;
       } else {
-        if(!isdefined(ric_fail_out)) {
+        if(!isDefined(ric_fail_out)) {
           ric_fail_out = 1;
           level thread richtofensay("vox_zmba_sidequest_jet_low_0", undefined, 0, 10);
         }
 
         self.checking_jetgun_fire = 0;
       }
-    } else if(isplayer(who) && isalive(who) && who getcurrentweapon() == "jetgun_zm" && (isdefined(who.jetgun_heatval) && who.jetgun_heatval > 1)) {
-      if(!isdefined(ric_fail_heat)) {
+    } else if(isplayer(who) && isalive(who) && who getcurrentweapon() == "jetgun_zm" && (isDefined(who.jetgun_heatval) && who.jetgun_heatval > 1)) {
+      if(!isDefined(ric_fail_heat)) {
         ric_fail_heat = 1;
         level thread richtofensay("vox_zmba_sidequest_jet_low_0", undefined, 0, 10);
       }
@@ -584,7 +586,7 @@ richtofen_sidequest_a() {
 }
 
 left_sq_area_watcher(volume) {
-  while (self istouching(volume))
+  while(self istouching(volume))
     wait 0.5;
 
   self notify("left_sg_area");
@@ -595,7 +597,7 @@ richtofen_sidequest_b() {
   level.sq_progress["rich"]["B_zombies_tower"] = 25;
   level thread lure_zombies_to_tower_hint();
 
-  while (level.sq_progress["rich"]["B_zombies_tower"] > 0) {
+  while(level.sq_progress["rich"]["B_zombies_tower"] > 0) {
     level waittill("zombie_died_in_sq_volume");
 
     if(!level.sq_progress["rich"]["A_complete"]) {
@@ -606,7 +608,6 @@ richtofen_sidequest_b() {
     level.sq_progress["rich"]["B_zombies_tower"]--;
 
     if(level.sq_progress["rich"]["B_zombies_tower"] > 0) {
-
     }
   }
 
@@ -622,7 +623,7 @@ lure_zombies_to_tower_hint() {
   zombie_train = 0;
   lure_distance = 722500;
 
-  while (!zombie_train) {
+  while(!zombie_train) {
     zombies = getaiarray();
     counter = 0;
 
@@ -648,7 +649,7 @@ richtofen_sidequest_c() {
   level thread screecher_light_on_sq();
   level.sq_richtofen_c_screecher_lights = [];
 
-  while (true) {
+  while(true) {
     level waittill("safety_light_power_off", screecher_zone);
 
     if(!level.sq_progress["rich"]["A_complete"] || !level.sq_progress["rich"]["B_complete"]) {
@@ -663,7 +664,7 @@ richtofen_sidequest_c() {
       break;
     }
 
-    if(!(isdefined(level.checking_for_richtofen_c_failure) && level.checking_for_richtofen_c_failure))
+    if(!(isDefined(level.checking_for_richtofen_c_failure) && level.checking_for_richtofen_c_failure))
       level thread check_for_richtofen_c_failure();
   }
 
@@ -675,7 +676,7 @@ richtofen_sidequest_c() {
 }
 
 check_for_richtofen_c_failure() {
-  if(!(isdefined(level.checking_for_richtofen_c_failure) && level.checking_for_richtofen_c_failure)) {
+  if(!(isDefined(level.checking_for_richtofen_c_failure) && level.checking_for_richtofen_c_failure)) {
     level.checking_for_richtofen_c_failure = 1;
     wait 5;
 
@@ -689,7 +690,7 @@ check_for_richtofen_c_failure() {
 }
 
 screecher_light_on_sq() {
-  while (true) {
+  while(true) {
     level waittill("safety_light_power_on", screecher_zone);
     arrayremovevalue(level.sq_richtofen_c_screecher_lights, screecher_zone);
 
@@ -712,7 +713,7 @@ richtofen_sidequest_complete() {
   level.richcompleted = 1;
   clientnotify("sq_kfx");
 
-  if(isdefined(level.maxcompleted) && level.maxcompleted)
+  if(isDefined(level.maxcompleted) && level.maxcompleted)
     level clientnotify("sq_kmt");
 
   wait 1;
@@ -729,7 +730,7 @@ richtofen_sidequest_complete() {
 }
 
 set_screecher_zone_origin(script_noteworthy) {
-  if(!isdefined(script_noteworthy)) {
+  if(!isDefined(script_noteworthy)) {
     return;
   }
   switch (script_noteworthy) {
@@ -761,7 +762,7 @@ set_screecher_zone_origin(script_noteworthy) {
 }
 
 turbine_watch_cleanup() {
-  if(isdefined(self.turbine_watch_cleanup) && self.turbine_watch_cleanup) {
+  if(isDefined(self.turbine_watch_cleanup) && self.turbine_watch_cleanup) {
     return;
   }
   self.turbine_watch_cleanup = 1;
@@ -770,16 +771,16 @@ turbine_watch_cleanup() {
 }
 
 get_how_many_progressed_from(story, a, b) {
-  if(isdefined(level.sq_progress[story][a]) && !isdefined(level.sq_progress[story][b]) || !isdefined(level.sq_progress[story][a]) && isdefined(level.sq_progress[story][b]))
+  if(isDefined(level.sq_progress[story][a]) && !isDefined(level.sq_progress[story][b]) || !isDefined(level.sq_progress[story][a]) && isDefined(level.sq_progress[story][b]))
     return 1;
-  else if(isdefined(level.sq_progress[story][a]) && isdefined(level.sq_progress[story][b]))
+  else if(isDefined(level.sq_progress[story][a]) && isDefined(level.sq_progress[story][b]))
     return 2;
 
   return 0;
 }
 
 sq_zombie_death_event_response() {
-  if(distancesquared(self.origin, level.sq_volume.origin) < 176400 && isdefined(self.damagemod)) {
+  if(distancesquared(self.origin, level.sq_volume.origin) < 176400 && isDefined(self.damagemod)) {
     mod = self.damagemod;
 
     if(mod == "MOD_GRENADE" || mod == "MOD_GRENADE_SPLASH" || mod == "MOD_EXPLOSIVE" || mod == "MOD_EXPLOSIVE_SPLASH" || mod == "MOD_PROJECTILE" || mod == "MOD_PROJECTILE_SPLASH")
@@ -805,7 +806,7 @@ update_sidequest_stats(stat_name) {
     else if(stat_name == "navcard_applied_zm_transit") {
       player maps\mp\zombies\_zm_stats::set_global_stat(level.navcard_needed, 0);
       thread sq_refresh_player_navcard_hud();
-    } else if(!(isdefined(player.transit_sq_started) && player.transit_sq_started)) {
+    } else if(!(isDefined(player.transit_sq_started) && player.transit_sq_started)) {
       continue;
     }
     if(rich_complete) {
@@ -827,29 +828,29 @@ richtofensay(vox_line, intro, ignore_power_state, time) {
   level endon("end_game");
   level endon("intermission");
 
-  if(isdefined(level.intermission) && level.intermission) {
+  if(isDefined(level.intermission) && level.intermission) {
     return;
   }
-  if(isdefined(level.richcompleted) && level.richcompleted) {
+  if(isDefined(level.richcompleted) && level.richcompleted) {
     return;
   }
   level endon("richtofen_c_complete");
 
-  if(!isdefined(time))
+  if(!isDefined(time))
     time = 45;
 
-  while (isdefined(level.richtofen_talking_to_samuel) && level.richtofen_talking_to_samuel || !(isdefined(level.richtofen_sq_intro_said) && level.richtofen_sq_intro_said))
+  while(isDefined(level.richtofen_talking_to_samuel) && level.richtofen_talking_to_samuel || !(isDefined(level.richtofen_sq_intro_said) && level.richtofen_sq_intro_said))
     wait 1;
 
-  if(isdefined(level.rich_sq_player) && is_player_valid(level.rich_sq_player)) {
+  if(isDefined(level.rich_sq_player) && is_player_valid(level.rich_sq_player)) {
     iprintlnbold("Richtoffen Says: " + vox_line);
 
-    if((!flag("power_on") || !flag("switches_on")) && !(isdefined(ignore_power_state) && ignore_power_state)) {
+    if((!flag("power_on") || !flag("switches_on")) && !(isDefined(ignore_power_state) && ignore_power_state)) {
       return;
     }
     level.rich_sq_player playsoundtoplayer(vox_line, level.rich_sq_player);
 
-    if(!(isdefined(level.richtofen_talking_to_samuel) && level.richtofen_talking_to_samuel))
+    if(!(isDefined(level.richtofen_talking_to_samuel) && level.richtofen_talking_to_samuel))
       level thread richtofen_talking(time);
   }
 }
@@ -860,7 +861,7 @@ richtofen_talking(time) {
   wait(time);
   level.richtofen_talking_to_samuel = 0;
 
-  if(isdefined(level.rich_sq_player))
+  if(isDefined(level.rich_sq_player))
     level.rich_sq_player.dontspeak = 0;
 }
 
@@ -868,22 +869,23 @@ maxissay(line, org, playonent, playonenttag, ignore_power_state) {
   level endon("end_game");
   level endon("intermission");
 
-  if(isdefined(level.intermission) && level.intermission) {
+  if(isDefined(level.intermission) && level.intermission) {
     return;
   }
-  if(isdefined(level.maxcompleted) && level.maxcompleted) {
+  if(isDefined(level.maxcompleted) && level.maxcompleted) {
     return;
   }
-  if((flag("power_on") || flag("switches_on")) && !(isdefined(ignore_power_state) && ignore_power_state)) {
+  if((flag("power_on") || flag("switches_on")) && !(isDefined(ignore_power_state) && ignore_power_state)) {
     return;
   }
-  while (isdefined(level.maxis_talking) && level.maxis_talking)
+  while(isDefined(level.maxis_talking) && level.maxis_talking)
     wait 0.05;
 
   level.maxis_talking = 1;
+
   iprintlnbold("Maxis Says: " + line);
 
-  if(isdefined(playonent))
+  if(isDefined(playonent))
     playonent playsoundontag(line, playonenttag);
   else
     playsoundatposition(line, org);
@@ -896,11 +898,11 @@ wait_for_richtoffen_intro() {
   level endon("intermission");
   power_occupied = 1;
 
-  while (power_occupied) {
+  while(power_occupied) {
     inzone = 0;
 
     foreach(zone in level.power_station_zones) {
-      if(isdefined(maps\mp\zombies\_zm_zonemgr::player_in_zone(zone)) && maps\mp\zombies\_zm_zonemgr::player_in_zone(zone))
+      if(isDefined(maps\mp\zombies\_zm_zonemgr::player_in_zone(zone)) && maps\mp\zombies\_zm_zonemgr::player_in_zone(zone))
         inzone = 1;
     }
 
@@ -912,10 +914,10 @@ wait_for_richtoffen_intro() {
 
   wait 5;
 
-  if(!isdefined(level.rich_sq_player) || (!flag("power_on") || !flag("switches_on"))) {
+  if(!isDefined(level.rich_sq_player) || (!flag("power_on") || !flag("switches_on"))) {
     return;
   }
-  if(isdefined(level.intermission) && level.intermission) {
+  if(isDefined(level.intermission) && level.intermission) {
     return;
   }
   level.rich_sq_player playsoundtoplayer("vox_zmba_sidequest_power_on_0", level.rich_sq_player);
@@ -926,7 +928,7 @@ wait_for_richtoffen_intro() {
 survivor_vox() {
   initiated = 0;
 
-  while (!initiated) {
+  while(!initiated) {
     players = get_players();
 
     foreach(player in players) {
@@ -936,7 +938,7 @@ survivor_vox() {
           start_time = gettime();
           end_time = start_time + 5000;
 
-          while (player usebuttonpressed() && distance2dsquared(player.origin, (8000, -6656, 160)) < 1225 && is_player_valid(player)) {
+          while(player usebuttonpressed() && distance2dsquared(player.origin, (8000, -6656, 160)) < 1225 && is_player_valid(player)) {
             if(gettime() > end_time)
               initiated = 1;
 
@@ -954,7 +956,7 @@ survivor_vox() {
   playsoundatposition("zmb_weap_wall", (8000, -6656, 160));
   i = -1;
 
-  while (true) {
+  while(true) {
     players = get_players();
 
     foreach(player in players) {
@@ -991,13 +993,13 @@ screecher_light_hint() {
   level endon("power_off");
   level endon("richtofen_c_complete");
 
-  while (!level.sq_progress["rich"]["A_jetgun_tower"])
+  while(!level.sq_progress["rich"]["A_jetgun_tower"])
     wait 1;
 
   screech_zones = getstructarray("screecher_escape", "targetname");
   dist = 122500;
 
-  while (true) {
+  while(true) {
     count = 0;
     players = get_players();
 
@@ -1023,19 +1025,19 @@ maxi_near_corn_hint() {
   level endon("power_on");
   say_hint = 0;
 
-  while (!say_hint) {
+  while(!say_hint) {
     players = get_players();
 
     foreach(player in players) {
       if(!player maps\mp\zombies\_zm_zonemgr::entity_in_zone("zone_amb_cornfield")) {
         continue;
       }
-      if(isdefined(player.buildableturbine) && (isdefined(player.buildableturbine.equipment_can_move) && player.buildableturbine.equipment_can_move) && (isdefined(player.isonbus) && player.isonbus)) {
+      if(isDefined(player.buildableturbine) && (isDefined(player.buildableturbine.equipment_can_move) && player.buildableturbine.equipment_can_move) && (isDefined(player.isonbus) && player.isonbus)) {
         say_hint = 1;
         continue;
       }
 
-      if(isdefined(player.buildableturbine) && (isdefined(player.isonbus) && player.isonbus))
+      if(isDefined(player.buildableturbine) && (isDefined(player.isonbus) && player.isonbus))
         say_hint = 1;
     }
 
@@ -1046,18 +1048,18 @@ maxi_near_corn_hint() {
 }
 
 avogadro_far_from_tower() {
-  if(isdefined(level.maxcompleted) && level.maxcompleted) {
+  if(isDefined(level.maxcompleted) && level.maxcompleted) {
     return;
   }
   level waittill("power_on");
   level endon("power_on");
   say_hint = 0;
 
-  while (!say_hint) {
+  while(!say_hint) {
     players = get_players();
 
     foreach(player in players) {
-      if(!(isdefined(player.isonbus) && player.isonbus)) {
+      if(!(isDefined(player.isonbus) && player.isonbus)) {
         continue;
       }
       if(!avogadro_near_tower() && player maps\mp\zombies\_zm_zonemgr::entity_in_zone("zone_amb_cornfield"))
@@ -1071,14 +1073,14 @@ avogadro_far_from_tower() {
 }
 
 avogadro_near_tower() {
-  if(isdefined(level.avogadro) && level.avogadro maps\mp\zombies\_zm_zonemgr::entity_in_zone("zone_amb_cornfield"))
+  if(isDefined(level.avogadro) && level.avogadro maps\mp\zombies\_zm_zonemgr::entity_in_zone("zone_amb_cornfield"))
     return true;
 
   return false;
 }
 
 avogadro_stab_watch() {
-  if(isdefined(level.maxcompleted) && level.maxcompleted) {
+  if(isDefined(level.maxcompleted) && level.maxcompleted) {
     return;
   }
   level waittill("avogadro_stabbed", avogadro);
@@ -1088,14 +1090,14 @@ avogadro_stab_watch() {
 }
 
 avogadro_is_near_tower() {
-  if(isdefined(level.maxcompleted) && level.maxcompleted) {
+  if(isDefined(level.maxcompleted) && level.maxcompleted) {
     return;
   }
   level waittill("power_on");
   level endon("power_on");
   say_hint = 0;
 
-  while (!say_hint) {
+  while(!say_hint) {
     if(avogadro_near_tower())
       say_hint = 1;
 
@@ -1106,7 +1108,7 @@ avogadro_is_near_tower() {
 }
 
 avogadro_at_tower() {
-  if(isdefined(level.avogadro) && level.avogadro istouching(level.sq_volume))
+  if(isDefined(level.avogadro) && level.avogadro istouching(level.sq_volume))
     return true;
 
   return false;
@@ -1119,7 +1121,7 @@ droppowerup(story) {
   mintime = 240;
   maxtime = 720;
 
-  while (true) {
+  while(true) {
     trail = spawn("script_model", center_struct.origin);
     trail setmodel("tag_origin");
     wait 0.5;
@@ -1143,7 +1145,7 @@ droppoweruptemptation(story, origin) {
   rotation = 0;
   temptation_array = array_randomize(temptation_array);
 
-  while (isdefined(powerup)) {
+  while(isDefined(powerup)) {
     powerup maps\mp\zombies\_zm_powerups::powerup_setup(temptation_array[temptation_index]);
 
     if(first_time) {
@@ -1219,16 +1221,16 @@ init_navcomputer() {
   level.navcomputer_spawned = 1;
   get_players()[0] maps\mp\zombies\_zm_buildables::player_finish_buildable(level.sq_buildable.buildablezone);
 
-  if(isdefined(level.sq_buildable) && isdefined(level.sq_buildable.model)) {
+  if(isDefined(level.sq_buildable) && isDefined(level.sq_buildable.model)) {
     buildable = level.sq_buildable.buildablezone;
 
-    for (i = 0; i < buildable.pieces.size; i++) {
-      if(isdefined(buildable.pieces[i].model)) {
+    for(i = 0; i < buildable.pieces.size; i++) {
+      if(isDefined(buildable.pieces[i].model)) {
         buildable.pieces[i].model delete();
         maps\mp\zombies\_zm_unitrigger::unregister_unitrigger(buildable.pieces[i].unitrigger);
       }
 
-      if(isdefined(buildable.pieces[i].part_name)) {
+      if(isDefined(buildable.pieces[i].part_name)) {
         buildable.stub.model notsolid();
         buildable.stub.model show();
         buildable.stub.model showpart(buildable.pieces[i].part_name);
@@ -1247,7 +1249,7 @@ navcomputer_waitfor_navcard() {
   navcomputer_use_trig sethintstring(&"ZOMBIE_NAVCARD_USE");
   navcomputer_use_trig triggerignoreteam();
 
-  while (true) {
+  while(true) {
     navcomputer_use_trig waittill("trigger", who);
 
     if(isplayer(who) && is_player_valid(who)) {
@@ -1268,7 +1270,7 @@ navcomputer_waitfor_navcard() {
 avogadro_stunned_vo() {
   level endon("maxis_stage_b");
 
-  while (true) {
+  while(true) {
     level waittill("stun_avogadro", avogadro);
 
     if(avogadro maps\mp\zombies\_zm_zonemgr::entity_in_zone("zone_prr")) {
@@ -1279,7 +1281,7 @@ avogadro_stunned_vo() {
 }
 
 sq_refresh_player_navcard_hud() {
-  if(!isdefined(level.navcards)) {
+  if(!isDefined(level.navcards)) {
     return;
   }
   players = get_players();
@@ -1287,10 +1289,10 @@ sq_refresh_player_navcard_hud() {
   foreach(player in players) {
     navcard_bits = 0;
 
-    for (i = 0; i < level.navcards.size; i++) {
+    for(i = 0; i < level.navcards.size; i++) {
       hasit = player maps\mp\zombies\_zm_stats::get_global_stat(level.navcards[i]);
 
-      if(isdefined(player.navcard_grabbed) && player.navcard_grabbed == level.navcards[i])
+      if(isDefined(player.navcard_grabbed) && player.navcard_grabbed == level.navcards[i])
         hasit = 1;
 
       if(hasit)

@@ -99,26 +99,26 @@ teamhassatellite(team) {
 
 useradaritem(hardpointtype, team, displaymessage) {
   team = self.team;
-  assert(isdefined(level.players));
+  assert(isDefined(level.players));
   self maps\mp\killstreaks\_killstreaks::playkillstreakstartdialog(hardpointtype, team);
 
   if(level.teambased) {
-    if(!isdefined(level.spyplane[team]))
+    if(!isDefined(level.spyplane[team]))
       level.spyplanetype[team] = 0;
 
     currenttypespyplane = level.spyplanetype[team];
 
-    if(!isdefined(level.satellitetype[team]))
+    if(!isDefined(level.satellitetype[team]))
       level.satellitetype[team] = 0;
 
     currenttypesatellite = level.satellitetype[team];
   } else {
-    if(!isdefined(self.pers["spyplaneType"]))
+    if(!isDefined(self.pers["spyplaneType"]))
       self.pers["spyplaneType"] = 0;
 
     currenttypespyplane = self.pers["spyplaneType"];
 
-    if(!isdefined(self.pers["satelliteType"]))
+    if(!isDefined(self.pers["satelliteType"]))
       self.pers["satelliteType"] = 0;
 
     currenttypesatellite = self.pers["satelliteType"];
@@ -159,7 +159,7 @@ useradaritem(hardpointtype, team, displaymessage) {
   }
 
   if(displaymessage) {
-    if(isdefined(level.killstreaks[hardpointtype]) && isdefined(level.killstreaks[hardpointtype].inboundtext))
+    if(isDefined(level.killstreaks[hardpointtype]) && isDefined(level.killstreaks[hardpointtype].inboundtext))
       level thread maps\mp\_popups::displaykillstreakteammessagetoall(hardpointtype, self);
   }
 

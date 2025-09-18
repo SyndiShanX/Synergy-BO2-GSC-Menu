@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\mp_frostbite.gsc
-***************************************/
+**************************************/
 
 #include maps\mp\_utility;
 #include maps\mp\mp_frostbite_fx;
@@ -115,7 +115,7 @@ levelspawndvars(reset_dvars) {
 }
 
 on_player_killed(einflictor, attacker, idamage, smeansofdeath, sweapon, vdir, shitloc, psoffsettime, deathanimduration) {
-  if(isdefined(smeansofdeath) && smeansofdeath == "MOD_TRIGGER_HURT") {
+  if(isDefined(smeansofdeath) && smeansofdeath == "MOD_TRIGGER_HURT") {
     depth = self depthinwater();
 
     if(depth > 0) {
@@ -147,7 +147,7 @@ glass_node_think(node) {
   ent disconnectpaths();
   ent.origin = ent.origin - vectorscale((0, 0, 1), 64.0);
 
-  for (;;) {
+  for(;;) {
     level waittill("glass_smash", origin);
 
     if(distancesquared(origin, node.origin) < 65536) {
@@ -160,7 +160,7 @@ glass_node_think(node) {
 spawnkilltrigger() {
   trigger = spawn("trigger_radius", (536, -1304, -104), 0, 256, 128);
 
-  while (true) {
+  while(true) {
     trigger waittill("trigger", player);
     player dodamage(player.health * 2, trigger.origin, trigger, trigger, "none", "MOD_SUICIDE", 0, "lava_mp");
   }

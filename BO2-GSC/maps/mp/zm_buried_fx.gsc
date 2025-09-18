@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\zm_buried_fx.gsc
-***************************************/
+**************************************/
 
 #include maps\mp\_utility;
 #include maps\mp\createfx\zm_buried_fx;
@@ -29,7 +29,7 @@ precache_scripted_fx() {
     level._effect["lava_burning"] = loadfx("env/fire/fx_fire_lava_player_torso");
   }
 
-  if(isdefined(0) && 0) {
+  if(isDefined(0) && 0) {
     level._effect["player_3rd_spotlight_lite"] = loadfx("maps/zombie_buried/fx_buried_spot_flkr_lite");
     level._effect["player_3rd_spotlight_med"] = loadfx("maps/zombie_buried/fx_buried_spot_flkr_med");
     level._effect["player_3rd_spotlight_high"] = loadfx("maps/zombie_buried/fx_buried_spot_flkr_hvy");

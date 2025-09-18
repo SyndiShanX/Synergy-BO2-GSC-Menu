@@ -74,7 +74,9 @@ init_alcatraz_zipline() {
   level.gondola_chains_fxanims["gondola_chains_idle"] = % fxanim_zom_al_gondola_chains_idle_anim;
   level.gondola_chains_fxanims["gondola_chains_end"] = % fxanim_zom_al_gondola_chains_end_anim;
   gondola_lights_red();
+
   level thread debug_power_gondola_on();
+
   str_notify = level waittill_any_array_return(array("gondola_powered_on_roof", "gondola_powered_on_docks"));
 
   if(str_notify == "gondola_powered_on_roof") {
@@ -95,7 +97,7 @@ turn_off_opposite_side_gondola_shockbox(str_notify_opposite) {
   a_e_afterlife_interacts = getentarray("afterlife_interact", "targetname");
 
   foreach(shockbox in a_e_afterlife_interacts) {
-    if(isdefined(shockbox.script_string)) {
+    if(isDefined(shockbox.script_string)) {
       if(shockbox.script_string == str_notify_opposite)
         shockbox notify("damage", 1, level);
     }
@@ -190,7 +192,7 @@ zipline_move_trigger_think() {
   self.is_available = 1;
   self hint_string("");
 
-  while (true) {
+  while(true) {
     flag_wait("gondola_at_" + self.script_string);
     self hint_string(&"ZM_PRISON_MOVE_GONDOLA", self.cost);
     self waittill("trigger", who);
@@ -198,7 +200,7 @@ zipline_move_trigger_think() {
     if(who in_revive_trigger()) {
       continue;
     }
-    if(!isdefined(self.is_available)) {
+    if(!isDefined(self.is_available)) {
       continue;
     }
     if(is_player_valid(who)) {
@@ -249,7 +251,7 @@ zipline_call_trigger_think() {
   else if(self.script_string == "docks")
     str_gondola_loc = "roof";
 
-  while (true) {
+  while(true) {
     self sethintstring("");
     flag_wait("gondola_at_" + str_gondola_loc);
     self notify("available");
@@ -259,7 +261,7 @@ zipline_call_trigger_think() {
     if(who in_revive_trigger()) {
       continue;
     }
-    if(!isdefined(self.is_available)) {
+    if(!isDefined(self.is_available)) {
       continue;
     }
     if(is_player_valid(who)) {
@@ -295,7 +297,7 @@ zipline_call_trigger_think() {
 }
 
 move_gondola(b_suppress_doors_close) {
-  if(!isdefined(b_suppress_doors_close))
+  if(!isDefined(b_suppress_doors_close))
     b_suppress_doors_close = 0;
 
   level clientnotify("sndGS");
@@ -322,7 +324,7 @@ move_gondola(b_suppress_doors_close) {
 
   flag_clear("gondola_at_" + e_gondola.location);
 
-  if(!(isdefined(b_suppress_doors_close) && b_suppress_doors_close))
+  if(!(isDefined(b_suppress_doors_close) && b_suppress_doors_close))
     e_gondola gondola_doors_move(e_gondola.location, -1);
 
   level notify("gondola_moving");
@@ -347,7 +349,7 @@ move_gondola(b_suppress_doors_close) {
       level thread maps\mp\zombies\_zm_audio::sndmusicstingerevent("gondola", player);
     }
 
-    if(isdefined(player.e_afterlife_corpse) && player.e_afterlife_corpse istouching(t_ride))
+    if(isDefined(player.e_afterlife_corpse) && player.e_afterlife_corpse istouching(t_ride))
       player.e_afterlife_corpse thread link_corpses_to_gondola(e_gondola);
   }
 
@@ -368,7 +370,7 @@ move_gondola(b_suppress_doors_close) {
   a_players = getplayers();
 
   foreach(player in a_players) {
-    if(isdefined(player.is_on_gondola) && player.is_on_gondola) {
+    if(isDefined(player.is_on_gondola) && player.is_on_gondola) {
       player setclientfieldtoplayer("rumble_gondola", 0);
       player.is_on_gondola = 0;
     }
@@ -496,7 +498,7 @@ check_for_death_on_gondola(e_gondola) {
 link_corpses_to_gondola(e_gondola) {
   e_gondola endon("movedone");
 
-  if(isdefined(self))
+  if(isDefined(self))
     self linkto(e_gondola);
 }
 
@@ -504,7 +506,7 @@ create_gondola_poi() {
   a_players = getplayers();
 
   foreach(player in a_players) {
-    if(!(isdefined(player.is_on_gondola) && player.is_on_gondola))
+    if(!(isDefined(player.is_on_gondola) && player.is_on_gondola))
       return;
   }
 
@@ -516,7 +518,7 @@ create_gondola_poi() {
 }
 
 tear_down_gondola_poi() {
-  if(isdefined(self.poi)) {
+  if(isDefined(self.poi)) {
     remove_poi_attractor(self.poi);
     self.poi delete();
   }
@@ -531,7 +533,7 @@ gondola_chain_fx_anim() {
   wait(n_start_time);
   m_chains setanim(level.gondola_chains_fxanims["gondola_chains_idle"], 1, 0.1, 1);
 
-  while (flag("gondola_in_motion"))
+  while(flag("gondola_in_motion"))
     wait(n_idle_time);
 
   m_chains setanim(level.gondola_chains_fxanims["gondola_chains_end"], 1, 0.1, 1);
@@ -540,7 +542,7 @@ gondola_chain_fx_anim() {
 gondola_physics_explosion(n_move_time) {
   self endon("movedone");
 
-  for (i = 0; i < 2; i++) {
+  for(i = 0; i < 2; i++) {
     physicsexplosionsphere(self.origin, 1000, 0.1, 0.1);
     wait(n_move_time / 2);
   }
@@ -562,7 +564,7 @@ gondola_cooldown() {
 }
 
 gondola_moving_vo() {
-  if(isdefined(level.custom_gondola_moving_vo_func)) {
+  if(isDefined(level.custom_gondola_moving_vo_func)) {
     self thread[[level.custom_gondola_moving_vo_func]]();
     return;
   }
@@ -576,7 +578,7 @@ gondola_moving_vo() {
 }
 
 hint_string(string, cost) {
-  if(isdefined(cost))
+  if(isDefined(cost))
     self sethintstring(string, cost);
   else
     self sethintstring(string);
@@ -632,7 +634,7 @@ gondola_hostmigration() {
   level notify("gondola_hostmigration");
   level endon("gondola_hostmigration");
 
-  while (true) {
+  while(true) {
     level waittill("host_migration_begin");
     level.hm_link_origins = [];
     a_players = getplayers();
@@ -649,7 +651,7 @@ gondola_hostmigration() {
     foreach(e_origin in level.hm_link_origins)
     e_origin delete();
 
-    if(!(isdefined(level.e_gondola.is_moving) && level.e_gondola.is_moving)) {
+    if(!(isDefined(level.e_gondola.is_moving) && level.e_gondola.is_moving)) {
       if(level.e_gondola.location == "roof") {
         top_node_r = getnode("nd_gond_top_r", "targetname");
         top_node_r node_add_connection(getnode("nd_on_top_r", "targetname"));
@@ -665,7 +667,7 @@ link_player_to_gondola() {
   self endon("death");
   self endon("disconnect");
 
-  if(!isdefined(self)) {
+  if(!isDefined(self)) {
     return;
   }
   if(self is_player_on_gondola()) {
@@ -679,7 +681,7 @@ link_player_to_gondola() {
 
 node_add_connection(nd_node) {
   if(!nodesarelinked(self, nd_node)) {
-    if(!isdefined(self.a_node_path_connections))
+    if(!isDefined(self.a_node_path_connections))
       self.a_node_path_connections = [];
 
     link_nodes(self, nd_node);
@@ -689,8 +691,8 @@ node_add_connection(nd_node) {
 }
 
 node_disconnect_from_path() {
-  if(isdefined(self.a_node_path_connections)) {
-    for (i = 0; i < self.a_node_path_connections.size; i++) {
+  if(isDefined(self.a_node_path_connections)) {
+    for(i = 0; i < self.a_node_path_connections.size; i++) {
       nd_node = self.a_node_path_connections[i];
       unlink_nodes(self, nd_node);
       unlink_nodes(nd_node, self);
@@ -705,18 +707,18 @@ check_when_gondola_moves_if_groundent_is_undefined(e_gondola) {
   a_zombies = getaiarray(level.zombie_team);
   a_zombies = get_array_of_closest(e_gondola.origin, a_zombies);
 
-  for (i = 0; i < a_zombies.size; i++) {
+  for(i = 0; i < a_zombies.size; i++) {
     if(distancesquared(e_gondola.origin, a_zombies[i].origin) < 90000) {
       ground_ent = a_zombies[i] getgroundent();
 
-      if(!isdefined(ground_ent))
+      if(!isDefined(ground_ent))
         a_zombies[i] dodamage(a_zombies[i].health + 1000, a_zombies[i].origin);
     }
   }
 }
 
 get_gondola_doors_and_gates() {
-  if(isdefined(level.e_gondola)) {
+  if(isDefined(level.e_gondola)) {
     a_doors_gates = [];
     a_doors_gates[0] = level.e_gondola.door_roof_left;
     a_doors_gates[1] = level.e_gondola.door_roof_right;
@@ -739,13 +741,13 @@ get_gondola_doors_and_gates() {
 }
 
 zombie_alcatraz_player_intersection_tracker_override(other_player) {
-  if(isdefined(self.afterlife_revived) && self.afterlife_revived || isdefined(other_player.afterlife_revived) && other_player.afterlife_revived)
+  if(isDefined(self.afterlife_revived) && self.afterlife_revived || isDefined(other_player.afterlife_revived) && other_player.afterlife_revived)
     return true;
 
-  if(isdefined(self.is_on_gondola) && self.is_on_gondola && (isdefined(level.e_gondola.is_moving) && level.e_gondola.is_moving))
+  if(isDefined(self.is_on_gondola) && self.is_on_gondola && (isDefined(level.e_gondola.is_moving) && level.e_gondola.is_moving))
     return true;
 
-  if(isdefined(other_player.is_on_gondola) && other_player.is_on_gondola && (isdefined(level.e_gondola.is_moving) && level.e_gondola.is_moving))
+  if(isDefined(other_player.is_on_gondola) && other_player.is_on_gondola && (isDefined(level.e_gondola.is_moving) && level.e_gondola.is_moving))
     return true;
 
   return false;
@@ -755,9 +757,9 @@ player_escaped_gondola_failsafe() {
   a_players = getplayers();
 
   foreach(player in a_players) {
-    if(isdefined(player.is_on_gondola) && player.is_on_gondola) {
+    if(isDefined(player.is_on_gondola) && player.is_on_gondola) {
       if(!player is_player_on_gondola()) {
-        if(!(isdefined(player.afterlife) && player.afterlife) && isalive(player)) {
+        if(!(isDefined(player.afterlife) && player.afterlife) && isalive(player)) {
           a_s_orgs = getstructarray("gondola_dropped_parts_" + level.e_gondola.destination, "targetname");
 
           foreach(struct in a_s_orgs) {

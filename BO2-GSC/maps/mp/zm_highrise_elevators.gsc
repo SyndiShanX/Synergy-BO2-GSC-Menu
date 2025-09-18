@@ -20,6 +20,7 @@ init_perk_elvators_animtree() {
 
 init_elevators() {
   level thread init_perk_elevators_anims();
+
   init_elevator_devgui();
 }
 
@@ -32,7 +33,7 @@ quick_revive_solo_watch() {
   triggeroffset = machine_trigger.origin - self.body.origin;
   machineoffset = level.quick_revive_machine.origin - self.body.origin;
 
-  while (true) {
+  while(true) {
     level waittill_any("revive_off", "revive_hide");
     self.body.lock_doors = 1;
     self.body perkelevatordoor(0);
@@ -95,7 +96,7 @@ perkelevatordoor(set) {
 
 get_link_entity_for_host_migration() {
   foreach(elevator in level.elevators) {
-    if(isdefined(elevator.body.trig)) {
+    if(isDefined(elevator.body.trig)) {
       if(self istouching(elevator.body.trig))
         return elevator.body;
     }
@@ -115,14 +116,18 @@ get_link_entity_for_host_migration() {
 escape_pod_host_migration_respawn_check(escape_pod) {
   wait 0.2;
   dif = self.origin[2] - escape_pod.origin[2];
+
   println("Escape_pod_host_migration_respawn_check :");
+
   println("dif : " + dif);
 
   if(dif > 100) {
     println("Finding a better place for the player to be.");
+
     self maps\mp\gametypes_zm\_hostmigration::hostmigration_put_player_in_better_place();
   } else {
     println("Taking no action.");
+
   }
 }
 
@@ -142,7 +147,7 @@ is_self_on_elevator() {
   }
 
   foreach(elevator in level.elevators) {
-    if(isdefined(elevator.body.trig)) {
+    if(isDefined(elevator.body.trig)) {
       if(self istouching(elevator.body.trig))
         return true;
     }
@@ -162,15 +167,15 @@ is_self_on_elevator() {
 object_is_on_elevator() {
   ground_ent = self getgroundent();
 
-  for (depth = 0; isdefined(ground_ent) && depth < 2; depth++) {
-    if(isdefined(ground_ent.is_elevator) && ground_ent.is_elevator) {
+  for(depth = 0; isDefined(ground_ent) && depth < 2; depth++) {
+    if(isDefined(ground_ent.is_elevator) && ground_ent.is_elevator) {
       self.elevator_parent = ground_ent;
       return true;
     }
 
     new_ground_ent = ground_ent getgroundent();
 
-    if(!isdefined(new_ground_ent) || new_ground_ent == ground_ent) {
+    if(!isDefined(new_ground_ent) || new_ground_ent == ground_ent) {
       break;
     }
 
@@ -183,7 +188,7 @@ object_is_on_elevator() {
 elevator_level_for_floor(floor) {
   flevel = "0";
 
-  if(isdefined(self.floors["" + (floor + 1)]))
+  if(isDefined(self.floors["" + (floor + 1)]))
     flevel = "" + (floor + 1);
   else
     flevel = "0";
@@ -208,9 +213,9 @@ elevator_path_nodes(elevatorname, floorname) {
 }
 
 elevator_paths_onoff(onoff, target) {
-  if(isdefined(self) && self.size > 0) {
+  if(isDefined(self) && self.size > 0) {
     foreach(node in self) {
-      if(isdefined(node.script_parameters) && node.script_parameters == "roof_connect") {
+      if(isDefined(node.script_parameters) && node.script_parameters == "roof_connect") {
         foreach(tnode in target) {
           if(onoff) {
             maps\mp\zm_highrise_utility::highrise_link_nodes(node, tnode);
@@ -230,7 +235,7 @@ elevator_enable_paths(floor) {
   self elevator_disable_paths(floor);
   paths = undefined;
 
-  if(!isdefined(floor) || !isdefined(self.floors[floor].paths))
+  if(!isDefined(floor) || !isDefined(self.floors[floor].paths))
     return;
   else
     paths = self.floors[floor].paths;
@@ -240,14 +245,14 @@ elevator_enable_paths(floor) {
 }
 
 elevator_disable_paths(floor) {
-  if(isdefined(self.current_paths))
+  if(isDefined(self.current_paths))
     self.current_paths elevator_paths_onoff(0, self.roof_paths);
 
   self.current_paths = undefined;
 }
 
 init_elevator(elevatorname, force_starting_floor, force_starting_origin) {
-  if(!isdefined(level.elevators))
+  if(!isDefined(level.elevators))
     level.elevators = [];
 
   elevator = spawnstruct();
@@ -258,14 +263,15 @@ init_elevator(elevatorname, force_starting_floor, force_starting_origin) {
   piece setmovingplatformenabled(1);
   piece.is_moving = 0;
 
-  if(!isdefined(piece)) {
+  if(!isDefined(piece)) {
     iprintlnbold("Elevator with name: bldg" + elevatorname + " not found.");
+
     return;
   }
 
   trig = getent("elevator_bldg" + elevatorname + "_trigger", "targetname");
 
-  if(isdefined(trig)) {
+  if(isDefined(trig)) {
     trig enablelinkto();
     trig linkto(piece);
     trig setmovingplatformenabled(1);
@@ -276,7 +282,7 @@ init_elevator(elevatorname, force_starting_floor, force_starting_origin) {
   elevator.body = piece;
   piece.is_elevator = 1;
   elevator.body perkelevatoruseanimtree();
-  assert(isdefined(piece.script_location));
+  assert(isDefined(piece.script_location));
   elevator.body.current_level = piece.script_location;
   elevator.body.starting_floor = piece.script_location;
   elevator.roof_paths = elevator_path_nodes("bldg" + elevatorname, "moving");
@@ -285,11 +291,11 @@ init_elevator(elevatorname, force_starting_floor, force_starting_origin) {
   elevator.floors[piece.script_location].starting_position = piece.origin;
   elevator.floors[piece.script_location].paths = elevator_path_nodes("bldg" + elevatorname, "floor" + piece.script_location);
 
-  while (isdefined(piece.target)) {
+  while(isDefined(piece.target)) {
     piece = getstruct(piece.target, "targetname");
     piece.is_elevator = 1;
 
-    if(!isdefined(elevator.floors[piece.script_location])) {
+    if(!isDefined(elevator.floors[piece.script_location])) {
       elevator.floors[piece.script_location] = piece;
       elevator.floors[piece.script_location].paths = elevator_path_nodes("bldg" + elevatorname, "floor" + piece.script_location);
     }
@@ -298,40 +304,41 @@ init_elevator(elevatorname, force_starting_floor, force_starting_origin) {
   if(elevatorname != "3c")
     elevator.floors["" + elevator.floors.size] = elevator.floors["1"];
 
-  if(isdefined(force_starting_floor))
+  if(isDefined(force_starting_floor))
     elevator.body.force_starting_floor = force_starting_floor;
 
-  if(isdefined(force_starting_origin))
+  if(isDefined(force_starting_origin))
     elevator.body.force_starting_origin_offset = force_starting_origin;
 
   level thread elevator_think(elevator);
   level thread elevator_depart_early(elevator);
   level thread elevator_sparks_fx(elevator);
+
   init_elevator_devgui("bldg" + elevatorname, elevator);
 }
 
 elevator_roof_watcher() {
   level endon("end_game");
 
-  while (true) {
+  while(true) {
     self.trig waittill("trigger", who);
 
-    if(isdefined(who) && isplayer(who)) {
-      while (isdefined(who) && who istouching(self.trig)) {
+    if(isDefined(who) && isplayer(who)) {
+      while(isDefined(who) && who istouching(self.trig)) {
         if(self.is_moving)
           self waittill_any("movedone", "forcego");
 
         zombies = getaiarray(level.zombie_team);
 
-        if(isdefined(zombies) && zombies.size > 0) {
+        if(isDefined(zombies) && zombies.size > 0) {
           foreach(zombie in zombies) {
             climber = zombie zombie_for_elevator_unseen();
 
-            if(isdefined(climber))
+            if(isDefined(climber))
               continue;
           }
 
-          if(isdefined(climber)) {
+          if(isDefined(climber)) {
             zombie zombie_climb_elevator(self);
             wait(randomint(30));
           }
@@ -351,7 +358,7 @@ zombie_for_elevator_unseen() {
   zombie_seen = 0;
   players = get_players();
 
-  for (i = 0; i < players.size; i++) {
+  for(i = 0; i < players.size; i++) {
     can_be_seen = self maps\mp\zm_highrise_distance_tracking::player_can_see_me(players[i]);
 
     if(can_be_seen || distancesquared(self.origin, players[i].origin) < distance_squared_check)
@@ -392,14 +399,14 @@ elev_clean_up_corpses() {
   corpses = getcorpsearray();
   zombies = getaiarray(level.zombie_team);
 
-  if(isdefined(corpses)) {
-    for (i = 0; i < corpses.size; i++) {
+  if(isDefined(corpses)) {
+    for(i = 0; i < corpses.size; i++) {
       if(corpses[i] istouching(self.trig))
         corpses[i] thread elev_remove_corpses();
     }
   }
 
-  if(isdefined(zombies)) {
+  if(isDefined(zombies)) {
     foreach(zombie in zombies) {
       if(zombie istouching(self.trig) && zombie.health <= 0)
         zombie thread elev_remove_corpses();
@@ -413,7 +420,7 @@ elev_remove_corpses() {
 }
 
 elevator_next_floor(elevator, last, justchecking) {
-  if(isdefined(elevator.body.force_starting_floor)) {
+  if(isDefined(elevator.body.force_starting_floor)) {
     floor = elevator.body.force_starting_floor;
 
     if(!justchecking)
@@ -422,7 +429,7 @@ elevator_next_floor(elevator, last, justchecking) {
     return floor;
   }
 
-  if(!isdefined(last))
+  if(!isDefined(last))
     return 0;
 
   if(last + 1 < elevator.floors.size)
@@ -442,13 +449,13 @@ elevator_initial_wait(elevator, minwait, maxwait, delaybeforeleaving) {
     wait(delaybeforeleaving);
 
   if(elevator.body.perk_type == "specialty_weapupgrade") {
-    while (flag("pack_machine_in_use"))
+    while(flag("pack_machine_in_use"))
       wait 0.5;
 
     wait(randomintrange(1, 3));
   }
 
-  while (isdefined(level.elevators_stop) && level.elevators_stop || isdefined(elevator.body.elevator_stop) && elevator.body.elevator_stop)
+  while(isDefined(level.elevators_stop) && level.elevators_stop || isDefined(elevator.body.elevator_stop) && elevator.body.elevator_stop)
     wait 0.05;
 }
 
@@ -462,7 +469,7 @@ elevator_set_moving(moving) {
 predict_floor(elevator, next, speed) {
   next = elevator_next_floor(elevator, next, 1);
 
-  if(isdefined(elevator.floors["" + (next + 1)]))
+  if(isDefined(elevator.floors["" + (next + 1)]))
     elevator.body.next_level = "" + (next + 1);
   else {
     start_location = 1;
@@ -474,7 +481,7 @@ predict_floor(elevator, next, speed) {
   cur_level_start_pos = elevator.floors[elevator.body.next_level].starting_position;
   start_level_start_pos = elevator.floors[elevator.body.starting_floor].starting_position;
 
-  if(elevator.body.next_level == elevator.body.starting_floor || isdefined(cur_level_start_pos) && isdefined(start_level_start_pos) && cur_level_start_pos == start_level_start_pos)
+  if(elevator.body.next_level == elevator.body.starting_floor || isDefined(cur_level_start_pos) && isDefined(start_level_start_pos) && cur_level_start_pos == start_level_start_pos)
     floor_goal = cur_level_start_pos;
   else
     floor_goal = floor_stop.origin;
@@ -499,11 +506,11 @@ elevator_think(elevator) {
   maxwait = 20;
   flag_wait("perks_ready");
 
-  if(isdefined(elevator.body.force_starting_floor)) {
+  if(isDefined(elevator.body.force_starting_floor)) {
     elevator.body.current_level = "" + elevator.body.force_starting_floor;
     elevator.body.origin = elevator.floors[elevator.body.current_level].origin;
 
-    if(isdefined(elevator.body.force_starting_origin_offset))
+    if(isDefined(elevator.body.force_starting_origin_offset))
       elevator.body.origin = elevator.body.origin + (0, 0, elevator.body.force_starting_origin_offset);
   }
 
@@ -518,17 +525,16 @@ elevator_think(elevator) {
   }
 
   if(elevator.body.perk_type == "vending_revive" && flag("solo_game")) {
-
   } else
     flag_wait("power_on");
 
   elevator.body perkelevatordoor(1);
   next = undefined;
 
-  while (true) {
+  while(true) {
     start_location = 0;
 
-    if(isdefined(elevator.body.force_starting_floor))
+    if(isDefined(elevator.body.force_starting_floor))
       skipinitialwait = 1;
 
     elevator.body.departing = 1;
@@ -547,7 +553,7 @@ elevator_think(elevator) {
 
     next = elevator_next_floor(elevator, next, 0);
 
-    if(isdefined(elevator.floors["" + (next + 1)]))
+    if(isDefined(elevator.floors["" + (next + 1)]))
       elevator.body.next_level = "" + (next + 1);
     else {
       start_location = 1;
@@ -559,7 +565,7 @@ elevator_think(elevator) {
     cur_level_start_pos = elevator.floors[elevator.body.next_level].starting_position;
     start_level_start_pos = elevator.floors[elevator.body.starting_floor].starting_position;
 
-    if(elevator.body.next_level == elevator.body.starting_floor || isdefined(cur_level_start_pos) && isdefined(start_level_start_pos) && cur_level_start_pos == start_level_start_pos)
+    if(elevator.body.next_level == elevator.body.starting_floor || isDefined(cur_level_start_pos) && isDefined(start_level_start_pos) && cur_level_start_pos == start_level_start_pos)
       floor_goal = cur_level_start_pos;
     else
       floor_goal = floor_stop.origin;
@@ -591,7 +597,7 @@ elevator_think(elevator) {
     if(dist > 0) {
       elevator.body moveto(floor_goal, time, time * 0.25, time * 0.25);
 
-      if(isdefined(elevator.body.trig))
+      if(isDefined(elevator.body.trig))
         elevator.body thread elev_clean_up_corpses();
 
       elevator.body thread elevator_move_sound();
@@ -695,7 +701,7 @@ init_elevator_perks() {
   revive_perk_struct = getstruct(revive_perk_struct.target, "targetname");
   perk_structs = getstructarray("zm_random_machine", "script_noteworthy");
 
-  for (i = 0; i < perk_structs.size; i++) {
+  for(i = 0; i < perk_structs.size; i++) {
     random_perk_structs[i] = getstruct(perk_structs[i].target, "targetname");
     random_perk_structs[i].script_parameters = perk_structs[i].script_parameters;
     random_perk_structs[i].script_linkent = getent("elevator_" + perk_structs[i].script_parameters + "_body", "targetname");
@@ -705,7 +711,7 @@ init_elevator_perks() {
   blue_structs = [];
 
   foreach(perk_struct in random_perk_structs) {
-    if(isdefined(perk_struct.script_parameters)) {
+    if(isDefined(perk_struct.script_parameters)) {
       if(issubstr(perk_struct.script_parameters, "bldg1")) {
         green_structs[green_structs.size] = perk_struct;
         continue;
@@ -722,8 +728,8 @@ init_elevator_perks() {
   level.random_perk_structs = arraycombine(level.random_perk_structs, green_structs, 0, 0);
   level.random_perk_structs = arraycombine(level.random_perk_structs, blue_structs, 0, 0);
 
-  for (i = 0; i < level.elevator_perks.size; i++) {
-    if(!isdefined(level.random_perk_structs[i])) {
+  for(i = 0; i < level.elevator_perks.size; i++) {
+    if(!isDefined(level.random_perk_structs[i])) {
       continue;
     }
     level.random_perk_structs[i].targetname = "zm_perk_machine_override";
@@ -731,7 +737,7 @@ init_elevator_perks() {
     level.random_perk_structs[i].script_noteworthy = level.elevator_perks[i].script_noteworthy;
     level.random_perk_structs[i].turn_on_notify = level.elevator_perks[i].turn_on_notify;
 
-    if(!isdefined(level.struct_class_names["targetname"]["zm_perk_machine_override"]))
+    if(!isDefined(level.struct_class_names["targetname"]["zm_perk_machine_override"]))
       level.struct_class_names["targetname"]["zm_perk_machine_override"] = [];
 
     level.struct_class_names["targetname"]["zm_perk_machine_override"][level.struct_class_names["targetname"]["zm_perk_machine_override"].size] = level.random_perk_structs[i];
@@ -745,22 +751,22 @@ random_elevator_perks() {
     machine = getent(perk, "targetname");
     trigger = getent(perk, "target");
 
-    if(!isdefined(machine) || !isdefined(trigger)) {
+    if(!isDefined(machine) || !isDefined(trigger)) {
       continue;
     }
     elevator = machine get_perk_elevator();
     trigger enablelinkto();
     trigger linkto(machine);
 
-    if(isdefined(trigger.clip))
+    if(isDefined(trigger.clip))
       trigger.clip delete();
 
-    if(isdefined(trigger.bump)) {
+    if(isDefined(trigger.bump)) {
       trigger.bump enablelinkto();
       trigger.bump linkto(machine);
     }
 
-    if(isdefined(elevator)) {
+    if(isDefined(elevator)) {
       elevator.perk_type = perk;
 
       if(issubstr(elevator.targetname, "3b"))
@@ -784,7 +790,7 @@ random_elevator_perks() {
 
   trigger = getent("specialty_weapupgrade", "script_noteworthy");
 
-  if(isdefined(trigger)) {
+  if(isDefined(trigger)) {
     machine = getent(trigger.target, "targetname");
     elevator = machine get_perk_elevator();
     fwdvec = anglestoright(machine.angles);
@@ -793,10 +799,10 @@ random_elevator_perks() {
     trigger enablelinkto();
     trigger linkto(machine);
 
-    if(isdefined(trigger.clip))
+    if(isDefined(trigger.clip))
       trigger.clip delete();
 
-    if(isdefined(elevator)) {
+    if(isDefined(elevator)) {
       elevator.perk_type = "specialty_weapupgrade";
       machine linkto(elevator);
       level thread debugline(machine, elevator);
@@ -840,27 +846,28 @@ elevator_perk_offset(machine, perk) {
 debugline(ent1, ent2) {
   org = ent2.origin;
 
-  while (true) {
-    if(!isdefined(ent1)) {
+  while(true) {
+    if(!isDefined(ent1)) {
       return;
     }
     line(ent1.origin, org, (0, 0, 1));
     wait 0.05;
   }
+
 }
 
 get_perk_elevator() {
   arraylist = level.random_perk_structs;
 
-  for (x = 0; x < arraylist.size; x++) {
+  for(x = 0; x < arraylist.size; x++) {
     struct = arraylist[x];
 
-    if(isdefined(struct.script_noteworthy) && isdefined(self.targetname)) {
+    if(isDefined(struct.script_noteworthy) && isDefined(self.targetname)) {
       nw = struct.script_noteworthy;
       tn = self.targetname;
 
       if(nw == "specialty_quickrevive" && tn == "vending_revive" || nw == "specialty_fastreload" && tn == "vending_sleight" || nw == "specialty_rof" && tn == "vending_doubletap" || nw == "specialty_armorvest" && tn == "vending_jugg" || nw == "specialty_finalstand" && tn == "vending_chugabud" || nw == "specialty_additionalprimaryweapon" && tn == "vending_additionalprimaryweapon" || nw == "specialty_weapupgrade" && tn == "vending_packapunch") {
-        if(isdefined(struct.script_linkent))
+        if(isDefined(struct.script_linkent))
           return struct.script_linkent;
       }
     }
@@ -872,11 +879,11 @@ get_perk_elevator() {
 elevator_depart_early(elevator) {
   touchent = elevator.body;
 
-  if(isdefined(elevator.body.trig))
+  if(isDefined(elevator.body.trig))
     touchent = elevator.body.trig;
 
-  while (true) {
-    while (is_true(elevator.body.is_moving))
+  while(true) {
+    while(is_true(elevator.body.is_moving))
       wait 0.5;
 
     someone_touching_elevator = 0;
@@ -910,8 +917,8 @@ elevator_depart_early(elevator) {
 }
 
 elevator_sparks_fx(elevator) {
-  while (true) {
-    while (!is_true(elevator.body.door_state))
+  while(true) {
+    while(!is_true(elevator.body.door_state))
       wait 1;
 
     if(is_true(elevator.body.departing))
@@ -932,7 +939,7 @@ faller_location_logic() {
   elevator_names = getarraykeys(level.elevators);
   elevators = [];
 
-  for (i = 0; i < elevator_names.size; i++)
+  for(i = 0; i < elevator_names.size; i++)
     elevators[i] = getent("elevator_" + elevator_names[i] + "_body", "targetname");
 
   elevator_volumes = [];
@@ -945,7 +952,7 @@ faller_location_logic() {
   elevator_volumes[elevator_volumes.size] = getent("elevator_3d", "targetname");
   level.elevator_volumes = elevator_volumes;
 
-  while (true) {
+  while(true) {
     foreach(point in spawn_points) {
       should_block = 0;
 
@@ -960,10 +967,10 @@ faller_location_logic() {
         continue;
       }
 
-      if(isdefined(point.is_blocked) && point.is_blocked)
+      if(isDefined(point.is_blocked) && point.is_blocked)
         point.is_blocked = 0;
 
-      if(!isdefined(point.zone_name)) {
+      if(!isDefined(point.zone_name)) {
         continue;
       }
       zone = level.zones[point.zone_name];
@@ -994,7 +1001,7 @@ faller_location_logic() {
 
 disable_elevator_spawners(volume, spawn_points) {
   foreach(point in spawn_points) {
-    if(isdefined(point.name) && point.name == volume.targetname)
+    if(isDefined(point.name) && point.name == volume.targetname)
       point.is_enabled = 0;
   }
 }
@@ -1009,10 +1016,10 @@ shouldsuppressgibs() {
   elevator_volumes[elevator_volumes.size] = getent("elevator_3c", "targetname");
   elevator_volumes[elevator_volumes.size] = getent("elevator_3d", "targetname");
 
-  while (true) {
+  while(true) {
     zombies = get_round_enemy_array();
 
-    if(isdefined(zombies)) {
+    if(isDefined(zombies)) {
       foreach(zombie in zombies) {
         shouldnotgib = 0;
 
@@ -1037,7 +1044,7 @@ watch_for_elevator_during_faller_spawn() {
   self endon("risen");
   self endon("spawn_anim");
 
-  while (true) {
+  while(true) {
     should_gib = 0;
 
     foreach(elevator in level.elevators) {
@@ -1048,10 +1055,10 @@ watch_for_elevator_during_faller_spawn() {
     if(should_gib) {
       playfx(level._effect["zomb_gib"], self.origin);
 
-      if(!(isdefined(self.has_been_damaged_by_player) && self.has_been_damaged_by_player) && !(isdefined(self.is_leaper) && self.is_leaper))
+      if(!(isDefined(self.has_been_damaged_by_player) && self.has_been_damaged_by_player) && !(isDefined(self.is_leaper) && self.is_leaper))
         level.zombie_total++;
 
-      if(isdefined(self.is_leaper) && self.is_leaper) {
+      if(isDefined(self.is_leaper) && self.is_leaper) {
         self maps\mp\zombies\_zm_ai_leaper::leaper_cleanup();
         self dodamage(self.health + 100, self.origin);
       } else
@@ -1065,7 +1072,7 @@ watch_for_elevator_during_faller_spawn() {
 }
 
 init_elevator_devgui(elevatorname, elevator) {
-  if(!isdefined(elevatorname)) {
+  if(!isDefined(elevatorname)) {
     adddebugcommand("devgui_cmd \"Zombies:1/Highrise:15/Elevators:1/Stop All:1\" \"set zombie_devgui_hrelevatorstop all\" \\n");
     adddebugcommand("devgui_cmd \"Zombies:1/Highrise:15/Elevators:1/Unstop All:2\" \"set zombie_devgui_hrelevatorgo all\" \\n");
     level thread watch_elevator_devgui("all", 1);
@@ -1073,7 +1080,7 @@ init_elevator_devgui(elevatorname, elevator) {
     adddebugcommand("devgui_cmd \"Zombies:1/Highrise:15/Elevators:1/" + elevatorname + "/Stop:1\" \"set zombie_devgui_hrelevatorstop " + elevatorname + "\" \\n");
     adddebugcommand("devgui_cmd \"Zombies:1/Highrise:15/Elevators:1/" + elevatorname + "/Go:2\" \"set zombie_devgui_hrelevatorgo " + elevatorname + "\" \\n");
 
-    for (i = 0; i < elevator.floors.size; i++) {
+    for(i = 0; i < elevator.floors.size; i++) {
       fname = elevator.floors["" + i].script_location;
       adddebugcommand("devgui_cmd \"Zombies:1/Highrise:15/Elevators:1/" + elevatorname + "/stop " + i + " [floor " + fname + "]\" \"set zombie_devgui_hrelevatorfloor " + i + "; set zombie_devgui_hrelevatorgo " + elevatorname + "\" \\n");
     }
@@ -1081,16 +1088,17 @@ init_elevator_devgui(elevatorname, elevator) {
     elevator thread watch_elevator_devgui(elevatorname, 0);
     elevator thread show_elevator_floor(elevatorname);
   }
+
 }
 
 watch_elevator_devgui(name, global) {
-  while (true) {
+  while(true) {
     stopcmd = getdvar(#"_id_7844BB8F");
 
-    if(isdefined(stopcmd) && stopcmd == name) {
+    if(isDefined(stopcmd) && stopcmd == name) {
       if(global)
         level.elevators_stop = 1;
-      else if(isdefined(self))
+      else if(isDefined(self))
         self.body.elevator_stop = 1;
 
       setdvar("zombie_devgui_hrelevatorstop", "");
@@ -1099,10 +1107,10 @@ watch_elevator_devgui(name, global) {
     gofloor = getdvarint(#"_id_7FEC8C2B");
     gocmd = getdvar(#"_id_8693373F");
 
-    if(isdefined(gocmd) && gocmd == name) {
+    if(isDefined(gocmd) && gocmd == name) {
       if(global)
         level.elevators_stop = 0;
-      else if(isdefined(self)) {
+      else if(isDefined(self)) {
         self.body.elevator_stop = 0;
 
         if(gofloor >= 0)
@@ -1117,19 +1125,20 @@ watch_elevator_devgui(name, global) {
 
     wait 1.0;
   }
+
 }
 
 show_elevator_floor(name) {
-  while (true) {
+  while(true) {
     if(getdvarint(#"_id_B67910B4")) {
       floor = 0;
-      forced = isdefined(self.body.force_starting_floor);
+      forced = isDefined(self.body.force_starting_floor);
       color = vectorscale((1, 1, 0), 0.7);
 
       if(forced)
         color = (0.7, 0.3, 0.0);
 
-      if(isdefined(level.elevators_stop) && level.elevators_stop || isdefined(self.body.elevator_stop) && self.body.elevator_stop) {
+      if(isDefined(level.elevators_stop) && level.elevators_stop || isDefined(self.body.elevator_stop) && self.body.elevator_stop) {
         if(forced)
           color = vectorscale((1, 0, 1), 0.7);
         else
@@ -1141,7 +1150,7 @@ show_elevator_floor(name) {
           color = vectorscale((0, 1, 0), 0.7);
       }
 
-      if(isdefined(self.body.current_level))
+      if(isDefined(self.body.current_level))
         floor = self.body.current_level;
 
       text = "elv " + name + " stop " + self.body.current_level + " floor " + self.floors[self.body.current_level].script_location;
@@ -1151,4 +1160,5 @@ show_elevator_floor(name) {
 
     wait 0.05;
   }
+
 }

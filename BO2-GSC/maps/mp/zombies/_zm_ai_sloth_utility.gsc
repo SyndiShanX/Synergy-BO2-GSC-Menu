@@ -45,8 +45,8 @@ watch_crash_pos() {
   level.crash_pos[level.crash_pos.size] = (3452, 1092, 56);
   level.crash_pos[level.crash_pos.size] = (3452, 1056, 56);
 
-  while (true) {
-    if(!isdefined(self.state) || self.state != "berserk") {
+  while(true) {
+    if(!isDefined(self.state) || self.state != "berserk") {
       wait 0.1;
       continue;
     }
@@ -81,7 +81,9 @@ sloth_is_pain() {
       self.is_pain = 0;
       self.damage_accumulating = 0;
       self notify("stop_accumulation");
+
       sloth_print("pain was interrupted");
+
     }
   }
 
@@ -96,7 +98,9 @@ sloth_is_traversing() {
       return true;
     else {
       self.is_traversing = 0;
+
       sloth_print("traverse was interrupted");
+
     }
   }
 
@@ -111,14 +115,14 @@ sloth_face_object(facee, type, data, dot_limit) {
 
   time_started = gettime();
 
-  while (true) {
+  while(true) {
     if(type == "angle") {
       delta = abs(self.angles[1] - data);
 
       if(delta <= 15) {
         break;
       }
-    } else if(isdefined(dot_limit)) {
+    } else if(isDefined(dot_limit)) {
       if(self is_facing(facee, dot_limit)) {
         break;
       }
@@ -128,6 +132,7 @@ sloth_face_object(facee, type, data, dot_limit) {
 
     if(gettime() - time_started > 1000) {
       sloth_print("face took too long");
+
       break;
     }
 
@@ -142,7 +147,7 @@ sloth_print(str) {
   if(getdvarint(#"_id_B6252E7C")) {
     iprintln("sloth: " + str);
 
-    if(isdefined(self.debug_msg)) {
+    if(isDefined(self.debug_msg)) {
       self.debug_msg[self.debug_msg.size] = str;
 
       if(self.debug_msg.size > 64)
@@ -152,6 +157,7 @@ sloth_print(str) {
       self.debug_msg[self.debug_msg.size] = str;
     }
   }
+
 }
 
 sloth_debug_context(item, dist) {
@@ -159,4 +165,5 @@ sloth_debug_context(item, dist) {
     debugstar(item.origin, 100, (1, 1, 1));
     circle(item.origin, dist, (1, 1, 1), 0, 1, 100);
   }
+
 }

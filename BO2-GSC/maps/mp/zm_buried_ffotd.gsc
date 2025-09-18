@@ -37,7 +37,7 @@ main_end() {
 }
 
 reset_vulture_dvars_post_migrate() {
-  while (true) {
+  while(true) {
     level waittill("host_migration_end");
     setdvarint("zombies_perk_vulture_pickup_time", 12);
     setdvarint("zombies_perk_vulture_pickup_time_stink", 16);
@@ -63,13 +63,13 @@ jail_traversal_fix() {
   window_pos = (-837, 496, 8);
   fix_dist = 64;
 
-  while (true) {
+  while(true) {
     dist = distancesquared(self.origin, window_pos);
 
     if(dist < fix_dist) {
       node = self getnegotiationstartnode();
 
-      if(isdefined(node)) {
+      if(isDefined(node)) {
         if(node.animscript == "zm_jump_down_48" && node.type == "Begin") {
           self setphysparams(25, 0, 72);
           wait 1;
@@ -103,10 +103,10 @@ zgrief_mode_fix() {
     if(trig.origin == (-170.5, -328.25, 174)) {
       trig.origin = trig.origin + vectorscale((0, -1, 0), 32.0);
 
-      if(isdefined(trig.clip))
+      if(isDefined(trig.clip))
         trig.clip.origin = trig.clip.origin + vectorscale((0, -1, 0), 32.0);
 
-      if(isdefined(trig.machine))
+      if(isDefined(trig.machine))
         trig.machine.origin = trig.machine.origin + vectorscale((0, -1, 0), 32.0);
     }
   }
@@ -118,7 +118,7 @@ zgrief_respawn_override(revivee, return_struct) {
   grief_initial = getstructarray("street_standard_player_spawns", "targetname");
 
   foreach(struct in grief_initial) {
-    if(isdefined(struct.script_int) && struct.script_int == 2000) {
+    if(isDefined(struct.script_int) && struct.script_int == 2000) {
       spawn_points[spawn_points.size] = struct;
       initial_point = struct;
       initial_point.locked = 0;
@@ -133,10 +133,10 @@ zgrief_respawn_override(revivee, return_struct) {
   if(spawn_points.size == 0)
     return undefined;
 
-  for (i = 0; i < players.size; i++) {
+  for(i = 0; i < players.size; i++) {
     if(is_player_valid(players[i], undefined, 1) && players[i] != self) {
-      for (j = 0; j < spawn_points.size; j++) {
-        if(isdefined(spawn_points[j].script_int))
+      for(j = 0; j < spawn_points.size; j++) {
+        if(isDefined(spawn_points[j].script_int))
           ideal_distance = spawn_points[j].script_int;
         else
           ideal_distance = 1000;
@@ -161,14 +161,14 @@ zgrief_respawn_override(revivee, return_struct) {
       }
     }
 
-    if(!isdefined(closest_group))
+    if(!isDefined(closest_group))
       closest_group = backup_group;
 
-    if(isdefined(closest_group)) {
+    if(isDefined(closest_group)) {
       spawn_location = maps\mp\zombies\_zm::get_valid_spawn_location(revivee, spawn_points, closest_group, return_struct);
 
-      if(isdefined(spawn_location) && !positionwouldtelefrag(spawn_location.origin)) {
-        if(isdefined(spawn_location.plyr) && spawn_location.plyr != revivee getentitynumber()) {
+      if(isDefined(spawn_location) && !positionwouldtelefrag(spawn_location.origin)) {
+        if(isDefined(spawn_location.plyr) && spawn_location.plyr != revivee getentitynumber()) {
           continue;
         }
         return spawn_location;
@@ -176,8 +176,8 @@ zgrief_respawn_override(revivee, return_struct) {
     }
   }
 
-  if(isdefined(initial_point)) {
-    for (k = 0; k < spawn_points.size; k++) {
+  if(isDefined(initial_point)) {
+    for(k = 0; k < spawn_points.size; k++) {
       if(spawn_points[k] == initial_point) {
         closest_group = k;
         spawn_location = maps\mp\zombies\_zm::get_valid_spawn_location(revivee, spawn_points, closest_group, return_struct);
@@ -209,7 +209,7 @@ spawned_slide_push_trigger() {
   trig1.targetname = "push_from_prone";
   trig1.push_player_towards_point = (-1336, -320, 360);
 
-  while (true) {
+  while(true) {
     trig1 waittill("trigger", who);
 
     if(who getstance() == "prone" && isplayer(who))
@@ -223,7 +223,7 @@ spawned_slide_push_trigger() {
 slide_push_think(who) {
   whopos = (0, 0, 0);
 
-  while (who istouching(self)) {
+  while(who istouching(self)) {
     if(who.origin == whopos)
       who setvelocity(self get_push_vector());
 
@@ -263,7 +263,7 @@ spawned_collision_ffotd() {
   precachemodel("p6_zm_bu_wood_planks_106x171");
   flag_wait("start_zombie_round_logic");
 
-  if(!(isdefined(level.optimise_for_splitscreen) && level.optimise_for_splitscreen)) {
+  if(!(isDefined(level.optimise_for_splitscreen) && level.optimise_for_splitscreen)) {
     collision1 = spawn("script_model", (3731.5, 736, 6.5));
     collision1 setmodel("collision_geo_64x64x128_slick");
     collision1.angles = (4.54625, 313.41, -4.78954);
@@ -462,9 +462,9 @@ ghost_mansion_from_maze_push_trigger() {
 }
 
 push_players_standing_in_trigger_volumes() {
-  assert(isdefined(self.push_player_towards_point), "push_player_towards_point field is undefined on push_trigger! This is required for the push functionality to work");
+  assert(isDefined(self.push_player_towards_point), "push_player_towards_point field is undefined on push_trigger! This is required for the push functionality to work");
 
-  while (true) {
+  while(true) {
     self waittill("trigger", player);
 
     if(!player is_player_using_thumbstick())
@@ -492,7 +492,7 @@ bar_spawner_fix() {
   bar_spawners = getstructarray("zone_bar_spawners", "targetname");
 
   foreach(spawner in bar_spawners) {
-    if(isdefined(spawner.script_string) && spawner.script_string == "bar2") {
+    if(isDefined(spawner.script_string) && spawner.script_string == "bar2") {
       dist = distancesquared(spawner.origin, bad_pos);
 
       if(dist < dist_fix)
@@ -513,15 +513,15 @@ player_respawn_fix() {
 door_clip_fix() {
   bank1 = getentarray("pf728_auto2510", "targetname");
 
-  for (i = 0; i < bank1.size; i++) {
-    if(isdefined(bank1[i].script_noteworthy) && bank1[i].script_noteworthy == "clip")
+  for(i = 0; i < bank1.size; i++) {
+    if(isDefined(bank1[i].script_noteworthy) && bank1[i].script_noteworthy == "clip")
       bank1[i] delete();
   }
 
   bank2 = getentarray("pf728_auto2507", "targetname");
 
-  for (i = 0; i < bank2.size; i++) {
-    if(isdefined(bank2[i].script_noteworthy) && bank2[i].script_noteworthy == "clip")
+  for(i = 0; i < bank2.size; i++) {
+    if(isDefined(bank2[i].script_noteworthy) && bank2[i].script_noteworthy == "clip")
       bank2[i] delete();
   }
 }
@@ -532,7 +532,7 @@ maze_blocker_fix() {
   blocker_node = getnearestnode(node_org);
   blocker_node_target = getnearestnode(node_target_org);
 
-  while (true) {
+  while(true) {
     level waittill("zm_buried_maze_changed");
     found = 0;
     perm_list = level._maze._perms[level._maze._cur_perm];
@@ -541,7 +541,7 @@ maze_blocker_fix() {
       if(blocker == "blocker_10") {
         found = 1;
 
-        if(isdefined(blocker_node) && isdefined(blocker_node_target)) {
+        if(isDefined(blocker_node) && isDefined(blocker_node_target)) {
           unlink_nodes(blocker_node, blocker_node_target, 0);
           unlink_nodes(blocker_node_target, blocker_node, 0);
         }
@@ -549,7 +549,7 @@ maze_blocker_fix() {
     }
 
     if(!found) {
-      if(isdefined(blocker_node) && isdefined(blocker_node_target)) {
+      if(isDefined(blocker_node) && isDefined(blocker_node_target)) {
         link_nodes(blocker_node, blocker_node_target, 1);
         link_nodes(blocker_node_target, blocker_node, 1);
       }
@@ -560,10 +560,10 @@ maze_blocker_fix() {
 time_bomb_takeaway() {
   self endon("disconnect");
 
-  while (true) {
+  while(true) {
     self waittill("new_tactical_grenade", new_weapon);
 
-    if((!isdefined(new_weapon) || new_weapon != "time_bomb_zm") && self hasweapon("time_bomb_detonator_zm"))
+    if((!isDefined(new_weapon) || new_weapon != "time_bomb_zm") && self hasweapon("time_bomb_detonator_zm"))
       self takeweapon("time_bomb_detonator_zm");
   }
 }
@@ -616,7 +616,7 @@ church_fence_push_trigger() {
 dtp_push() {
   pos = (0, 0, 0);
 
-  while (true) {
+  while(true) {
     self waittill("trigger", player);
 
     if(pos == player.origin) {

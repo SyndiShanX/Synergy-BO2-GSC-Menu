@@ -23,5 +23,6 @@ main() {
   setsaveddvar("r_lightGridIntensity", 1.25);
   setsaveddvar("r_lightGridContrast", 0.0);
   waitforclient(0);
+
   println("*** Client : mp_takeoff running...");
 }

@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\_hacker_tool.gsc
-***************************************/
+**************************************/
 
 #include maps\mp\_utility;
 #include common_scripts\utility;
@@ -56,7 +56,7 @@ init() {
 }
 
 onplayerconnect() {
-  for (;;) {
+  for(;;) {
     level waittill("connecting", player);
     player thread onplayerspawned();
   }
@@ -65,7 +65,7 @@ onplayerconnect() {
 onplayerspawned() {
   self endon("disconnect");
 
-  for (;;) {
+  for(;;) {
     self waittill("spawned_player");
     self clearhackertarget();
     self thread watchhackertooluse();
@@ -84,7 +84,7 @@ clearhackertarget() {
   self.hackertoollocktimeelapsed = 0.0;
   self setweaponheatpercent("pda_hack_mp", 0.0);
 
-  if(isdefined(self.hackertooltarget)) {
+  if(isDefined(self.hackertooltarget)) {
     lockingon(self.hackertooltarget, 0);
     lockedon(self.hackertooltarget, 0);
   }
@@ -102,26 +102,26 @@ watchhackertoolfired() {
   self endon("disconnect");
   self endon("death");
 
-  while (true) {
+  while(true) {
     self waittill("hacker_tool_fired", hackertooltarget);
 
-    if(isdefined(hackertooltarget)) {
+    if(isDefined(hackertooltarget)) {
       if(isentityhackablecarepackage(hackertooltarget)) {
         maps\mp\killstreaks\_supplydrop::givecratecapturemedal(hackertooltarget, self);
         hackertooltarget notify("captured", self, 1);
       }
 
-      if(isentityhackableweaponobject(hackertooltarget) || isdefined(hackertooltarget.hackertrigger))
+      if(isentityhackableweaponobject(hackertooltarget) || isDefined(hackertooltarget.hackertrigger))
         hackertooltarget.hackertrigger notify("trigger", self, 1);
       else {
-        if(isdefined(hackertooltarget.classname) && hackertooltarget.classname == "grenade")
+        if(isDefined(hackertooltarget.classname) && hackertooltarget.classname == "grenade")
           damage = 1;
-        else if(isdefined(hackertooltarget.maxhealth))
+        else if(isDefined(hackertooltarget.maxhealth))
           damage = hackertooltarget.maxhealth + 1;
         else
           damage = 999999;
 
-        if(isdefined(hackertooltarget.numflares) && hackertooltarget.numflares > 0) {
+        if(isDefined(hackertooltarget.numflares) && hackertooltarget.numflares > 0) {
           damage = 1;
           hackertooltarget.numflares--;
           hackertooltarget maps\mp\_heatseekingmissile::missiletarget_playflarefx();
@@ -148,7 +148,7 @@ watchhackertooluse() {
   self endon("disconnect");
   self endon("death");
 
-  for (;;) {
+  for(;;) {
     self waittill("grenade_pullback", weapon);
 
     if(weapon == "pda_hack_mp") {
@@ -171,7 +171,7 @@ watchhackertoolinterrupt() {
   self endon("weapon_change");
   self endon("grenade_fire");
 
-  while (true) {
+  while(true) {
     level waittill("use_interrupt", interrupttarget);
 
     if(self.hackertooltarget == interrupttarget)
@@ -194,10 +194,10 @@ watchforgrenadefire() {
   self endon("weapon_change");
   self endon("death");
 
-  while (true) {
+  while(true) {
     self waittill("grenade_fire", grenade, grenadename, respawnfromhack);
 
-    if(isdefined(respawnfromhack) && respawnfromhack) {
+    if(isDefined(respawnfromhack) && respawnfromhack) {
       continue;
     }
     clearhackertarget();
@@ -218,7 +218,7 @@ hackertooltargetloop() {
   self endon("weapon_change");
   self endon("grenade_fire");
 
-  while (true) {
+  while(true) {
     wait 0.05;
 
     if(self.hackertoollockfinalized) {
@@ -271,7 +271,7 @@ hackertooltargetloop() {
       if(self.hackertoollocktimeelapsed < locklengthms / 1000) {
         continue;
       }
-      assert(isdefined(self.hackertooltarget));
+      assert(isDefined(self.hackertooltarget));
       self notify("stop_lockon_sound");
       self.hackertoollockfinalized = 1;
       self weaponlockfinalize(self.hackertooltarget);
@@ -280,7 +280,7 @@ hackertooltargetloop() {
 
     besttarget = self getbesthackertooltarget();
 
-    if(!isdefined(besttarget)) {
+    if(!isDefined(besttarget)) {
       self destroylockoncanceledmessage();
       continue;
     }
@@ -290,7 +290,7 @@ hackertooltargetloop() {
       continue;
     }
 
-    if(self locksighttest(besttarget) && isdefined(besttarget.lockondelay) && besttarget.lockondelay) {
+    if(self locksighttest(besttarget) && isDefined(besttarget.lockondelay) && besttarget.lockondelay) {
       self displaylockoncanceledmessage();
       continue;
     }
@@ -312,10 +312,10 @@ getbesthackertooltarget() {
   targetsall = arraycombine(target_getarray(), level.missileentities, 0, 0);
   targetsall = arraycombine(targetsall, level.hackertooltargets, 0, 0);
 
-  for (idx = 0; idx < targetsall.size; idx++) {
+  for(idx = 0; idx < targetsall.size; idx++) {
     target_ent = targetsall[idx];
 
-    if(!isdefined(target_ent) || !isdefined(target_ent.owner)) {
+    if(!isDefined(target_ent) || !isDefined(target_ent.owner)) {
       continue;
     }
     if(getdvar(#"scr_freelock") == "1") {
@@ -329,12 +329,12 @@ getbesthackertooltarget() {
       if(isentityhackablecarepackage(target_ent)) {
         if(self iswithinhackertoolreticle(target_ent))
           targetsvalid[targetsvalid.size] = target_ent;
-      } else if(isdefined(target_ent.team)) {
+      } else if(isDefined(target_ent.team)) {
         if(target_ent.team != self.team) {
           if(self iswithinhackertoolreticle(target_ent))
             targetsvalid[targetsvalid.size] = target_ent;
         }
-      } else if(isdefined(target_ent.owner.team)) {
+      } else if(isDefined(target_ent.owner.team)) {
         if(target_ent.owner.team != self.team) {
           if(self iswithinhackertoolreticle(target_ent))
             targetsvalid[targetsvalid.size] = target_ent;
@@ -350,7 +350,7 @@ getbesthackertooltarget() {
         continue;
       }
 
-      if(isdefined(target_ent.owner) && self != target_ent.owner)
+      if(isDefined(target_ent.owner) && self != target_ent.owner)
         targetsvalid[targetsvalid.size] = target_ent;
     }
   }
@@ -369,14 +369,15 @@ iswithinhackertoolreticle(target) {
 }
 
 isentityhackableweaponobject(entity) {
-  if(isdefined(entity.classname) && entity.classname == "grenade") {
-    if(isdefined(entity.name)) {
+  if(isDefined(entity.classname) && entity.classname == "grenade") {
+    if(isDefined(entity.name)) {
       watcher = maps\mp\gametypes\_weaponobjects::getweaponobjectwatcherbyweapon(entity.name);
 
-      if(isdefined(watcher)) {
+      if(isDefined(watcher)) {
         if(watcher.hackable) {
-          assert(isdefined(watcher.hackertoolradius));
-          assert(isdefined(watcher.hackertooltimems));
+          assert(isDefined(watcher.hackertoolradius));
+          assert(isDefined(watcher.hackertooltimems));
+
           return true;
         }
       }
@@ -387,32 +388,38 @@ isentityhackableweaponobject(entity) {
 }
 
 getweaponobjecthackerradius(entity) {
-  assert(isdefined(entity.classname));
-  assert(isdefined(entity.name));
+  assert(isDefined(entity.classname));
+  assert(isDefined(entity.name));
+
   watcher = maps\mp\gametypes\_weaponobjects::getweaponobjectwatcherbyweapon(entity.name);
+
   assert(watcher.hackable);
-  assert(isdefined(watcher.hackertoolradius));
+  assert(isDefined(watcher.hackertoolradius));
+
   return watcher.hackertoolradius;
 }
 
 getweaponobjecthacktimems(entity) {
-  assert(isdefined(entity.classname));
-  assert(isdefined(entity.name));
+  assert(isDefined(entity.classname));
+  assert(isDefined(entity.name));
+
   watcher = maps\mp\gametypes\_weaponobjects::getweaponobjectwatcherbyweapon(entity.name);
+
   assert(watcher.hackable);
-  assert(isdefined(watcher.hackertooltimems));
+  assert(isDefined(watcher.hackertooltimems));
+
   return watcher.hackertooltimems;
 }
 
 isentityhackablecarepackage(entity) {
-  if(isdefined(entity.model))
+  if(isDefined(entity.model))
     return entity.model == "t6_wpn_supply_drop_ally";
   else
     return false;
 }
 
 isvalidhackertooltarget(ent) {
-  if(!isdefined(ent))
+  if(!isDefined(ent))
     return false;
 
   if(self isusingremote())
@@ -436,7 +443,7 @@ hackersoftsighttest() {
   passed = 1;
   locklengthms = 0;
 
-  if(isdefined(self.hackertooltarget))
+  if(isDefined(self.hackertooltarget))
     locklengthms = self gethacktime(self.hackertooltarget);
 
   if(self isempjammed() || locklengthms == 0) {
@@ -462,12 +469,12 @@ hackersoftsighttest() {
 registerwithhackertool(radius, hacktimems) {
   self endon("death");
 
-  if(isdefined(radius))
+  if(isDefined(radius))
     self.hackertoolradius = radius;
   else
     self.hackertoolradius = level.hackertoollockonradius;
 
-  if(isdefined(hacktimems))
+  if(isDefined(hacktimems))
     self.hackertooltimems = hacktimems;
   else
     self.hackertooltimems = level.hackertoolhacktimems;
@@ -485,11 +492,11 @@ gethackertoolradius(target) {
   radius = 20;
 
   if(isentityhackablecarepackage(target)) {
-    assert(isdefined(target.hackertoolradius));
+    assert(isDefined(target.hackertoolradius));
     radius = target.hackertoolradius;
   } else if(isentityhackableweaponobject(target))
     radius = getweaponobjecthackerradius(target);
-  else if(isdefined(target.hackertoolradius))
+  else if(isDefined(target.hackertoolradius))
     radius = target.hackertoolradius;
   else {
     radius = level.vehiclehackertoolradius;
@@ -543,17 +550,17 @@ gethacktime(target) {
   time = 500;
 
   if(isentityhackablecarepackage(target)) {
-    assert(isdefined(target.hackertooltimems));
+    assert(isDefined(target.hackertooltimems));
 
-    if(isdefined(target.owner) && target.owner == self)
+    if(isDefined(target.owner) && target.owner == self)
       time = level.carepackageownerhackertooltimems;
-    else if(isdefined(target.owner) && target.owner.team == self.team)
+    else if(isDefined(target.owner) && target.owner.team == self.team)
       time = level.carepackagefriendlyhackertooltimems;
     else
       time = level.carepackagehackertooltimems;
   } else if(isentityhackableweaponobject(target))
     time = getweaponobjecthacktimems(target);
-  else if(isdefined(target.hackertooltimems))
+  else if(isDefined(target.hackertooltimems))
     time = target.hackertooltimems;
   else {
     time = level.vehiclehackertooltimems;
@@ -606,7 +613,7 @@ gethacktime(target) {
 }
 
 tunables() {
-  while (true) {
+  while(true) {
     level.hackertoollostsightlimitms = weapons_get_dvar_int("scr_hackerToolLostSightLimitMs", 1000);
     level.hackertoollockonradius = weapons_get_dvar("scr_hackerToolLockOnRadius", 20);
     level.hackertoollockonfov = weapons_get_dvar_int("scr_hackerToolLockOnFOV", 65);
@@ -625,4 +632,5 @@ tunables() {
     level.chopper_gunner_time = weapons_get_dvar_int("scr_chopper_gunner_time", 7);
     wait 1.0;
   }
+
 }

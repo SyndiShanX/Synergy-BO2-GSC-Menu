@@ -47,7 +47,7 @@ deletebuyabledebris(justtriggers) {
 
   if(!is_true(justtriggers)) {
     foreach(trig in debris_trigs) {
-      if(isdefined(trig.script_flag))
+      if(isDefined(trig.script_flag))
         flag_set(trig.script_flag);
 
       parts = getentarray(trig.target, "targetname");
@@ -63,7 +63,7 @@ deleteslothbarricades(justtriggers) {
 
   if(!is_true(justtriggers)) {
     foreach(trig in sloth_trigs) {
-      if(isdefined(trig.script_flag) && level flag_exists(trig.script_flag))
+      if(isDefined(trig.script_flag) && level flag_exists(trig.script_flag))
         flag_set(trig.script_flag);
 
       parts = getentarray(trig.target, "targetname");
@@ -78,8 +78,8 @@ deleteslothbarricade(location) {
   sloth_trigs = getentarray("sloth_barricade", "targetname");
 
   foreach(trig in sloth_trigs) {
-    if(isdefined(trig.script_location) && trig.script_location == location) {
-      if(isdefined(trig.script_flag))
+    if(isDefined(trig.script_location) && trig.script_location == location) {
+      if(isDefined(trig.script_flag))
         flag_set(trig.script_flag);
 
       parts = getentarray(trig.target, "targetname");
@@ -89,7 +89,7 @@ deleteslothbarricade(location) {
 }
 
 spawnmapcollision(collision_model, origin) {
-  if(!isdefined(origin))
+  if(!isDefined(origin))
     origin = (0, 0, 0);
 
   collision = spawn("script_model", origin, 1);
@@ -122,10 +122,10 @@ disableallzonesexcept(zones) {
 }
 
 remove_adjacent_zone(main_zone, adjacent_zone) {
-  if(isdefined(level.zones[main_zone].adjacent_zones) && isdefined(level.zones[main_zone].adjacent_zones[adjacent_zone]))
+  if(isDefined(level.zones[main_zone].adjacent_zones) && isDefined(level.zones[main_zone].adjacent_zones[adjacent_zone]))
     level.zones[main_zone].adjacent_zones[adjacent_zone] = undefined;
 
-  if(isdefined(level.zones[adjacent_zone].adjacent_zones) && isdefined(level.zones[adjacent_zone].adjacent_zones[main_zone]))
+  if(isDefined(level.zones[adjacent_zone].adjacent_zones) && isDefined(level.zones[adjacent_zone].adjacent_zones[main_zone]))
     level.zones[adjacent_zone].adjacent_zones[main_zone] = undefined;
 }
 
@@ -135,8 +135,8 @@ builddynamicwallbuy(location, weaponname) {
   foreach(stub in level.chalk_builds) {
     wallbuy = getstruct(stub.target, "targetname");
 
-    if(isdefined(wallbuy.script_location) && wallbuy.script_location == location) {
-      if(!isdefined(wallbuy.script_noteworthy) || issubstr(wallbuy.script_noteworthy, match_string)) {
+    if(isDefined(wallbuy.script_location) && wallbuy.script_location == location) {
+      if(!isDefined(wallbuy.script_noteworthy) || issubstr(wallbuy.script_noteworthy, match_string)) {
         maps\mp\zombies\_zm_weapons::add_dynamic_wallbuy(weaponname, wallbuy.targetname, 1);
         thread wait_and_remove(stub, stub.buildablezone.pieces[0]);
       }
@@ -148,8 +148,8 @@ buildbuildable(buildable) {
   player = get_players()[0];
 
   foreach(stub in level.buildable_stubs) {
-    if(!isdefined(buildable) || stub.equipname == buildable) {
-      if(isdefined(buildable) || stub.persistent != 3) {
+    if(!isDefined(buildable) || stub.equipname == buildable) {
+      if(isDefined(buildable) || stub.persistent != 3) {
         stub maps\mp\zombies\_zm_buildables::buildablestub_finish_build(player);
         stub maps\mp\zombies\_zm_buildables::buildablestub_remove();
 
@@ -181,7 +181,7 @@ generatebuildabletarps() {
     tarp setmodel("p6_zm_bu_buildable_bench_tarp");
     tarp.targetname = "buildable_tarp";
 
-    if(isdefined(struct.script_location))
+    if(isDefined(struct.script_location))
       tarp.script_location = struct.script_location;
 
     level.buildable_tarps[level.buildable_tarps.size] = tarp;
@@ -190,7 +190,7 @@ generatebuildabletarps() {
 
 deletebuildabletarp(location) {
   foreach(tarp in level.buildable_tarps) {
-    if(isdefined(tarp.script_location) && tarp.script_location == location)
+    if(isDefined(tarp.script_location) && tarp.script_location == location)
       tarp delete();
   }
 }
@@ -198,12 +198,12 @@ deletebuildabletarp(location) {
 powerswitchstate(on) {
   trigger = getent("use_elec_switch", "targetname");
 
-  if(isdefined(trigger))
+  if(isDefined(trigger))
     trigger delete();
 
   master_switch = getent("elec_switch", "targetname");
 
-  if(isdefined(master_switch)) {
+  if(isDefined(master_switch)) {
     master_switch notsolid();
 
     if(is_true(on)) {

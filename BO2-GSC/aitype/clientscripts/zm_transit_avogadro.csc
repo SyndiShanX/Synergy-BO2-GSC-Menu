@@ -1,7 +1,7 @@
-/********************************************************
+/***********************************************************
  * Decompiled and Edited by SyndiShanX
  * Script: aitype\clientscripts\zm_transit_avogadro.csc
-********************************************************/
+***********************************************************/
 
 #include character\clientscripts\c_zom_avogadro;
 

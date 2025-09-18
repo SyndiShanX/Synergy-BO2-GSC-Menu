@@ -9,7 +9,7 @@
 #include maps\mp\zombies\_zm_perks;
 
 init() {
-  if(!isdefined(level.script))
+  if(!isDefined(level.script))
     level.script = tolower(getdvar(#"mapname"));
 
   precacheshader("overlay_low_health");
@@ -23,7 +23,9 @@ init() {
   level.difficultystring["normal"] = & "GAMESKILL_NORMAL";
   level.difficultystring["hardened"] = & "GAMESKILL_HARDENED";
   level.difficultystring["veteran"] = & "GAMESKILL_VETERAN";
+
   thread playerhealthdebug();
+
   level.gameskill = 1;
 
   switch (level.gameskill) {
@@ -59,7 +61,7 @@ onplayerconnect() {
 }
 
 onplayerspawned() {
-  for (;;) {
+  for(;;) {
     self waittill("spawned_player");
     self maps\mp\zombies\_zm_perks::perk_set_max_health_if_jugg("health_reboot", 1, 0);
 
@@ -75,10 +77,10 @@ playerhurtcheck() {
   self endon("noHealthOverlay");
   self.hurtagain = 0;
 
-  for (;;) {
+  for(;;) {
     self waittill("damage", amount, attacker, dir, point, mod);
 
-    if(isdefined(attacker) && isplayer(attacker) && attacker.team == self.team) {
+    if(isDefined(attacker) && isplayer(attacker) && attacker.team == self.team) {
       continue;
     }
     self.hurtagain = 1;
@@ -93,12 +95,12 @@ playerhealthregen() {
   self endon("death");
   self endon("disconnect");
 
-  if(!isdefined(self.flag)) {
+  if(!isDefined(self.flag)) {
     self.flag = [];
     self.flags_lock = [];
   }
 
-  if(!isdefined(self.flag["player_has_red_flashing_overlay"])) {
+  if(!isDefined(self.flag["player_has_red_flashing_overlay"])) {
     self player_flag_init("player_has_red_flashing_overlay");
     self player_flag_init("player_is_invulnerable");
   }
@@ -117,7 +119,7 @@ playerhealthregen() {
   lastinvulratio = 1;
   self thread playerhurtcheck();
 
-  if(!isdefined(self.veryhurt))
+  if(!isDefined(self.veryhurt))
     self.veryhurt = 0;
 
   self.bolthit = 0;
@@ -127,7 +129,7 @@ playerhealthregen() {
 
   playerinvultimescale = getdvarfloat(#"_id_FCECE67E");
 
-  for (;;) {
+  for(;;) {
     wait 0.05;
     waittillframeend;
 
@@ -143,6 +145,7 @@ playerhealthregen() {
 
     if(self.health <= 0) {
       showhitlog();
+
       return;
     }
 
@@ -188,6 +191,7 @@ playerhealthregen() {
       }
       if(newhealth > health_ratio)
         logregen(newhealth);
+
       self setnormalhealth(newhealth);
       oldratio = self.health / self.maxhealth;
       continue;
@@ -198,11 +202,13 @@ playerhealthregen() {
     if(self.health <= 1) {
       self setnormalhealth(2 / self.maxhealth);
       invulworthyhealthdrop = 1;
-      if(!isdefined(level.player_deathinvulnerabletimeout))
+
+      if(!isDefined(level.player_deathinvulnerabletimeout))
         level.player_deathinvulnerabletimeout = 0;
 
       if(level.player_deathinvulnerabletimeout < gettime())
         level.player_deathinvulnerabletimeout = gettime() + getdvarint(#"_id_4E44E32D");
+
     }
 
     oldratio = self.health / self.maxhealth;
@@ -213,6 +219,7 @@ playerhealthregen() {
 
     if(!invulworthyhealthdrop || playerinvultimescale <= 0.0) {
       loghit(self.health, 0);
+
       continue;
     }
 
@@ -231,7 +238,9 @@ playerhealthregen() {
       invultime = level.invultime_preshield;
 
     invultime = invultime * playerinvultimescale;
+
     loghit(self.health, invultime);
+
     lastinvulratio = self.health / self.maxhealth;
     self thread playerinvul(invultime);
   }
@@ -243,6 +252,7 @@ playerinvul(timer) {
 
   if(timer > 0) {
     level.playerinvultimeend = gettime() + timer * 1000;
+
     wait(timer);
   }
 
@@ -253,7 +263,7 @@ healthoverlay() {
   self endon("disconnect");
   self endon("noHealthOverlay");
 
-  if(!isdefined(self._health_overlay)) {
+  if(!isDefined(self._health_overlay)) {
     self._health_overlay = newclienthudelem(self);
     self._health_overlay.x = 0;
     self._health_overlay.y = 0;
@@ -270,7 +280,7 @@ healthoverlay() {
   self thread watchhideredflashingoverlay(overlay);
   pulsetime = 0.8;
 
-  for (;;) {
+  for(;;) {
     if(overlay.alpha > 0)
       overlay fadeovertime(0.5);
 
@@ -310,7 +320,7 @@ fadefunc(overlay, severity, mult, hud_scaleonly) {
 watchhideredflashingoverlay(overlay) {
   self endon("death_or_disconnect");
 
-  while (isdefined(overlay)) {
+  while(isDefined(overlay)) {
     self waittill("clear_red_flashing_overlay");
     self player_flag_clear("player_has_red_flashing_overlay");
     overlay fadeovertime(0.05);
@@ -328,13 +338,13 @@ redflashingoverlay(overlay) {
   self endon("clear_red_flashing_overlay");
   self.stopflashingbadlytime = gettime() + level.longregentime;
 
-  if(!(isdefined(self.is_in_process_of_zombify) && self.is_in_process_of_zombify) && !(isdefined(self.is_zombie) && self.is_zombie)) {
+  if(!(isDefined(self.is_in_process_of_zombify) && self.is_in_process_of_zombify) && !(isDefined(self.is_zombie) && self.is_zombie)) {
     fadefunc(overlay, 1, 1, 0);
 
-    while (gettime() < self.stopflashingbadlytime && isalive(self) && (!(isdefined(self.is_in_process_of_zombify) && self.is_in_process_of_zombify) && !(isdefined(self.is_zombie) && self.is_zombie)))
+    while(gettime() < self.stopflashingbadlytime && isalive(self) && (!(isDefined(self.is_in_process_of_zombify) && self.is_in_process_of_zombify) && !(isDefined(self.is_zombie) && self.is_zombie)))
       fadefunc(overlay, 0.9, 1, 0);
 
-    if(!(isdefined(self.is_in_process_of_zombify) && self.is_in_process_of_zombify) && !(isdefined(self.is_zombie) && self.is_zombie)) {
+    if(!(isDefined(self.is_in_process_of_zombify) && self.is_in_process_of_zombify) && !(isDefined(self.is_zombie) && self.is_zombie)) {
       if(isalive(self))
         fadefunc(overlay, 0.65, 0.8, 0);
 
@@ -358,19 +368,15 @@ healthoverlay_remove(overlay) {
 }
 
 empty_kill_func(type, loc, point, attacker, amount) {
-
 }
 
 loghit(newhealth, invultime) {
-
 }
 
 logregen(newhealth) {
-
 }
 
 showhitlog() {
-
 }
 
 playerhealthdebug() {
@@ -379,8 +385,8 @@ playerhealthdebug() {
 
   waittillframeend;
 
-  while (true) {
-    while (true) {
+  while(true) {
+    while(true) {
       if(getdvar(#"scr_health_debug") != "0") {
         break;
       }
@@ -390,7 +396,7 @@ playerhealthdebug() {
 
     thread printhealthdebug();
 
-    while (true) {
+    while(true) {
       if(getdvar(#"scr_health_debug") == "0") {
         break;
       }
@@ -401,6 +407,7 @@ playerhealthdebug() {
     level notify("stop_printing_grenade_timers");
     destroyhealthdebug();
   }
+
 }
 
 printhealthdebug() {
@@ -413,13 +420,13 @@ printhealthdebug() {
   level.healthbarkeys[1] = "No Hit Time";
   level.healthbarkeys[2] = "No Die Time";
 
-  if(!isdefined(level.playerinvultimeend))
+  if(!isDefined(level.playerinvultimeend))
     level.playerinvultimeend = 0;
 
-  if(!isdefined(level.player_deathinvulnerabletimeout))
+  if(!isDefined(level.player_deathinvulnerabletimeout))
     level.player_deathinvulnerabletimeout = 0;
 
-  for (i = 0; i < level.healthbarkeys.size; i++) {
+  for(i = 0; i < level.healthbarkeys.size; i++) {
     key = level.healthbarkeys[i];
     textelem = newhudelem();
     textelem.x = x;
@@ -456,11 +463,11 @@ printhealthdebug() {
 
   flag_wait("start_zombie_round_logic");
 
-  while (true) {
+  while(true) {
     wait 0.05;
     players = get_players();
 
-    for (i = 0; i < level.healthbarkeys.size && players.size > 0; i++) {
+    for(i = 0; i < level.healthbarkeys.size && players.size > 0; i++) {
       key = level.healthbarkeys[i];
       player = players[0];
       width = 0;
@@ -485,15 +492,17 @@ printhealthdebug() {
       }
     }
   }
+
 }
 
 destroyhealthdebug() {
-  if(!isdefined(level.healthbarhudelems)) {
+  if(!isDefined(level.healthbarhudelems)) {
     return;
   }
-  for (i = 0; i < level.healthbarkeys.size; i++) {
+  for(i = 0; i < level.healthbarkeys.size; i++) {
     level.healthbarhudelems[level.healthbarkeys[i]].bgbar destroy();
     level.healthbarhudelems[level.healthbarkeys[i]].bar destroy();
     level.healthbarhudelems[level.healthbarkeys[i]] destroy();
   }
+
 }

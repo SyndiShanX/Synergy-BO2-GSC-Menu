@@ -43,14 +43,14 @@ electric_puzzle_watch_staff() {
   self endon("disconnect");
   a_piano_keys = getstructarray("piano_key", "script_noteworthy");
 
-  while (true) {
+  while(true) {
     self waittill("projectile_impact", str_weap_name, v_explode_point, n_radius, e_projectile, n_impact);
 
     if(str_weap_name == "staff_lightning_zm") {
       if(!flag("electric_puzzle_1_complete") && maps\mp\zm_tomb_chamber::is_chamber_occupied()) {
         n_index = get_closest_index(v_explode_point, a_piano_keys, 20.0);
 
-        if(isdefined(n_index)) {
+        if(isDefined(n_index)) {
           a_piano_keys[n_index] notify("piano_key_shot");
           a_players = getplayers();
 
@@ -81,7 +81,7 @@ piano_keys_stop() {
 }
 
 show_chord_debug(a_chord_notes) {
-  if(!isdefined(a_chord_notes))
+  if(!isDefined(a_chord_notes))
     a_chord_notes = [];
 
   a_piano_keys = getstructarray("piano_key", "script_noteworthy");
@@ -96,6 +96,7 @@ show_chord_debug(a_chord_notes) {
       }
     }
   }
+
 }
 
 piano_run_chords() {
@@ -110,10 +111,12 @@ piano_run_chords() {
 
   foreach(chord_name in a_chord_order) {
     s_chord = getstruct("piano_chord_" + chord_name, "script_noteworthy");
+
     show_chord_debug(s_chord.notes);
+
     chord_solved = 0;
 
-    while (!chord_solved) {
+    while(!chord_solved) {
       level waittill("piano_key_played");
 
       if(level.a_piano_keys_playing.size == 3) {
@@ -151,7 +154,9 @@ piano_run_chords() {
     wait 4.0;
     flag_clear("piano_chord_ringing");
     piano_keys_stop();
+
     show_chord_debug();
+
   }
 
   e_player = get_closest_player(a_chords[0].origin);
@@ -162,7 +167,7 @@ piano_run_chords() {
 piano_key_run() {
   piano_key_note = self.script_string;
 
-  while (true) {
+  while(true) {
     self waittill("piano_key_shot");
 
     if(!flag("piano_chord_ringing")) {
@@ -225,13 +230,13 @@ electric_puzzle_2_run() {
 
 electric_puzzle_2_cleanup() {
   foreach(s_relay in level.electric_relays) {
-    if(isdefined(s_relay.trigger_stub))
+    if(isDefined(s_relay.trigger_stub))
       maps\mp\zombies\_zm_unitrigger::register_unitrigger(s_relay.trigger_stub);
 
-    if(isdefined(s_relay.e_switch))
+    if(isDefined(s_relay.e_switch))
       s_relay.e_switch stoploopsound(0.5);
 
-    if(isdefined(s_relay.e_fx))
+    if(isDefined(s_relay.e_fx))
       s_relay.e_fx delete();
   }
 }
@@ -247,7 +252,7 @@ relay_give_power(s_relay) {
   if(!flag("electric_puzzle_1_complete")) {
     return;
   }
-  if(!isdefined(s_relay)) {
+  if(!isDefined(s_relay)) {
     kill_all_relay_power();
     s_relay = level.electric_relays["elec"];
   }
@@ -255,7 +260,7 @@ relay_give_power(s_relay) {
   s_relay.receiving_power = 1;
   str_target_relay = s_relay.connections[s_relay.position];
 
-  if(isdefined(str_target_relay)) {
+  if(isDefined(str_target_relay)) {
     if(str_target_relay == "chamber") {
       s_relay.e_switch thread maps\mp\zm_tomb_vo::say_puzzle_completion_line(3);
       level thread play_puzzle_stinger_on_all_players();
@@ -274,7 +279,7 @@ update_relay_fx_and_sound() {
   }
   foreach(s_relay in level.electric_relays) {
     if(s_relay.sending_power) {
-      if(isdefined(s_relay.e_fx))
+      if(isDefined(s_relay.e_fx))
         s_relay.e_fx delete();
 
       s_relay.e_switch playloopsound("zmb_squest_elec_switch_hum", 1);
@@ -282,7 +287,7 @@ update_relay_fx_and_sound() {
     }
 
     if(s_relay.receiving_power) {
-      if(!isdefined(s_relay.e_fx)) {
+      if(!isDefined(s_relay.e_fx)) {
         v_offset = anglestoright(s_relay.e_switch.angles) * 1.0;
         s_relay.e_fx = spawn("script_model", s_relay.e_switch.origin + v_offset);
         s_relay.e_fx.angles = s_relay.e_switch.angles + vectorscale((0, 0, -1), 90.0);
@@ -294,7 +299,7 @@ update_relay_fx_and_sound() {
       continue;
     }
 
-    if(isdefined(s_relay.e_fx))
+    if(isDefined(s_relay.e_fx))
       s_relay.e_fx delete();
 
     s_relay.e_switch stoploopsound(1);
@@ -313,7 +318,7 @@ update_relays() {
 }
 
 relay_switch_run() {
-  assert(isdefined(self.e_switch));
+  assert(isDefined(self.e_switch));
   self.trigger_stub = spawnstruct();
   self.trigger_stub.origin = self.e_switch.origin;
   self.trigger_stub.radius = 50;
@@ -326,14 +331,14 @@ relay_switch_run() {
   self thread update_relay_rotation();
   n_tries = 0;
 
-  while (true) {
+  while(true) {
     self.trigger_stub waittill("trigger", e_user);
     n_tries++;
     level notify("vo_try_puzzle_lightning2", e_user);
     self.position = (self.position + 1) % 4;
     str_target_relay = self.connections[self.position];
 
-    if(isdefined(str_target_relay)) {
+    if(isDefined(str_target_relay)) {
       if(str_target_relay == "village" || str_target_relay == "ruins")
         level notify("vo_puzzle_good", e_user);
     } else if(n_tries % 8 == 0)
@@ -349,7 +354,7 @@ relay_switch_run() {
 relay_unitrigger_think() {
   self endon("kill_trigger");
 
-  while (true) {
+  while(true) {
     self waittill("trigger", player);
     self.stub notify("trigger", player);
   }

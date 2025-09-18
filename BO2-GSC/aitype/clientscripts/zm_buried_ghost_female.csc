@@ -1,7 +1,7 @@
-/***********************************************************
+/*****************************************************************
  * Decompiled and Edited by SyndiShanX
  * Script: aitype\clientscripts\zm_buried_ghost_female.csc
-***********************************************************/
+*****************************************************************/
 
 #include character\clientscripts\c_zom_zombie_buried_ghost_woman;
 

@@ -10,16 +10,16 @@ init() {
 }
 
 spawned(localclientnum, set) {
-  if(!isdefined(level.counteruavs))
+  if(!isDefined(level.counteruavs))
     level.counteruavs = [];
 
-  if(!isdefined(level.counteruavs[localclientnum]))
+  if(!isDefined(level.counteruavs[localclientnum]))
     level.counteruavs[localclientnum] = 0;
 
   player = getlocalplayer(localclientnum);
-  assert(isdefined(player));
+  assert(isDefined(player));
 
-  if(!isdefined(player)) {
+  if(!isDefined(player)) {
     return;
   }
   if(player getinkillcam(localclientnum)) {
@@ -41,7 +41,7 @@ counteruav_think(localclientnum) {
     level.counteruavs[localclientnum] = 0;
 
   player = getlocalplayer(localclientnum);
-  assert(isdefined(player));
+  assert(isDefined(player));
 
   if(level.counteruavs[localclientnum] == 0)
     player setenemyglobalscrambler(0);

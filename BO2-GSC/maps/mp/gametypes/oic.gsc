@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\gametypes\oic.gsc
-***************************************/
+**************************************/
 
 #include common_scripts\utility;
 #include maps\mp\_utility;
@@ -60,7 +60,7 @@ givecustomloadout() {
   self switchtoweapon(weapon);
   clipammo = 1;
 
-  if(isdefined(self.pers["clip_ammo"])) {
+  if(isDefined(self.pers["clip_ammo"])) {
     clipammo = self.pers["clip_ammo"];
     self.pers["clip_ammo"] = undefined;
   }
@@ -68,7 +68,7 @@ givecustomloadout() {
   self setweaponammoclip(weapon, clipammo);
   stockammo = 0;
 
-  if(isdefined(self.pers["stock_ammo"])) {
+  if(isDefined(self.pers["stock_ammo"])) {
     stockammo = self.pers["stock_ammo"];
     self.pers["stock_ammo"] = undefined;
   }
@@ -148,7 +148,7 @@ onspawnplayer(predictedspawn) {
 }
 
 onendgame(winningplayer) {
-  if(isdefined(winningplayer) && isplayer(winningplayer))
+  if(isDefined(winningplayer) && isplayer(winningplayer))
     [[level._setplayerscore]](winningplayer, [
       [level._getplayerscore]
     ](winningplayer) + 1);
@@ -161,10 +161,10 @@ onstartwagersidebets() {
 saveoffallplayersammo() {
   wait 1.0;
 
-  for (playerindex = 0; playerindex < level.players.size; playerindex++) {
+  for(playerindex = 0; playerindex < level.players.size; playerindex++) {
     player = level.players[playerindex];
 
-    if(!isdefined(player)) {
+    if(!isDefined(player)) {
       continue;
     }
     if(player.pers["lives"] == 0) {
@@ -177,16 +177,16 @@ saveoffallplayersammo() {
 }
 
 isplayereliminated(player) {
-  return isdefined(player.pers["eliminated"]) && player.pers["eliminated"];
+  return isDefined(player.pers["eliminated"]) && player.pers["eliminated"];
 }
 
 getplayersleft() {
   playersremaining = [];
 
-  for (playerindex = 0; playerindex < level.players.size; playerindex++) {
+  for(playerindex = 0; playerindex < level.players.size; playerindex++) {
     player = level.players[playerindex];
 
-    if(!isdefined(player)) {
+    if(!isDefined(player)) {
       continue;
     }
     if(!isplayereliminated(player))
@@ -203,8 +203,8 @@ onwagerfinalizeround() {
   sidebetwinners = [];
   players = level.players;
 
-  for (playerindex = 0; playerindex < players.size; playerindex++) {
-    if(isdefined(players[playerindex].pers["sideBetMade"])) {
+  for(playerindex = 0; playerindex < players.size; playerindex++) {
+    if(isDefined(players[playerindex].pers["sideBetMade"])) {
       sidebetpool = sidebetpool + getdvarint(#"scr_wagerSideBet");
 
       if(players[playerindex].pers["sideBetMade"] == lastmanstanding.name)
@@ -217,14 +217,14 @@ onwagerfinalizeround() {
   }
   sidebetpayout = int(sidebetpool / sidebetwinners.size);
 
-  for (index = 0; index < sidebetwinners.size; index++) {
+  for(index = 0; index < sidebetwinners.size; index++) {
     player = sidebetwinners[index];
     player.pers["wager_sideBetWinnings"] = player.pers["wager_sideBetWinnings"] + sidebetpayout;
   }
 }
 
 onplayerkilled(einflictor, attacker, idamage, smeansofdeath, sweapon, vdir, shitloc, psoffsettime, deathanimduration) {
-  if(isdefined(attacker) && isplayer(attacker) && self != attacker) {
+  if(isDefined(attacker) && isplayer(attacker) && self != attacker) {
     attackerammo = attacker getammocount("kard_wager_mp");
     victimammo = self getammocount("kard_wager_mp");
     attacker giveammo(1);
@@ -270,12 +270,12 @@ shouldreceivesurvivorbonus() {
 watchelimination() {
   level endon("game_ended");
 
-  for (;;) {
+  for(;;) {
     level waittill("player_eliminated");
     players = level.players;
 
-    for (i = 0; i < players.size; i++) {
-      if(isdefined(players[i]) && players[i] shouldreceivesurvivorbonus()) {
+    for(i = 0; i < players.size; i++) {
+      if(isDefined(players[i]) && players[i] shouldreceivesurvivorbonus()) {
         players[i].pers["survived"]++;
         players[i].survived = players[i].pers["survived"];
         players[i] thread maps\mp\gametypes\_wager::queuewagerpopup(&"MP_OIC_SURVIVOR_BONUS", 10);
@@ -290,19 +290,19 @@ watchelimination() {
 onwagerawards() {
   stabs = self maps\mp\gametypes\_globallogic_score::getpersstat("stabs");
 
-  if(!isdefined(stabs))
+  if(!isDefined(stabs))
     stabs = 0;
 
   self maps\mp\gametypes\_persistence::setafteractionreportstat("wagerAwards", stabs, 0);
   longshots = self maps\mp\gametypes\_globallogic_score::getpersstat("longshots");
 
-  if(!isdefined(longshots))
+  if(!isDefined(longshots))
     longshots = 0;
 
   self maps\mp\gametypes\_persistence::setafteractionreportstat("wagerAwards", longshots, 1);
   bestkillstreak = self maps\mp\gametypes\_globallogic_score::getpersstat("best_kill_streak");
 
-  if(!isdefined(bestkillstreak))
+  if(!isDefined(bestkillstreak))
     bestkillstreak = 0;
 
   self maps\mp\gametypes\_persistence::setafteractionreportstat("wagerAwards", bestkillstreak, 2);

@@ -24,7 +24,7 @@ main() {
 }
 
 setupclientsideobjects(localclientnum) {
-  while (!clienthassnapshot(localclientnum))
+  while(!clienthassnapshot(localclientnum))
     wait 0.1;
 
   level thread flag_think(localclientnum);
@@ -39,9 +39,9 @@ nuked_car_flip(localclientnum) {
   car01 = getent(localclientnum, "nuke_animated_car01", "targetname");
   car02 = getent(localclientnum, "nuke_animated_car02", "targetname");
   displayglass = getent(localclientnum, "nuke_display_glass_client", "targetname");
-  assert(isdefined(car01));
-  assert(isdefined(car02));
-  assert(isdefined(displayglass));
+  assert(isDefined(car01));
+  assert(isDefined(car02));
+  assert(isDefined(displayglass));
   carmoveoffest = vectorscale((0, 0, 1), 120.0);
   car01.origin = car01.origin - carmoveoffest;
   car02.origin = car02.origin - carmoveoffest;
@@ -97,7 +97,7 @@ spinner_rotate_match(step) {
   self endon("delete");
   resetangles = self.angles;
 
-  for (;;) {
+  for(;;) {
     self rotateyaw(step, 60);
     self waittill("rotatedone");
     self.angles = resetangles;
@@ -107,7 +107,7 @@ spinner_rotate_match(step) {
 waitfornotetrack(localclientnum) {
   self endon("entityshutdown");
 
-  for (;;) {
+  for(;;) {
     self waittill("fx", note);
 
     if(note == "camera_goes_dark") {

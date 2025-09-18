@@ -12,11 +12,10 @@
 
 on_connect(localclientnum) {
   if(!sessionmodeiszombiesgame()) {
-
   }
 
   player = getlocalplayer(localclientnum);
-  assert(isdefined(player));
+  assert(isDefined(player));
   player setalphafadeforname(1.0);
 
   if(sessionmodeiszombiesgame()) {
@@ -32,26 +31,26 @@ on_connect(localclientnum) {
     thread clientscripts\mp\_rotating_object::init(localclientnum);
     init_code_filters(player);
 
-    if(isdefined(level.infraredvisionset))
+    if(isDefined(level.infraredvisionset))
       player setinfraredvisionset(level.infraredvisionset);
   }
 
-  if(isdefined(level.onplayerconnect))
+  if(isDefined(level.onplayerconnect))
     level thread[[level.onplayerconnect]](localclientnum);
 
-  if(isdefined(level._customplayerconnectfuncs))
+  if(isDefined(level._customplayerconnectfuncs))
     [[level._customplayerconnectfuncs]](player, localclientnum);
 }
 
 dtp_effects() {
   self endon("entityshutdown");
 
-  while (true) {
+  while(true) {
     self waittill("dtp_land", localclientnum);
     localplayer = getlocalplayer(localclientnum);
 
-    if(!issplitscreen() && isdefined(localplayer) && localplayer == self) {
-      if(isdefined(level.iswinter) && level.iswinter)
+    if(!issplitscreen() && isDefined(localplayer) && localplayer == self) {
+      if(isDefined(level.iswinter) && level.iswinter)
         animateui(localclientnum, "fullscreen_snow", "dirt", "in", 0);
       else
         animateui(localclientnum, "fullscreen_dirt", "dirt", "in", 0);

@@ -1,7 +1,7 @@
-/************************************************************
+/*******************************************************************
  * Decompiled and Edited by SyndiShanX
  * Script: clientscripts\mp\zombies\_zm_equip_subwoofer.csc
-************************************************************/
+*******************************************************************/
 
 #include clientscripts\mp\_utility;
 #include clientscripts\mp\_fx;
@@ -23,10 +23,10 @@ get_closest_sub(pos) {
   keys = getarraykeys(level._active_subwoofers);
   orphan_found = 0;
 
-  for (i = 0; i < keys.size; i++) {
+  for(i = 0; i < keys.size; i++) {
     sub = level._active_subwoofers[keys[i]];
 
-    if(!isdefined(sub)) {
+    if(!isDefined(sub)) {
       orphan_found = 1;
       continue;
     }
@@ -42,8 +42,8 @@ get_closest_sub(pos) {
   if(orphan_found) {
     new_list = [];
 
-    for (i = 0; i < keys.size; i++) {
-      if(isdefined(level._active_subwoofers[keys[i]]))
+    for(i = 0; i < keys.size; i++) {
+      if(isDefined(level._active_subwoofers[keys[i]]))
         new_list[keys[i]] = level._active_subwoofers[keys[i]];
     }
 
@@ -61,12 +61,12 @@ subwoofer_flings_zombie_cb(localclientnum, oldval, newval, bnewent, binitialsnap
 subwoofer_fling_zombie(localclientnum) {
   wait 0.016;
 
-  if(!isdefined(self)) {
+  if(!isDefined(self)) {
     return;
   }
   sub = get_closest_sub(self.origin);
 
-  if(isdefined(sub)) {
+  if(isDefined(sub)) {
     flat_angle = (0, sub.angles[1], 0);
     direction_forward = anglestoforward(flat_angle + vectorscale((-1, 0, 0), 30.0));
     direction_vector = vectorscale(direction_forward, 512);
@@ -79,7 +79,7 @@ subwoofer_activated_cb(localclientnum, oldval, newval, bnewent, binitialsnap, fi
     level._active_subwoofers["" + self getentitynumber()] = self;
     players = getlocalplayers();
 
-    for (i = 0; i < players.size; i++) {
+    for(i = 0; i < players.size; i++) {
       players[i] earthquake(0.2, 1.8, self.origin, 256);
       physicsexplosioncylinder(i, self.origin, 600, 240, 1);
     }
@@ -96,12 +96,11 @@ subwoofer_delayed_removal_from_active_list() {
   self endon("subwoofer_activated");
   wait 0.5;
 
-  if(!isdefined(self)) {
+  if(!isDefined(self)) {
     return;
   }
   level._active_subwoofers["" + self getentitynumber()] = undefined;
 }
 
 init_animtree() {
-
 }

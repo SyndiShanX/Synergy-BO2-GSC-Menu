@@ -34,12 +34,12 @@ clean_up_locked_box() {
   self endon("box_spin_done");
   self.owner waittill("box_locked");
 
-  if(isdefined(self.weapon_model)) {
+  if(isDefined(self.weapon_model)) {
     self.weapon_model delete();
     self.weapon_model = undefined;
   }
 
-  if(isdefined(self.weapon_model_dw)) {
+  if(isDefined(self.weapon_model_dw)) {
     self.weapon_model_dw delete();
     self.weapon_model_dw = undefined;
   }
@@ -58,7 +58,7 @@ magic_box_locks() {
   self setclientfield("magicbox_amb_fx", 2);
   self setzbarrierpiecestate(5, "closing");
 
-  while (self getzbarrierpiecestate(5) == "closing")
+  while(self getzbarrierpiecestate(5) == "closing")
     wait 0.5;
 
   self notify("locked");
@@ -69,7 +69,7 @@ magic_box_unlocks() {
   self playsound("zmb_hellbox_unlock");
   self setzbarrierpiecestate(5, "opening");
 
-  while (self getzbarrierpiecestate(5) == "opening")
+  while(self getzbarrierpiecestate(5) == "opening")
     wait 0.5;
 
   self setzbarrierpiecestate(2, "closed");

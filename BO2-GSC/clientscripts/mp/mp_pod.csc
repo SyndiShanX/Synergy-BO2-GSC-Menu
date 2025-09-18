@@ -17,5 +17,6 @@ main() {
   setsaveddvar("sm_sunsamplesizenear", 0.25);
   setsaveddvar("sm_sunshadowsmall", 1);
   waitforclient(0);
+
   println("*** Client : mp_pod running...");
 }

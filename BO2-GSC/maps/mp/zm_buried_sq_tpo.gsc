@@ -27,7 +27,9 @@ init() {
   flag_init("sq_tpo_stage_started");
   maps\mp\zombies\_zm_weap_time_bomb::time_bomb_add_custom_func_global_save(::time_bomb_saves_wisp_state);
   maps\mp\zombies\_zm_weap_time_bomb::time_bomb_add_custom_func_global_restore(::time_bomb_restores_wisp_state);
+
   level thread debug_give_piece();
+
   level._effect["sq_tpo_time_bomb_fx"] = loadfx("maps/zombie_buried/fx_buried_ghost_drain");
   level.sq_tpo = spawnstruct();
   level thread setup_buildable_switch();
@@ -67,6 +69,7 @@ stage_vo_ric() {
 
 stage_logic() {
   iprintlnbold("TPO Started");
+
   flag_set("sq_tpo_stage_started");
 
   if(flag("sq_is_ric_tower_built"))
@@ -75,28 +78,32 @@ stage_logic() {
     stage_logic_maxis();
   else {
     assertmsg("SQ TPO: no sidequest side picked!");
+
   }
 
   iprintlnbold("TPO done");
+
   stage_completed("sq", level._cur_stage_name);
 }
 
 stage_logic_richtofen() {
   level endon("sq_tpo_generator_powered");
+
   iprintlnbold("TPO: Richtofen started");
+
   e_time_bomb_volume = getent("sq_tpo_timebomb_volume", "targetname");
 
   do {
     flag_clear("sq_tpo_time_bomb_in_valid_location");
 
     do {
-      if(!(isdefined(level.time_bomb_save_data) && isdefined(level.time_bomb_save_data.time_bomb_model) && !isdefined(level.time_bomb_save_data.time_bomb_model.sq_location_valid)))
+      if(!(isDefined(level.time_bomb_save_data) && isDefined(level.time_bomb_save_data.time_bomb_model) && !isDefined(level.time_bomb_save_data.time_bomb_model.sq_location_valid)))
         level waittill("new_time_bomb_set");
 
       b_time_bomb_in_valid_location = level.time_bomb_save_data.time_bomb_model istouching(e_time_bomb_volume);
       level.time_bomb_save_data.time_bomb_model.sq_location_valid = b_time_bomb_in_valid_location;
     }
-    while (!b_time_bomb_in_valid_location);
+    while(!b_time_bomb_in_valid_location);
 
     playfxontag(level._effect["sq_tpo_time_bomb_fx"], level.time_bomb_save_data.time_bomb_model, "tag_origin");
     flag_set("sq_tpo_time_bomb_in_valid_location");
@@ -116,14 +123,15 @@ stage_logic_richtofen() {
 
     wait_network_frame();
   }
-  while (!flag("sq_tpo_generator_powered"));
+  while(!flag("sq_tpo_generator_powered"));
 }
 
 stage_logic_maxis() {
   iprintlnbold("TPO: Maxis started");
+
   flag_wait("sq_wisp_saved_with_time_bomb");
 
-  while (!flag("sq_wisp_success")) {
+  while(!flag("sq_wisp_success")) {
     stage_start("sq", "ts");
     level waittill("sq_ts_over");
     stage_start("sq", "ctw");
@@ -136,7 +144,7 @@ stage_logic_maxis() {
 sq_tpo_check_players_in_time_bomb_volume(e_volume) {
   level endon("sq_tpo_stop_checking_time_bomb_volume");
 
-  while (true) {
+  while(true) {
     b_players_ready = _are_all_players_in_time_bomb_volume(e_volume);
     level._time_bomb.functionality_override = b_players_ready;
 
@@ -152,8 +160,10 @@ sq_tpo_check_players_in_time_bomb_volume(e_volume) {
 _are_all_players_in_time_bomb_volume(e_volume) {
   n_required_players = 4;
   a_players = get_players();
+
   if(getdvarint(#"_id_5256118F") > 0)
     n_required_players = a_players.size;
+
   n_players_in_position = 0;
 
   foreach(player in a_players) {
@@ -172,6 +182,7 @@ wait_for_time_bomb_to_be_detonated_or_thrown_again() {
 
 special_round_start() {
   iprintlnbold("SPECIAL ROUND START");
+
   flag_set("sq_tpo_special_round_active");
   level.sq_tpo.times_searched = 0;
   maps\mp\zombies\_zm_weap_time_bomb::time_bomb_saves_data(0);
@@ -206,7 +217,7 @@ watch_for_time_bombs(n_round) {
   level notify("super_zombies_end");
   level endon("super_zombies_end");
 
-  while (true) {
+  while(true) {
     level waittill_any("time_bomb_detonation_complete", "start_of_round");
     level.zombie_total = n_round;
     ai_calculate_health(n_round);
@@ -229,6 +240,7 @@ fake_time_warp() {
 
 special_round_end() {
   iprintlnbold("SPECIAL ROUND END");
+
   level setclientfield("sq_tpo_special_round_active", 0);
   level notify("sndEndNoirMusic");
   make_super_zombies(0);
@@ -256,11 +268,11 @@ clean_up_special_round() {
 }
 
 _delete_unitrigger() {
-  if(isdefined(self.unitrigger))
+  if(isDefined(self.unitrigger))
     self.unitrigger.registered = 0;
 
-  if(isdefined(self.unitrigger.trigger)) {
-    if(isdefined(self.unitrigger.trigger.stub))
+  if(isDefined(self.unitrigger.trigger)) {
+    if(isDefined(self.unitrigger.trigger.stub))
       self.unitrigger.trigger maps\mp\zombies\_zm_unitrigger::unregister_unitrigger(self.unitrigger.trigger.stub);
     else {
       self.trigger notify("kill_trigger");
@@ -272,16 +284,17 @@ _delete_unitrigger() {
 start_item_hunt_with_timeout(n_timeout) {
   setup_random_corpse_positions();
   level delay_notify("sq_tpo_item_hunt_done", n_timeout);
+
   iprintlnbold("ITEM HUNT STARTED");
+
   level waittill("sq_tpo_item_hunt_done");
 }
 
 exit_stage(success) {
-
 }
 
 debug_give_piece() {
-  while (true) {
+  while(true) {
     level waittill("sq_tpo_give_item");
     get_players()[0] give_player_sq_tpo_switch();
   }
@@ -297,7 +310,7 @@ setup_random_corpse_positions() {
   a_corpse_models = get_randomized_corpse_list();
   a_corpse_structs = array_randomize(getstructarray("sq_tpo_corpse_spawn_location", "targetname"));
 
-  for (i = 0; i < a_corpse_models.size; i++) {
+  for(i = 0; i < a_corpse_models.size; i++) {
     a_corpse_structs[i] promote_to_corpse_model(a_corpse_models[i]);
     a_corpse_structs[i] thread _debug_show_location();
   }
@@ -306,12 +319,13 @@ setup_random_corpse_positions() {
 _debug_show_location() {
   level endon("sq_tpo_item_hunt_done");
 
-  while (true) {
+  while(true) {
     if(getdvarint(#"_id_5256118F") > 0)
       debugstar(self.origin, 20, (0, 1, 0));
 
     wait 1;
   }
+
 }
 
 promote_to_corpse_model(str_model) {
@@ -327,7 +341,7 @@ promote_to_corpse_model(str_model) {
 #using_animtree("zm_buried_props");
 
 _pose_corpse() {
-  assert(isdefined(self.script_noteworthy), "sq_tpo_corpse_spawn_location at " + self.origin + " is missing script_noteworthy! This is required to set deadpose");
+  assert(isDefined(self.script_noteworthy), "sq_tpo_corpse_spawn_location at " + self.origin + " is missing script_noteworthy! This is required to set deadpose");
 
   switch (self.script_noteworthy) {
     case "deadpose_1":
@@ -370,7 +384,9 @@ _pose_corpse() {
       anim_pose = % pb_gen_m_floor_armstomach_onback_deathpose;
       break;
     default:
+
       assertmsg("sq_tpo_corpse_struct with script_noteworthy '" + self.script_noteworthy + "' is not supported by existing anim list!");
+
       break;
   }
 
@@ -419,13 +435,13 @@ unitrigger_think() {
   self thread unitrigger_killed();
   b_trigger_used = 0;
 
-  while (!b_trigger_used) {
+  while(!b_trigger_used) {
     self waittill("trigger", player);
     b_progress_bar_done = 0;
     n_frame_count = 0;
 
-    while (player usebuttonpressed() && !b_progress_bar_done) {
-      if(!isdefined(self.progress_bar)) {
+    while(player usebuttonpressed() && !b_progress_bar_done) {
+      if(!isDefined(self.progress_bar)) {
         self.progress_bar = player createprimaryprogressbar();
         self.progress_bar_text = player createprimaryprogressbartext();
         self.progress_bar_text settext(&"ZM_BURIED_SQ_SEARCHING");
@@ -469,7 +485,7 @@ give_player_sq_tpo_switch() {
 }
 
 item_is_on_corpse() {
-  if(!isdefined(level.sq_tpo.times_searched))
+  if(!isDefined(level.sq_tpo.times_searched))
     level.sq_tpo.times_searched = 0;
 
   switch (level.sq_tpo.times_searched) {
@@ -493,7 +509,7 @@ item_is_on_corpse() {
 }
 
 _delete_progress_bar() {
-  if(isdefined(self.progress_bar)) {
+  if(isDefined(self.progress_bar)) {
     self.progress_bar destroyelem();
     self.progress_bar_text destroyelem();
     self.progress_bar = undefined;
@@ -520,7 +536,7 @@ setup_buildable_switch() {
   s_switch.onuseplantobject = ::onuseplantobject_switch;
   include_buildable(s_switch);
 
-  while (!isdefined(level.sq_tpo_unitrig))
+  while(!isDefined(level.sq_tpo_unitrig))
     wait 1;
 
   level.sq_tpo_unitrig.realorigin = level.sq_tpo_unitrig.origin;
@@ -540,11 +556,10 @@ ondrop_switch(player) {
 }
 
 onspawn_switch(player) {
-
 }
 
 triggerthink_switch() {
-  if(isdefined(getent("guillotine_trigger", "targetname"))) {
+  if(isDefined(getent("guillotine_trigger", "targetname"))) {
     str_trigger_generator_name = "guillotine_trigger";
     level.sq_tpo_unitrig = maps\mp\zombies\_zm_buildables::buildable_trigger_think(str_trigger_generator_name, "buried_sq_tpo_switch", "none", "", 1, 0);
     level.sq_tpo_unitrig.ignore_open_sesame = 1;
@@ -562,14 +577,14 @@ guillotine_trigger_reject_func(player) {
 }
 
 time_bomb_saves_wisp_state() {
-  if(!isdefined(self.sq_data))
+  if(!isDefined(self.sq_data))
     self.sq_data = spawnstruct();
 
   self.sq_data.wisp_stage_complete = flag("sq_wisp_success");
 }
 
 time_bomb_restores_wisp_state() {
-  if(isdefined(self.sq_data) && isdefined(self.sq_data.wisp_stage_complete) && !self.sq_data.wisp_stage_complete && flag("sq_tpo_stage_started")) {
+  if(isDefined(self.sq_data) && isDefined(self.sq_data.wisp_stage_complete) && !self.sq_data.wisp_stage_complete && flag("sq_tpo_stage_started")) {
     flag_clear("sq_wisp_success");
     flag_clear("sq_wisp_failed");
     flag_set("sq_wisp_saved_with_time_bomb");

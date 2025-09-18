@@ -17,7 +17,7 @@ init() {
 }
 
 sq_gl_setup_buildable_trig() {
-  while (!isdefined(level.sq_lamp_generator_unitrig))
+  while(!isDefined(level.sq_lamp_generator_unitrig))
     wait 1;
 
   level.sq_lamp_generator_unitrig.realorigin = level.sq_lamp_generator_unitrig.origin;
@@ -39,6 +39,7 @@ init_stage() {
 
 stage_logic() {
   iprintlnbold("GL Started");
+
   s_start = getstruct("sq_ghost_lamp_start", "script_noteworthy");
   gl_lantern_move(s_start);
   flag_wait("sq_gl_lantern_aquired");
@@ -47,7 +48,6 @@ stage_logic() {
 }
 
 exit_stage(success) {
-
 }
 
 stage_vo_max() {
@@ -76,17 +76,17 @@ gl_lantern_spawn(s_start) {
 }
 
 gl_lantern_delete() {
-  if(isdefined(level.vh_lantern)) {
-    if(isdefined(level.vh_lantern.m_lantern))
+  if(isDefined(level.vh_lantern)) {
+    if(isDefined(level.vh_lantern.m_lantern))
       level.vh_lantern.m_lantern delete();
 
-    if(isdefined(level.vh_lantern.t_pickup))
+    if(isDefined(level.vh_lantern.t_pickup))
       level.vh_lantern.t_pickup delete();
 
     level.vh_lantern cancelaimove();
     level.vh_lantern clearvehgoalpos();
 
-    if(isdefined(level.vh_lantern.m_link))
+    if(isDefined(level.vh_lantern.m_link))
       level.vh_lantern.m_link delete();
 
     level.vh_lantern delete();
@@ -96,7 +96,7 @@ gl_lantern_delete() {
 gl_lantern_move(s_current) {
   level endon("lantern_crashing");
 
-  while (true) {
+  while(true) {
     s_current = gl_lantern_get_next_struct(s_current);
 
     if(flag("sq_is_max_tower_built")) {
@@ -112,7 +112,7 @@ gl_lantern_get_next_struct(s_current) {
   a_struct_links = [];
   a_target_structs = getstructarray(s_current.target, "targetname");
 
-  if(isdefined(s_current.script_string)) {
+  if(isDefined(s_current.script_string)) {
     a_names = strtok(s_current.script_string, " ");
 
     foreach(str_name in a_names) {
@@ -147,7 +147,7 @@ gl_lantern_damage_watcher() {
   self.m_lantern endon("delete");
   self.m_lantern setcandamage(1);
 
-  while (true) {
+  while(true) {
     self.m_lantern waittill("damage", amount, attacker, dir, point, dmg_type);
 
     if(dmg_type == "MOD_GRENADE" || dmg_type == "MOD_GRENADE_SPLASH") {
@@ -162,7 +162,7 @@ gl_lantern_damage_watcher() {
   level thread gl_lantern_respawn_wait();
   level waittill("gl_lantern_respawn");
 
-  if(isdefined(self.m_lantern)) {
+  if(isDefined(self.m_lantern)) {
     s_start_spot = gl_lantern_teleport();
     gl_lantern_move(s_start_spot);
   }
@@ -171,10 +171,10 @@ gl_lantern_damage_watcher() {
 gl_lantern_stop_spin_on_land() {
   self endon("delete");
 
-  while (isdefined(self) && length(self.velocity) > 3)
+  while(isDefined(self) && length(self.velocity) > 3)
     wait 0.1;
 
-  if(isdefined(self)) {
+  if(isDefined(self)) {
     self.m_link = spawn("script_model", self.origin);
     self.m_link setmodel("tag_origin");
     self linkto(self.m_link);
@@ -198,7 +198,7 @@ gl_lantern_pickup_watch() {
   player player_take_piece(level.zombie_buildables["buried_sq_oillamp"].buildablepieces[0]);
   piece = player player_get_buildable_piece(2);
 
-  if(isdefined(piece)) {
+  if(isDefined(piece)) {
     piece.sq_is_ghost_lamp = 1;
     piece.start_origin = vectorscale((0, 0, -1), 512.0);
     piece.start_angles = (0, 0, 0);

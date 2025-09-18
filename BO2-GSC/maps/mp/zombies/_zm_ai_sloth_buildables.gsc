@@ -1,7 +1,7 @@
-/*******************************************************
+/*********************************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\zombies\_zm_ai_sloth_buildables.gsc
-*******************************************************/
+*********************************************************/
 
 #include common_scripts\utility;
 #include maps\mp\_utility;
@@ -18,7 +18,7 @@
 
 build_buildable_condition() {
   if(level.sloth_buildable_zones.size > 0) {
-    for (i = 0; i < level.sloth_buildable_zones.size; i++) {
+    for(i = 0; i < level.sloth_buildable_zones.size; i++) {
       zone = level.sloth_buildable_zones[i];
 
       if(is_true(zone.built)) {
@@ -29,8 +29,8 @@ build_buildable_condition() {
       piece_remaining = 0;
       pieces = zone.pieces;
 
-      for (j = 0; j < pieces.size; j++) {
-        if(isdefined(pieces[j].unitrigger) && !is_true(pieces[j].built)) {
+      for(j = 0; j < pieces.size; j++) {
+        if(isDefined(pieces[j].unitrigger) && !is_true(pieces[j].built)) {
           piece_remaining = 1;
           break;
         }
@@ -48,15 +48,16 @@ build_buildable_condition() {
     }
   }
 
-  if(isdefined(remove_zone))
+  if(isDefined(remove_zone))
     arrayremovevalue(level.sloth_buildable_zones, remove_zone);
 
   return false;
 }
 
 common_move_to_table(stub, table, asd_name, check_pickup) {
-  if(!isdefined(table)) {
+  if(!isDefined(table)) {
     assertmsg("Table not found for " + self.buildable_zone.buildable_name);
+
     self.context_done = 1;
     return false;
   }
@@ -66,22 +67,25 @@ common_move_to_table(stub, table, asd_name, check_pickup) {
   start_ang = getstartangles(table.origin, table.angles, anim_id);
   self setgoalpos(start_org);
 
-  while (true) {
+  while(true) {
     if(is_true(check_pickup)) {
       if(self.candy_player is_player_equipment(stub.weaponname)) {
         sloth_print(stub.weaponname + " was picked up");
+
         self.context_done = 1;
         return false;
       }
     }
 
-    if(isdefined(self.buildable_zone) && stub != self.buildable_zone.stub) {
+    if(isDefined(self.buildable_zone) && stub != self.buildable_zone.stub) {
       sloth_print("location change during pathing");
+
       stub = self.buildable_zone.stub;
       table = getent(stub.model.target, "targetname");
 
-      if(!isdefined(table)) {
+      if(!isDefined(table)) {
         assertmsg("Table not found for " + self.buildable_zone.buildable_name);
+
         self.context_done = 1;
         return false;
       }
@@ -116,25 +120,29 @@ build_buildable_action() {
     return;
   }
   self maps\mp\zombies\_zm_ai_sloth::action_animscripted("zm_make_buildable_intro", "make_buildable_intro_anim", table.origin, table.angles);
+
   sloth_print("looking for " + self.buildable_zone.buildable_name + " pieces");
+
   store = getstruct("sloth_general_store", "targetname");
   self setgoalpos(store.origin);
   self waittill("goal");
   self.pieces = [];
 
-  if(isdefined(self.buildable_zone)) {
+  if(isDefined(self.buildable_zone)) {
     pieces = self.buildable_zone.pieces;
 
     if(pieces.size == 0) {
       sloth_print("no pieces available");
+
       self.context_done = 1;
       return;
     }
 
-    for (i = 0; i < pieces.size; i++) {
-      if(isdefined(pieces[i].unitrigger) && !is_true(pieces[i].built)) {
+    for(i = 0; i < pieces.size; i++) {
+      if(isDefined(pieces[i].unitrigger) && !is_true(pieces[i].built)) {
         if(getdvarint(#"_id_B6252E7C") == 2)
           line(self.origin, pieces[i].start_origin, (1, 1, 1), 1, 0, 1000);
+
         self maps\mp\zombies\_zm_buildables::player_take_piece(pieces[i]);
         self.pieces[self.pieces.size] = pieces[i];
       }
@@ -143,6 +151,7 @@ build_buildable_action() {
 
   self animscripted(self.origin, self.angles, "zm_pickup_part");
   maps\mp\animscripts\zm_shared::donotetracks("pickup_part_anim");
+
   sloth_print("took " + self.pieces.size + " pieces");
 
   if(!self common_move_to_table(stub, table, "zm_make_buildable")) {
@@ -161,7 +170,7 @@ build_buildable_action() {
   self notify("stop_buildable_fx");
   self maps\mp\zombies\_zm_buildables::player_build(self.buildable_zone, self.pieces);
 
-  if(isdefined(self.buildable_zone.stub.onuse))
+  if(isDefined(self.buildable_zone.stub.onuse))
     self.buildable_zone.stub[[self.buildable_zone.stub.onuse]](self);
 
   self.pieces = undefined;
@@ -173,14 +182,14 @@ build_buildable_fx(table) {
   self notify("stop_buildable_fx");
   self endon("stop_buildable_fx");
 
-  while (true) {
+  while(true) {
     playfx(level._effect["fx_buried_sloth_building"], table.origin);
     wait 0.25;
   }
 }
 
 build_buildable_interrupt() {
-  if(isdefined(self.pieces) && self.pieces.size > 0) {
+  if(isDefined(self.pieces) && self.pieces.size > 0) {
     foreach(piece in self.pieces)
     piece maps\mp\zombies\_zm_buildables::piece_spawn_at();
   }
@@ -192,11 +201,12 @@ fetch_buildable_condition() {
   equipment = maps\mp\zombies\_zm_equipment::get_destructible_equipment_list();
 
   foreach(item in equipment) {
-    if(!isdefined(item.equipname)) {
+    if(!isDefined(item.equipname)) {
       continue;
     }
     if(item.equipname == "equip_turbine_zm") {
       self sloth_debug_context(item, sqrt(32400));
+
       dist = distancesquared(item.origin, self.origin);
 
       if(dist < 32400) {
@@ -220,11 +230,12 @@ fetch_buildable_condition() {
   }
 
   foreach(item in equipment) {
-    if(!isdefined(item.equipname)) {
+    if(!isDefined(item.equipname)) {
       continue;
     }
     if(item.equipname == "equip_turret_zm" || item.equipname == "equip_electrictrap_zm" || item.equipname == "equip_subwoofer_zm") {
       self sloth_debug_context(item, sqrt(32400));
+
       dist = distancesquared(item.origin, self.origin);
 
       if(dist < 32400) {
@@ -241,11 +252,12 @@ fetch_buildable_condition() {
   }
 
   foreach(item in equipment) {
-    if(!isdefined(item.equipname)) {
+    if(!isDefined(item.equipname)) {
       continue;
     }
     if(item.equipname == "equip_turret_zm" || item.equipname == "equip_electrictrap_zm" || item.equipname == "equip_subwoofer_zm") {
       self sloth_debug_context(item, sqrt(32400));
+
       dist = distancesquared(item.origin, self.origin);
 
       if(dist < 32400) {
@@ -254,6 +266,7 @@ fetch_buildable_condition() {
           return true;
         } else {
           sloth_print("turbine not built");
+
         }
       }
     }
@@ -265,14 +278,14 @@ fetch_buildable_condition() {
 is_turbine_powering_item(turbine, item) {
   localpower = turbine.owner.localpower;
 
-  if(isdefined(localpower.added_list)) {
+  if(isDefined(localpower.added_list)) {
     foreach(added in localpower.added_list) {
       if(added == item)
         return true;
     }
   }
 
-  if(isdefined(localpower.enabled_list)) {
+  if(isDefined(localpower.enabled_list)) {
     foreach(enabled in localpower.enabled_list) {
       if(enabled == item)
         return true;
@@ -297,33 +310,37 @@ get_power_stubs(player) {
 
 fetch_buildable_start() {
   sloth_print(self.context.name);
+
   self.context_done = 0;
   self.pi_origin = undefined;
 
-  if(isdefined(self.turbine)) {
+  if(isDefined(self.turbine)) {
     localpower = self.turbine.owner.localpower;
 
     if(check_localpower_list(localpower.added_list) || check_localpower_list(localpower.enabled_list)) {
       sloth_print("has powered item, go get turbine");
+
       self thread fetch_buildable_action("turbine");
       return;
     }
 
     sloth_print("find a power item");
+
     self thread fetch_buildable_action("power_item");
-  } else if(isdefined(self.power_item)) {
+  } else if(isDefined(self.power_item)) {
     sloth_print("power item needs turbine");
+
     self.pi_origin = self.power_item.origin;
     self thread fetch_buildable_action("turbine");
   }
 }
 
 check_localpower_list(list) {
-  if(isdefined(list)) {
+  if(isDefined(list)) {
     foreach(item in list) {
       item_name = item.target.name;
 
-      if(!isdefined(item_name)) {
+      if(!isDefined(item_name)) {
         continue;
       }
       if(item_name == "equip_turret_zm" || item_name == "equip_electrictrap_zm" || item_name == "equip_subwoofer_zm")
@@ -341,7 +358,7 @@ fetch_buildable_action(item) {
   player = self.candy_player;
 
   if(item == "turbine") {
-    if(isdefined(self.turbine)) {
+    if(isDefined(self.turbine)) {
       plant_origin = self.turbine.origin;
       plant_angles = self.turbine.angles;
     }
@@ -365,6 +382,7 @@ fetch_buildable_action(item) {
 
   if(player is_player_equipment(stub.weaponname)) {
     sloth_print("during anim player picked up " + stub.weaponname);
+
     self.context_done = 1;
     return;
   }
@@ -374,9 +392,9 @@ fetch_buildable_action(item) {
 
   sloth_print("got " + stub.equipname);
 
-  if(isdefined(self.turbine))
+  if(isDefined(self.turbine))
     ground_pos = self.turbine.origin;
-  else if(isdefined(self.power_item))
+  else if(isDefined(self.power_item))
     ground_pos = self.power_item.origin;
   else
     ground_pos = self.pi_origin;
@@ -388,10 +406,10 @@ fetch_buildable_action(item) {
   self setgoalpos(ground_pos);
   range = 10000;
 
-  if(item == "power_item" || isdefined(self.power_item))
+  if(item == "power_item" || isDefined(self.power_item))
     range = 25600;
 
-  while (true) {
+  while(true) {
     if(self sloth_is_traversing()) {
       wait 0.1;
       continue;
@@ -407,7 +425,7 @@ fetch_buildable_action(item) {
   }
 
   if(item == "turbine") {
-    if(isdefined(self.turbine)) {
+    if(isDefined(self.turbine)) {
       self orientmode("face point", self.turbine.origin);
       self animscripted(self.origin, flat_angle(vectortoangles(self.turbine.origin - self.origin)), "zm_kick_equipment");
       maps\mp\animscripts\zm_shared::donotetracks("kick_equipment_anim", ::destroy_item, self.turbine);
@@ -417,7 +435,7 @@ fetch_buildable_action(item) {
     }
   }
 
-  if(!isdefined(plant_origin)) {
+  if(!isDefined(plant_origin)) {
     plant_origin = self.origin;
     plant_angles = self.angles;
   }
@@ -433,7 +451,7 @@ fetch_buildable_action(item) {
   if(!player has_deployed_equipment(stub.weaponname))
     player.deployed_equipment[player.deployed_equipment.size] = stub.weaponname;
 
-  if(isdefined(self.buildable_model)) {
+  if(isDefined(self.buildable_model)) {
     self.buildable_model unlink();
     self.buildable_model delete();
   }
@@ -443,13 +461,13 @@ fetch_buildable_action(item) {
   plant_angles = self gettagangles("tag_weapon_right");
   replacement = player[[level.zombie_equipment[equipment].place_fn]](plant_origin, plant_angles);
 
-  if(isdefined(replacement)) {
+  if(isDefined(replacement)) {
     replacement.owner = player;
     replacement.original_owner = player;
     replacement.name = equipment;
     player notify("equipment_placed", replacement, equipment);
 
-    if(isdefined(level.equipment_planted))
+    if(isDefined(level.equipment_planted))
       player[[level.equipment_planted]](replacement, equipment, self);
   }
 
@@ -475,8 +493,8 @@ pickup_notetracks(note, stub) {
 
 destroy_item(note, item) {
   if(note == "kick") {
-    if(isdefined(item)) {
-      if(isdefined(item.owner))
+    if(isDefined(item)) {
+      if(isDefined(item.owner))
         item.owner thread maps\mp\zombies\_zm_equipment::player_damage_equipment(item.equipname, 1001, item.origin);
       else
         item thread maps\mp\zombies\_zm_equipment::dropped_equipment_destroy(1);
@@ -485,7 +503,7 @@ destroy_item(note, item) {
 }
 
 fetch_buildable_interrupt() {
-  if(isdefined(self.buildable_model)) {
+  if(isDefined(self.buildable_model)) {
     self.buildable_model unlink();
     self.buildable_model delete();
   }
@@ -498,9 +516,10 @@ wallbuy_condition() {
   if(!wallbuy_get_piece_array().size)
     return false;
 
-  if(isdefined(level.gunshop_zone)) {
+  if(isDefined(level.gunshop_zone)) {
     if(self istouching(level.gunshop_zone)) {
       sloth_print("using new gunshop zone");
+
       return true;
     }
   } else if(self maps\mp\zombies\_zm_zonemgr::entity_in_zone("zone_gun_store"))
@@ -512,11 +531,12 @@ wallbuy_condition() {
 wallbuy_get_stub_array() {
   stubs = [];
 
-  for (i = 0; i < level.sloth_wallbuy_stubs.size; i++) {
+  for(i = 0; i < level.sloth_wallbuy_stubs.size; i++) {
     stub = level.sloth_wallbuy_stubs[i];
 
-    if(!isdefined(stub.in_zone)) {
+    if(!isDefined(stub.in_zone)) {
       iprintln("WALLBUY NOT IN VALID ZONE");
+
       continue;
     }
 
@@ -546,7 +566,7 @@ wallbuy_get_stub_array() {
     stubs[stubs.size] = stub;
   }
 
-  if(isdefined(remove_stub))
+  if(isDefined(remove_stub))
     arrayremovevalue(level.sloth_wallbuy_stubs, remove_stub);
 
   return stubs;
@@ -555,10 +575,10 @@ wallbuy_get_stub_array() {
 wallbuy_get_piece_array() {
   pieces = [];
 
-  for (i = 0; i < level.chalk_pieces.size; i++) {
+  for(i = 0; i < level.chalk_pieces.size; i++) {
     piece = level.chalk_pieces[i];
 
-    if(isdefined(piece.unitrigger) && !is_true(piece.built))
+    if(isDefined(piece.unitrigger) && !is_true(piece.built))
       pieces[pieces.size] = piece;
   }
 
@@ -586,7 +606,7 @@ wallbuy_action() {
     return;
   }
 
-  for (i = 0; i < self.pieces_needed; i++) {
+  for(i = 0; i < self.pieces_needed; i++) {
     stub = self.wallbuy_stubs[i];
     vec_right = vectornormalize(anglestoright(stub.angles));
     org = stub.origin - vec_right * 60;
@@ -594,9 +614,10 @@ wallbuy_action() {
     self setgoalpos(org);
     skip_piece = 0;
 
-    while (true) {
+    while(true) {
       if(is_true(stub.built)) {
         sloth_print("stub was built during pathing");
+
         skip_piece = 1;
         break;
       }
@@ -617,6 +638,7 @@ wallbuy_action() {
 
       if(is_true(stub.built)) {
         sloth_print("stub was built during facing");
+
         skip_piece = 1;
       }
     }
@@ -638,13 +660,17 @@ wallbuy_action() {
 
     if(is_true(stub.built)) {
       current_piece maps\mp\zm_buried_buildables::ondrop_chalk(self);
+
       sloth_print("stub was built during anim");
+
     } else {
       stub maps\mp\zm_buried_buildables::onuseplantobject_chalk(self);
       stub buildablestub_finish_build(self);
       stub buildablestub_remove();
       thread maps\mp\zombies\_zm_unitrigger::unregister_unitrigger(stub);
+
       sloth_print("built " + self player_get_buildable_piece(1).script_noteworthy);
+
     }
 
     arrayremovevalue(self.wallbuy_pieces_taken, self player_get_buildable_piece(1));
@@ -666,7 +692,7 @@ wallbuy_grab_pieces(note) {
     self.wallbuy_pieces = array_randomize(self.wallbuy_pieces);
     self.wallbuy_pieces_taken = [];
 
-    for (i = 0; i < self.pieces_needed; i++) {
+    for(i = 0; i < self.pieces_needed; i++) {
       self.wallbuy_pieces_taken[i] = self.wallbuy_pieces[i];
       self.wallbuy_pieces[i] maps\mp\zombies\_zm_buildables::piece_unspawn();
     }
@@ -674,7 +700,7 @@ wallbuy_grab_pieces(note) {
 }
 
 wallbuy_interrupt() {
-  if(isdefined(self.wallbuy_pieces_taken) && self.wallbuy_pieces_taken.size > 0) {
+  if(isDefined(self.wallbuy_pieces_taken) && self.wallbuy_pieces_taken.size > 0) {
     foreach(wallbuy in self.wallbuy_pieces_taken)
     wallbuy maps\mp\zm_buried_buildables::ondrop_chalk(self);
   }

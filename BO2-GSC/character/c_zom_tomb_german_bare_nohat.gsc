@@ -1,7 +1,7 @@
-/******************************************************
+/*******************************************************
  * Decompiled and Edited by SyndiShanX
  * Script: character\c_zom_tomb_german_bare_nohat.gsc
-******************************************************/
+*******************************************************/
 
 #include codescripts\character;
 #include xmodelalias\c_zom_tomb_german_head_als;

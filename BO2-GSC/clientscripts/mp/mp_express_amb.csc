@@ -61,7 +61,6 @@ main() {
 }
 
 snd_play_loopers() {
-
 }
 
 snd_start_autofx_audio() {

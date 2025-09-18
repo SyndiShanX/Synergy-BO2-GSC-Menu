@@ -131,14 +131,14 @@ register_type(type, cf_slot_cb, cf_lerp_cb, update_cb) {
 finalize_clientfields() {
   typekeys = getarraykeys(level.vsmgr);
 
-  for (type_index = 0; type_index < typekeys.size; type_index++)
+  for(type_index = 0; type_index < typekeys.size; type_index++)
     level.vsmgr[typekeys[type_index]] thread finalize_type_clientfields();
 
   level.vsmgr_initializing = 0;
 }
 
 init_fogvols() {
-  while (!isdefined(level._fogvols_inited))
+  while(!isDefined(level._fogvols_inited))
     wait 0.1;
 
   level thread fog_vol_to_visionset_monitor();
@@ -155,7 +155,7 @@ finalize_type_clientfields() {
   self.cf_slot_bit_count = getminbitcountfornum(self.info.size - 1);
   self.cf_lerp_bit_count = self.info[self.sorted_name_keys[0]].lerp_bit_count;
 
-  for (i = 0; i < self.sorted_name_keys.size; i++) {
+  for(i = 0; i < self.sorted_name_keys.size; i++) {
     self.info[self.sorted_name_keys[i]].slot_index = i;
 
     if(self.info[self.sorted_name_keys[i]].lerp_bit_count > self.cf_lerp_bit_count)
@@ -171,7 +171,7 @@ finalize_type_clientfields() {
 validate_info(type, name, version) {
   keys = getarraykeys(level.vsmgr);
 
-  for (i = 0; i < keys.size; i++) {
+  for(i = 0; i < keys.size; i++) {
     if(type == keys[i]) {
       break;
     }
@@ -182,7 +182,7 @@ validate_info(type, name, version) {
   if(version > level.vsmgr[type].server_version)
     return false;
 
-  if(isdefined(level.vsmgr[type].info[name]) && version < level.vsmgr[type].info[name].version) {
+  if(isDefined(level.vsmgr[type].info[name]) && version < level.vsmgr[type].info[name].version) {
     if(version < level.vsmgr[type].info[name].version)
       return false;
 
@@ -193,7 +193,7 @@ validate_info(type, name, version) {
 }
 
 add_sorted_name_key(type, name) {
-  for (i = 0; i < level.vsmgr[type].sorted_name_keys.size; i++) {
+  for(i = 0; i < level.vsmgr[type].sorted_name_keys.size; i++) {
     if(name < level.vsmgr[type].sorted_name_keys[i]) {
       break;
     }
@@ -278,18 +278,18 @@ transition_state() {
 }
 
 init_states(localclientnum) {
-  if(isdefined(level.vsmgr_states_inited[localclientnum])) {
+  if(isDefined(level.vsmgr_states_inited[localclientnum])) {
     return;
   }
   typekeys = getarraykeys(level.vsmgr);
 
-  for (type_index = 0; type_index < typekeys.size; type_index++) {
+  for(type_index = 0; type_index < typekeys.size; type_index++) {
     type = typekeys[type_index];
 
     if(!level.vsmgr[type].in_use) {
       continue;
     }
-    if(!isdefined(level.vsmgr[type].state))
+    if(!isDefined(level.vsmgr[type].state))
       level.vsmgr[type].state = [];
 
     level.vsmgr[type].state[localclientnum] = spawnstruct();
@@ -310,16 +310,15 @@ demo_jump_monitor() {
   typekeys = getarraykeys(level.vsmgr);
   oldlerps = [];
 
-  while (true) {
+  while(true) {
     level waittill_any("demo_jump", "demo_player_switch", "visionset_mgr_reset");
 
-    for (type_index = 0; type_index < typekeys.size; type_index++) {
+    for(type_index = 0; type_index < typekeys.size; type_index++) {
       type = typekeys[type_index];
 
       if(!level.vsmgr[type].in_use) {
         continue;
       }
-
       level.vsmgr[type].state[0].force_update = 1;
     }
   }
@@ -331,7 +330,7 @@ demo_spectate_monitor() {
   }
   typekeys = getarraykeys(level.vsmgr);
 
-  while (true) {
+  while(true) {
     if(isspectating(0, 0)) {
       if(!is_true(level.vsmgr_is_spectating)) {
         visionsetnaked(0, "default", 0);
@@ -351,7 +350,7 @@ demo_spectate_monitor() {
 }
 
 monitor() {
-  while (level.vsmgr_initializing)
+  while(level.vsmgr_initializing)
     wait 0.01;
 
   if(level.isdemoplaying) {
@@ -361,18 +360,17 @@ monitor() {
 
   typekeys = getarraykeys(level.vsmgr);
 
-  while (true) {
-    for (type_index = 0; type_index < typekeys.size; type_index++) {
+  while(true) {
+    for(type_index = 0; type_index < typekeys.size; type_index++) {
       type = typekeys[type_index];
 
       if(!level.vsmgr[type].in_use) {
         continue;
       }
-      for (localclientnum = 0; localclientnum < level.localplayers.size; localclientnum++) {
+      for(localclientnum = 0; localclientnum < level.localplayers.size; localclientnum++) {
         init_states(localclientnum);
 
         if(level.vsmgr[type].state[localclientnum] should_update_state()) {
-
           level.vsmgr[type] thread[[level.vsmgr[type].update_cb]](localclientnum, type);
           level.vsmgr[type].state[localclientnum] transition_state();
         }
@@ -457,7 +455,7 @@ overlay_update_cb(localclientnum, type) {
       break;
     case 1:
       if(state.force_update || state.prev_slot != state.curr_slot || state.prev_lerp != state.curr_lerp) {
-        if(isdefined(level.vsmgr_filter_custom_enable[curr_info.material_name]))
+        if(isDefined(level.vsmgr_filter_custom_enable[curr_info.material_name]))
           level.localplayers[localclientnum][
             [level.vsmgr_filter_custom_enable[curr_info.material_name]]
           ](curr_info);
@@ -465,7 +463,7 @@ overlay_update_cb(localclientnum, type) {
           level.localplayers[localclientnum] set_filter_pass_material(curr_info.filter_index, curr_info.pass_index, level.filter_matid[curr_info.material_name]);
           level.localplayers[localclientnum] set_filter_pass_enabled(curr_info.filter_index, curr_info.pass_index, 1);
 
-          if(isdefined(curr_info.constant_index))
+          if(isDefined(curr_info.constant_index))
             level.localplayers[localclientnum] set_filter_pass_constant(curr_info.filter_index, curr_info.pass_index, curr_info.constant_index, state.curr_lerp);
         }
       }

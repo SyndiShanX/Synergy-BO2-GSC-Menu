@@ -1,7 +1,7 @@
-/*****************************************************************
+/*****************************************************************************
  * Decompiled and Edited by SyndiShanX
  * Script: clientscripts\mp\zombies\_zm_perk_electric_cherry.csc
-*****************************************************************/
+*****************************************************************************/
 
 #include clientscripts\mp\zombies\_zm_perks;
 
@@ -29,7 +29,7 @@ electric_cherry_code_callback_func() {
 }
 
 electric_cherry_reload_attack_fx(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump) {
-  if(isdefined(self.electric_cherry_reload_fx))
+  if(isDefined(self.electric_cherry_reload_fx))
     stopfx(localclientnum, self.electric_cherry_reload_fx);
 
   if(newval == 1)
@@ -39,7 +39,7 @@ electric_cherry_reload_attack_fx(localclientnum, oldval, newval, bnewent, biniti
   else if(newval == 3)
     self.electric_cherry_reload_fx = playfxontag(localclientnum, level._effect["electric_cherry_reload_large"], self, "tag_origin");
   else {
-    if(isdefined(self.electric_cherry_reload_fx))
+    if(isDefined(self.electric_cherry_reload_fx))
       stopfx(localclientnum, self.electric_cherry_reload_fx);
 
     self.electric_cherry_reload_fx = undefined;

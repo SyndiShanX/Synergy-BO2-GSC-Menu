@@ -1,7 +1,7 @@
-/******************************************************
+/*******************************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\zombies\_zm_hackables_powerups.gsc
-******************************************************/
+*******************************************************/
 
 #include common_scripts\utility;
 #include maps\mp\_utility;
@@ -26,7 +26,7 @@ unhackable_powerup(name) {
 }
 
 hack_powerups() {
-  while (true) {
+  while(true) {
     level waittill("powerup_dropped", powerup);
 
     if(!unhackable_powerup(powerup.powerup_name)) {
@@ -52,13 +52,13 @@ powerup_pickup_watcher(powerup_struct) {
 powerup_hack(hacker) {
   self.powerup notify("hacked");
 
-  if(isdefined(self.powerup.zombie_grabbable) && self.powerup.zombie_grabbable) {
+  if(isDefined(self.powerup.zombie_grabbable) && self.powerup.zombie_grabbable) {
     self.powerup notify("powerup_timedout");
     origin = self.powerup.origin;
     self.powerup delete();
     self.powerup = maps\mp\zombies\_zm_net::network_safe_spawn("powerup", 1, "script_model", origin);
 
-    if(isdefined(self.powerup)) {
+    if(isDefined(self.powerup)) {
       self.powerup maps\mp\zombies\_zm_powerups::powerup_setup("full_ammo");
       self.powerup thread maps\mp\zombies\_zm_powerups::powerup_timeout();
       self.powerup thread maps\mp\zombies\_zm_powerups::powerup_wobble();

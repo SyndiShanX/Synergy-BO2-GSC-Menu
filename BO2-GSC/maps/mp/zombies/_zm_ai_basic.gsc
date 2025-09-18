@@ -27,36 +27,36 @@ find_flesh() {
   self maps\mp\zombies\_zm_spawner::zombie_history("find flesh -> start");
   self.goalradius = 32;
 
-  if(isdefined(self.custom_goalradius_override))
+  if(isDefined(self.custom_goalradius_override))
     self.goalradius = self.custom_goalradius_override;
 
-  while (true) {
+  while(true) {
     zombie_poi = undefined;
 
-    if(isdefined(level.zombietheaterteleporterseeklogicfunc))
+    if(isDefined(level.zombietheaterteleporterseeklogicfunc))
       self[[level.zombietheaterteleporterseeklogicfunc]]();
 
-    if(isdefined(level._poi_override))
+    if(isDefined(level._poi_override))
       zombie_poi = self[[level._poi_override]]();
 
-    if(!isdefined(zombie_poi))
+    if(!isDefined(zombie_poi))
       zombie_poi = self get_zombie_point_of_interest(self.origin);
 
     players = get_players();
 
-    if(!isdefined(self.ignore_player) || players.size == 1)
+    if(!isDefined(self.ignore_player) || players.size == 1)
       self.ignore_player = [];
-    else if(!isdefined(level._should_skip_ignore_player_logic) || ![
+    else if(!isDefined(level._should_skip_ignore_player_logic) || ![
         [level._should_skip_ignore_player_logic]
       ]()) {
       i = 0;
 
-      while (i < self.ignore_player.size) {
-        if(isdefined(self.ignore_player[i]) && isdefined(self.ignore_player[i].ignore_counter) && self.ignore_player[i].ignore_counter > 3) {
+      while(i < self.ignore_player.size) {
+        if(isDefined(self.ignore_player[i]) && isDefined(self.ignore_player[i].ignore_counter) && self.ignore_player[i].ignore_counter > 3) {
           self.ignore_player[i].ignore_counter = 0;
           self.ignore_player = arrayremovevalue(self.ignore_player, self.ignore_player[i]);
 
-          if(!isdefined(self.ignore_player))
+          if(!isDefined(self.ignore_player))
             self.ignore_player = [];
 
           i = 0;
@@ -69,11 +69,11 @@ find_flesh() {
 
     player = get_closest_valid_player(self.origin, self.ignore_player);
 
-    if(!isdefined(player) && !isdefined(zombie_poi)) {
+    if(!isDefined(player) && !isDefined(zombie_poi)) {
       self maps\mp\zombies\_zm_spawner::zombie_history("find flesh -> can't find player, continue");
 
-      if(isdefined(self.ignore_player)) {
-        if(isdefined(level._should_skip_ignore_player_logic) && [
+      if(isDefined(self.ignore_player)) {
+        if(isDefined(level._should_skip_ignore_player_logic) && [
             [level._should_skip_ignore_player_logic]
           ]()) {
           wait 1;
@@ -87,7 +87,7 @@ find_flesh() {
       continue;
     }
 
-    if(!isdefined(level.check_for_alternate_poi) || ![
+    if(!isDefined(level.check_for_alternate_poi) || ![
         [level.check_for_alternate_poi]
       ]()) {
       self.enemyoverride = zombie_poi;
@@ -97,9 +97,9 @@ find_flesh() {
     self thread zombie_pathing();
 
     if(players.size > 1) {
-      for (i = 0; i < self.ignore_player.size; i++) {
-        if(isdefined(self.ignore_player[i])) {
-          if(!isdefined(self.ignore_player[i].ignore_counter)) {
+      for(i = 0; i < self.ignore_player.size; i++) {
+        if(isDefined(self.ignore_player[i])) {
+          if(!isDefined(self.ignore_player[i].ignore_counter)) {
             self.ignore_player[i].ignore_counter = 0;
             continue;
           }
@@ -111,14 +111,14 @@ find_flesh() {
 
     self thread attractors_generated_listener();
 
-    if(isdefined(level._zombie_path_timer_override))
+    if(isDefined(level._zombie_path_timer_override))
       self.zombie_path_timer = [
         [level._zombie_path_timer_override]
       ]();
     else
       self.zombie_path_timer = gettime() + randomfloatrange(1, 3) * 1000;
 
-    while (gettime() < self.zombie_path_timer)
+    while(gettime() < self.zombie_path_timer)
       wait 0.1;
 
     self notify("path_timer_done");
@@ -201,7 +201,7 @@ get_inert_crawl_substate() {
 start_inert(in_place) {
   self endon("death");
 
-  if(isdefined(self.is_inert) && self.is_inert) {
+  if(isDefined(self.is_inert) && self.is_inert) {
     self maps\mp\zombies\_zm_spawner::zombie_history("is_inert already set " + gettime());
     return;
   }
@@ -212,25 +212,25 @@ start_inert(in_place) {
   self maps\mp\zombies\_zm_spawner::zombie_history("is_inert set " + gettime());
   self playsound("zmb_zombie_go_inert");
 
-  if(isdefined(self.barricade_enter) && self.barricade_enter) {
-    while (isdefined(self.barricade_enter) && self.barricade_enter)
+  if(isDefined(self.barricade_enter) && self.barricade_enter) {
+    while(isDefined(self.barricade_enter) && self.barricade_enter)
       wait 0.1;
-  } else if(isdefined(self.ai_state) && self.ai_state == "zombie_goto_entrance") {
+  } else if(isDefined(self.ai_state) && self.ai_state == "zombie_goto_entrance") {
     self notify("stop_zombie_goto_entrance");
     self maps\mp\zombies\_zm_spawner::reset_attack_spot();
   }
 
-  if(isdefined(self.completed_emerging_into_playable_area) && self.completed_emerging_into_playable_area) {
+  if(isDefined(self.completed_emerging_into_playable_area) && self.completed_emerging_into_playable_area) {
     self notify("stop_find_flesh");
     self notify("zombie_acquire_enemy");
   } else
     in_place = 1;
 
-  if(isdefined(self.in_the_ground) && self.in_the_ground) {
+  if(isDefined(self.in_the_ground) && self.in_the_ground) {
     self waittill("risen", find_flesh_struct_string);
 
     if(self maps\mp\zombies\_zm_spawner::should_skip_teardown(find_flesh_struct_string)) {
-      if(!(isdefined(self.completed_emerging_into_playable_area) && self.completed_emerging_into_playable_area))
+      if(!(isDefined(self.completed_emerging_into_playable_area) && self.completed_emerging_into_playable_area))
         self waittill("completed_emerging_into_playable_area");
 
       self notify("stop_find_flesh");
@@ -238,15 +238,15 @@ start_inert(in_place) {
     }
   }
 
-  if(isdefined(self.is_traversing) && self.is_traversing) {
-    while (self isinscriptedstate())
+  if(isDefined(self.is_traversing) && self.is_traversing) {
+    while(self isinscriptedstate())
       wait 0.1;
   }
 
-  if(isdefined(self.doing_equipment_attack) && self.doing_equipment_attack)
+  if(isDefined(self.doing_equipment_attack) && self.doing_equipment_attack)
     self stopanimscripted();
 
-  if(isdefined(self.inert_delay)) {
+  if(isDefined(self.inert_delay)) {
     self[[self.inert_delay]]();
     self maps\mp\zombies\_zm_spawner::zombie_history("inert_delay done " + gettime());
   }
@@ -260,7 +260,7 @@ inert_think(in_place) {
   self animmode("normal");
 
   if(self.has_legs) {
-    if(isdefined(in_place) && in_place) {
+    if(isDefined(in_place) && in_place) {
       self setgoalpos(self.origin);
 
       if(randomint(100) > 50) {
@@ -275,7 +275,7 @@ inert_think(in_place) {
     } else {
       substate = get_inert_substate();
 
-      if(isdefined(level.inert_substate_override))
+      if(isDefined(level.inert_substate_override))
         substate = self[[level.inert_substate_override]](substate);
 
       self setanimstatefromasd("zm_inert", substate);
@@ -298,15 +298,15 @@ inert_think(in_place) {
   self inert_transition();
   self maps\mp\zombies\_zm_spawner::zombie_history("inert transition done");
 
-  if(isdefined(self.ai_state) && self.ai_state == "zombie_goto_entrance")
+  if(isDefined(self.ai_state) && self.ai_state == "zombie_goto_entrance")
     self thread maps\mp\zombies\_zm_spawner::zombie_goto_entrance(self.first_node);
 
-  if(isdefined(self.inert_wakeup_override))
+  if(isDefined(self.inert_wakeup_override))
     self[[self.inert_wakeup_override]]();
-  else if(isdefined(self.completed_emerging_into_playable_area) && self.completed_emerging_into_playable_area) {
+  else if(isDefined(self.completed_emerging_into_playable_area) && self.completed_emerging_into_playable_area) {
     self.ignoreall = 0;
 
-    if(isdefined(level.ignore_find_flesh) && !self[[level.ignore_find_flesh]]())
+    if(isDefined(level.ignore_find_flesh) && !self[[level.ignore_find_flesh]]())
       self thread maps\mp\zombies\_zm_ai_basic::find_flesh();
   }
 
@@ -321,7 +321,7 @@ inert_watch_goal() {
   self endon("death");
   self endon("stop_zombie_inert");
 
-  while (true) {
+  while(true) {
     self waittill("goal");
     locs = array_randomize(level.enemy_dog_locations);
 
@@ -346,7 +346,7 @@ inert_wakeup() {
   self thread inert_damage();
   self thread inert_bump();
 
-  while (true) {
+  while(true) {
     current_time = gettime();
     players = get_players();
 
@@ -381,17 +381,17 @@ inert_bump() {
   self endon("death");
   self endon("stop_zombie_inert");
 
-  while (true) {
+  while(true) {
     zombies = getaiarray(level.zombie_team);
 
     foreach(zombie in zombies) {
       if(zombie == self) {
         continue;
       }
-      if(isdefined(zombie.is_inert) && zombie.is_inert) {
+      if(isDefined(zombie.is_inert) && zombie.is_inert) {
         continue;
       }
-      if(isdefined(zombie.becoming_inert) && zombie.becoming_inert) {
+      if(isDefined(zombie.becoming_inert) && zombie.becoming_inert) {
         continue;
       }
       dist_sq = distancesquared(self.origin, zombie.origin);
@@ -410,14 +410,14 @@ inert_damage() {
   self endon("death");
   self endon("stop_zombie_inert");
 
-  while (true) {
+  while(true) {
     self waittill("damage", amount, inflictor, direction, point, type, tagname, modelname, partname, weaponname, idflags);
 
     if(weaponname == "emp_grenade_zm") {
       continue;
     }
-    if(isdefined(inflictor)) {
-      if(isdefined(inflictor._trap_type) && inflictor._trap_type == "fire")
+    if(isDefined(inflictor)) {
+      if(isDefined(inflictor._trap_type) && inflictor._trap_type == "fire")
         continue;
     }
   }
@@ -429,7 +429,7 @@ grenade_watcher(grenade) {
   grenade waittill("explode", grenade_origin);
   zombies = get_array_of_closest(grenade_origin, get_round_enemy_array(), undefined, undefined, 2400);
 
-  if(!isdefined(zombies)) {
+  if(!isDefined(zombies)) {
     return;
   }
   foreach(zombie in zombies)
@@ -478,7 +478,7 @@ inert_transition() {
 inert_eye_glow() {
   self endon("death");
 
-  while (true) {
+  while(true) {
     self waittill("inert_trans_anim", note);
 
     if(note == "end")

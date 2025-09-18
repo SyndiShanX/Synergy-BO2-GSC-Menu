@@ -1,7 +1,7 @@
-/******************************************************
+/*******************************************************
  * Decompiled and Edited by SyndiShanX
  * Script: clientscripts\mp\zombies\_zm_morsecode.csc
-******************************************************/
+*******************************************************/
 
 init_morse_code() {
   level.morse_code_wpm = 10;
@@ -86,7 +86,7 @@ morse_code_handler() {
   if(level.localplayers.size > 2) {
     return;
   }
-  while (true) {
+  while(true) {
     level waittill("mc1");
     level thread morse_code_message_loop();
     level waittill("mc0");
@@ -98,15 +98,15 @@ morse_code_message_loop() {
   level endon("mc0");
   create_morse_code_locations();
 
-  while (true) {
+  while(true) {
     foreach(message in level.morse_code_messages) {
       words = get_words(message);
 
       foreach(word in words) {
-        for (i = 0; i < word.size; i++) {
+        for(i = 0; i < word.size; i++) {
           letter = word[i];
 
-          if(!isdefined(level.morse_code_letters[letter])) {
+          if(!isDefined(level.morse_code_letters[letter])) {
             continue;
           }
           letter_code = level.morse_code_letters[letter];
@@ -130,7 +130,7 @@ morse_code_message_loop() {
 }
 
 create_morse_code_locations() {
-  if(isdefined(level.morse_code_locations)) {
+  if(isDefined(level.morse_code_locations)) {
     return;
   }
   level.morse_code_locations = [];
@@ -153,7 +153,7 @@ morse_code_lights_on() {
   players = getlocalplayers();
 
   foreach(clientnum, player in players) {
-    if(!isdefined(level.morse_code_locations[clientnum])) {
+    if(!isDefined(level.morse_code_locations[clientnum])) {
       continue;
     }
     foreach(location in level.morse_code_locations[clientnum])
@@ -165,11 +165,11 @@ morse_code_lights_off() {
   players = getlocalplayers();
 
   foreach(clientnum, player in players) {
-    if(!isdefined(level.morse_code_locations[clientnum])) {
+    if(!isDefined(level.morse_code_locations[clientnum])) {
       continue;
     }
     foreach(location in level.morse_code_locations[clientnum]) {
-      if(isdefined(location._fx))
+      if(isDefined(location._fx))
         stopfx(clientnum, location._fx);
     }
   }

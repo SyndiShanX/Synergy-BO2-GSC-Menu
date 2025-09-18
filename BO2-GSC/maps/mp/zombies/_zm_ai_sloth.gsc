@@ -31,6 +31,7 @@
 
 precache() {
   precachemodel("fx_axis_createfx");
+
   level.small_magic_box = "p6_anim_zm_bu_magic_box_sml";
   level.small_turbine = "p6_anim_zm_bu_turbine_sml";
   precachemodel(level.small_magic_box);
@@ -46,7 +47,6 @@ precache() {
 }
 
 precache_fx() {
-
 }
 
 init() {
@@ -72,6 +72,7 @@ init() {
   level.wait_for_sloth = ::wait_for_sloth;
   level.ignore_stop_func = ::ignore_stop_func;
   level thread sloth_ffotd_init();
+
   level.sloth_devgui_teleport = ::sloth_devgui_teleport;
   level.sloth_devgui_booze = ::sloth_devgui_booze;
   level.sloth_devgui_candy = ::sloth_devgui_candy;
@@ -143,7 +144,7 @@ watch_double_wide() {
   self endon("death");
   level.double_wide_volume = getentarray("ignore_double_wide", "targetname");
 
-  while (true) {
+  while(true) {
     self.ignore_double_wide = 0;
 
     foreach(volume in level.double_wide_volume) {
@@ -151,7 +152,7 @@ watch_double_wide() {
         self.ignore_double_wide = 1;
     }
 
-    if(isdefined(level.double_wide_override))
+    if(isDefined(level.double_wide_override))
       self[[level.double_wide_override]]();
 
     wait 0.2;
@@ -161,13 +162,13 @@ watch_double_wide() {
 watch_interiors() {
   self endon("death");
 
-  while (true) {
+  while(true) {
     self.is_inside = 0;
 
-    for (i = 0; i < level.sloth_doors.size; i++) {
+    for(i = 0; i < level.sloth_doors.size; i++) {
       door_flag = level.sloth_doors[i].script_flag;
 
-      if(isdefined(door_flag)) {
+      if(isDefined(door_flag)) {
         if(flag(door_flag)) {
           dist = distancesquared(self.origin, level.sloth_doors[i].origin);
 
@@ -179,7 +180,7 @@ watch_interiors() {
       }
     }
 
-    for (i = 0; i < level.sloth_hunched_structs.size; i++) {
+    for(i = 0; i < level.sloth_hunched_structs.size; i++) {
       dist = distancesquared(self.origin, level.sloth_hunched_structs[i].origin);
 
       if(dist < 14400) {
@@ -189,7 +190,7 @@ watch_interiors() {
     }
 
     if(!self.is_inside) {
-      for (i = 0; i < level.interiors.size; i++) {
+      for(i = 0; i < level.interiors.size; i++) {
         name = level.interiors[i];
 
         if(self maps\mp\zombies\_zm_zonemgr::entity_in_zone(name)) {
@@ -204,7 +205,7 @@ watch_interiors() {
         self.is_inside = 1;
     }
 
-    if(isdefined(level.interior_override))
+    if(isDefined(level.interior_override))
       self[[level.interior_override]]();
 
     self sloth_update_double_wide();
@@ -221,19 +222,23 @@ sloth_update_double_wide() {
       self.using_double_wide = 0;
       setdvar("zombie_double_wide_checks", 0);
       self setphysparams(15, 0, 73);
+
       setdvarint("scr_sloth_debug_width", 15);
       setdvarint("scr_sloth_debug_height", 73);
       self.debug_width = getdvarint(#"_id_2443DFBB");
       self.debug_height = getdvarint(#"_id_897C9AB4");
+
     }
   } else if(!self.using_double_wide) {
     self.using_double_wide = 1;
     setdvar("zombie_double_wide_checks", 1);
     self setphysparams(25, 0, 73);
+
     setdvarint("scr_sloth_debug_width", 25);
     setdvarint("scr_sloth_debug_height", 73);
     self.debug_width = getdvarint(#"_id_2443DFBB");
     self.debug_height = getdvarint(#"_id_897C9AB4");
+
   }
 }
 
@@ -241,11 +246,11 @@ watch_zombies() {
   self endon("death");
   level endon("maxis_minigame_start");
 
-  while (true) {
+  while(true) {
     all_far = 1;
     zombies = get_round_enemy_array();
 
-    for (i = 0; i < zombies.size; i++) {
+    for(i = 0; i < zombies.size; i++) {
       zombie = zombies[i];
       dist = distancesquared(self.origin, zombie.origin);
 
@@ -272,12 +277,12 @@ watch_player_zombies() {
   self endon("stop_player_watch");
   level endon("maxis_minigame_start");
 
-  while (true) {
-    if(isdefined(self.candy_player)) {
+  while(true) {
+    if(isDefined(self.candy_player)) {
       self.target_zombies = [];
       zombies = get_round_enemy_array();
 
-      for (i = 0; i < zombies.size; i++) {
+      for(i = 0; i < zombies.size; i++) {
         zombie = zombies[i];
 
         if(!is_true(zombie.completed_emerging_into_playable_area)) {
@@ -306,14 +311,15 @@ watch_subwoofers() {
   self endon("death");
   level endon("maxis_minigame_start");
 
-  while (true) {
+  while(true) {
     self.subwoofer = undefined;
     equipment = maps\mp\zombies\_zm_equipment::get_destructible_equipment_list();
 
     foreach(item in equipment) {
-      if(isdefined(item.equipname) && item.equipname == "equip_subwoofer_zm") {
+      if(isDefined(item.equipname) && item.equipname == "equip_subwoofer_zm") {
         if(is_true(item.power_on)) {
           self sloth_debug_context(item, sqrt(32400));
+
           dist = distancesquared(self.origin, item.origin);
 
           if(dist < 32400)
@@ -330,7 +336,7 @@ watch_stink() {
   self endon("death");
   level endon("maxis_minigame_start");
 
-  while (true) {
+  while(true) {
     self.stink = undefined;
     has_perk = 0;
     players = getplayers();
@@ -342,10 +348,11 @@ watch_stink() {
       }
     }
 
-    if(has_perk && isdefined(level.perk_vulture)) {
-      if(isdefined(level.perk_vulture.zombie_stink_array) && level.perk_vulture.zombie_stink_array.size > 0) {
+    if(has_perk && isDefined(level.perk_vulture)) {
+      if(isDefined(level.perk_vulture.zombie_stink_array) && level.perk_vulture.zombie_stink_array.size > 0) {
         foreach(stink in level.perk_vulture.zombie_stink_array) {
           self sloth_debug_context(stink, 70);
+
           dist = distancesquared(self.origin, stink.origin);
 
           if(dist < 4900)
@@ -361,8 +368,8 @@ watch_stink() {
 watch_pack_volume() {
   volume = getent("sloth_pack_volume", "targetname");
 
-  if(isdefined(volume)) {
-    while (true) {
+  if(isDefined(volume)) {
+    while(true) {
       if(self istouching(volume))
         self sloth_teleport_to_maze();
 
@@ -374,17 +381,19 @@ watch_pack_volume() {
 watch_jail_door() {
   self endon("death");
 
-  while (true) {
+  while(true) {
     level waittill("cell_open");
 
-    if(isdefined(level.jail_open_door))
+    if(isDefined(level.jail_open_door))
       level thread[[level.jail_open_door]](self.got_booze);
   }
 }
 
 sloth_teleport_to_maze() {
   points = array_randomize(level.maze_arrive);
+
   sloth_print("teleporting to maze");
+
   self forceteleport(points[0].origin);
 
   if(self.state == "berserk")
@@ -452,9 +461,11 @@ watch_bar_couch() {
     }
   }
 
-  if(isdefined(bar_couch_trigger)) {
+  if(isDefined(bar_couch_trigger)) {
     bar_couch_trigger waittill("trigger");
+
     sloth_print("bar couch bought");
+
     level.bar_couch = 1;
   }
 }
@@ -503,14 +514,16 @@ setup_door_markers() {
   barricades = getentarray("sloth_barricade", "targetname");
 
   foreach(barricade in barricades) {
-    if(isdefined(barricade.script_noteworthy) && barricade.script_noteworthy == "door") {
+    if(isDefined(barricade.script_noteworthy) && barricade.script_noteworthy == "door") {
       level.sloth_doors[idx] = spawnstruct();
       level.sloth_doors[idx].origin = barricade.origin;
       level.sloth_doors[idx].script_flag = barricade.script_flag;
 
       if(barricade.script_flag == "jail_door1") {
         level.jail_door = level.sloth_doors[idx];
+
         level.jail_barricade = barricade;
+
       }
 
       idx++;
@@ -535,14 +548,15 @@ init_barricades() {
 watch_barricade() {
   self endon("death");
   self endon("maxis_minigame_opens_barricade");
-  should_delete = !isdefined(self.script_string) || self.script_string != "no_delete";
+  should_delete = !isDefined(self.script_string) || self.script_string != "no_delete";
 
   if(!should_delete)
     self.func_no_delete = ::hide_sloth_barrier;
 
-  while (true) {
+  while(true) {
     self waittill("trigger", who);
-    should_break = isdefined(level.sloth) && who == level.sloth && who.state == "berserk" && is_true(who.run_berserk);
+    should_break = isDefined(level.sloth) && who == level.sloth && who.state == "berserk" && is_true(who.run_berserk);
+
     if(isplayer(who) && is_true(level.devgui_break)) {
       level.devgui_break = 0;
       should_break = 1;
@@ -554,7 +568,7 @@ watch_barricade() {
         level thread maps\mp\zombies\_zm_audio::sndmusicstingerevent("sloth_escape");
       }
 
-      if(isdefined(who.booze_player)) {
+      if(isDefined(who.booze_player)) {
         who.booze_player maps\mp\zombies\_zm_stats::increment_client_stat("buried_sloth_booze_break_barricade", 0);
         who.booze_player maps\mp\zombies\_zm_stats::increment_player_stat("buried_sloth_booze_break_barricade");
         reward_dist = distance(who.berserk_start_org, who.origin);
@@ -564,20 +578,21 @@ watch_barricade() {
         who.booze_player = undefined;
       }
 
-      if(isdefined(self.script_flag) && level flag_exists(self.script_flag)) {
+      if(isDefined(self.script_flag) && level flag_exists(self.script_flag)) {
         sloth_print("flag_set " + self.script_flag);
+
         flag_set(self.script_flag);
 
         if(self.script_flag == "jail_door1")
           level notify("jail_barricade_down");
       }
 
-      if(isdefined(self.script_noteworthy)) {
+      if(isDefined(self.script_noteworthy)) {
         if(self.script_noteworthy == "courtyard_fountain")
           level notify("courtyard_fountain_open");
       }
 
-      if(isdefined(self.script_int))
+      if(isDefined(self.script_int))
         exploder(self.script_int);
 
       pieces = getentarray(self.target, "targetname");
@@ -617,7 +632,7 @@ hide_sloth_barrier() {
   self notsolid();
   self ghost();
 
-  if(isdefined(self.script_noteworthy) && self.script_noteworthy == "clip")
+  if(isDefined(self.script_noteworthy) && self.script_noteworthy == "clip")
     self connectpaths();
 }
 
@@ -626,13 +641,13 @@ unhide_sloth_barrier() {
   self solid();
   self show();
 
-  if(isdefined(self.script_noteworthy) && self.script_noteworthy == "clip")
+  if(isDefined(self.script_noteworthy) && self.script_noteworthy == "clip")
     self disconnectpaths();
 }
 
 is_barricade_ent(ent) {
-  for (i = 0; i < level.barricade_ents.size; i++) {
-    if(isdefined(ent.targetname)) {
+  for(i = 0; i < level.barricade_ents.size; i++) {
+    if(isDefined(ent.targetname)) {
       if(ent.targetname == level.barricade_ents[i])
         return true;
     }
@@ -657,11 +672,12 @@ init_crash_triggers() {
 }
 
 watch_crash_trigger() {
-  while (true) {
+  while(true) {
     self waittill("trigger", who);
 
     if(who == level.sloth && who.state == "berserk") {
       sloth_print("crash trigger");
+
       who setclientfield("sloth_berserk", 0);
       who sloth_set_state("crash", 0);
     }
@@ -671,11 +687,10 @@ watch_crash_trigger() {
 bell_ring() {
   level endon("maxis_minigame_start");
 
-  while (true) {
+  while(true) {
     level waittill("bell_rung");
 
-    if(isdefined(level.sloth)) {
-
+    if(isDefined(level.sloth)) {
     }
   }
 }
@@ -684,11 +699,11 @@ wait_for_sloth(wait_state) {
   level endon("ignore_wait");
   sloth = level.sloth;
 
-  if(isdefined(sloth)) {
+  if(isDefined(sloth)) {
     sloth.bench = self;
 
     if(wait_state == "gunshop_arrival") {
-      while (true) {
+      while(true) {
         if(sloth.state == "gunshop_candy") {
           break;
         }
@@ -703,7 +718,7 @@ wait_for_sloth(wait_state) {
 wait_for_timeout() {
   level endon("candy_bench");
 
-  if(isdefined(self.bench)) {
+  if(isDefined(self.bench)) {
     self.bench waittill("weap_bench_off");
     self.bench = undefined;
     self stop_action();
@@ -712,7 +727,7 @@ wait_for_timeout() {
 }
 
 wait_for_candy() {
-  if(isdefined(self.bench))
+  if(isDefined(self.bench))
     self.bench endon("weap_bench_off");
 
   level waittill("candy_bench");
@@ -746,7 +761,7 @@ init_wallbuys() {
   level.sloth_wallbuy_stubs = [];
 
   foreach(stub in level.buildable_stubs) {
-    if(isdefined(stub.in_zone) && stub.in_zone == "zone_mansion") {
+    if(isDefined(stub.in_zone) && stub.in_zone == "zone_mansion") {
       continue;
     }
     if(stub.buildablezone.buildable_name == "chalk")
@@ -801,7 +816,7 @@ init_candy_context() {
 }
 
 register_candy_context(name, priority, func_condition, func_start, func_update, func_action, func_interrupt) {
-  if(!isdefined(level.candy_context))
+  if(!isDefined(level.candy_context))
     level.candy_context = [];
 
   level.candy_context[name] = spawnstruct();
@@ -817,7 +832,7 @@ register_candy_context(name, priority, func_condition, func_start, func_update, 
 unregister_candy_context(name) {
   remove_context = undefined;
 
-  if(!isdefined(level.candy_context) || level.candy_context.size == 0) {
+  if(!isDefined(level.candy_context) || level.candy_context.size == 0) {
     return;
   }
   foreach(context in level.candy_context) {
@@ -827,19 +842,21 @@ unregister_candy_context(name) {
     }
   }
 
-  if(isdefined(remove_context)) {
+  if(isDefined(remove_context)) {
     arrayremovevalue(level.candy_context, remove_context, 1);
+
     sloth_print(remove_context.name + " removed from candy context");
+
   }
 }
 
 sloth_grab_powerup() {
-  for (i = 0; i < level.active_powerups.size; i++) {
+  for(i = 0; i < level.active_powerups.size; i++) {
     powerup = level.active_powerups[i];
     dist = distancesquared(powerup.origin, self.origin);
 
     if(dist < 9216) {
-      if(isdefined(self.follow_player))
+      if(isDefined(self.follow_player))
         self.follow_player.ignore_range_powerup = powerup;
     }
   }
@@ -850,7 +867,7 @@ sloth_prespawn() {
   level endon("intermission");
   level.sloth = self;
 
-  if(!isdefined(level.possible_slowgun_targets))
+  if(!isDefined(level.possible_slowgun_targets))
     level.possible_slowgun_targets = [];
 
   level.possible_slowgun_targets[level.possible_slowgun_targets.size] = self;
@@ -863,11 +880,13 @@ sloth_prespawn() {
   self.ignore_enemy_count = 1;
   recalc_zombie_array();
   self setphysparams(15, 0, 73);
+
   setdvarint("scr_sloth_debug_width", 15);
   setdvarint("scr_sloth_debug_height", 73);
   self.debug_width = getdvarint(#"_id_2443DFBB");
   self.debug_height = getdvarint(#"_id_897C9AB4");
   self thread sloth_devgui_update_phys_params();
+
   self.ignore_nuke = 1;
   self.ignore_lava_damage = 1;
   self.ignore_devgui_death = 1;
@@ -891,7 +910,7 @@ sloth_prespawn() {
   self setfreecameralockonallowed(0);
   self.zmb_vocals_attack = "zmb_vocals_zombie_attack";
 
-  if(!isdefined(self.sndent)) {
+  if(!isDefined(self.sndent)) {
     origin = self gettagorigin("J_neck");
     self.sndent = spawn("script_origin", origin);
     self.sndent linkto(self, "J_neck");
@@ -935,7 +954,9 @@ sloth_prespawn() {
   self.from_maze = 0;
   self.damage_taken = 0;
   self setclientfield("actor_is_sloth", 1);
+
   self thread sloth_debug_buildables();
+
   self thread sloth_ffotd_prespawn();
 }
 
@@ -947,7 +968,7 @@ sloth_set_traverse_funcs() {
 sloth_pre_traverse() {
   if(!self is_jail_state()) {
     if(self.state == "context") {
-      if(isdefined(self.buildable_model)) {
+      if(isDefined(self.buildable_model)) {
         self setanimstatefromasd("zm_sling_equipment");
         self maps\mp\animscripts\zm_shared::donotetracks("sling_equipment_anim");
       } else if(is_true(self.box_model_visible)) {
@@ -962,7 +983,7 @@ sloth_pre_traverse() {
 sloth_post_traverse() {
   if(!self is_jail_state()) {
     if(self.state == "context") {
-      if(isdefined(self.buildable_model)) {
+      if(isDefined(self.buildable_model)) {
         self setanimstatefromasd("zm_unsling_equipment");
         self maps\mp\animscripts\zm_shared::donotetracks("unsling_equipment_anim");
       } else if(is_true(self.box_model_visible)) {
@@ -980,23 +1001,27 @@ sloth_spawning_logic() {
   if(level.intermission) {
     return;
   }
-  if(getdvarint(#"_id_FA81816F") == 2 || getdvarint(#"_id_FA81816F") >= 4)
+  if(getdvarint(#"_id_FA81816F") == 2 || getdvarint(#"_id_FA81816F") >= 4) {
     return;
-  while (!is_true(level.sloth_enable)) {
+  }
+  while(!is_true(level.sloth_enable)) {
     wait 0.2;
     continue;
   }
+
   spawner = getent("sloth_zombie_spawner", "script_noteworthy");
 
-  if(!isdefined(spawner)) {
+  if(!isDefined(spawner)) {
     assertmsg("No sloth spawner in the map.");
+
     return;
   }
 
   ai = spawn_zombie(spawner, "sloth");
 
-  if(!isdefined(ai)) {
+  if(!isDefined(ai)) {
     assertmsg("Sloth: failed spawn");
+
     return;
   }
 
@@ -1034,7 +1059,7 @@ sloth_init_update_funcs() {
 sloth_think() {
   self endon("death");
 
-  while (true) {
+  while(true) {
     self[[self.update_funcs[self.state]]]();
     wait 0.1;
   }
@@ -1057,7 +1082,7 @@ update_jail_cower() {
   if(is_true(self.got_booze) && is_true(level.cell_open)) {
     player = self get_player_to_follow();
 
-    if(isdefined(player)) {
+    if(isDefined(player)) {
       self sloth_set_state("follow", player);
       return;
     }
@@ -1113,7 +1138,7 @@ update_player_idle() {
   if(self sloth_is_traversing()) {
     return;
   }
-  if(isdefined(self.follow_player)) {
+  if(isDefined(self.follow_player)) {
     player = self.follow_player;
 
     if(is_true(player.is_in_ghost_zone) || !sloth_on_same_side(player)) {
@@ -1211,17 +1236,17 @@ update_roam() {
   }
   self.ignore_timebomb_slowdown = 0;
 
-  if(isdefined(self.locomotion_func))
+  if(isDefined(self.locomotion_func))
     self[[self.locomotion_func]]();
 
   player = self get_player_to_follow();
 
-  if(isdefined(player)) {
+  if(isDefined(player)) {
     self sloth_set_state("follow", player);
     return;
   }
 
-  if(isdefined(self.mansion_goal)) {
+  if(isDefined(self.mansion_goal)) {
     self setgoalpos(self.mansion_goal.origin);
     dist = distancesquared(self.origin, self.mansion_goal.origin);
 
@@ -1246,7 +1271,7 @@ update_roam() {
 get_player_to_follow() {
   players = get_players();
 
-  for (i = 0; i < players.size; i++) {
+  for(i = 0; i < players.size; i++) {
     player = players[i];
 
     if(is_holding_candybooze(player))
@@ -1258,7 +1283,7 @@ should_headbang() {
   if(self sloth_is_traversing())
     return false;
 
-  if(isdefined(self.subwoofer)) {
+  if(isDefined(self.subwoofer)) {
     if(gettime() > self.headbang_time)
       return true;
   }
@@ -1270,7 +1295,7 @@ should_smell() {
   if(self sloth_is_traversing())
     return false;
 
-  if(isdefined(self.stink)) {
+  if(isDefined(self.stink)) {
     if(gettime() > self.smell_time)
       return true;
   }
@@ -1282,7 +1307,7 @@ update_follow() {
   if(self sloth_is_pain()) {
     return;
   }
-  if(isdefined(self.locomotion_func))
+  if(isDefined(self.locomotion_func))
     self[[self.locomotion_func]]();
 
   if(self should_smell()) {
@@ -1292,7 +1317,7 @@ update_follow() {
 
   player = self.follow_player;
 
-  if(isdefined(player)) {
+  if(isDefined(player)) {
     if(is_holding_candybooze(player)) {
       player_dist = distancesquared(self.origin, player.origin);
 
@@ -1320,12 +1345,12 @@ sloth_on_same_side(player) {
 update_mansion() {
   player = self.follow_player;
 
-  if(isdefined(player)) {
+  if(isDefined(player)) {
     if(is_holding_candybooze(player)) {
       if(is_true(player.is_in_ghost_zone)) {
         name = player.current_ghost_room_name;
 
-        if(isdefined(name)) {
+        if(isDefined(name)) {
           room = level.ghost_rooms[name];
 
           if(is_true(room.to_maze)) {
@@ -1351,7 +1376,7 @@ update_mansion() {
         }
       }
 
-      if(isdefined(self.teleporting)) {
+      if(isDefined(self.teleporting)) {
         if(self.teleporting == "to_maze") {
           if(self sloth_behind_mansion())
             self.teleporting = undefined;
@@ -1381,16 +1406,16 @@ sloth_check_ragdolls(ignore_zombie) {
   non_ragdoll = 0;
   zombies = getaispeciesarray(level.zombie_team, "all");
 
-  for (i = 0; i < zombies.size; i++) {
+  for(i = 0; i < zombies.size; i++) {
     zombie = zombies[i];
 
     if(is_true(zombie.is_sloth)) {
       continue;
     }
-    if(isdefined(ignore_zombie) && zombie == ignore_zombie) {
+    if(isDefined(ignore_zombie) && zombie == ignore_zombie) {
       continue;
     }
-    if(isdefined(self.crawler) && zombie == self.crawler) {
+    if(isDefined(self.crawler) && zombie == self.crawler) {
       continue;
     }
     if(self is_facing(zombie)) {
@@ -1412,7 +1437,7 @@ sloth_check_ragdolls(ignore_zombie) {
           level.zombie_total++;
         }
 
-        if(isdefined(self.target_zombie) && self.target_zombie == zombie)
+        if(isDefined(self.target_zombie) && self.target_zombie == zombie)
           self.target_zombie = undefined;
       }
     }
@@ -1420,7 +1445,7 @@ sloth_check_ragdolls(ignore_zombie) {
 }
 
 sloth_ragdoll_zombie(zombie) {
-  if(!isdefined(self.ragdolls))
+  if(!isDefined(self.ragdolls))
     self.ragdolls = 0;
 
   if(self.ragdolls < 4) {
@@ -1470,10 +1495,11 @@ update_berserk() {
   end = start + facing * 48;
   crash = 0;
   trace = physicstrace(start, end, vectorscale((-1, -1, 0), 15.0), vectorscale((1, 1, 0), 15.0), self);
+
   if(getdvarint(#"_id_B6252E7C") == 2)
     line(start, end, (1, 0, 0), 1, 0, 100);
 
-  if(isdefined(trace["entity"])) {
+  if(isDefined(trace["entity"])) {
     hit_ent = trace["entity"];
 
     if(is_true(hit_ent.is_zombie))
@@ -1481,22 +1507,25 @@ update_berserk() {
     else if(isplayer(hit_ent)) {
       if(!is_true(self.slowing)) {
         hit_ent dodamage(hit_ent.health, hit_ent.origin);
+
         sloth_print("hit player");
+
       }
 
       return;
     } else if(is_barricade_ent(hit_ent)) {
-      if(isdefined(hit_ent.targetname))
+      if(isDefined(hit_ent.targetname))
         sloth_print("hit barricade ent " + hit_ent.targetname);
+
       return;
     } else {
-      if(isdefined(hit_ent.targetname))
+      if(isDefined(hit_ent.targetname))
         sloth_print("hit " + hit_ent.targetname);
 
-      if(isdefined(hit_ent.targetname) && hit_ent.targetname == "sloth_fountain_clip") {
+      if(isDefined(hit_ent.targetname) && hit_ent.targetname == "sloth_fountain_clip") {
         fountain = getent("courtyard_fountain", "script_noteworthy");
 
-        if(isdefined(fountain)) {
+        if(isDefined(fountain)) {
           fountain notify("trigger", self);
           return;
         }
@@ -1506,7 +1535,7 @@ update_berserk() {
     }
   }
 
-  if(isdefined(trace["fraction"]) && trace["fraction"] < 1)
+  if(isDefined(trace["fraction"]) && trace["fraction"] < 1)
     crash = 1;
 
   if(gettime() > self.berserk_time + 500) {
@@ -1514,6 +1543,7 @@ update_berserk() {
 
     if(dist < 900) {
       sloth_print("BERSERK FAILSAFE!!!");
+
       crash = 1;
     }
 
@@ -1531,13 +1561,13 @@ update_eat() {
   if(is_true(self.needs_action)) {
     self setclientfield("sloth_eating", 0);
 
-    if(isdefined(self.candy_model))
+    if(isDefined(self.candy_model))
       self.candy_model ghost();
 
     context = self check_contextual_actions();
 
-    if(isdefined(context)) {
-      if(isdefined(self.candy_player)) {
+    if(isDefined(context)) {
+      if(isDefined(self.candy_player)) {
         self.candy_player maps\mp\zombies\_zm_stats::increment_client_stat("buried_sloth_candy_" + context.name, 0);
         self.candy_player maps\mp\zombies\_zm_stats::increment_player_stat("buried_sloth_candy_" + context.name);
         self.candy_player thread sloth_feed_vo();
@@ -1566,7 +1596,6 @@ update_gunshop_run() {
 }
 
 update_gunshop_candy() {
-
 }
 
 update_table_eat() {
@@ -1617,17 +1646,19 @@ sloth_init_start_funcs() {
 }
 
 sloth_set_state(state, param2) {
-  if(isdefined(self.start_funcs[state])) {
+  if(isDefined(self.start_funcs[state])) {
     result = 0;
 
-    if(isdefined(param2))
+    if(isDefined(param2))
       result = self[[self.start_funcs[state]]](param2);
     else
       result = self[[self.start_funcs[state]]]();
 
     if(result == 1) {
       self.state = state;
+
       sloth_print("change state to " + self.state);
+
     }
   }
 }
@@ -1683,8 +1714,8 @@ start_jail_run(do_pain) {
     return false;
 
   if(self.state == "gunshop_candy" || self.state == "table_eat") {
-    if(isdefined(self.bench)) {
-      if(isdefined(level.weapon_bench_reset))
+    if(isDefined(self.bench)) {
+      if(isDefined(level.weapon_bench_reset))
         self.bench[[level.weapon_bench_reset]]();
     }
   }
@@ -1694,7 +1725,7 @@ start_jail_run(do_pain) {
   self thread action_jail_run(self.jail_start.origin, do_pain);
 
   if(self.state == "context") {
-    if(isdefined(self.context.interrupt))
+    if(isDefined(self.context.interrupt))
       self[[self.context.interrupt]]();
   }
 
@@ -1741,6 +1772,7 @@ start_player_idle(lock) {
 check_behind_mansion() {
   if(self sloth_behind_mansion()) {
     sloth_print("get back to mansion first");
+
     near = (3652, -500, 20);
 
     foreach(point in level.maze_to_mansion) {
@@ -1796,11 +1828,12 @@ start_berserk(player) {
   player thread sloth_feed_vo();
   closest = self get_facing_barricade();
 
-  if(!isdefined(closest)) {
+  if(!isDefined(closest)) {
     sloth_print("failed to get barricade assist, try player");
+
     closest = player get_facing_barricade(1);
 
-    if(isdefined(closest))
+    if(isDefined(closest))
       self.aim_barricade = closest;
   }
 
@@ -1814,7 +1847,7 @@ sloth_feed_vo() {
   self endon("death");
   self endon("disconnect");
 
-  if(!(isdefined(level.sloth_has_been_given_booze) && level.sloth_has_been_given_booze)) {
+  if(!(isDefined(level.sloth_has_been_given_booze) && level.sloth_has_been_given_booze)) {
     level.sloth_has_been_given_booze = 1;
     self thread maps\mp\zombies\_zm_audio::create_and_play_dialog("general", "first_bersek");
   } else
@@ -1822,10 +1855,10 @@ sloth_feed_vo() {
 }
 
 sloth_debug_barricade() {
-  while (true) {
+  while(true) {
     player = gethostplayer();
 
-    if(!isdefined(player)) {
+    if(!isDefined(player)) {
       wait 1;
       continue;
     }
@@ -1838,6 +1871,7 @@ sloth_debug_barricade() {
     closest = player get_facing_barricade(1);
     wait 1;
   }
+
 }
 
 get_facing_barricade(ignore_segment_dist) {
@@ -1858,11 +1892,11 @@ get_facing_barricade(ignore_segment_dist) {
 
   triggers = getentarray("sloth_barricade", "targetname");
 
-  for (i = 0; i < triggers.size; i++) {
+  for(i = 0; i < triggers.size; i++) {
     barricade = triggers[i];
 
-    if(isdefined(barricade)) {
-      if(isdefined(barricade.script_noteworthy) && barricade.script_noteworthy == "courtyard_fountain") {
+    if(isDefined(barricade)) {
+      if(isDefined(barricade.script_noteworthy) && barricade.script_noteworthy == "courtyard_fountain") {
         continue;
       }
       ground_pos = groundpos(barricade.origin);
@@ -1906,15 +1940,19 @@ get_facing_barricade(ignore_segment_dist) {
     }
   }
 
-  if(isdefined(closest)) {
+  if(isDefined(closest)) {
     ground_pos = groundpos(closest.origin);
+
     if(getdvarint(#"_id_B6252E7C") == 3)
       line(closest_segment_point, ground_pos, (0, 1, 0), 1, 0, 60);
+
     dist = distancesquared(closest_segment_point, ground_pos);
     self.aim_barricade = closest;
     barricade_dist = distance(self.origin, ground_pos);
+
     if(getdvarint(#"_id_B6252E7C") == 3)
       line(self.origin, ground_pos, (1, 1, 1), 1, 0, 60);
+
   }
 
   return closest;
@@ -1929,10 +1967,10 @@ barricade_assist() {
   vec_backward = vec_forward * -1;
   triggers = getentarray("sloth_barricade", "targetname");
 
-  for (i = 0; i < triggers.size; i++) {
+  for(i = 0; i < triggers.size; i++) {
     barricade = triggers[i];
 
-    if(isdefined(barricade)) {
+    if(isDefined(barricade)) {
       ground_pos = groundpos(barricade.origin);
       barricade_dist = distance(ground_pos, self.origin);
       segment_length = barricade_dist * 2;
@@ -1949,18 +1987,22 @@ barricade_assist() {
     }
   }
 
-  if(isdefined(closest)) {
+  if(isDefined(closest)) {
     ground_pos = groundpos(closest.origin);
+
     if(getdvarint(#"_id_B6252E7C") == 2)
       line(closest_segment_point, ground_pos, (0, 1, 0), 1, 0, 500);
+
     dist = distancesquared(closest_segment_point, ground_pos);
 
     if(dist < 10000)
       self.aim_barricade = closest;
 
     sloth_print("dist: " + sqrt(dist) + " max_dist: " + sqrt(max_dist));
+
     if(getdvarint(#"_id_B6252E7C") == 2)
       line(self.origin, ground_pos, (1, 1, 1), 1, 0, 500);
+
   }
 }
 
@@ -1973,7 +2015,7 @@ start_eat(player) {
   twr_origin = self gettagorigin("tag_weapon_right");
   twr_angles = self gettagangles("tag_weapon_right");
 
-  if(!isdefined(self.candy_model)) {
+  if(!isDefined(self.candy_model)) {
     self.candy_model = spawn("script_model", twr_origin);
     self.candy_model.angles = twr_angles;
     self.candy_model setmodel(level.candy_model);
@@ -1999,11 +2041,13 @@ start_crash(barricade) {
   }
 
   self thread sndchangebreathingstate("happy");
-  if(isdefined(self.debug_berserk)) {
+
+  if(isDefined(self.debug_berserk)) {
     elapsed = (gettime() - self.debug_berserk) / 1000;
     dist = distance(self.origin, self.debug_berserk_org);
     sloth_print("berserk dist = " + dist + " elapsed = " + elapsed + " rate = " + dist / elapsed);
   }
+
   return true;
 }
 
@@ -2056,11 +2100,11 @@ start_context(context) {
 }
 
 remove_gift_trigger(delay) {
-  if(isdefined(delay))
+  if(isDefined(delay))
     wait(delay);
 
-  while (true) {
-    if(isdefined(self.gift_trigger)) {
+  while(true) {
+    if(isDefined(self.gift_trigger)) {
       thread maps\mp\zombies\_zm_unitrigger::unregister_unitrigger(self.gift_trigger);
       return;
     }
@@ -2074,7 +2118,7 @@ action_jail_idle() {
   self.needs_action = 0;
   self setgoalpos(self.origin);
 
-  while (true) {
+  while(true) {
     self animscripted(self.jail_start.origin, self.jail_start.angles, "zm_jail_idle");
     maps\mp\animscripts\zm_shared::donotetracks("jail_idle_anim");
   }
@@ -2109,7 +2153,7 @@ action_jail_open() {
 action_jail_close() {
   self.needs_action = 0;
 
-  if(isdefined(level.jail_close_door))
+  if(isDefined(level.jail_close_door))
     level thread[[level.jail_close_door]]();
 
   self animscripted(self.jail_start.origin, self.jail_start.angles, "zm_cower_2_close");
@@ -2130,6 +2174,7 @@ action_jail_wait() {
 
 action_teleport_to_courtyard() {
   sloth_print("teleport to courtyard");
+
   points = array_randomize(level.courtyard_arrive);
   self forceteleport(points[0].origin);
   self.mansion_goal = undefined;
@@ -2139,11 +2184,12 @@ finish_pain() {
   self endon("death");
   self endon("pain_done");
 
-  while (true) {
+  while(true) {
     anim_state = self getanimstatefromasd();
 
     if(!(anim_state == "zm_pain" || anim_state == "zm_pain_no_restart")) {
       sloth_print("pain was interrupted");
+
       self setanimstatefromasd("zm_pain_no_restart");
     }
 
@@ -2154,10 +2200,10 @@ finish_pain() {
 action_jail_run(pos, do_pain) {
   self.needs_action = 0;
 
-  if(isdefined(self.candy_model))
+  if(isDefined(self.candy_model))
     self.candy_model ghost();
 
-  if(isdefined(self.booze_model))
+  if(isDefined(self.booze_model))
     self.booze_model ghost();
 
   if(is_true(do_pain)) {
@@ -2172,7 +2218,7 @@ action_jail_run(pos, do_pain) {
     }
   }
 
-  while (true) {
+  while(true) {
     if(!self sloth_is_pain()) {
       break;
     }
@@ -2187,7 +2233,7 @@ action_jail_run(pos, do_pain) {
   self thread sloth_retreat_vo();
   self check_behind_mansion();
 
-  if(isdefined(self.mansion_goal)) {
+  if(isDefined(self.mansion_goal)) {
     self setgoalpos(self.mansion_goal.origin);
     self waittill("goal");
     self action_teleport_to_courtyard();
@@ -2205,8 +2251,8 @@ sloth_retreat_vo() {
   a_players = getplayers();
   a_closest = get_array_of_closest(self.origin, a_players);
 
-  for (i = 0; i < a_closest.size; i++) {
-    if(!(isdefined(a_closest[i].dontspeak) && a_closest[i].dontspeak)) {
+  for(i = 0; i < a_closest.size; i++) {
+    if(!(isDefined(a_closest[i].dontspeak) && a_closest[i].dontspeak)) {
       if(isalive(a_closest[i]))
         a_closest[i] thread maps\mp\zombies\_zm_audio::create_and_play_dialog("general", "sloth_retreat_cell");
     }
@@ -2219,13 +2265,14 @@ action_roam_point(point) {
   self endon("stop_action");
   self.needs_action = 0;
 
-  if(isdefined(self.current_roam)) {
+  if(isDefined(self.current_roam)) {
     if(point.script_noteworthy != self.current_roam.script_noteworthy) {
       sloth_print("using sloth_mover " + self.current_roam.script_noteworthy);
+
       sub_goal_array = getstructarray(self.current_roam.script_noteworthy, "script_noteworthy");
 
       foreach(sg in sub_goal_array) {
-        if(isdefined(sg.targetname) && sg.targetname == "player_respawn_point") {
+        if(isDefined(sg.targetname) && sg.targetname == "player_respawn_point") {
           continue;
         }
         sub_goal = sg;
@@ -2254,17 +2301,17 @@ action_player_idle(gimme_anim) {
   self.needs_action = 0;
   self setgoalpos(self.origin);
 
-  if(isdefined(gimme_anim))
+  if(isDefined(gimme_anim))
     self setanimstatefromasd(gimme_anim);
   else
     self setanimstatefromasd("zm_player_idle");
 }
 
 action_navigate_mansion(depart_points, arrive_points) {
-  if(!isdefined(self.teleport)) {
+  if(!isDefined(self.teleport)) {
     points = array_randomize(depart_points);
 
-    for (i = 0; i < points.size; i++) {
+    for(i = 0; i < points.size; i++) {
       end = i + 1;
 
       if(end == points.size)
@@ -2281,6 +2328,7 @@ action_navigate_mansion(depart_points, arrive_points) {
     if(dist < 1024) {
       if(self player_can_see_sloth()) {
         sloth_print("player can see sloth, try another spot");
+
         self.teleport = self.teleport.next;
         self setgoalpos(self.teleport.origin);
         return;
@@ -2288,9 +2336,11 @@ action_navigate_mansion(depart_points, arrive_points) {
 
       if(depart_points[0].targetname == level.maze_depart[0].targetname) {
         sloth_print("teleport to maze");
+
         self.teleporting = "to_maze";
       } else {
         sloth_print("teleport to courtyard");
+
         self.teleporting = "to_courtyard";
       }
 
@@ -2318,13 +2368,14 @@ player_can_see_sloth() {
 }
 
 sloth_check_turn(pos, dot_limit) {
-  if(!isdefined(dot_limit))
+  if(!isDefined(dot_limit))
     dot_limit = -0.707;
 
   self endon("death");
 
-  if(!isdefined(self.locomotion)) {
+  if(!isDefined(self.locomotion)) {
     sloth_print("tried turn but no locomotion defined");
+
     return;
   }
 
@@ -2340,6 +2391,7 @@ sloth_check_turn(pos, dot_limit) {
 
     if(!self hasanimstatefromasd(turn_asd)) {
       sloth_print("no turn for " + turn_asd);
+
       return;
     } else {
       self.is_turning = 1;
@@ -2355,10 +2407,12 @@ sloth_do_turn_anim() {
   self endon("death");
   self endon("stop_action");
   turn_asd = "zm_sloth_" + self.locomotion + "_turn_180";
+
   sloth_print(turn_asd);
+
   self setanimstatefromasd(turn_asd);
 
-  if(isdefined(self.crawler)) {
+  if(isDefined(self.crawler)) {
     turn_crawler_asd = "zm_crawler_crawlerhold_walk";
 
     if(self.is_inside)
@@ -2379,14 +2433,14 @@ action_player_follow(player) {
   if(is_true(player.slowgun_flying)) {
     ground_ent = player getgroundent();
 
-    if(!isdefined(ground_ent)) {
+    if(!isDefined(ground_ent)) {
       ground_pos = groundpos(player.origin);
       node = getnearestnode(ground_pos);
 
-      if(!isdefined(node))
+      if(!isDefined(node))
         node = getnearestnode(self.origin);
 
-      if(isdefined(node))
+      if(isDefined(node))
         origin = node.origin;
     }
   }
@@ -2397,7 +2451,7 @@ action_player_follow(player) {
 action_player_ask(gimme_anim) {
   self endon("stop_action");
 
-  if(!isdefined(gimme_anim)) {
+  if(!isDefined(gimme_anim)) {
     self.needs_action = 1;
     return;
   }
@@ -2426,10 +2480,10 @@ action_animscripted(asd_name, notify_name, origin, angles) {
   org = self.origin;
   ang = self.angles;
 
-  if(isdefined(origin))
+  if(isDefined(origin))
     org = origin;
 
-  if(isdefined(angles))
+  if(isDefined(angles))
     ang = angles;
 
   self.needs_action = 0;
@@ -2444,7 +2498,7 @@ custom_berserk() {
   twr_origin = self gettagorigin("tag_weapon_right");
   twr_angles = self gettagangles("tag_weapon_right");
 
-  if(!isdefined(self.booze_model)) {
+  if(!isDefined(self.booze_model)) {
     self.booze_model = spawn("script_model", twr_origin);
     self.booze_model.angles = twr_angles;
     self.booze_model setmodel(level.booze_model);
@@ -2456,9 +2510,10 @@ custom_berserk() {
   self setclientfield("sloth_drinking", 1);
   self blend_notetracks("drink_booze_anim");
 
-  if(isdefined(self.aim_barricade)) {
-    if(isdefined(self.aim_barricade.script_noteworthy))
+  if(isDefined(self.aim_barricade)) {
+    if(isDefined(self.aim_barricade.script_noteworthy))
       sloth_print("aiming at: " + self.aim_barricade.script_noteworthy);
+
     self orientmode("face point", self.aim_barricade.origin);
   }
 
@@ -2469,7 +2524,7 @@ custom_berserk() {
   self blend_notetracks("drink_booze_aim_anim");
   self notify("stop_kill_near_zombies");
 
-  if(isdefined(self.aim_barricade)) {
+  if(isDefined(self.aim_barricade)) {
     self orientmode("face default");
     self.aim_barricade = undefined;
   }
@@ -2480,11 +2535,12 @@ custom_berserk() {
   self setanimstatefromasd("zm_move_run_berserk");
   self.reset_asd = "zm_move_run_berserk";
 
-  if(isdefined(self.booze_player))
+  if(isDefined(self.booze_player))
     self thread maps\mp\zombies\_zm_audio::create_and_play_dialog("general", "sloth_run");
 
   self.debug_berserk = gettime();
   self.debug_berserk_org = self.origin;
+
   self waittill("stop_berserk");
   self animmode("normal");
   self.run_berserk = 0;
@@ -2502,7 +2558,7 @@ kill_near_zombies() {
   gibbed = 0;
   zombies = getaispeciesarray(level.zombie_team, "all");
 
-  for (i = 0; i < zombies.size; i++) {
+  for(i = 0; i < zombies.size; i++) {
     zombie = zombies[i];
 
     if(is_true(zombie.is_sloth)) {
@@ -2529,13 +2585,13 @@ kill_near_zombies() {
 booze_wait() {
   self endon("death");
 
-  while (true) {
+  while(true) {
     self waittill("drink_booze_anim", note);
 
     if(note == "hitground" || note == "end") {
       self setclientfield("sloth_glass_brk", 1);
 
-      if(isdefined(self.booze_model))
+      if(isDefined(self.booze_model))
         self.booze_model ghost();
 
       break;
@@ -2561,7 +2617,7 @@ action_gunshop_candy() {
   self.needs_action = 0;
   self setgoalpos(self.origin);
 
-  while (true) {
+  while(true) {
     self animscripted(self.origin, self.angles, "zm_player_idle");
     maps\mp\animscripts\zm_shared::donotetracks("player_idle_anim");
   }
@@ -2575,7 +2631,7 @@ action_table_eat() {
   align_org = self.origin;
   align_angles = self.angles;
 
-  if(isdefined(self.bench)) {
+  if(isDefined(self.bench)) {
     table = getent(self.bench.target, "targetname");
     anim_id = self getanimfromasd(asd, 0);
     table_org = getstartorigin(table.origin, table.angles, anim_id);
@@ -2598,7 +2654,7 @@ action_headbang() {
   self.needs_action = 0;
   self setgoalpos(self.origin);
 
-  while (true) {
+  while(true) {
     self animscripted(self.origin, self.angles, "zm_headbang");
     maps\mp\animscripts\zm_shared::donotetracks("headbang_anim");
   }
@@ -2628,9 +2684,9 @@ check_contextual_actions() {
   context = undefined;
   keys = getarraykeys(level.candy_context);
 
-  for (i = 0; i < keys.size; i++) {
+  for(i = 0; i < keys.size; i++) {
     if(self[[level.candy_context[keys[i]].condition]]()) {
-      if(isdefined(context)) {
+      if(isDefined(context)) {
         if(level.candy_context[keys[i]].priority < context.priority)
           context = level.candy_context[keys[i]];
 
@@ -2646,6 +2702,7 @@ check_contextual_actions() {
 
 common_context_start() {
   sloth_print(self.context.name);
+
   self.context_done = 0;
   self thread[[self.context.action]]();
 }
@@ -2691,6 +2748,7 @@ protect_condition() {
 
 protect_start() {
   sloth_print("protect " + self.candy_player.name);
+
   self.protect_time = gettime();
   self thread protect_action();
   self thread sndchangebreathingstate("angry");
@@ -2698,7 +2756,7 @@ protect_start() {
 
 protect_update() {
   if(is_true(self.candy_player.is_in_ghost_zone) || gettime() - self.protect_time > 45000 || should_ignore_candybooze(self.candy_player)) {
-    if(isdefined(self.target_zombie))
+    if(isDefined(self.target_zombie))
       self.target_zombie = undefined;
 
     maps\mp\zombies\_zm_unitrigger::register_unitrigger(self.gift_trigger, maps\mp\zombies\_zm_buildables::buildable_place_think);
@@ -2715,36 +2773,36 @@ protect_action() {
   self endon("stop_action");
   self setclientfield("sloth_berserk", 0);
 
-  if(!isdefined(level.sloth_protect))
+  if(!isDefined(level.sloth_protect))
     level.sloth_protect = 1;
   else
     level.sloth_protect++;
 
-  while (true) {
-    if(!isdefined(self.target_zombie) || self.target_zombie.health <= 0) {
+  while(true) {
+    if(!isDefined(self.target_zombie) || self.target_zombie.health <= 0) {
       if(self.target_zombies.size > 0) {
         closest = undefined;
         closest_dist = undefined;
 
-        for (i = 0; i < self.target_zombies.size; i++) {
+        for(i = 0; i < self.target_zombies.size; i++) {
           zombie = self.target_zombies[i];
 
           if(zombie.health > 0) {
             dist = distancesquared(self.candy_player.origin, zombie.origin);
 
-            if(!isdefined(closest) || dist < closest_dist) {
+            if(!isDefined(closest) || dist < closest_dist) {
               closest = zombie;
               closest_dist = dist;
             }
           }
         }
 
-        if(isdefined(closest))
+        if(isDefined(closest))
           self.target_zombie = closest;
       }
     }
 
-    if(isdefined(self.target_zombie)) {
+    if(isDefined(self.target_zombie)) {
       dist = distancesquared(self.origin, self.target_zombie.origin);
 
       if(dist < 4096) {
@@ -2759,8 +2817,10 @@ protect_action() {
         self setgoalpos(self.target_zombie.origin);
         self common_context_run("run_frantic");
         self sloth_check_ragdolls(self.target_zombie);
+
         if(getdvarint(#"_id_B6252E7C") == 2)
           line(self.origin, self.target_zombie.origin, (0, 1, 0), 1, 0, 6);
+
       }
     } else {
       dist = distancesquared(self.origin, self.candy_player.origin);
@@ -2783,7 +2843,7 @@ protect_action() {
 
 sloth_melee_notetracks(note) {
   if(note == "j_wrist_ri" || note == "j_wrist_le" || note == "j_ball_ri") {
-    if(isdefined(self.target_zombie)) {
+    if(isDefined(self.target_zombie)) {
       playfxontag(level._effect["headshot_nochunks"], self.target_zombie, "j_head");
       self sloth_kill_zombie(self.target_zombie);
     }
@@ -2793,13 +2853,13 @@ sloth_melee_notetracks(note) {
 }
 
 lamp_condition() {
-  if(!isdefined(level.oillamp))
+  if(!isDefined(level.oillamp))
     return false;
 
-  if(!isdefined(level.oillamp.unitrigger) || is_true(level.oillamp.built))
+  if(!isDefined(level.oillamp.unitrigger) || is_true(level.oillamp.built))
     return false;
 
-  for (i = 0; i < level.generator_zones.size; i++) {
+  for(i = 0; i < level.generator_zones.size; i++) {
     zone = level.generator_zones[i];
     dist = distancesquared(zone.stub.origin, self.origin);
 
@@ -2821,13 +2881,14 @@ lamp_action() {
   self.oillamp = level.oillamp;
   lamp_gone = 0;
 
-  while (true) {
+  while(true) {
     if(self.oillamp != level.oillamp) {
       sloth_print("lamp moved");
+
       self.oillamp = level.oillamp;
     }
 
-    if(isdefined(self.oillamp.unitrigger) && !is_true(self.oillamp.built)) {
+    if(isDefined(self.oillamp.unitrigger) && !is_true(self.oillamp.built)) {
       self setgoalpos(self.oillamp.unitrigger.origin);
       dist = distancesquared(self.oillamp.unitrigger.origin, self.origin);
 
@@ -2844,11 +2905,13 @@ lamp_action() {
 
   if(lamp_gone) {
     sloth_print("lamp is gone");
+
     self.context_done = 1;
     return;
   }
 
   sloth_print("got lamp");
+
   self.oillamp maps\mp\zombies\_zm_buildables::piece_unspawn();
   self action_animscripted("zm_wallbuy_remove", "wallbuy_remove_anim");
   stub = self.buildable_zone.stub;
@@ -2863,7 +2926,9 @@ lamp_action() {
   self action_animscripted("zm_wallbuy_add", "wallbuy_add_anim");
   self player_set_buildable_piece(self.oillamp, 1);
   self maps\mp\zombies\_zm_buildables::player_build(self.buildable_zone);
+
   sloth_print("placed lamp");
+
   self.context_done = 1;
 }
 
@@ -2871,7 +2936,9 @@ powerup_cycle_condition() {
   if(level.active_powerups.size > 0) {
     foreach(powerup in level.active_powerups) {
       ground_pos = groundpos(powerup.origin);
+
       self sloth_debug_context(powerup, sqrt(32400));
+
       dist = distancesquared(self.origin, ground_pos);
 
       if(dist < 32400) {
@@ -2890,9 +2957,10 @@ powerup_cycle_action() {
   self endon("death");
   self endon("stop_action");
   self common_context_action();
+
   level.zombie_devgui_power = 0;
 
-  if(isdefined(self.active_powerup)) {
+  if(isDefined(self.active_powerup)) {
     powerup_pos = groundpos(self.active_powerup.origin);
     dest_pos = powerup_pos;
     too_close = 0;
@@ -2900,7 +2968,9 @@ powerup_cycle_action() {
 
     if(dist < 2116) {
       too_close = 1;
+
       sloth_print("too close to powerup: " + sqrt(dist));
+
       vec_forward = vectornormalize(anglestoforward(self.angles));
       dest_pos = groundpos(self.active_powerup.origin + vec_forward * 100);
     }
@@ -2908,7 +2978,7 @@ powerup_cycle_action() {
     self setgoalpos(dest_pos);
     time_started = gettime();
 
-    while (true) {
+    while(true) {
       dist = distancesquared(self.origin, powerup_pos);
 
       if(too_close) {
@@ -2924,6 +2994,7 @@ powerup_cycle_action() {
 
         if(gettime() - time_started > 3000) {
           sloth_print("couldn't get away");
+
           break;
         }
       } else if(dist < 3136) {
@@ -2934,12 +3005,12 @@ powerup_cycle_action() {
       wait 0.1;
     }
 
-    if(isdefined(self.active_powerup)) {
+    if(isDefined(self.active_powerup)) {
       if(!too_close)
         self sloth_face_object(self.active_powerup, "point", powerup_pos);
     }
 
-    if(isdefined(self.active_powerup)) {
+    if(isDefined(self.active_powerup)) {
       self.anchor.origin = self.origin;
       self.anchor.angles = flat_angle(vectortoangles(powerup_pos - self.origin));
       self animscripted(self.anchor.origin, self.anchor.angles, "zm_cycle_powerup");
@@ -2952,7 +3023,7 @@ powerup_cycle_action() {
 
 powerup_change(note) {
   if(note == "change") {
-    if(isdefined(self.active_powerup)) {
+    if(isDefined(self.active_powerup)) {
       playfx(level._effect["fx_buried_sloth_powerup_cycle"], self.active_powerup.origin);
       powerup = maps\mp\zombies\_zm_powerups::get_valid_powerup();
       struct = level.zombie_powerups[powerup];
@@ -2971,14 +3042,14 @@ powerup_change(note) {
       self.active_powerup.func_should_drop_with_regular_powerups = struct.func_should_drop_with_regular_powerups;
       self.active_powerup thread maps\mp\zombies\_zm_powerups::powerup_timeout();
 
-      if(isdefined(struct.fx))
+      if(isDefined(struct.fx))
         self.active_powerup.fx = struct.fx;
     }
   }
 }
 
 dance_condition() {
-  if(isdefined(level.sloth_protect)) {
+  if(isDefined(level.sloth_protect)) {
     next_protect = level.sloth_protect + 1;
 
     if(next_protect % 3 == 0)
@@ -2996,7 +3067,7 @@ dance_action() {
   self.dance_end = gettime() + 30000;
   level.sloth_protect = 0;
 
-  while (true) {
+  while(true) {
     if(gettime() >= self.dance_end) {
       break;
     }
@@ -3016,7 +3087,7 @@ dance_attack(note) {
   if(note == "fire") {
     zombies = get_round_enemy_array();
 
-    for (i = 0; i < zombies.size; i++) {
+    for(i = 0; i < zombies.size; i++) {
       zombie = zombies[i];
       dist = distancesquared(self.origin, zombie.origin);
 
@@ -3039,7 +3110,7 @@ sloth_paralyzed(player, upgraded) {
   if(upgraded)
     sizzle = "zombie_slowgun_sizzle_ug";
 
-  if(isdefined(level._effect[sizzle]))
+  if(isDefined(level._effect[sizzle]))
     playfxontag(level._effect[sizzle], self, "J_SpineLower");
 
   self maps\mp\zombies\_zm_weap_slowgun::zombie_slow_for_time(0.3);
@@ -3058,8 +3129,8 @@ is_holding(player, name) {
 
   piece = player player_get_buildable_piece(1);
 
-  if(isdefined(piece)) {
-    if(isdefined(piece.buildablename) && piece.buildablename == name)
+  if(isDefined(piece)) {
+    if(isDefined(piece.buildablename) && piece.buildablename == name)
       return true;
   }
 
@@ -3109,7 +3180,7 @@ watch_prompt_reassessment() {
 }
 
 is_facing(facee, dot_limit) {
-  if(!isdefined(dot_limit))
+  if(!isDefined(dot_limit))
     dot_limit = 0.7;
 
   if(isplayer(self))
@@ -3128,7 +3199,7 @@ is_facing(facee, dot_limit) {
 }
 
 sloth_get_unitrigger_origin() {
-  if(isdefined(self.origin_parent)) {
+  if(isDefined(self.origin_parent)) {
     forward = anglestoforward(self.origin_parent.angles);
     return self.origin_parent.origin + vectorscale((0, 0, 1), 35.0) + 32 * forward;
   }
@@ -3138,7 +3209,7 @@ sloth_get_unitrigger_origin() {
 
 sloth_gift_prompt(player) {
   can_use = 1;
-  active = isdefined(self.thread_running) && self.thread_running;
+  active = isDefined(self.thread_running) && self.thread_running;
   sloth = self.stub.link_parent;
 
   if(active)
@@ -3155,7 +3226,7 @@ sloth_gift_prompt(player) {
   else {
     piece = player player_get_buildable_piece(1);
 
-    if(isdefined(piece)) {
+    if(isDefined(piece)) {
       if(piece.buildablename == "candy")
         level.zombie_buildables["sloth"].hint = & "ZM_BURIED_CANDY_GV";
       else
@@ -3184,11 +3255,10 @@ onendusecandybooze(team, player, result) {
 }
 
 oncantusecandybooze(player) {
-
 }
 
 onuseplantobjectcandybooze(player) {
-  if(!isdefined(player player_get_buildable_piece(1))) {
+  if(!isDefined(player player_get_buildable_piece(1))) {
     return;
   }
   self.hint_string = "";
@@ -3219,7 +3289,7 @@ sloth_damage_func(einflictor, eattacker, idamage, idflags, smeansofdeath, sweapo
     self.damageweapon_name = undefined;
   }
 
-  if(isdefined(self.sloth_damage_func)) {
+  if(isDefined(self.sloth_damage_func)) {
     damage = self[[self.sloth_damage_func]](einflictor, eattacker, idamage, idflags, smeansofdeath, sweapon, vpoint, vdir, shitloc, psoffsettime);
     return damage;
   }
@@ -3293,6 +3363,7 @@ sloth_accumulate_damage(amount) {
     wait 1;
 
   sloth_print("num hits: " + self.num_hits);
+
   self.damage_accumulating = 0;
 
   if(self.num_hits >= 3)
@@ -3308,7 +3379,7 @@ sloth_non_attacker(damage, weapon) {
 }
 
 sloth_set_anim_rate(rate) {
-  if(isdefined(self.crawler))
+  if(isDefined(self.crawler))
     self.crawler maps\mp\zombies\_zm_weap_slowgun::set_anim_rate(rate);
 }
 
@@ -3318,7 +3389,7 @@ sloth_reset_anim() {
   if(self.state == "jail_idle") {
     self animscripted(self.jail_start.origin, self.jail_start.angles, "zm_jail_idle");
     maps\mp\animscripts\zm_shared::donotetracks("jail_idle_anim");
-  } else if(isdefined(self.reset_asd))
+  } else if(isDefined(self.reset_asd))
     self setanimstatefromasd(self.reset_asd);
   else
     self maps\mp\zombies\_zm_weap_slowgun::reset_anim();
@@ -3330,7 +3401,6 @@ sloth_time_bomb_setup() {
 }
 
 time_bomb_global_data_save_sloth() {
-
 }
 
 time_bomb_global_data_restore_sloth() {
@@ -3349,7 +3419,7 @@ sndchangebreathingstate(type1, type2) {
   self endon("sndStateChange");
   alias = "zmb_ai_sloth_lp_" + type1;
 
-  if(isdefined(type2)) {
+  if(isDefined(type2)) {
     if(cointoss())
       alias = "zmb_ai_sloth_lp_" + type2;
   }
@@ -3369,7 +3439,7 @@ ignore_stop_func() {
 sloth_debug_axis() {
   self endon("death");
 
-  if(!isdefined(self.debug_axis)) {
+  if(!isDefined(self.debug_axis)) {
     org = self gettagorigin("tag_weapon_right");
     ang = self gettagangles("tag_weapon_right");
     self.debug_axis = spawn("script_model", org);
@@ -3377,25 +3447,28 @@ sloth_debug_axis() {
     self.debug_axis setmodel("fx_axis_createfx");
     self.debug_axis linkto(self, "tag_weapon_right");
   }
+
 }
 
 sloth_debug_doors() {
-  while (true) {
+  while(true) {
     if(is_true(level.sloth_debug_doors)) {
       foreach(door in level.sloth_doors) {
         debugstar(door.origin, 100, (1, 1, 1));
         circle(door.origin, 120, (1, 1, 1), 0, 1, 100);
+
       }
     }
 
     wait 1;
   }
+
 }
 
 sloth_debug_buildables() {
-  while (true) {
+  while(true) {
     if(is_true(level.sloth_debug_buildables)) {
-      if(!isdefined(self.buildable_model)) {
+      if(!isDefined(self.buildable_model)) {
         tag_name = "tag_stowed_back";
         twr_origin = self gettagorigin(tag_name);
         twr_angles = self gettagangles(tag_name);
@@ -3408,11 +3481,12 @@ sloth_debug_buildables() {
 
       foreach(zone in level.sloth_buildable_zones) {
         debugstar(zone.stub.origin, 100, (1, 1, 1));
+
       }
     } else if(is_true(self.devgui_buildable)) {
       self.devgui_buildable = 0;
 
-      if(isdefined(self.buildable_model)) {
+      if(isDefined(self.buildable_model)) {
         self.buildable_model unlink();
         self.buildable_model delete();
       }
@@ -3420,40 +3494,40 @@ sloth_debug_buildables() {
 
     wait 1;
   }
+
 }
 
 sloth_debug_input() {
   level.player_candy = 0;
   wait 2;
 
-  while (true) {
+  while(true) {
     if(!getdvarint(#"_id_B6252E7C")) {
       wait 0.2;
       continue;
     }
 
     twr_origin = self gettagorigin("tag_weapon_right");
+
     debugstar(twr_origin, 6, (1, 1, 1));
+
     player = get_players()[0];
 
     if(player actionslotonebuttonpressed()) {
-
     } else if(player actionslottwobuttonpressed()) {
-
     } else if(player actionslotthreebuttonpressed()) {
-
     } else if(player actionslotfourbuttonpressed()) {
-
     }
 
     wait 0.1;
   }
+
 }
 
 sloth_devgui_teleport() {
   sloth = level.sloth;
 
-  if(isdefined(sloth)) {
+  if(isDefined(sloth)) {
     player = gethostplayer();
     direction = player getplayerangles();
     direction_vec = anglestoforward(direction);
@@ -3477,6 +3551,7 @@ sloth_devgui_teleport() {
       sloth sloth_set_state("roam");
     }
   }
+
 }
 
 sloth_devgui_barricade() {
@@ -3491,7 +3566,7 @@ sloth_devgui_barricade() {
   closest = 0;
   triggers = getentarray("sloth_barricade", "targetname");
 
-  for (i = 0; i < triggers.size; i++) {
+  for(i = 0; i < triggers.size; i++) {
     trigger = triggers[i];
     dist = distancesquared(trigger.origin, pos);
 
@@ -3513,30 +3588,33 @@ sloth_devgui_barricade() {
 sloth_devgui_context() {
   sloth = level.sloth;
 
-  if(isdefined(sloth)) {
+  if(isDefined(sloth)) {
     sloth.context_debug = 1;
     sloth check_contextual_actions();
   }
+
 }
 
 sloth_devgui_booze() {
   sloth = level.sloth;
 
-  if(isdefined(sloth)) {
+  if(isDefined(sloth)) {
     player = gethostplayer();
     sloth stop_action();
     sloth sloth_set_state("berserk", player);
   }
+
 }
 
 sloth_devgui_candy() {
   sloth = level.sloth;
 
-  if(isdefined(sloth)) {
+  if(isDefined(sloth)) {
     player = gethostplayer();
     sloth stop_action();
     sloth sloth_set_state("eat", player);
   }
+
 }
 
 sloth_devgui_warp_to_jail() {
@@ -3570,6 +3648,7 @@ sloth_devgui_make_crawler() {
     zombie thread maps\mp\animscripts\zm_run::needsdelayedupdate();
     zombie thread maps\mp\animscripts\zm_death::do_gib();
   }
+
 }
 
 sloth_devgui_double_wide() {
@@ -3582,10 +3661,11 @@ sloth_devgui_double_wide() {
     iprintln("double wide enabled");
     level.devgui_double_wide = 1;
   }
+
 }
 
 sloth_devgui_update_phys_params() {
-  while (true) {
+  while(true) {
     devgui_width = getdvarint(#"_id_2443DFBB");
     devgui_height = getdvarint(#"_id_897C9AB4");
 
@@ -3597,4 +3677,5 @@ sloth_devgui_update_phys_params() {
 
     wait 0.2;
   }
+
 }

@@ -1,7 +1,7 @@
-/*******************************************************************
+/*********************************************************************************
  * Decompiled and Edited by SyndiShanX
  * Script: clientscripts\mp\zombies\_zm_weap_riotshield_prison.csc
-*******************************************************************/
+*********************************************************************************/
 
 #include clientscripts\mp\_utility;
 #include clientscripts\mp\_fx;
@@ -22,6 +22,6 @@ player_init() {
   waitforclient(0);
   players = getlocalplayers();
 
-  for (i = 0; i < players.size; i++)
+  for(i = 0; i < players.size; i++)
     player = players[i];
 }

@@ -1,7 +1,7 @@
-/*******************************************************
+/*********************************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\zombies\_zm_weap_one_inch_punch.gsc
-*******************************************************/
+*********************************************************/
 
 #include maps\mp\_utility;
 #include common_scripts\utility;
@@ -32,14 +32,14 @@ one_inch_punch_melee_attack() {
   self endon("disconnect");
   self endon("stop_one_inch_punch_attack");
 
-  if(!(isdefined(self.one_inch_punch_flag_has_been_init) && self.one_inch_punch_flag_has_been_init))
+  if(!(isDefined(self.one_inch_punch_flag_has_been_init) && self.one_inch_punch_flag_has_been_init))
     self ent_flag_init("melee_punch_cooldown");
 
   self.one_inch_punch_flag_has_been_init = 1;
   current_melee_weapon = self get_player_melee_weapon();
   self takeweapon(current_melee_weapon);
 
-  if(isdefined(self.b_punch_upgraded) && self.b_punch_upgraded) {
+  if(isDefined(self.b_punch_upgraded) && self.b_punch_upgraded) {
     str_weapon = self getcurrentweapon();
     self disable_player_move_states(1);
     self giveweapon("zombie_one_inch_punch_upgrade_flourish");
@@ -88,8 +88,8 @@ monitor_melee_swipe() {
   self endon("stop_monitor_melee_swipe");
   self endon("bled_out");
 
-  while (true) {
-    while (!self ismeleeing())
+  while(true) {
+    while(!self ismeleeing())
       wait 0.05;
 
     if(self getcurrentweapon() == level.riotshield_name) {
@@ -104,7 +104,7 @@ monitor_melee_swipe() {
     v_punch_effect_fwd = anglestoforward(self getplayerangles());
     v_punch_yaw = get2dyaw((0, 0, 0), v_punch_effect_fwd);
 
-    if(isdefined(self.b_punch_upgraded) && self.b_punch_upgraded && isdefined(self.str_punch_element) && self.str_punch_element == "air")
+    if(isDefined(self.b_punch_upgraded) && self.b_punch_upgraded && isDefined(self.str_punch_element) && self.str_punch_element == "air")
       range_mod = range_mod * 2;
 
     a_zombies = getaispeciesarray(level.zombie_team, "all");
@@ -120,7 +120,7 @@ monitor_melee_swipe() {
         self thread zombie_punch_damage(zombie, 0.5);
     }
 
-    while (self ismeleeing())
+    while(self ismeleeing())
       wait 0.05;
 
     wait 0.05;
@@ -141,7 +141,7 @@ is_player_facing(zombie, v_punch_yaw) {
 }
 
 is_oneinch_punch_damage() {
-  return isdefined(self.damageweapon) && self.damageweapon == "one_inch_punch_zm";
+  return isDefined(self.damageweapon) && self.damageweapon == "one_inch_punch_zm";
 }
 
 gib_zombies_head(player) {
@@ -158,20 +158,20 @@ zombie_punch_damage(ai_zombie, n_mod) {
   self endon("disconnect");
   ai_zombie.punch_handle_pain_notetracks = ::handle_punch_pain_notetracks;
 
-  if(isdefined(n_mod)) {
-    if(isdefined(self.b_punch_upgraded) && self.b_punch_upgraded)
+  if(isDefined(n_mod)) {
+    if(isDefined(self.b_punch_upgraded) && self.b_punch_upgraded)
       n_base_damage = 11275;
     else
       n_base_damage = 2250;
 
     n_damage = int(n_base_damage * n_mod);
 
-    if(!(isdefined(ai_zombie.is_mechz) && ai_zombie.is_mechz)) {
+    if(!(isDefined(ai_zombie.is_mechz) && ai_zombie.is_mechz)) {
       if(n_damage >= ai_zombie.health) {
         self thread zombie_punch_death(ai_zombie);
         self do_player_general_vox("kill", "one_inch_punch");
 
-        if(isdefined(self.b_punch_upgraded) && self.b_punch_upgraded && isdefined(self.str_punch_element)) {
+        if(isDefined(self.b_punch_upgraded) && self.b_punch_upgraded && isDefined(self.str_punch_element)) {
           switch (self.str_punch_element) {
             case "fire":
               ai_zombie thread maps\mp\zombies\_zm_weap_staff_fire::flame_damage_fx(self.current_melee_weapon, self, n_mod);
@@ -180,10 +180,10 @@ zombie_punch_damage(ai_zombie, n_mod) {
               ai_zombie thread maps\mp\zombies\_zm_weap_staff_water::ice_affect_zombie(self.current_melee_weapon, self, 0, n_mod);
               break;
             case "lightning":
-              if(isdefined(ai_zombie.is_mechz) && ai_zombie.is_mechz) {
+              if(isDefined(ai_zombie.is_mechz) && ai_zombie.is_mechz) {
                 return;
               }
-              if(isdefined(ai_zombie.is_electrocuted) && ai_zombie.is_electrocuted) {
+              if(isDefined(ai_zombie.is_electrocuted) && ai_zombie.is_electrocuted) {
                 return;
               }
               tag = "J_SpineUpper";
@@ -195,7 +195,7 @@ zombie_punch_damage(ai_zombie, n_mod) {
       } else {
         self maps\mp\zombies\_zm_score::player_add_points("damage_light");
 
-        if(isdefined(self.b_punch_upgraded) && self.b_punch_upgraded && isdefined(self.str_punch_element)) {
+        if(isDefined(self.b_punch_upgraded) && self.b_punch_upgraded && isDefined(self.str_punch_element)) {
           switch (self.str_punch_element) {
             case "fire":
               ai_zombie thread maps\mp\zombies\_zm_weap_staff_fire::flame_damage_fx(self.current_melee_weapon, self, n_mod);
@@ -218,19 +218,19 @@ zombie_punch_damage(ai_zombie, n_mod) {
 zombie_punch_death(ai_zombie) {
   ai_zombie thread gib_zombies_head(self);
 
-  if(isdefined(level.ragdoll_limit_check) && ![
+  if(isDefined(level.ragdoll_limit_check) && ![
       [level.ragdoll_limit_check]
     ]()) {
     return;
   }
-  if(isdefined(ai_zombie)) {
+  if(isDefined(ai_zombie)) {
     ai_zombie startragdoll();
     ai_zombie setclientfield("oneinchpunch_physics_launchragdoll", 1);
   }
 
   wait_network_frame();
 
-  if(isdefined(ai_zombie))
+  if(isDefined(ai_zombie))
     ai_zombie setclientfield("oneinchpunch_physics_launchragdoll", 0);
 }
 
@@ -245,7 +245,7 @@ knockdown_zombie_animate() {
   self endon("death");
   self endon("end_play_punch_pain_anim");
 
-  if(isdefined(self.marked_for_death) && self.marked_for_death) {
+  if(isDefined(self.marked_for_death) && self.marked_for_death) {
     return;
   }
   self.allowpain = 0;
@@ -258,7 +258,7 @@ knockdown_zombie_animate() {
   if(v_forward > 0.6) {
     animation_direction = "back";
 
-    if(!(isdefined(self.has_legs) && self.has_legs))
+    if(!(isDefined(self.has_legs) && self.has_legs))
       animation_legs = "_crawl";
 
     if(randomint(100) > 75)
@@ -280,10 +280,10 @@ knockdown_zombie_animate() {
   self setanimstatefromasd("zm_punch_fall_" + animation_direction + animation_legs);
   self maps\mp\animscripts\zm_shared::donotetracks("punch_fall_anim", self.punch_handle_pain_notetracks);
 
-  if(!(isdefined(self.has_legs) && self.has_legs) || isdefined(self.marked_for_death) && self.marked_for_death) {
+  if(!(isDefined(self.has_legs) && self.has_legs) || isDefined(self.marked_for_death) && self.marked_for_death) {
     return;
   }
-  if(isdefined(self.a.gib_ref)) {
+  if(isDefined(self.a.gib_ref)) {
     if(self.a.gib_ref == "no_legs" || self.a.gib_ref == "no_arms" || (self.a.gib_ref == "left_leg" || self.a.gib_ref == "right_leg") && randomint(100) > 25 || (self.a.gib_ref == "left_arm" || self.a.gib_ref == "right_arm") && randomint(100) > 75)
       animation_duration = "_late";
     else if(randomint(100) > 75)

@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\zm_buried_maze.gsc
-***************************************/
+**************************************/
 
 #include common_scripts\utility;
 #include maps\mp\_utility;
@@ -17,18 +17,18 @@ maze_precache() {
   blocker_locations = getstructarray("maze_blocker", "targetname");
   model_list = [];
 
-  for (i = 0; i < blocker_locations.size; i++)
+  for(i = 0; i < blocker_locations.size; i++)
     model_list[blocker_locations[i].model] = 1;
 
   model_names = getarraykeys(model_list);
 
-  for (i = 0; i < model_names.size; i++)
+  for(i = 0; i < model_names.size; i++)
     precachemodel(model_names[i]);
 }
 
 maze_nodes_link_unlink_internal(func_ptr, bignorechangeonmigrate) {
-  for (i = 0; i < self.blocked_nodes.size; i++) {
-    for (j = 0; j < self.blocked_nodes[i].connected_nodes.size; j++) {
+  for(i = 0; i < self.blocked_nodes.size; i++) {
+    for(j = 0; j < self.blocked_nodes[i].connected_nodes.size; j++) {
       [
         [func_ptr]
       ](self.blocked_nodes[i], self.blocked_nodes[i].connected_nodes[j], bignorechangeonmigrate);
@@ -58,11 +58,11 @@ init_maze_permutations() {
   blocker_locations = getstructarray("maze_blocker", "targetname");
   level._maze._blocker_locations = [];
 
-  for (i = 0; i < blocker_locations.size; i++) {
-    if(isdefined(blocker_locations[i].target)) {
+  for(i = 0; i < blocker_locations.size; i++) {
+    if(isDefined(blocker_locations[i].target)) {
       blocker_locations[i].blocked_nodes = getnodearray(blocker_locations[i].target, "targetname");
 
-      for (j = 0; j < blocker_locations[i].blocked_nodes.size; j++)
+      for(j = 0; j < blocker_locations[i].blocked_nodes.size; j++)
         blocker_locations[i].blocked_nodes[j].connected_nodes = getnodearray(blocker_locations[i].blocked_nodes[j].target, "targetname");
     } else
       blocker_locations[i].blocked_nodes = [];
@@ -78,14 +78,14 @@ init_maze_permutations() {
 init_maze_blocker_pool() {
   pool_size = 0;
 
-  for (i = 0; i < level._maze._perms.size; i++) {
+  for(i = 0; i < level._maze._perms.size; i++) {
     if(level._maze._perms[i].size > pool_size)
       pool_size = level._maze._perms[i].size;
   }
 
   level._maze._blocker_pool = [];
 
-  for (i = 0; i < pool_size; i++) {
+  for(i = 0; i < pool_size; i++) {
     ent = spawn("script_model", level._maze.players_in_maze_volume.origin - vectorscale((0, 0, 1), 300.0));
     ent ghost();
     ent.in_use = 0;
@@ -100,7 +100,7 @@ free_blockers_available() {
 }
 
 get_free_blocker_model_from_pool() {
-  for (i = 0; i < level._maze._blocker_pool.size; i++) {
+  for(i = 0; i < level._maze._blocker_pool.size; i++) {
     if(!level._maze._blocker_pool[i].in_use) {
       level._maze._blocker_pool[i].in_use = 1;
       level._maze._blocker_pool_num_free--;
@@ -109,6 +109,7 @@ get_free_blocker_model_from_pool() {
   }
 
   assertmsg("zm_buried_maze : Blocker pool is empty.");
+
   return undefined;
 }
 
@@ -159,7 +160,7 @@ delay_destroy_corpses_near_blocker() {
   wait 0.2;
   corpses = getcorpsearray();
 
-  if(isdefined(corpses)) {
+  if(isDefined(corpses)) {
     foreach(corpse in corpses) {
       if(distancesquared(corpse.origin, self.origin) < 2304)
         corpse delete();
@@ -200,10 +201,10 @@ maze_do_perm_change() {
   blockers_raise_list = [];
   blockers_lower_list = level._maze._active_perm_list;
 
-  for (i = 0; i < new_perm_list.size; i++) {
+  for(i = 0; i < new_perm_list.size; i++) {
     found = 0;
 
-    for (j = 0; j < level._maze._active_perm_list.size; j++) {
+    for(j = 0; j < level._maze._active_perm_list.size; j++) {
       if(new_perm_list[i] == level._maze._active_perm_list[j]) {
         found = 1;
         blockers_lower_list[j] = "";
@@ -221,8 +222,8 @@ maze_do_perm_change() {
 }
 
 raise_new_perm_blockers(list) {
-  for (i = 0; i < list.size; i++) {
-    while (!free_blockers_available())
+  for(i = 0; i < list.size; i++) {
+    while(!free_blockers_available())
       wait 0.1;
 
     level._maze._blocker_locations[list[i]] thread maze_blocker_rises_thread();
@@ -231,7 +232,7 @@ raise_new_perm_blockers(list) {
 }
 
 lower_old_perm_blockers(list) {
-  for (i = 0; i < list.size; i++) {
+  for(i = 0; i < list.size; i++) {
     if(list[i] != "")
       level._maze._blocker_locations[list[i]] notify("lower_" + list[i]);
 
@@ -270,7 +271,7 @@ maze_can_change() {
 maze_think() {
   wait 0.1;
 
-  while (true) {
+  while(true) {
     if(maze_can_change()) {
       maze_do_perm_change();
       level notify("zm_buried_maze_changed");
@@ -291,7 +292,7 @@ maze_do_zombie_spawn(spot) {
   assert(spots.size > 0, "No spawn locations found");
   players_in_maze = maps\mp\zombies\_zm_zonemgr::get_players_in_zone("zone_maze", 1);
 
-  if(isdefined(players_in_maze) && players_in_maze.size != 0) {
+  if(isDefined(players_in_maze) && players_in_maze.size != 0) {
     player = random(players_in_maze);
     maxdistance = 256;
 
@@ -311,24 +312,24 @@ maze_do_zombie_spawn(spot) {
         favoritespots[favoritespots.size] = close_spot;
     }
 
-    if(isdefined(favoritespots) && favoritespots.size >= 2)
+    if(isDefined(favoritespots) && favoritespots.size >= 2)
       spot = random(favoritespots);
-    else if(isdefined(closest_spots) && closest_spots.size > 0)
+    else if(isDefined(closest_spots) && closest_spots.size > 0)
       spot = random(closest_spots);
   }
 
-  if(!isdefined(spot))
+  if(!isDefined(spot))
     spot = random(spots);
 
   self.spawn_point = spot;
 
-  if(isdefined(spot.target))
+  if(isDefined(spot.target))
     self.target = spot.target;
 
-  if(isdefined(spot.zone_name))
+  if(isDefined(spot.zone_name))
     self.zone_name = spot.zone_name;
 
-  if(isdefined(spot.script_parameters))
+  if(isDefined(spot.script_parameters))
     self.script_parameters = spot.script_parameters;
 
   self thread maze_do_zombie_rise(spot);
@@ -338,14 +339,14 @@ maze_do_zombie_rise(spot) {
   self endon("death");
   self.in_the_ground = 1;
 
-  if(isdefined(self.anchor))
+  if(isDefined(self.anchor))
     self.anchor delete();
 
   self.anchor = spawn("script_origin", self.origin);
   self.anchor.angles = self.angles;
   self linkto(self.anchor);
 
-  if(!isdefined(spot.angles))
+  if(!isDefined(spot.angles))
     spot.angles = (0, 0, 0);
 
   anim_org = spot.origin;
@@ -356,7 +357,7 @@ maze_do_zombie_rise(spot) {
   self.anchor waittill("movedone");
   target_org = get_desired_origin();
 
-  if(isdefined(target_org)) {
+  if(isDefined(target_org)) {
     anim_ang = vectortoangles(target_org - self.origin);
     self.anchor rotateto((0, anim_ang[1], 0), 0.05);
     self.anchor waittill("rotatedone");
@@ -364,7 +365,7 @@ maze_do_zombie_rise(spot) {
 
   self unlink();
 
-  if(isdefined(self.anchor))
+  if(isDefined(self.anchor))
     self.anchor delete();
 
   self thread maps\mp\zombies\_zm_spawner::hide_pop();
@@ -386,7 +387,7 @@ maze_do_zombie_rise(spot) {
 }
 
 maze_achievement_watcher() {
-  while (true) {
+  while(true) {
     level waittill("start_of_round");
     start_maze_achievement_threads();
     level waittill("end_of_round");
@@ -415,7 +416,7 @@ watch_player_in_maze() {
   self endon("death_or_disconnect");
   self.achievement_player_stayed_in_maze_for_entire_round = 1;
 
-  while (self.achievement_player_stayed_in_maze_for_entire_round) {
+  while(self.achievement_player_stayed_in_maze_for_entire_round) {
     self.achievement_player_stayed_in_maze_for_entire_round = self is_player_in_zone("zone_maze");
     wait(randomfloatrange(0.5, 1.0));
   }
@@ -424,8 +425,9 @@ watch_player_in_maze() {
 check_maze_achievement_threads() {
   if(level.round_number >= 20) {
     foreach(player in get_players()) {
-      if(isdefined(player.achievement_player_started_round_in_maze) && player.achievement_player_started_round_in_maze && (isdefined(player.achievement_player_stayed_in_maze_for_entire_round) && player.achievement_player_stayed_in_maze_for_entire_round) && level._time_bomb.last_round_restored != level.round_number - 1 && !maps\mp\zombies\_zm_weap_time_bomb::is_time_bomb_round_change()) {
+      if(isDefined(player.achievement_player_started_round_in_maze) && player.achievement_player_started_round_in_maze && (isDefined(player.achievement_player_stayed_in_maze_for_entire_round) && player.achievement_player_stayed_in_maze_for_entire_round) && level._time_bomb.last_round_restored != level.round_number - 1 && !maps\mp\zombies\_zm_weap_time_bomb::is_time_bomb_round_change()) {
         iprintlnbold(player.name + " got achievement MAZED AND CONFUSED");
+
         player notify("player_stayed_in_maze_for_entire_high_level_round");
         player notify("_maze_achievement_think_done");
       }
@@ -439,8 +441,8 @@ vo_in_maze() {
   nminwait = 5;
   nmaxwait = 10;
 
-  while (true) {
-    for (aplayersinzone = maps\mp\zombies\_zm_zonemgr::get_players_in_zone("zone_maze", 1); !isdefined(aplayersinzone) || aplayersinzone.size == 0; aplayersinzone = maps\mp\zombies\_zm_zonemgr::get_players_in_zone("zone_maze", 1))
+  while(true) {
+    for(aplayersinzone = maps\mp\zombies\_zm_zonemgr::get_players_in_zone("zone_maze", 1); !isDefined(aplayersinzone) || aplayersinzone.size == 0; aplayersinzone = maps\mp\zombies\_zm_zonemgr::get_players_in_zone("zone_maze", 1))
       wait(randomint(nminwait, nmaxwait));
 
     random(aplayersinzone) maps\mp\zombies\_zm_audio::create_and_play_dialog("general", "in_maze");

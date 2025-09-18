@@ -33,7 +33,7 @@ stage_vo() {
   flag_wait("sq_player_underground");
   level.m_maxis_vo_spot.origin = (-728, -344, 280);
 
-  while (isdefined(level.vo_player_who_discovered_stables_roof) && is_true(level.vo_player_who_discovered_stables_roof.isspeaking))
+  while(isDefined(level.vo_player_who_discovered_stables_roof) && is_true(level.vo_player_who_discovered_stables_roof.isspeaking))
     wait 0.05;
 
   maxissay("vox_maxi_sidequest_town_0");
@@ -42,15 +42,15 @@ stage_vo() {
   level thread stage_vo_watch_gallows();
 
   if(!level.richcompleted) {
-    if(isdefined(level.rich_sq_player)) {
+    if(isDefined(level.rich_sq_player)) {
       level.rich_sq_player.dontspeak = 1;
       level.rich_sq_player setclientfieldtoplayer("isspeaking", 1);
     }
 
     richtofensay("vox_zmba_sidequest_zmba_start_1_0", 3);
 
-    if(isdefined(level.rich_sq_player)) {
-      while (isdefined(level.rich_sq_player) && (is_true(level.rich_sq_player.isspeaking) || is_true(level.rich_sq_player.dontspeak)))
+    if(isDefined(level.rich_sq_player)) {
+      while(isDefined(level.rich_sq_player) && (is_true(level.rich_sq_player.isspeaking) || is_true(level.rich_sq_player.dontspeak)))
         wait 1;
 
       level.rich_sq_player.dontspeak = 1;
@@ -63,8 +63,8 @@ stage_vo() {
 
     richtofensay("vox_zmba_sidequest_zmba_start_3_0", 4);
 
-    if(isdefined(level.rich_sq_player)) {
-      while (isdefined(level.rich_sq_player) && (is_true(level.rich_sq_player.isspeaking) || is_true(level.rich_sq_player.dontspeak)))
+    if(isDefined(level.rich_sq_player)) {
+      while(isDefined(level.rich_sq_player) && (is_true(level.rich_sq_player.isspeaking) || is_true(level.rich_sq_player.dontspeak)))
         wait 1;
 
       level.rich_sq_player.dontspeak = 1;
@@ -78,8 +78,8 @@ stage_vo() {
     richtofensay("vox_zmba_sidequest_zmba_start_5_0", 12);
     richtofensay("vox_zmba_sidequest_zmba_start_6_0", 8);
 
-    if(isdefined(level.rich_sq_player)) {
-      while (isdefined(level.rich_sq_player) && (is_true(level.rich_sq_player.isspeaking) || is_true(level.rich_sq_player.dontspeak)))
+    if(isDefined(level.rich_sq_player)) {
+      while(isDefined(level.rich_sq_player) && (is_true(level.rich_sq_player.isspeaking) || is_true(level.rich_sq_player.dontspeak)))
         wait 1;
 
       level.rich_sq_player.dontspeak = 1;
@@ -108,7 +108,7 @@ stage_vo_nag() {
   m_maxis_vo_spot = spawn("script_model", s_struct.origin);
   m_maxis_vo_spot setmodel("tag_origin");
 
-  for (i = 0; i < 5; i++) {
+  for(i = 0; i < 5; i++) {
     level waittill("end_of_round");
     maxissay("vox_maxi_sidequest_nag_" + i, m_maxis_vo_spot);
     richtofensay("vox_zmba_sidequest_nag_" + i, 10);
@@ -149,7 +149,7 @@ stage_vo_watch_gallows() {
   if(flag("sq_intro_vo_done"))
     maxissay("vox_maxi_sidequest_gallows_0", m_maxis_vo_spot);
 
-  for (i = 0; i < 4; i++) {
+  for(i = 0; i < 4; i++) {
     level waittill("mtower_object_planted");
 
     if(flag("sq_intro_vo_done"))
@@ -173,6 +173,7 @@ stage_start_watcher() {
 
 stage_logic() {
   iprintlnbold("BT Started");
+
   level thread wait_for_maxis_tower();
   level thread wait_for_richtofen_tower();
   flag_wait_any("sq_is_max_tower_built", "sq_is_ric_tower_built");
@@ -193,5 +194,4 @@ wait_for_richtofen_tower() {
 }
 
 exit_stage(success) {
-
 }

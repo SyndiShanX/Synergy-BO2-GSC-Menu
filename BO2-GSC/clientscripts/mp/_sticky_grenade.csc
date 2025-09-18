@@ -26,7 +26,7 @@ fx_think(localclientnum) {
   self waittill_dobj(localclientnum);
   interval = 0.3;
 
-  for (;;) {
+  for(;;) {
     self stop_light_fx(localclientnum);
     self start_light_fx(localclientnum);
     self fullscreen_fx(localclientnum);
@@ -47,7 +47,7 @@ start_light_fx(localclientnum) {
 }
 
 stop_light_fx(localclientnum) {
-  if(isdefined(self.fx) && self.fx != 0) {
+  if(isDefined(self.fx) && self.fx != 0) {
     stopfx(localclientnum, self.fx);
     self.fx = undefined;
   }
@@ -56,7 +56,7 @@ stop_light_fx(localclientnum) {
 fullscreen_fx(localclientnum) {
   player = getlocalplayer(localclientnum);
 
-  if(isdefined(player)) {
+  if(isDefined(player)) {
     if(player getinkillcam(localclientnum))
       return;
     else if(player isplayerviewlinkedtoentity(localclientnum))
@@ -68,7 +68,7 @@ fullscreen_fx(localclientnum) {
   }
   parent = self getparententity();
 
-  if(isdefined(parent) && parent == player) {
+  if(isDefined(parent) && parent == player) {
     parent playrumbleonentity(localclientnum, "buzz_high");
 
     if(issplitscreen()) {

@@ -1,14 +1,13 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\mp_drone_fx.gsc
-***************************************/
+**************************************/
 
 #include maps\mp\_utility;
 #include maps\mp\createfx\mp_drone_fx;
 #include maps\mp\createart\mp_drone_art;
 
 precache_util_fx() {
-
 }
 
 precache_scripted_fx() {

@@ -19,5 +19,6 @@ main() {
   thread clientscripts\mp\_audio::audio_init(0);
   thread clientscripts\mp\mp_concert_amb::main();
   waitforclient(0);
+
   println("*** Client : mp_concert running...");
 }

@@ -121,7 +121,7 @@ hitby(rule) {
   meansofdeath = rule.target["MeansOfDeath"];
   weapon = rule.target["Weapon"];
 
-  if(!isdefined(meansofdeath) || !isdefined(weapon))
+  if(!isDefined(meansofdeath) || !isDefined(weapon))
     return undefined;
 
   switch (weapon) {
@@ -166,10 +166,10 @@ attackersclass(rule) {
 getplayersplace(player) {
   maps\mp\gametypes_zm\_globallogic::updateplacement();
 
-  if(!isdefined(level.placement["all"])) {
+  if(!isDefined(level.placement["all"])) {
     return;
   }
-  for (place = 0; place < level.placement["all"].size; place++) {
+  for(place = 0; place < level.placement["all"].size; place++) {
     if(level.placement["all"][place] == player) {
       break;
     }
@@ -212,7 +212,7 @@ gettargetplayerseliminated(rule) {
 gettargetplayersteam(rule) {
   player = rule.target["Player"];
 
-  if(!isdefined(player))
+  if(!isDefined(player))
     return [];
 
   return getplayersonteam(level.players, player.pers["team"]);
@@ -221,7 +221,7 @@ gettargetplayersteam(rule) {
 gettargetotherteam(rule) {
   player = rule.target["Player"];
 
-  if(!isdefined(player))
+  if(!isDefined(player))
     return [];
 
   return getplayersonteam(level.players, getotherteam(player.pers["team"]));
@@ -247,13 +247,13 @@ getassistingplayers(rule) {
   assisters = [];
   attacker = rule.target["Attacker"];
 
-  if(!isdefined(rule.target["Assisters"]) || !isdefined(attacker))
+  if(!isDefined(rule.target["Assisters"]) || !isDefined(attacker))
     return assisters;
 
-  for (j = 0; j < rule.target["Assisters"].size; j++) {
+  for(j = 0; j < rule.target["Assisters"].size; j++) {
     player = rule.target["Assisters"][j];
 
-    if(!isdefined(player)) {
+    if(!isDefined(player)) {
       continue;
     }
     if(player == attacker) {
@@ -269,8 +269,9 @@ executegametypeeventrule(rule) {
   if(!aregametypeeventruleconditionalsmet(rule)) {
     return;
   }
-  if(!isdefined(level.gametypeactions[rule.action])) {
+  if(!isDefined(level.gametypeactions[rule.action])) {
     error("GAMETYPE VARIANTS - unknown action:" + rule.action + "!");
+
     return;
   }
 
@@ -278,11 +279,10 @@ executegametypeeventrule(rule) {
 }
 
 internalexecuterule(rule) {
-
 }
 
 aregametypeeventruleconditionalsmet(rule) {
-  if(!isdefined(rule.conditionals) || rule.conditionals.size == 0)
+  if(!isDefined(rule.conditionals) || rule.conditionals.size == 0)
     return 1;
 
   combinedresult = 1;
@@ -290,7 +290,7 @@ aregametypeeventruleconditionalsmet(rule) {
   if(rule.conditionaleval == "OR")
     combinedresult = 0;
 
-  for (i = 0; i < rule.conditionals.size; i++) {
+  for(i = 0; i < rule.conditionals.size; i++) {
     conditionalresult = evaluategametypeeventruleconditional(rule, rule.conditionals[i]);
 
     switch (rule.conditionaleval) {
@@ -315,15 +315,15 @@ aregametypeeventruleconditionalsmet(rule) {
 }
 
 evaluategametypeeventruleconditional(rule, conditional) {
-  if(!isdefined(conditional.lhs) || !isdefined(conditional.operand) || !isdefined(conditional.rhs))
+  if(!isDefined(conditional.lhs) || !isDefined(conditional.operand) || !isDefined(conditional.rhs))
     return 0;
 
-  if(!isdefined(level.conditionallefthandside[conditional.lhs]))
+  if(!isDefined(level.conditionallefthandside[conditional.lhs]))
     return 0;
 
   lhsvalue = [[level.conditionallefthandside[conditional.lhs]]](rule);
 
-  if(!isdefined(lhsvalue) || !isdefined(level.conditionals[conditional.operand]))
+  if(!isDefined(lhsvalue) || !isDefined(level.conditionals[conditional.operand]))
     return 0;
 
   return [[level.conditionals[conditional.operand]]](lhsvalue, conditional.rhs);
@@ -332,7 +332,7 @@ evaluategametypeeventruleconditional(rule, conditional) {
 getplayersonteam(players, team) {
   playersonteam = [];
 
-  for (i = 0; i < players.size; i++) {
+  for(i = 0; i < players.size; i++) {
     player = players[i];
 
     if(player.pers["team"] == team)
@@ -345,12 +345,12 @@ getplayersonteam(players, team) {
 gettargetsforgametypeeventrule(rule) {
   targets = [];
 
-  if(!isdefined(rule.targetname))
+  if(!isDefined(rule.targetname))
     return targets;
 
-  if(isdefined(rule.target[rule.targetname]))
+  if(isDefined(rule.target[rule.targetname]))
     targets[targets.size] = rule.target[rule.targetname];
-  else if(isdefined(level.targets[rule.targetname]))
+  else if(isDefined(level.targets[rule.targetname]))
     targets = [
       [level.targets[rule.targetname]]
     ](rule);
@@ -359,19 +359,19 @@ gettargetsforgametypeeventrule(rule) {
 }
 
 doesrulehavevalidparam(rule) {
-  return isdefined(rule.params) && isarray(rule.params) && rule.params.size > 0;
+  return isDefined(rule.params) && isarray(rule.params) && rule.params.size > 0;
 }
 
 sortplayersbylivesdescending(players) {
-  if(!isdefined(players))
+  if(!isDefined(players))
     return undefined;
 
   swapped = 1;
 
-  for (n = players.size; swapped; n--) {
+  for(n = players.size; swapped; n--) {
     swapped = 0;
 
-    for (i = 0; i < n - 1; i++) {
+    for(i = 0; i < n - 1; i++) {
       if(players[i].pers["lives"] < players[i + 1].pers["lives"]) {
         temp = players[i];
         players[i] = players[i + 1];
@@ -385,7 +385,7 @@ sortplayersbylivesdescending(players) {
 }
 
 giveammo(players, amount) {
-  for (i = 0; i < players.size; i++) {
+  for(i = 0; i < players.size; i++) {
     wait 0.5;
     player = players[i];
     currentweapon = player getcurrentweapon();
@@ -418,14 +418,14 @@ doplaysound(rule) {
 doenableuav(rule) {
   targets = gettargetsforgametypeeventrule(rule);
 
-  for (targetindex = 0; targetindex < targets.size; targetindex++) {
+  for(targetindex = 0; targetindex < targets.size; targetindex++) {
     targets[targetindex].pers["hasRadar"] = 1;
     targets[targetindex].hasspyplane = 1;
   }
 }
 
 givescore(players, amount) {
-  for (i = 0; i < players.size; i++) {
+  for(i = 0; i < players.size; i++) {
     player = players[i];
     score = maps\mp\gametypes_zm\_globallogic_score::_getplayerscore(player);
     maps\mp\gametypes_zm\_globallogic_score::_setplayerscore(player, score + amount);
@@ -454,7 +454,7 @@ dosetheader(rule) {
   }
   targets = gettargetsforgametypeeventrule(rule);
 
-  for (targetindex = 0; targetindex < targets.size; targetindex++) {
+  for(targetindex = 0; targetindex < targets.size; targetindex++) {
     target = targets[targetindex];
     displaytextonhudelem(target, target.customgametypeheader, rule.params[0], rule.params[1], "gv_header", rule.params[2]);
   }
@@ -466,7 +466,7 @@ dosetsubheader(rule) {
   }
   targets = gettargetsforgametypeeventrule(rule);
 
-  for (targetindex = 0; targetindex < targets.size; targetindex++) {
+  for(targetindex = 0; targetindex < targets.size; targetindex++) {
     target = targets[targetindex];
     displaytextonhudelem(target, target.customgametypesubheader, rule.params[0], rule.params[1], "gv_subheader", rule.params[2]);
   }
@@ -475,12 +475,12 @@ dosetsubheader(rule) {
 displaytextonhudelem(target, texthudelem, text, secondstodisplay, notifyname, valueparam) {
   texthudelem.alpha = 1;
 
-  if(isdefined(valueparam))
+  if(isDefined(valueparam))
     texthudelem settext(text, valueparam);
   else
     texthudelem settext(text);
 
-  if(!isdefined(secondstodisplay) || secondstodisplay <= 0) {
+  if(!isDefined(secondstodisplay) || secondstodisplay <= 0) {
     target.doingnotify = 0;
     target notify(notifyname);
     return;
@@ -500,7 +500,7 @@ fadecustomgametypehudelem(hudelem, seconds, notifyname) {
   self.doingnotify = 1;
   wait(seconds);
 
-  while (hudelem.alpha > 0) {
+  while(hudelem.alpha > 0) {
     hudelem.alpha = hudelem.alpha - 0.05;
 
     if(hudelem.alpha < 0)
@@ -518,7 +518,7 @@ dodisplaymessage(rule) {
   }
   targets = gettargetsforgametypeeventrule(rule);
 
-  for (targetindex = 0; targetindex < targets.size; targetindex++)
+  for(targetindex = 0; targetindex < targets.size; targetindex++)
     thread announcemessage(targets[targetindex], rule.params[0], 2.0);
 }
 
@@ -535,7 +535,7 @@ announcemessage(target, messagetext, time) {
 }
 
 givehealth(players, amount) {
-  for (i = 0; i < players.size; i++) {
+  for(i = 0; i < players.size; i++) {
     player = players[i];
     player.health = player.health + amount;
   }
@@ -558,7 +558,7 @@ doremovehealth(rule) {
 dosethealthregen(rule) {
   targets = gettargetsforgametypeeventrule(rule);
 
-  for (targetindex = 0; targetindex < targets.size; targetindex++) {
+  for(targetindex = 0; targetindex < targets.size; targetindex++) {
     player = targets[targetindex];
     player.regenrate = rule.params[0];
   }
@@ -577,7 +577,7 @@ dochangeteam(rule) {
   teamkeys = getarraykeys(level.teams);
   targets = gettargetsforgametypeeventrule(rule);
 
-  for (targetindex = 0; targetindex < targets.size; targetindex++) {
+  for(targetindex = 0; targetindex < targets.size; targetindex++) {
     target = targets[targetindex];
 
     if(target.pers["team"] == team) {
@@ -586,7 +586,7 @@ dochangeteam(rule) {
     if(team == "toggle") {
       team = teamkeys[randomint(teamkeys.size)];
 
-      for (teamindex = 0; teamindex < teamkeys.size; teamindex++) {
+      for(teamindex = 0; teamindex < teamkeys.size; teamindex++) {
         if(target.pers["team"] == teamkeys[teamindex]) {
           team = teamkeys[(teamindex + 1) % teamkeys.size];
           break;
@@ -610,10 +610,10 @@ dochangeteam(rule) {
 displayperk(player, imagename) {
   index = 0;
 
-  if(isdefined(player.perkicon)) {
+  if(isDefined(player.perkicon)) {
     index = -1;
 
-    for (i = 0; i < player.perkicon.size; i++) {
+    for(i = 0; i < player.perkicon.size; i++) {
       if(player.perkicon[i].alpha == 0) {
         index = i;
         break;
@@ -639,10 +639,10 @@ setorunsetperk(players, perks, shouldset) {
   hasperkalready = 0;
   imagename = perks[perks.size - 1];
 
-  for (i = 0; i < players.size; i++) {
+  for(i = 0; i < players.size; i++) {
     player = players[i];
 
-    for (perkindex = 0; perkindex < perks.size - 1; perkindex++) {
+    for(perkindex = 0; perkindex < perks.size - 1; perkindex++) {
       perk = perks[perkindex];
 
       if(player hasperk(perk))
@@ -676,7 +676,6 @@ doremoveperk(rule) {
 }
 
 giveorremovekillstreak(rule, shouldgive) {
-
 }
 
 dogivekillstreak(rule) {
@@ -688,7 +687,7 @@ doremovekillstreak(rule) {
 }
 
 givelives(players, amount) {
-  for (i = 0; i < players.size; i++) {
+  for(i = 0; i < players.size; i++) {
     player = players[i];
     player.pers["lives"] = player.pers["lives"] + amount;
 
@@ -712,7 +711,7 @@ doremovelives(rule) {
 }
 
 giveorremoveinvuln(players, shouldgiveinvuln) {
-  for (i = 0; i < players.size; i++)
+  for(i = 0; i < players.size; i++)
     player = players[i];
 }
 
@@ -730,7 +729,7 @@ dosetdamagemodifier(rule) {
   }
   players = gettargetsforgametypeeventrule(rule);
 
-  for (i = 0; i < players.size; i++) {
+  for(i = 0; i < players.size; i++) {
     player = players[i];
     player.damagemodifier = rule.params[0];
   }
@@ -743,7 +742,7 @@ doscalemovespeed(rule) {
   movespeedscale = rule.params[0];
   targets = gettargetsforgametypeeventrule(rule);
 
-  for (targetindex = 0; targetindex < targets.size; targetindex++) {
+  for(targetindex = 0; targetindex < targets.size; targetindex++) {
     target = targets[targetindex];
     target.movementspeedmodifier = movespeedscale * target getmovespeedscale();
 
@@ -762,7 +761,7 @@ doshowonradar(rule) {
   }
   targets = gettargetsforgametypeeventrule(rule);
 
-  for (targetindex = 0; targetindex < targets.size; targetindex++) {
+  for(targetindex = 0; targetindex < targets.size; targetindex++) {
     if(rule.params[0] == "enable") {
       targets[targetindex] setperk("specialty_showonradar");
       continue;

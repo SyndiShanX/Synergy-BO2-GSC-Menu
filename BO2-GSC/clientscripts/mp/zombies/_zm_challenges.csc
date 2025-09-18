@@ -1,7 +1,7 @@
-/*******************************************************
+/*********************************************************
  * Decompiled and Edited by SyndiShanX
  * Script: clientscripts\mp\zombies\_zm_challenges.csc
-*******************************************************/
+*********************************************************/
 
 #include clientscripts\mp\_utility;
 #include clientscripts\mp\zombies\_zm_utility;

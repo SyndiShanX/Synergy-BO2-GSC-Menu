@@ -72,17 +72,17 @@ init_craftables() {
 }
 
 add_craftable_cheat(craftable) {
-  if(!isdefined(level.cheat_craftables))
+  if(!isDefined(level.cheat_craftables))
     level.cheat_craftables = [];
 
   foreach(s_piece in craftable.a_piecestubs) {
     id_string = undefined;
     client_field_val = undefined;
 
-    if(isdefined(s_piece.client_field_id)) {
+    if(isDefined(s_piece.client_field_id)) {
       id_string = s_piece.client_field_id;
       client_field_val = id_string;
-    } else if(isdefined(s_piece.client_field_state)) {
+    } else if(isDefined(s_piece.client_field_state)) {
       id_string = "gem";
       client_field_val = s_piece.client_field_state;
     } else
@@ -107,13 +107,15 @@ add_craftable_cheat(craftable) {
     s_piece craftable_waittill_spawned();
     s_piece.piecespawn.model thread puzzle_debug_position("C", vectorscale((0, 1, 0), 255.0), undefined, "show_craftable_locations");
   }
+
 }
 
 autocraft_staffs() {
   setdvar("autocraft_staffs", "off");
+
   adddebugcommand("devgui_cmd \"Zombies/Tomb:1/Craftables:1/Give All Staff Pieces:0\" \"autocraft_staffs on\"\n");
 
-  while (getdvar(#"_id_373B6254") != "on")
+  while(getdvar(#"_id_373B6254") != "on")
     wait_network_frame();
 
   flag_wait("start_zombie_round_logic");
@@ -124,18 +126,18 @@ autocraft_staffs() {
     if(issubstr(key, "staff") || issubstr(key, "record")) {
       s_piece = level.cheat_craftables[key];
 
-      if(isdefined(s_piece.piecespawn))
+      if(isDefined(s_piece.piecespawn))
         a_players[0] maps\mp\zombies\_zm_craftables::player_take_piece(s_piece.piecespawn);
     }
   }
 
-  for (i = 1; i <= 4; i++) {
+  for(i = 1; i <= 4; i++) {
     level notify("player_teleported", a_players[0], i);
     wait_network_frame();
     piece_spawn = level.cheat_craftables["" + i].piecespawn;
 
-    if(isdefined(piece_spawn)) {
-      if(isdefined(a_players[i - 1])) {
+    if(isDefined(piece_spawn)) {
+      if(isDefined(a_players[i - 1])) {
         a_players[i - 1] maps\mp\zombies\_zm_craftables::player_take_piece(piece_spawn);
         wait_network_frame();
       }
@@ -149,13 +151,13 @@ run_craftables_devgui() {
   level thread autocraft_staffs();
   setdvar("give_craftable", "");
 
-  while (true) {
+  while(true) {
     craftable_id = getdvar(#"_id_817E2753");
 
     if(craftable_id != "") {
       piece_spawn = level.cheat_craftables[craftable_id].piecespawn;
 
-      if(isdefined(piece_spawn)) {
+      if(isDefined(piece_spawn)) {
         players = getplayers();
         players[0] maps\mp\zombies\_zm_craftables::player_take_piece(piece_spawn);
       }
@@ -165,6 +167,7 @@ run_craftables_devgui() {
 
     wait 0.05;
   }
+
 }
 
 include_craftables() {
@@ -369,6 +372,7 @@ craftable_add_glow_fx() {
       n_elem = 4;
     else {
       iprintlnbold("ERROR: Unknown staff element type in craftable_add_glow_fx: " + s_craftable.name);
+
       return;
     }
 
@@ -393,13 +397,13 @@ craftable_model_attach_glow(n_elem, do_glow_now) {
 }
 
 tomb_staff_update_prompt(player, b_set_hint_string_now, trigger) {
-  if(isdefined(self.crafted) && self.crafted)
+  if(isDefined(self.crafted) && self.crafted)
     return true;
 
   self.hint_string = & "ZOMBIE_BUILD_PIECE_MORE";
 
-  if(isdefined(player)) {
-    if(!isdefined(player.current_craftable_piece))
+  if(isDefined(player)) {
+    if(!isDefined(player.current_craftable_piece))
       return false;
 
     if(!self.craftablespawn craftable_has_piece(player.current_craftable_piece)) {
@@ -418,17 +422,17 @@ tomb_staff_update_prompt(player, b_set_hint_string_now, trigger) {
 init_craftable_choke() {
   level.craftables_spawned_this_frame = 0;
 
-  while (true) {
+  while(true) {
     wait_network_frame();
     level.craftables_spawned_this_frame = 0;
   }
 }
 
 craftable_wait_your_turn() {
-  if(!isdefined(level.craftables_spawned_this_frame))
+  if(!isDefined(level.craftables_spawned_this_frame))
     level thread init_craftable_choke();
 
-  while (level.craftables_spawned_this_frame >= 2)
+  while(level.craftables_spawned_this_frame >= 2)
     wait_network_frame();
 
   level.craftables_spawned_this_frame++;
@@ -471,10 +475,10 @@ gramophonecraftable() {
 
 tankcraftableupdateprompt(player, sethintstringnow, buildabletrigger) {
   if(level.vh_tank getspeedmph() > 0.0) {
-    if(isdefined(self)) {
+    if(isDefined(self)) {
       self.hint_string = "";
 
-      if(isdefined(sethintstringnow) && sethintstringnow && isdefined(buildabletrigger))
+      if(isDefined(sethintstringnow) && sethintstringnow && isDefined(buildabletrigger))
         buildabletrigger sethintstring(self.hint_string);
     }
 
@@ -545,13 +549,13 @@ clear_player_crystal(n_element) {
 piece_pickup_conversation(player) {
   wait 1.0;
 
-  while (isdefined(player.isspeaking) && player.isspeaking)
+  while(isDefined(player.isspeaking) && player.isspeaking)
     wait_network_frame();
 
-  if(isdefined(self.piecestub.vo_line_notify)) {
+  if(isDefined(self.piecestub.vo_line_notify)) {
     level notify("quest_progressed", player, 0);
     level notify(self.piecestub.vo_line_notify, player);
-  } else if(isdefined(self.piecestub.sam_line)) {
+  } else if(isDefined(self.piecestub.sam_line)) {
     level notify("quest_progressed", player, 0);
     level notify(self.piecestub.sam_line, player);
   } else
@@ -562,6 +566,7 @@ onpickup_common(player) {
   player playsound("zmb_craftable_pickup");
   self.piece_owner = player;
   self thread piece_pickup_conversation(player);
+
   foreach(spawn in self.spawns)
   spawn notify("stop_debug_position");
 }
@@ -570,7 +575,7 @@ staff_pickup_vo() {
   if(!flag("samantha_intro_done")) {
     return;
   }
-  if(!(isdefined(level.sam_staff_line_played) && level.sam_staff_line_played)) {
+  if(!(isDefined(level.sam_staff_line_played) && level.sam_staff_line_played)) {
     level.sam_staff_line_played = 1;
     wait 1.0;
     maps\mp\zm_tomb_vo::set_players_dontspeak(1);
@@ -584,7 +589,7 @@ staff_pickup_vo() {
 onpickup_staffpiece(player) {
   onpickup_common(player);
 
-  if(!isdefined(level.num_staffpieces_picked_up[self.craftablename]))
+  if(!isDefined(level.num_staffpieces_picked_up[self.craftablename]))
     level.num_staffpieces_picked_up[self.craftablename] = 0;
 
   level.num_staffpieces_picked_up[self.craftablename]++;
@@ -643,12 +648,12 @@ watch_part_pickup(str_quest_clientfield, n_clientfield_val) {
   self.piecespawn waittill("pickup");
   level notify(self.craftablename + "_" + self.piecename + "_picked_up");
 
-  if(isdefined(str_quest_clientfield) && isdefined(n_clientfield_val))
+  if(isDefined(str_quest_clientfield) && isDefined(n_clientfield_val))
     level setclientfield(str_quest_clientfield, n_clientfield_val);
 }
 
 count_staff_piece_pickup(a_staff_pieces) {
-  if(!isdefined(level.staff_part_count))
+  if(!isDefined(level.staff_part_count))
     level.staff_part_count = [];
 
   str_name = a_staff_pieces[0].craftablename;
@@ -661,7 +666,7 @@ count_staff_piece_pickup(a_staff_pieces) {
 }
 
 craftable_waittill_spawned() {
-  while (!isdefined(self.piecespawn))
+  while(!isDefined(self.piecespawn))
     wait_network_frame();
 }
 
@@ -682,10 +687,10 @@ onfullycrafted_quadrotor(player) {
 }
 
 onbuyweapon_riotshield(player) {
-  if(isdefined(player.player_shield_reset_health))
+  if(isDefined(player.player_shield_reset_health))
     player[[player.player_shield_reset_health]]();
 
-  if(isdefined(player.player_shield_reset_location))
+  if(isDefined(player.player_shield_reset_location))
     player[[player.player_shield_reset_location]]();
 }
 
@@ -697,7 +702,7 @@ staff_fullycrafted(modelname, elementenum) {
   staff_model showallparts();
   level notify("quest_progressed", player, 0);
 
-  if(!isdefined(staff_model.inused)) {
+  if(!isDefined(staff_model.inused)) {
     staff_model show();
     staff_model.inused = 1;
     level.n_staffs_crafted++;
@@ -732,7 +737,7 @@ staff_water_fullycrafted() {
 }
 
 sndplaystaffstingeronce(type) {
-  if(!isdefined(level.sndstaffbuilt))
+  if(!isDefined(level.sndstaffbuilt))
     level.sndstaffbuilt = [];
 
   if(!isinarray(level.sndstaffbuilt, type)) {
@@ -757,7 +762,7 @@ quadrotor_watcher(player) {
 quadrotor_return_condition_watcher() {
   self waittill_any("bled_out", "disconnect");
 
-  if(isdefined(level.maxis_quadrotor))
+  if(isDefined(level.maxis_quadrotor))
     level notify("drone_should_return");
   else
     level notify("drone_available");
@@ -767,7 +772,7 @@ quadrotor_control_thread() {
   self endon("bled_out");
   self endon("disconnect");
 
-  while (true) {
+  while(true) {
     if(self actionslottwobuttonpressed() && self hasweapon("equip_dieseldrone_zm")) {
       self waittill("weapon_change_complete");
       self playsound("veh_qrdrone_takeoff");
@@ -799,7 +804,7 @@ quadrotor_debug_send_home(player_owner) {
   self endon("drone_should_return");
   level endon("drone_available");
 
-  while (true) {
+  while(true) {
     if(player_owner actionslottwobuttonpressed())
       self quadrotor_fly_back_to_table();
 
@@ -830,21 +835,24 @@ quadrotor_fly_back_to_table() {
   self endon("death");
   level endon("drone_available");
 
-  if(isdefined(self)) {
+  if(isDefined(self)) {
     iprintln("Maxis sez: time to bounce");
+
     self.returning_home = 1;
     self thread quadrotor_fly_back_to_table_timeout();
     self waittill_any("attempting_return", "return_timeout");
   }
 
-  if(isdefined(self))
+  if(isDefined(self))
     self waittill_any("near_goal", "force_goal", "reached_end_node", "return_timeout");
 
-  if(isdefined(self)) {
+  if(isDefined(self)) {
     playfx(level._effect["tesla_elec_kill"], self.origin);
     self playsound("zmb_qrdrone_leave");
     self delete();
+
     iprintln("Maxis deleted");
+
   }
 
   level notify("drone_available");
@@ -860,9 +868,11 @@ quadrotor_fly_back_to_table_timeout() {
   level endon("drone_available");
   wait 30;
 
-  if(isdefined(self)) {
+  if(isDefined(self)) {
     self delete();
+
     iprintln("Maxis deleted");
+
   }
 
   self notify("return_timeout");
@@ -882,6 +892,7 @@ quadrotor_timer() {
 
 quadrotor_set_available() {
   iprintln("Quad returned to table");
+
   playfx(level._effect["tesla_elec_kill"], level.quadrotor_status.pickup_trig.model.origin);
   level.quadrotor_status.pickup_trig.model playsound("zmb_qrdrone_leave");
   level.quadrotor_status.picked_up = 0;
@@ -922,11 +933,9 @@ sqcommoncraftable() {
 }
 
 droponmover(player) {
-
 }
 
 pickupfrommover() {
-
 }
 
 setup_quadrotor_purchase(player) {
@@ -944,7 +953,7 @@ setup_quadrotor_purchase(player) {
     player setweaponammoclip("equip_dieseldrone_zm", 1);
     player playsoundtoplayer("zmb_buildable_pickup_complete", player);
 
-    if(isdefined(self.stub.craftablestub.use_actionslot))
+    if(isDefined(self.stub.craftablestub.use_actionslot))
       player setactionslot(self.stub.craftablestub.use_actionslot, "weapon", "equip_dieseldrone_zm");
     else
       player setactionslot(2, "weapon", "equip_dieseldrone_zm");
@@ -961,7 +970,7 @@ setup_quadrotor_purchase(player) {
 players_has_weapon(weaponname) {
   players = getplayers();
 
-  for (i = 0; i < players.size; i++) {
+  for(i = 0; i < players.size; i++) {
     if(players[i] hasweapon(weaponname))
       return true;
   }
@@ -982,7 +991,7 @@ tomb_custom_craftable_validation(player) {
 
   str_craftable = self.stub.equipname;
 
-  if(!(isdefined(level.craftables_crafted[str_craftable]) && level.craftables_crafted[str_craftable]))
+  if(!(isDefined(level.craftables_crafted[str_craftable]) && level.craftables_crafted[str_craftable]))
     return true;
 
   if(!player can_pickup_staff())
@@ -1011,12 +1020,12 @@ tomb_check_crafted_weapon_persistence(player) {
       s_elemental_staff = get_staff_info_from_weapon_name(self.stub.weaponname, 0);
       player maps\mp\zombies\_zm_weapons::weapon_give(s_elemental_staff.weapname, 0, 0);
 
-      if(isdefined(s_elemental_staff.prev_ammo_stock) && isdefined(s_elemental_staff.prev_ammo_clip)) {
+      if(isDefined(s_elemental_staff.prev_ammo_stock) && isDefined(s_elemental_staff.prev_ammo_clip)) {
         player setweaponammostock(s_elemental_staff.weapname, s_elemental_staff.prev_ammo_stock);
         player setweaponammoclip(s_elemental_staff.weapname, s_elemental_staff.prev_ammo_clip);
       }
 
-      if(isdefined(level.zombie_craftablestubs[self.stub.equipname].str_taken))
+      if(isDefined(level.zombie_craftablestubs[self.stub.equipname].str_taken))
         self.stub.hint_string = level.zombie_craftablestubs[self.stub.equipname].str_taken;
       else
         self.stub.hint_string = "";
@@ -1048,7 +1057,7 @@ is_unclaimed_staff_weapon(str_weapon) {
     players = get_players();
 
     foreach(player in players) {
-      if(isdefined(player) && player has_weapon_or_upgrade(str_weapon_check))
+      if(isDefined(player) && player has_weapon_or_upgrade(str_weapon_check))
         return false;
     }
   }
@@ -1057,7 +1066,7 @@ is_unclaimed_staff_weapon(str_weapon) {
 }
 
 get_staff_info_from_weapon_name(str_name, b_base_info_only) {
-  if(!isdefined(b_base_info_only))
+  if(!isDefined(b_base_info_only))
     b_base_info_only = 1;
 
   foreach(s_staff in level.a_elemental_staffs) {
@@ -1084,7 +1093,7 @@ get_staff_info_from_element_index(n_index) {
 track_crafted_staff_trigger() {
   s_elemental_staff = get_staff_info_from_weapon_name(self.weaponname, 1);
 
-  if(!isdefined(self.base_weaponname))
+  if(!isDefined(self.base_weaponname))
     self.base_weaponname = s_elemental_staff.weapname;
 
   flag_waitopen(self.base_weaponname + "_enabled");
@@ -1099,13 +1108,13 @@ track_staff_weapon_respawn(player) {
   s_elemental_staff = get_staff_info_from_weapon_name(self.weaponname, 1);
   s_upgraded_staff = s_elemental_staff.upgrade;
 
-  if(!isdefined(self.base_weaponname))
+  if(!isDefined(self.base_weaponname))
     self.base_weaponname = s_elemental_staff.weapname;
 
   flag_clear(self.base_weaponname + "_enabled");
 
-  for (has_weapon = 0; isalive(player); has_weapon = 0) {
-    if(isdefined(s_elemental_staff.charger.is_inserted) && s_elemental_staff.charger.is_inserted || isdefined(s_upgraded_staff.charger.is_inserted) && s_upgraded_staff.charger.is_inserted || isdefined(s_upgraded_staff.ee_in_use) && s_upgraded_staff.ee_in_use)
+  for(has_weapon = 0; isalive(player); has_weapon = 0) {
+    if(isDefined(s_elemental_staff.charger.is_inserted) && s_elemental_staff.charger.is_inserted || isDefined(s_upgraded_staff.charger.is_inserted) && s_upgraded_staff.charger.is_inserted || isDefined(s_upgraded_staff.ee_in_use) && s_upgraded_staff.ee_in_use)
       has_weapon = 1;
     else {
       weapons = player getweaponslistprimaries();
@@ -1129,15 +1138,15 @@ track_staff_weapon_respawn(player) {
           s_upgraded_staff.revive_ammo_clip = player getweaponammoclip("staff_revive_zm");
         }
 
-        if(has_weapon && !(isdefined(player.one_inch_punch_flag_has_been_init) && player.one_inch_punch_flag_has_been_init) && n_melee_element != 0) {
+        if(has_weapon && !(isDefined(player.one_inch_punch_flag_has_been_init) && player.one_inch_punch_flag_has_been_init) && n_melee_element != 0) {
           cur_weapon = player getcurrentweapon();
 
-          if(cur_weapon != weapon && (isdefined(player.use_staff_melee) && player.use_staff_melee)) {
+          if(cur_weapon != weapon && (isDefined(player.use_staff_melee) && player.use_staff_melee)) {
             player update_staff_accessories(0);
             continue;
           }
 
-          if(cur_weapon == weapon && !(isdefined(player.use_staff_melee) && player.use_staff_melee))
+          if(cur_weapon == weapon && !(isDefined(player.use_staff_melee) && player.use_staff_melee))
             player update_staff_accessories(n_melee_element);
         }
       }
@@ -1178,6 +1187,7 @@ set_player_staff(str_weaponname, e_player) {
   e_player.staff_enum = s_staff.enum;
   level setclientfield("staff_player" + n_player, s_staff.enum);
   e_player update_staff_accessories(s_staff.enum);
+
   iprintlnbold("Player " + n_player + " has staff " + s_staff.enum);
 }
 
@@ -1188,14 +1198,14 @@ clear_player_staff_by_player_number(n_player) {
 clear_player_staff(str_weaponname, e_owner) {
   s_staff = get_staff_info_from_weapon_name(str_weaponname);
 
-  if(isdefined(e_owner) && isdefined(s_staff.e_owner) && e_owner != s_staff.e_owner) {
+  if(isDefined(e_owner) && isDefined(s_staff.e_owner) && e_owner != s_staff.e_owner) {
     return;
   }
-  if(!isdefined(e_owner))
+  if(!isDefined(e_owner))
     e_owner = s_staff.e_owner;
 
-  if(isdefined(e_owner)) {
-    if(!isdefined(e_owner.staff_enum) && !isdefined(s_staff.enum) || isdefined(e_owner.staff_enum) && isdefined(s_staff.enum) && e_owner.staff_enum == s_staff.enum) {
+  if(isDefined(e_owner)) {
+    if(!isDefined(e_owner.staff_enum) && !isDefined(s_staff.enum) || isDefined(e_owner.staff_enum) && isDefined(s_staff.enum) && e_owner.staff_enum == s_staff.enum) {
       n_player = e_owner getentitynumber() + 1;
       e_owner.staff_enum = 0;
       level setclientfield("staff_player" + n_player, 0);
@@ -1204,6 +1214,7 @@ clear_player_staff(str_weaponname, e_owner) {
   }
 
   iprintlnbold("Nobody has staff " + s_staff.enum);
+
   s_staff.e_owner = undefined;
 }
 

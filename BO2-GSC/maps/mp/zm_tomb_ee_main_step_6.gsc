@@ -24,6 +24,7 @@ init_stage() {
 
 stage_logic() {
   iprintln(level._cur_stage_name + " of little girl lost started");
+
   level setclientfield("sndChamberMusic", 1);
   flag_wait("ee_all_players_upgraded_punch");
   level setclientfield("sndChamberMusic", 0);
@@ -32,27 +33,26 @@ stage_logic() {
 }
 
 exit_stage(success) {
-
 }
 
 ruins_fist_glow_monitor() {
   if(flag("ee_all_players_upgraded_punch")) {
     return;
   }
-  if(isdefined(self.zone_name) && self.zone_name == "ug_bottom_zone") {
+  if(isDefined(self.zone_name) && self.zone_name == "ug_bottom_zone") {
     wait 0.1;
     self setclientfield("ee_zombie_fist_fx", 1);
     self.has_soul = 1;
 
-    while (isalive(self)) {
+    while(isalive(self)) {
       self waittill("damage", amount, inflictor, direction, point, type, tagname, modelname, partname, weaponname, idflags);
 
-      if(!isdefined(inflictor.n_ee_punch_souls)) {
+      if(!isDefined(inflictor.n_ee_punch_souls)) {
         inflictor.n_ee_punch_souls = 0;
         inflictor.b_punch_upgraded = 0;
       }
 
-      if(self.has_soul && inflictor.n_ee_punch_souls < 20 && isdefined(weaponname) && weaponname == "one_inch_punch_zm" && is_true(self.completed_emerging_into_playable_area)) {
+      if(self.has_soul && inflictor.n_ee_punch_souls < 20 && isDefined(weaponname) && weaponname == "one_inch_punch_zm" && is_true(self.completed_emerging_into_playable_area)) {
         self setclientfield("ee_zombie_fist_fx", 0);
         self.has_soul = 0;
         playsoundatposition("zmb_squest_punchtime_punched", self.origin);
@@ -79,14 +79,14 @@ spawn_punch_upgrade_tablet(v_origin, e_player) {
   m_tablet setinvisibletoall();
   m_tablet setvisibletoplayer(e_player);
 
-  while (isdefined(e_player) && !e_player istouching(m_tablet))
+  while(isDefined(e_player) && !e_player istouching(m_tablet))
     wait 0.05;
 
   m_tablet delete();
   m_fx delete();
   e_player playsound("zmb_squest_punchtime_tablet_pickup");
 
-  if(isdefined(e_player)) {
+  if(isDefined(e_player)) {
     e_player thread fadetoblackforxsec(0, 0.3, 0.5, 0.5, "white");
     a_zombies = getaispeciesarray(level.zombie_team, "all");
 
@@ -115,7 +115,7 @@ spawn_punch_upgrade_tablet(v_origin, e_player) {
     a_players = getplayers();
 
     foreach(player in a_players) {
-      if(!isdefined(player.b_punch_upgraded) || !player.b_punch_upgraded)
+      if(!isDefined(player.b_punch_upgraded) || !player.b_punch_upgraded)
         return;
     }
 
@@ -126,7 +126,7 @@ spawn_punch_upgrade_tablet(v_origin, e_player) {
 rotate_punch_upgrade_tablet() {
   self endon("death");
 
-  while (true) {
+  while(true) {
     self rotateyaw(360, 5);
     self waittill("rotatedone");
   }

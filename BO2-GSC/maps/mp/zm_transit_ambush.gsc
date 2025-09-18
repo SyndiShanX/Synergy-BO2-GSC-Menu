@@ -21,6 +21,7 @@ main() {
   flag_init("ambush_safe_area_active", 0);
   initambusheffects();
   thread ambushroundkeeper();
+
   adddebugcommand("devgui_cmd \"Zombies:1/Bus:14/Ambush Round:6/Always:1\" \"zombie_devgui ambush_round always\"\n");
   adddebugcommand("devgui_cmd \"Zombies:1/Bus:14/Ambush Round:6/Never:2\" \"zombie_devgui ambush_round never\"\n");
 }
@@ -37,20 +38,17 @@ shouldstartambushround() {
     return false;
 
   if(level.numbusstopssincelastambushround < 2) {
-
   }
 
   randint = randomintrange(0, 100);
   percentchance = level.numbusstopssincelastambushround * level.ambushpercentageperstop;
 
   if(randint < percentchance) {
-
   }
 
   percentchance = level.numroundssincelastambushround * level.ambushpercentageperround;
 
   if(randint < percentchance) {
-
   }
 
   if(maps\mp\zm_transit_bus::busgasempty())
@@ -103,7 +101,7 @@ limitedambushspawn() {
   setupdogspawnlocs();
   level thread ambushroundspawnfailsafe(20);
 
-  while (get_current_zombie_count() > 0)
+  while(get_current_zombie_count() > 0)
     wait 1.0;
 
   level notify("end_ambushWaitFunction");
@@ -112,7 +110,7 @@ limitedambushspawn() {
 ambushroundthink() {
   module = maps\mp\zombies\_zm_game_module::get_game_module(level.game_module_nml_index);
 
-  if(isdefined(module.hub_start_func)) {
+  if(isDefined(module.hub_start_func)) {
     level thread[[module.hub_start_func]]("nml");
     level notify("game_mode_started");
   }
@@ -123,7 +121,6 @@ ambushroundthink() {
 }
 
 ambushwaitfunction() {
-
 }
 
 ambushpointfailsafe() {
@@ -135,7 +132,7 @@ ambushpointfailsafe() {
 ambushroundspawnfailsafe(timer) {
   ambushroundtimelimit = timer;
 
-  for (currentambushtime = 0; currentambushtime < ambushroundtimelimit; currentambushtime++) {
+  for(currentambushtime = 0; currentambushtime < ambushroundtimelimit; currentambushtime++) {
     if(!flag("ambush_round")) {
       return;
     }
@@ -146,8 +143,8 @@ ambushroundspawnfailsafe(timer) {
   wait 5;
   dogs = getaispeciesarray("all", "zombie_dog");
 
-  for (i = 0; i < dogs.size; i++) {
-    if(isdefined(dogs[i].marked_for_death) && dogs[i].marked_for_death) {
+  for(i = 0; i < dogs.size; i++) {
+    if(isDefined(dogs[i].marked_for_death) && dogs[i].marked_for_death) {
       continue;
     }
     if(is_magic_bullet_shield_enabled(dogs[i])) {
@@ -180,7 +177,7 @@ ambushdoghealthincrease() {
 ambushroundaftermath() {
   power_up_origin = level.the_bus gettagorigin("tag_body");
 
-  if(isdefined(power_up_origin))
+  if(isDefined(power_up_origin))
     level thread maps\mp\zombies\_zm_powerups::specific_powerup_drop("full_ammo", power_up_origin);
 }
 
@@ -220,10 +217,10 @@ setupdogspawnlocs() {
   currentzone = undefined;
   ambush_zones = getentarray("ambush_volume", "script_noteworthy");
 
-  for (i = 0; i < ambush_zones.size; i++) {
+  for(i = 0; i < ambush_zones.size; i++) {
     touching = 0;
 
-    for (b = 0; b < level.the_bus.bounds_origins.size && !touching; b++) {
+    for(b = 0; b < level.the_bus.bounds_origins.size && !touching; b++) {
       bounds = level.the_bus.bounds_origins[b];
       touching = bounds istouching(ambush_zones[i]);
     }
@@ -234,12 +231,12 @@ setupdogspawnlocs() {
     }
   }
 
-  assert(isdefined(currentzone), "Bus needs to be in an ambush zone for an ambush round: " + level.the_bus.origin);
+  assert(isDefined(currentzone), "Bus needs to be in an ambush zone for an ambush round: " + level.the_bus.origin);
   level.enemy_dog_locations = getstructarray(currentzone.target, "targetname");
 }
 
 ambushroundkeeper() {
-  while (true) {
+  while(true) {
     level waittill("between_round_over");
     level.numroundssincelastambushround++;
   }

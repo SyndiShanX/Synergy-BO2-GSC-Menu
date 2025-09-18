@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\mp_raid.gsc
-***************************************/
+**************************************/
 
 #include maps\mp\_utility;
 #include maps\mp\mp_raid_fx;
@@ -68,7 +68,7 @@ water_trigger_init() {
 }
 
 player_splash_think() {
-  for (;;) {
+  for(;;) {
     self waittill("trigger", entity);
 
     if(isplayer(entity) && isalive(entity))

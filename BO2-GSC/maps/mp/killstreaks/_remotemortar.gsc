@@ -69,7 +69,7 @@ init() {
   level.remote_radiusoffset = 9000;
   remote_mortar_height = getstruct("remote_mortar_height", "targetname");
 
-  if(isdefined(remote_mortar_height)) {
+  if(isDefined(remote_mortar_height)) {
     level.remote_radiusoffset = remote_mortar_height.origin[2] / level.remote_zoffset * level.remote_radiusoffset;
     level.remote_zoffset = remote_mortar_height.origin[2];
   }
@@ -143,10 +143,10 @@ remote_mortar_killstreak(hardpointtype) {
   self thread visionswitch();
   level waittill("remote_unlinked");
 
-  if(isdefined(remote))
+  if(isDefined(remote))
     remote stoploopsound(4);
 
-  if(!isdefined(self))
+  if(!isDefined(self))
     return true;
 
   self clientnotify("krme");
@@ -160,7 +160,7 @@ remote_killstreak_copilot(voice) {
   level endon("remote_end");
   wait 2.5;
 
-  while (true) {
+  while(true) {
     self thread playpilotdialog("reaper_used", 0, voice);
     wait(randomfloatrange(4.5, 15));
   }
@@ -168,7 +168,7 @@ remote_killstreak_copilot(voice) {
 
 remote_killstreak_abort() {
   level endon("remote_end");
-  assert(isdefined(self.owner));
+  assert(isDefined(self.owner));
   assert(isplayer(self.owner));
   self.owner waittill_any("disconnect", "joined_team", "joined_spectators");
   self thread remote_killstreak_end(0, 1);
@@ -184,10 +184,10 @@ remote_owner_exit() {
   level endon("remote_end");
   wait 1;
 
-  while (true) {
+  while(true) {
     timeused = 0;
 
-    while (self.owner usebuttonpressed()) {
+    while(self.owner usebuttonpressed()) {
       timeused = timeused + 0.05;
 
       if(timeused > 0.25) {
@@ -204,7 +204,7 @@ remote_owner_exit() {
 
 remote_killstreak_game_end() {
   level endon("remote_end");
-  assert(isdefined(self.owner));
+  assert(isDefined(self.owner));
   assert(isplayer(self.owner));
   level waittill("game_ended");
   self thread remote_killstreak_end();
@@ -214,7 +214,7 @@ remote_mortar_spawn() {
   self setclientflag(1);
   self clientnotify("reapfutz");
   remote = spawnplane(self, "script_model", level.remotemortarrig gettagorigin("tag_origin"));
-  assert(isdefined(remote));
+  assert(isDefined(remote));
   remote setmodel("veh_t6_drone_pegasus_mp");
   remote.targetname = "remote_mortar";
   remote setowner(self);
@@ -258,7 +258,7 @@ rotaterig(clockwise) {
   if(clockwise)
     turn = -360;
 
-  for (;;) {
+  for(;;) {
     if(!clockwise) {
       self rotateyaw(turn, 30);
       wait 30;
@@ -291,10 +291,10 @@ play_lockon_sounds(player) {
   wait 0.1;
   self.locksounds linkto(self, "tag_player");
 
-  while (true) {
+  while(true) {
     self waittill("locking on");
 
-    while (true) {
+    while(true) {
       if(enemy_locking()) {
         self playsoundtoplayer("uin_alert_lockon", player);
         wait 0.125;
@@ -313,14 +313,14 @@ play_lockon_sounds(player) {
 }
 
 enemy_locking() {
-  if(isdefined(self.locking_on) && self.locking_on)
+  if(isDefined(self.locking_on) && self.locking_on)
     return true;
 
   return false;
 }
 
 enemy_locked() {
-  if(isdefined(self.locked_on) && self.locked_on)
+  if(isDefined(self.locked_on) && self.locked_on)
     return true;
 
   return false;
@@ -373,8 +373,8 @@ fade_out_hint_hud(remote) {
   wait 8;
   time = 0;
 
-  while (time < 2) {
-    if(!isdefined(self.missile_hud)) {
+  while(time < 2) {
+    if(!isDefined(self.missile_hud)) {
       return;
     }
     self.missile_hud.alpha = self.missile_hud.alpha - 0.025;
@@ -388,26 +388,26 @@ fade_out_hint_hud(remote) {
 }
 
 remove_hud() {
-  if(isdefined(self.missile_hud))
+  if(isDefined(self.missile_hud))
     self.missile_hud destroy();
 
-  if(isdefined(self.zoom_hud))
+  if(isDefined(self.zoom_hud))
     self.zoom_hud destroy();
 
-  if(isdefined(self.hud_prompt_exit))
+  if(isDefined(self.hud_prompt_exit))
     self.hud_prompt_exit destroy();
 }
 
 remote_killstreak_end(explode, disconnected) {
   level notify("remote_end");
 
-  if(!isdefined(explode))
+  if(!isDefined(explode))
     explode = 0;
 
-  if(!isdefined(disconnected))
+  if(!isDefined(disconnected))
     disconnected = 0;
 
-  if(isdefined(self.owner)) {
+  if(isDefined(self.owner)) {
     if(disconnected == 0) {
       if(explode) {
         self.owner sendkillstreakdamageevent(600);
@@ -425,7 +425,7 @@ remote_killstreak_end(explode, disconnected) {
     self.owner enableweaponcycling();
     self.owner remove_hud();
 
-    if(isdefined(level.gameended) && level.gameended)
+    if(isDefined(level.gameended) && level.gameended)
       self.owner freezecontrolswrapper(1);
   }
 
@@ -436,12 +436,12 @@ remote_killstreak_end(explode, disconnected) {
   level notify("remote_unlinked");
   maps\mp\killstreaks\_killstreakrules::killstreakstop("remote_mortar_mp", self.team, self.killstreak_id);
 
-  if(isdefined(self.owner)) {
+  if(isDefined(self.owner)) {
     self.owner setinfraredvision(0);
     self.owner useservervisionset(0);
   }
 
-  if(isdefined(self.fx))
+  if(isDefined(self.fx))
     self.fx delete();
 
   if(explode)
@@ -456,22 +456,23 @@ player_linkto_remote(remote) {
   uparc = 25;
   downarc = 65;
 
-  if(isdefined(level.remotemotarviewleft))
+  if(isDefined(level.remotemotarviewleft))
     leftarc = level.remotemotarviewleft;
 
-  if(isdefined(level.remotemotarviewright))
+  if(isDefined(level.remotemotarviewright))
     rightarc = level.remotemotarviewright;
 
-  if(isdefined(level.remotemotarviewup))
+  if(isDefined(level.remotemotarviewup))
     uparc = level.remotemotarviewup;
 
-  if(isdefined(level.remotemotarviewdown))
+  if(isDefined(level.remotemotarviewdown))
     downarc = level.remotemotarviewdown;
 
   leftarc = getdvarintdefault("scr_remotemortar_right", leftarc);
   rightarc = getdvarintdefault("scr_remotemortar_left", rightarc);
   uparc = getdvarintdefault("scr_remotemortar_up", uparc);
   downarc = getdvarintdefault("scr_remotemortar_down", downarc);
+
   self playerlinkweaponviewtodelta(remote, "tag_player", 1.0, leftarc, rightarc, uparc, downarc);
   self player_center_view();
 }
@@ -488,7 +489,7 @@ player_aim_think(remote) {
   playfxontag(level.remote_mortar_fx["laserTarget"], remote.fx, "tag_origin");
   remote.fx playloopsound("mpl_ks_reaper_laser");
 
-  while (true) {
+  while(true) {
     origin = self geteye();
     forward = anglestoforward(self getplayerangles());
     endpoint = origin + forward * 15000;
@@ -496,12 +497,12 @@ player_aim_think(remote) {
     remote.fx.origin = trace["position"];
     remote.fx.angles = vectortoangles(trace["normal"]);
 
-    if(isdefined(self.pegasus_influencer)) {
+    if(isDefined(self.pegasus_influencer)) {
       removeinfluencer(self.pegasus_influencer);
       self.pegasus_influencer = undefined;
     }
 
-    if(isdefined(self.active_pegasus))
+    if(isDefined(self.active_pegasus))
       self.pegasus_influencer = maps\mp\gametypes\_spawning::create_pegasus_influencer(trace["position"], self.team);
 
     wait 0.05;
@@ -513,7 +514,7 @@ player_fire_think(remote) {
   end_time = gettime() + self.killstreak_waitamount;
   shot = 0;
 
-  while (gettime() < end_time) {
+  while(gettime() < end_time) {
     self.active_pegasus = undefined;
 
     if(!self attackbuttonpressed()) {
@@ -525,7 +526,7 @@ player_fire_think(remote) {
     self playrumbleonentity("sniper_fire");
 
     if(shot % 3 == 1) {
-      if(isdefined(remote.owner) && isdefined(remote.owner.pilottalking) && remote.owner.pilottalking)
+      if(isDefined(remote.owner) && isDefined(remote.owner.pilottalking) && remote.owner.pilottalking)
         shot = 0;
 
       remote thread playpilotdialog("reaper_fire", 0.25, undefined, 0);
@@ -546,7 +547,7 @@ player_fire_think(remote) {
     self playlocalsound("mpl_ks_reaper_explosion");
   }
 
-  if(isdefined(self.pegasus_influencer)) {
+  if(isDefined(self.pegasus_influencer)) {
     removeinfluencer(self.pegasus_influencer);
     self.pegasus_influencer = undefined;
   }
@@ -570,7 +571,7 @@ remote_damage_think() {
   self setcandamage(1);
   target_set(self, vectorscale((0, 0, 1), 30.0));
 
-  while (true) {
+  while(true) {
     self waittill("damage", damage, attacker, direction_vec, point, meansofdeath, tagname, modelname, partname, weapon);
     self.health = 999999;
     heli_friendlyfire = maps\mp\gametypes\_weaponobjects::friendlyfirecheck(self.owner, attacker);
@@ -590,7 +591,7 @@ remote_damage_think() {
     if(meansofdeath == "MOD_RIFLE_BULLET" || meansofdeath == "MOD_PISTOL_BULLET")
       damage = damage * level.heli_armor_bulletdamage;
 
-    if(isdefined(weapon)) {
+    if(isDefined(weapon)) {
       if(maps\mp\gametypes\_weapon_utils::islauncherweapon(weapon) || weapon == "remote_missile_missile_mp")
         damage = maxhealth + 1;
     }
@@ -609,7 +610,6 @@ remote_damage_think() {
         attacker addweaponstat(weapon, "destroyed_controlled_killstreak", 1);
         attacker destroyedplayercontrolledaircraft();
       } else {
-
       }
 
       level thread maps\mp\_popups::displayteammessagetoall(&"KILLSTREAK_DESTROYED_REMOTE_MORTAR", attacker);
@@ -629,13 +629,13 @@ remote_leave() {
   tries = 10;
   yaw = 0;
 
-  while (tries > 0) {
+  while(tries > 0) {
     exitvector = anglestoforward(self.angles + (0, yaw, 0)) * 20000;
     exitpoint = (self.origin[0] + exitvector[0], self.origin[1] + exitvector[1], self.origin[2] - 2500);
     exitpoint = self.origin + exitvector;
     nfz = crossesnoflyzone(self.origin, exitpoint);
 
-    if(isdefined(nfz)) {
+    if(isDefined(nfz)) {
       if(tries % 2 == 1 && tries != 1)
         yaw = yaw * -1;
       else if(tries != 1) {
@@ -668,7 +668,7 @@ play_remote_fx() {
 }
 
 play_afterburner_fx() {
-  if(!isdefined(self.exhaustfx)) {
+  if(!isDefined(self.exhaustfx)) {
     self.exhaustfx = spawn("script_model", self.origin);
     self.exhaustfx setmodel("tag_origin");
     self.exhaustfx linkto(self, "tag_turret", vectorscale((0, 0, 1), 25.0));
@@ -698,7 +698,7 @@ visionswitch() {
   self useservervisionset(1);
   self setvisionsetforplayer(level.remore_mortar_infrared_vision, 1);
 
-  for (;;) {
+  for(;;) {
     if(self changeseatbuttonpressed()) {
       if(!inverted) {
         self setinfraredvision(1);
@@ -712,7 +712,7 @@ visionswitch() {
 
       inverted = !inverted;
 
-      while (self changeseatbuttonpressed())
+      while(self changeseatbuttonpressed())
         wait 0.05;
     }
 

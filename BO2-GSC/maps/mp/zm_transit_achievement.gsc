@@ -67,13 +67,13 @@ achievement_dont_fire_until_you_see() {
   self endon("burned");
   zombie_doors = getentarray("zombie_door", "targetname");
 
-  while (true) {
+  while(true) {
     level waittill("door_opened");
     num_left = 0;
     all_opened = 1;
 
     foreach(door in zombie_doors) {
-      if(!(isdefined(door.has_been_opened) && door.has_been_opened)) {
+      if(!(isDefined(door.has_been_opened) && door.has_been_opened)) {
         num_left++;
         all_opened = 0;
       }
@@ -82,7 +82,9 @@ achievement_dont_fire_until_you_see() {
     if(all_opened) {
       break;
     }
+
   }
+
   self giveachievement_wrapper("ZM_DONT_FIRE_UNTIL_YOU_SEE");
 }
 
@@ -133,13 +135,14 @@ achievement_zm_happy_hour() {
   level endon("end_game");
   level endon("power_on");
 
-  while (true) {
+  while(true) {
     self waittill("perk_acquired");
 
-    if(isdefined(self.perk_history) && self.perk_history.size >= 2) {
+    if(isDefined(self.perk_history) && self.perk_history.size >= 2) {
       break;
     }
   }
+
   self giveachievement_wrapper("ZM_HAPPY_HOUR");
 }
 

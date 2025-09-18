@@ -61,7 +61,7 @@ main() {
   level.ta_vaultfee = 100;
   level.ta_tellerfee = 100;
 
-  if(!isdefined(level.custom_ai_type))
+  if(!isDefined(level.custom_ai_type))
     level.custom_ai_type = [];
 
   level.custom_ai_type[level.custom_ai_type.size] = maps\mp\zombies\_zm_ai_screecher::init;
@@ -72,7 +72,7 @@ main() {
   door_triggers = getentarray("electric_door", "script_noteworthy");
 
   foreach(trigger in door_triggers) {
-    if(isdefined(trigger.script_flag) && trigger.script_flag == "OnPowDoorWH") {
+    if(isDefined(trigger.script_flag) && trigger.script_flag == "OnPowDoorWH") {
       continue;
     }
     trigger.power_door_ignore_flag_wait = 1;
@@ -81,7 +81,7 @@ main() {
   door_triggers = getentarray("local_electric_door", "script_noteworthy");
 
   foreach(trigger in door_triggers) {
-    if(isdefined(trigger.script_flag) && trigger.script_flag == "OnPowDoorWH") {
+    if(isDefined(trigger.script_flag) && trigger.script_flag == "OnPowDoorWH") {
       continue;
     }
     trigger.power_door_ignore_flag_wait = 1;
@@ -118,7 +118,6 @@ main() {
 }
 
 zm_traversal_override_ignores() {
-
 }
 
 zm_traversal_override(traversealias) {
@@ -127,13 +126,13 @@ zm_traversal_override(traversealias) {
   chance = 0;
   sndchance = 0;
 
-  if(!(isdefined(self.isscreecher) && self.isscreecher) && !(isdefined(self.is_avogadro) && self.is_avogadro)) {
-    if(isdefined(self.traversestartnode) && isdefined(self.traversestartnode.script_string) && self.traversestartnode.script_string == "ignore_traverse_override")
+  if(!(isDefined(self.isscreecher) && self.isscreecher) && !(isDefined(self.is_avogadro) && self.is_avogadro)) {
+    if(isDefined(self.traversestartnode) && isDefined(self.traversestartnode.script_string) && self.traversestartnode.script_string == "ignore_traverse_override")
       return traversealias;
 
     switch (traversealias) {
       case "jump_down_48":
-        if(isdefined(self.has_legs) && self.has_legs) {
+        if(isDefined(self.has_legs) && self.has_legs) {
           suffix = "_stumble";
           chance = 0;
         }
@@ -143,7 +142,7 @@ zm_traversal_override(traversealias) {
       case "jump_down_190":
       case "jump_down_222":
       case "jump_down_90":
-        if(isdefined(self.has_legs) && self.has_legs) {
+        if(isDefined(self.has_legs) && self.has_legs) {
           suffix = "_stumble";
           chance = 30;
         }
@@ -161,7 +160,7 @@ zm_traversal_override(traversealias) {
     }
 
     if(chance != 0 && randomint(100) <= chance) {
-      if(isdefined(sndalias) && randomint(100) <= sndchance)
+      if(isDefined(sndalias) && randomint(100) <= sndchance)
         playsoundatposition(sndalias, self.origin);
 
       traversealias = traversealias + suffix;
@@ -177,7 +176,7 @@ init_bus() {
 }
 
 closest_player_transit(origin, players) {
-  if(isdefined(level.the_bus) && level.the_bus.numaliveplayersridingbus > 0 || !(isdefined(level.calc_closest_player_using_paths) && level.calc_closest_player_using_paths))
+  if(isDefined(level.the_bus) && level.the_bus.numaliveplayersridingbus > 0 || !(isDefined(level.calc_closest_player_using_paths) && level.calc_closest_player_using_paths))
     player = getclosest(origin, players);
   else
     player = get_closest_player_using_paths(origin, players);
@@ -191,10 +190,10 @@ transit_vault_breach_init() {
 }
 
 transit_vault_breach() {
-  if(isdefined(self)) {
+  if(isDefined(self)) {
     self.damage_state = 0;
 
-    if(isdefined(self.target)) {
+    if(isDefined(self.target)) {
       clip = getent(self.target, "targetname");
       clip linkto(self);
       self.clip = clip;
@@ -213,14 +212,14 @@ vault_breach_think() {
   self.clip.health = 99999;
   self.clip setcandamage(1);
 
-  while (true) {
+  while(true) {
     self thread track_clip_damage();
     self waittill("damage", amount, attacker, direction, point, dmg_type, modelname, tagname, partname, weaponname);
 
-    if(isdefined(weaponname) && (weaponname == "emp_grenade_zm" || weaponname == "ray_gun_zm" || weaponname == "ray_gun_upgraded_zm")) {
+    if(isDefined(weaponname) && (weaponname == "emp_grenade_zm" || weaponname == "ray_gun_zm" || weaponname == "ray_gun_upgraded_zm")) {
       continue;
     }
-    if(isdefined(amount) && amount <= 1) {
+    if(isDefined(amount) && amount <= 1) {
       continue;
     }
     if(isplayer(attacker) && (dmg_type == "MOD_PROJECTILE" || dmg_type == "MOD_PROJECTILE_SPLASH" || dmg_type == "MOD_EXPLOSIVE" || dmg_type == "MOD_EXPLOSIVE_SPLASH" || dmg_type == "MOD_GRENADE" || dmg_type == "MOD_GRENADE_SPLASH")) {
@@ -231,10 +230,10 @@ vault_breach_think() {
       self playsound("exp_vault_explode");
       self bunkerdoorrotate(1);
 
-      if(isdefined(self.script_flag))
+      if(isDefined(self.script_flag))
         flag_set(self.script_flag);
 
-      if(isdefined(self.clip))
+      if(isDefined(self.clip))
         self.clip connectpaths();
 
       wait 1;
@@ -251,7 +250,7 @@ track_clip_damage() {
 }
 
 bunkerdoorrotate(open, time) {
-  if(!isdefined(time))
+  if(!isDefined(time))
     time = 0.2;
 
   rotate = self.script_float;
@@ -259,7 +258,7 @@ bunkerdoorrotate(open, time) {
   if(!open)
     rotate = rotate * -1;
 
-  if(isdefined(self.script_angles)) {
+  if(isDefined(self.script_angles)) {
     self notsolid();
     self rotateto(self.script_angles, time, 0, 0);
     self thread maps\mp\zombies\_zm_blockers::door_solid_thread();
@@ -270,20 +269,20 @@ collapsing_bridge_init() {
   time = 1.5;
   trig = getent("bridge_trig", "targetname");
 
-  if(!isdefined(trig)) {
+  if(!isDefined(trig)) {
     return;
   }
   bridge = getentarray(trig.target, "targetname");
 
-  if(!isdefined(bridge)) {
+  if(!isDefined(bridge)) {
     return;
   }
   trig waittill("trigger", who);
   trig playsound("evt_bridge_collapse_start");
   trig thread play_delayed_sound(time);
 
-  for (i = 0; i < bridge.size; i++) {
-    if(isdefined(bridge[i].script_angles))
+  for(i = 0; i < bridge.size; i++) {
+    if(isDefined(bridge[i].script_angles))
       rot_angle = bridge[i].script_angles;
     else
       rot_angle = (0, 0, 0);
@@ -295,7 +294,7 @@ collapsing_bridge_init() {
 
   wait 1;
 
-  if(!isdefined(level.collapse_vox_said)) {
+  if(!isDefined(level.collapse_vox_said)) {
     level thread automatonspeak("inform", "bridge_collapse");
     level.collapse_vox_said = 1;
   }
@@ -339,13 +338,13 @@ bus_roof_damage_init() {
 }
 
 bus_roof_damage() {
-  while (true) {
+  while(true) {
     self waittill("trigger", who);
 
     if(isplayer(who)) {
       if(who getstance() == "stand")
         who dodamage(1, who.origin);
-    } else if(!(isdefined(who.marked_for_death) && who.marked_for_death) && (isdefined(who.has_legs) && who.has_legs)) {
+    } else if(!(isDefined(who.marked_for_death) && who.marked_for_death) && (isDefined(who.has_legs) && who.has_legs)) {
       who dodamage(who.health + 100, who.origin);
       who.marked_for_death = 1;
       level.zombie_total++;
@@ -360,7 +359,7 @@ diner_hatch_access() {
   diner_hatch_col = getent("diner_hatch_collision", "targetname");
   diner_hatch_mantle = getent("diner_hatch_mantle", "targetname");
 
-  if(!isdefined(diner_hatch) || !isdefined(diner_hatch_col)) {
+  if(!isDefined(diner_hatch) || !isDefined(diner_hatch_col)) {
     return;
   }
   diner_hatch hide();
@@ -376,22 +375,22 @@ diner_hatch_access() {
 inert_zombies_init() {
   inert_spawn_location = getstructarray("inert_location", "script_noteworthy");
 
-  if(isdefined(inert_spawn_location))
+  if(isDefined(inert_spawn_location))
     array_thread(inert_spawn_location, ::spawn_inert_zombies);
 }
 
 spawn_inert_zombies() {
-  if(!isdefined(self.angles))
+  if(!isDefined(self.angles))
     self.angles = (0, 0, 0);
 
   wait 0.1;
 
-  if(isdefined(level.zombie_spawners)) {
+  if(isDefined(level.zombie_spawners)) {
     spawner = random(level.zombie_spawners);
     ai = spawn_zombie(spawner);
   }
 
-  if(isdefined(ai)) {
+  if(isDefined(ai)) {
     ai forceteleport(self.origin, self.angles);
     ai.start_inert = 1;
   }
@@ -409,7 +408,7 @@ callback_spectator_respawn_custom_score() {
     money_required = 2;
 
   if(!sessionmodeisonlinegame()) {
-    if(!isdefined(self.account_val))
+    if(!isDefined(self.account_val))
       self.account_val = 0;
 
     if(self.account_val >= money_required)
@@ -431,7 +430,7 @@ transit_custom_deny_vox(door_buy) {
     case 0:
       alias = randomintrange(2, 5);
 
-      if(isdefined(door_buy) && door_buy)
+      if(isDefined(door_buy) && door_buy)
         alias = undefined;
 
       self maps\mp\zombies\_zm_audio::create_and_play_dialog("general", "door_deny", undefined, alias);

@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\bots\_bot_ctf.gsc
-***************************************/
+**************************************/
 
 #include maps\mp\gametypes\ctf;
 #include common_scripts\utility;
@@ -47,7 +47,7 @@ bot_ctf_think() {
   if(ctf_has_flag(flag_enemy) && self issprinting() && distancesquared(self.origin, home_mine) < 36864) {
     if(bot_dot_product(home_mine) > 0.9)
       self bot_dive_to_prone("stand");
-  } else if(!flag_mine ishome() && !isdefined(flag_mine.carrier)) {
+  } else if(!flag_mine ishome() && !isDefined(flag_mine.carrier)) {
     if(self issprinting() && distancesquared(self.origin, flag_mine.curorigin) < 36864) {
       if(bot_dot_product(flag_mine.curorigin) > 0.9)
         self bot_dive_to_prone("stand");
@@ -96,7 +96,7 @@ ctf_flag_get_home() {
 }
 
 ctf_has_flag(flag) {
-  return isdefined(flag.carrier) && flag.carrier == self;
+  return isDefined(flag.carrier) && flag.carrier == self;
 }
 
 bot_ctf_capture() {
@@ -107,13 +107,13 @@ bot_ctf_capture() {
 
   if(ctf_has_flag(flag_enemy))
     self addgoal(home_mine, 16, 4, "ctf_flag");
-  else if(isdefined(flag_enemy.carrier)) {
+  else if(isDefined(flag_enemy.carrier)) {
     if(self atgoal("ctf_flag"))
       self cancelgoal("ctf_flag");
 
     goal = self getgoal("ctf_flag");
 
-    if(isdefined(goal) && distancesquared(goal, flag_enemy.carrier.origin) < 589824) {
+    if(isDefined(goal) && distancesquared(goal, flag_enemy.carrier.origin) < 589824) {
       return;
     }
     nodes = getnodesinradius(flag_enemy.carrier.origin, 512, 64, 256, "any", 8);
@@ -138,7 +138,7 @@ bot_ctf_defend() {
   if(ctf_has_flag(flag_enemy))
     return 0;
 
-  if(!isdefined(flag_mine.carrier)) {
+  if(!isDefined(flag_mine.carrier)) {
     if(self maps\mp\bots\_bot::bot_friend_goal_in_radius("ctf_flag", flag_mine.curorigin, 16) <= 1)
       return self bot_ctf_add_goal(flag_mine.curorigin, 4, "ctf_flag");
   } else if(!flag_enemy ishome() || distance2dsquared(self.origin, home_enemy) > 250000)
@@ -157,7 +157,7 @@ bot_ctf_add_goal(origin, goal_priority, goal_name) {
   else {
     node = bot_ctf_random_visible_node(origin);
 
-    if(isdefined(node)) {
+    if(isDefined(node)) {
       if(findpath(self.origin, node.origin, undefined, 0, 1)) {
         goal = node;
         self.bot.update_objective = self.bot.update_objective + randomintrange(3000, 5000);
@@ -165,7 +165,7 @@ bot_ctf_add_goal(origin, goal_priority, goal_name) {
     }
   }
 
-  if(isdefined(goal)) {
+  if(isDefined(goal)) {
     self addgoal(goal, 16, goal_priority, goal_name);
     return true;
   }
@@ -176,10 +176,10 @@ bot_ctf_add_goal(origin, goal_priority, goal_name) {
 bot_get_look_at() {
   enemy = self maps\mp\bots\_bot::bot_get_closest_enemy(self.origin, 1);
 
-  if(isdefined(enemy)) {
+  if(isDefined(enemy)) {
     node = getvisiblenode(self.origin, enemy.origin);
 
-    if(isdefined(node) && distancesquared(self.origin, node.origin) > 16384)
+    if(isDefined(node) && distancesquared(self.origin, node.origin) > 16384)
       return node.origin;
   }
 
@@ -188,10 +188,10 @@ bot_get_look_at() {
   if(enemies.size)
     enemy = random(enemies);
 
-  if(isdefined(enemy)) {
+  if(isDefined(enemy)) {
     node = getvisiblenode(self.origin, enemy.origin);
 
-    if(isdefined(node) && distancesquared(self.origin, node.origin) > 16384)
+    if(isDefined(node) && distancesquared(self.origin, node.origin) > 16384)
       return node.origin;
   }
 
@@ -207,7 +207,7 @@ bot_patrol_flag() {
   if(self atgoal("ctf_flag_patrol")) {
     node = getnearestnode(self.origin);
 
-    if(!isdefined(node)) {
+    if(!isDefined(node)) {
       self clearlookat();
       self cancelgoal("ctf_flag_patrol");
       return;
@@ -241,7 +241,7 @@ bot_patrol_flag() {
     nearest = base_nearest_node(flag_mine);
     mine = getnearestnode(goal);
 
-    if(isdefined(mine) && !nodesvisible(mine, nearest)) {
+    if(isDefined(mine) && !nodesvisible(mine, nearest)) {
       self clearlookat();
       self cancelgoal("ctf_flag_patrol");
     }
@@ -269,7 +269,7 @@ bot_patrol_flag() {
 
     mine = getnearestnode(goal);
 
-    if(isdefined(mine) && !nodesvisible(mine, nearest)) {
+    if(isDefined(mine) && !nodesvisible(mine, nearest)) {
       self clearlookat();
       self cancelgoal("ctf_flag_patrol");
     }
@@ -283,7 +283,7 @@ bot_patrol_flag() {
   nodes = getvisiblenodes(nearest);
   assert(nodes.size);
 
-  for (i = randomint(nodes.size); i < nodes.size; i++) {
+  for(i = randomint(nodes.size); i < nodes.size; i++) {
     if(self maps\mp\bots\_bot::bot_friend_goal_in_radius("ctf_flag_patrol", nodes[i].origin, 256) == 0) {
       self addgoal(nodes[i], 24, 3, "ctf_flag_patrol");
       self.bot.update_objective_patrol = gettime() + randomintrange(3000, 6000);
@@ -303,10 +303,10 @@ bot_ctf_random_visible_node(origin) {
   nodes = getnodesinradius(origin, 384, 0, 256);
   nearest = maps\mp\bots\_bot_combat::bot_nearest_node(origin);
 
-  if(isdefined(nearest) && nodes.size) {
+  if(isDefined(nearest) && nodes.size) {
     current = randomintrange(0, nodes.size);
 
-    for (i = 0; i < nodes.size; i++) {
+    for(i = 0; i < nodes.size; i++) {
       current = (current + 1) % nodes.size;
 
       if(nodesvisible(nodes[current], nearest))

@@ -5,11 +5,6 @@
 
 #include clientscripts\mp\_utility;
 #include clientscripts\mp\zombies\_zm_utility;
-
-precache() {
-
-}
-
 #using_animtree("mechz_claw");
 
 init_animtree() {
@@ -17,16 +12,16 @@ init_animtree() {
 }
 
 add_fx_element(index, fx_element, tag_name, min_freq, max_freq) {
-  if(!isdefined(level.mechz_clientside_fx))
+  if(!isDefined(level.mechz_clientside_fx))
     level.mechz_clientside_fx = [];
 
-  if(!isdefined(level.mechz_clientside_fx_inst))
+  if(!isDefined(level.mechz_clientside_fx_inst))
     level.mechz_clientside_fx_inst = [];
 
-  if(!isdefined(level.mechz_clientside_fx[index]))
+  if(!isDefined(level.mechz_clientside_fx[index]))
     level.mechz_clientside_fx[index] = [];
 
-  if(!isdefined(level.mechz_clientside_fx_inst[index]))
+  if(!isDefined(level.mechz_clientside_fx_inst[index]))
     level.mechz_clientside_fx_inst[index] = [];
 
   new_fx_struct = spawnstruct();
@@ -82,12 +77,12 @@ setup_fx(localclientnum, index, bnewent, binitialsnap, fieldname, bwasdemojump) 
   if(index == 10)
     self setsoundentcontext("f35", "exterior");
 
-  for (i = 0; i < level.mechz_clientside_fx[index].size; i++) {
+  for(i = 0; i < level.mechz_clientside_fx[index].size; i++) {
     fx_struct = level.mechz_clientside_fx[index][i];
     unique_script_id = "kill_fx_" + index + "_" + self getentitynumber();
     self thread sndplayfxloops(localclientnum, index, fx_struct.tag_name);
 
-    if(isdefined(fx_struct.min_freq)) {
+    if(isDefined(fx_struct.min_freq)) {
       self thread mechz_do_manual_looping_fx(localclientnum, unique_script_id, fx_struct.tag_name, fx_struct.fx_element, fx_struct.min_freq, fx_struct.max_freq);
       continue;
     }
@@ -100,8 +95,8 @@ cleanup_fx(localclientnum, index, bnewent, binitialsnap, fieldname, bwasdemojump
   unique_script_id = "kill_fx_" + index + "_" + self getentitynumber();
   fx_array = level.mechz_clientside_fx_inst[index];
 
-  if(isdefined(fx_array) && fx_array.size > 0) {
-    for (i = fx_array.size - 1; i >= 0; i--) {
+  if(isDefined(fx_array) && fx_array.size > 0) {
+    for(i = fx_array.size - 1; i >= 0; i--) {
       stopfx(localclientnum, fx_array[i]);
       fx_array[i] = undefined;
     }
@@ -111,7 +106,7 @@ cleanup_fx(localclientnum, index, bnewent, binitialsnap, fieldname, bwasdemojump
 }
 
 mechz_handle_fx(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump) {
-  for (i = 0; i < level.mechz_clientside_fx.size; i++) {
+  for(i = 0; i < level.mechz_clientside_fx.size; i++) {
     set_in_new = (newval & 1 << i) != 0;
     set_in_old = (oldval & 1 << i) != 0;
 
@@ -127,7 +122,7 @@ mechz_handle_fx(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname
   if(!newval && is_true(self.fx_initialized)) {
     self.fx_initialized = 0;
 
-    if(isdefined(self.smoke_fx))
+    if(isDefined(self.smoke_fx))
       deletefx(localclientnum, self.smoke_fx);
   }
 }
@@ -136,16 +131,16 @@ mechz_do_manual_looping_fx(localclientnum, script_id, tag_name, fx_element, min_
   self endon(script_id);
   self endon("death");
 
-  if(!isdefined(min_wait)) {
+  if(!isDefined(min_wait)) {
     playfxontag(localclientnum, fx_element, self, tag_name);
     return;
   }
 
-  if(!isdefined(max_wait))
+  if(!isDefined(max_wait))
     max_wait = min_wait;
 
-  while (true) {
-    if(!isdefined(self)) {
+  while(true) {
+    if(!isDefined(self)) {
       return;
     }
     playfxontag(localclientnum, fx_element, self, tag_name);
@@ -163,7 +158,7 @@ mechz_screen_shake_loop(localclientnum) {
   self endon("disconnect");
   self endon("kill_screen_shake");
 
-  while (true) {
+  while(true) {
     self playrumbleonentity(localclientnum, "mechz_footsteps");
     waitrealtime(0.1);
   }
@@ -180,7 +175,7 @@ mechz_claw_callback(localclientnum, oldval, newval, bnewent, binitialsnap, field
 mechzfootstepcbfunc(localclientnum, pos, surface, notetrack, bone) {
   players = getlocalplayers();
 
-  for (i = 0; i < players.size; i++) {
+  for(i = 0; i < players.size; i++) {
     if(!players[i] isplayer()) {
       continue;
     }
@@ -195,7 +190,7 @@ mechzfootstepcbfunc(localclientnum, pos, surface, notetrack, bone) {
 
         playerlocalclientnum = players[i] getlocalclientnumber();
 
-        if(isdefined(playerlocalclientnum))
+        if(isDefined(playerlocalclientnum))
           playrumbleonposition(playerlocalclientnum, "shotgun_fire", self.origin);
 
         continue;
@@ -209,7 +204,7 @@ mechzfootstepcbfunc(localclientnum, pos, surface, notetrack, bone) {
 
         playerlocalclientnum = players[i] getlocalclientnumber();
 
-        if(isdefined(playerlocalclientnum))
+        if(isDefined(playerlocalclientnum))
           playrumbleonposition(playerlocalclientnum, "mechz_footsteps", self.origin);
       }
     }
@@ -230,11 +225,12 @@ prevent_camshake_stacking() {
 }
 
 registermechzfootstepcb(aitype, func) {
-  if(!isdefined(level._footstepcbfuncs))
+  if(!isDefined(level._footstepcbfuncs))
     level._footstepcbfuncs = [];
 
-  if(isdefined(level._footstepcbfuncs[aitype])) {
+  if(isDefined(level._footstepcbfuncs[aitype])) {
     println("Attempting to register footstep callback function for ai type " + aitype + " multiple times.");
+
     return;
   }
 

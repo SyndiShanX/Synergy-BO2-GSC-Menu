@@ -9,7 +9,6 @@
 #include clientscripts\mp\_fxanim_dlc;
 
 precache_scripted_fx() {
-
 }
 
 precache_createfx_fx() {
@@ -59,7 +58,7 @@ main() {
   precache_fxanim_props_dlc();
   disablefx = getdvarint(#"_id_C9B177D6");
 
-  if(!isdefined(disablefx) || disablefx <= 0)
+  if(!isDefined(disablefx) || disablefx <= 0)
     precache_scripted_fx();
 }
 
@@ -89,7 +88,7 @@ precache_fxanim_props_dlc() {
 fxanim_init(localclientnum) {
   level thread clientscripts\mp\_fxanim_dlc::fxanim_init_dlc(localclientnum);
 
-  for (;;) {
+  for(;;) {
     level waittill("snap_processed", snapshotlocalclientnum);
 
     if(localclientnum == snapshotlocalclientnum) {
@@ -100,13 +99,13 @@ fxanim_init(localclientnum) {
   fxanims = getentarray(localclientnum, "fxanim_level", "targetname");
 
   foreach(fxanim in fxanims) {
-    if(isdefined(fxanim.fxanim_scene_1) && fxanim.fxanim_scene_1 == "blinds_impact")
+    if(isDefined(fxanim.fxanim_scene_1) && fxanim.fxanim_scene_1 == "blinds_impact")
       fxanim thread blind_animate();
   }
 }
 
 blind_animate() {
-  for (;;) {
+  for(;;) {
     level waittill("glass_smash", org);
 
     if(distancesquared(org, self.origin) < 4096) {
@@ -117,7 +116,7 @@ blind_animate() {
   self useanimtree(#animtree);
   self animflaggedscripted("blind", level.scr_anim["fxanim_props_dlc"]["blinds_impact"], 1.0, 0.0, 1.0);
 
-  for (;;) {
+  for(;;) {
     self waittill("blind", note);
 
     if(note == "end") {

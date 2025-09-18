@@ -14,7 +14,7 @@ main() {
   precache_fxanim_props();
   disablefx = getdvarint(#"_id_C9B177D6");
 
-  if(!isdefined(disablefx) || disablefx <= 0)
+  if(!isDefined(disablefx) || disablefx <= 0)
     precache_scripted_fx();
 }
 
@@ -52,7 +52,6 @@ precache_createfx_fx() {
 }
 
 precache_scripted_fx() {
-
 }
 
 #using_animtree("fxanim_props");
@@ -70,7 +69,7 @@ precache_fxanim_props() {
 }
 
 fxanim_init(localclientnum) {
-  for (;;) {
+  for(;;) {
     level waittill("snap_processed", snapshotlocalclientnum);
 
     if(snapshotlocalclientnum == localclientnum) {
@@ -81,7 +80,7 @@ fxanim_init(localclientnum) {
   fxanims = getentarray(localclientnum, "fxanim", "targetname");
 
   foreach(ent in fxanims) {
-    if(isdefined(ent.model) && ent.model == "fxanim_mp_nuked2025_sprinkler_mod") {
+    if(isDefined(ent.model) && ent.model == "fxanim_mp_nuked2025_sprinkler_mod") {
       ent waittill_dobj(localclientnum);
       ent playloopsound("amb_track_sprinkler");
     }

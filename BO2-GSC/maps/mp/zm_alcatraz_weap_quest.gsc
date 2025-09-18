@@ -32,13 +32,13 @@ init() {
   onplayerconnect_callback(::hellhole_tomahawk_watch);
   level.a_wolf_structs = getstructarray("wolf_position", "targetname");
 
-  for (i = 0; i < level.a_wolf_structs.size; i++) {
+  for(i = 0; i < level.a_wolf_structs.size; i++) {
     registerclientfield("world", level.a_wolf_structs[i].script_parameters, 9000, 3, "int");
     level.soul_catchers[i] = level.a_wolf_structs[i];
     level.soul_catchers_vol[i] = getent(level.a_wolf_structs[i].target, "targetname");
   }
 
-  for (i = 0; i < level.soul_catchers.size; i++) {
+  for(i = 0; i < level.soul_catchers.size; i++) {
     level.soul_catchers[i].souls_received = 0;
     level.soul_catchers[i].is_eating = 0;
     level.soul_catchers[i] thread soul_catcher_check();
@@ -105,14 +105,14 @@ soul_catcher_state_manager() {
     trigger show();
   }
 
-  if(isdefined(level.soul_catcher_clip[self.script_noteworthy]))
+  if(isDefined(level.soul_catcher_clip[self.script_noteworthy]))
     level.soul_catcher_clip[self.script_noteworthy] setvisibletoall();
 
   level setclientfield(self.script_parameters, 1);
   anim_length = getanimlength( % o_zombie_dreamcatcher_intro);
   wait(anim_length);
 
-  while (!self.is_charged) {
+  while(!self.is_charged) {
     level setclientfield(self.script_parameters, 2);
     self waittill_either("fully_charged", "finished_eating");
   }
@@ -121,7 +121,7 @@ soul_catcher_state_manager() {
   anim_length = getanimlength( % o_zombie_dreamcatcher_outtro);
   wait(anim_length);
 
-  if(isdefined(level.soul_catcher_clip[self.script_noteworthy]))
+  if(isDefined(level.soul_catcher_clip[self.script_noteworthy]))
     level.soul_catcher_clip[self.script_noteworthy] delete();
 
   if(self.script_noteworthy == "rune_3") {
@@ -138,18 +138,18 @@ soul_catcher_state_manager() {
 grief_soul_catcher_state_manager() {
   wait 1;
 
-  while (true) {
+  while(true) {
     level setclientfield(self.script_parameters, 0);
     self waittill("first_zombie_killed_in_zone");
 
-    if(isdefined(level.soul_catcher_clip[self.script_noteworthy]))
+    if(isDefined(level.soul_catcher_clip[self.script_noteworthy]))
       level.soul_catcher_clip[self.script_noteworthy] setvisibletoall();
 
     level setclientfield(self.script_parameters, 1);
     anim_length = getanimlength( % o_zombie_dreamcatcher_intro);
     wait(anim_length);
 
-    while (!self.is_charged) {
+    while(!self.is_charged) {
       level setclientfield(self.script_parameters, 2);
       self waittill_either("fully_charged", "finished_eating");
     }
@@ -158,7 +158,7 @@ grief_soul_catcher_state_manager() {
     anim_length = getanimlength( % o_zombie_dreamcatcher_outtro);
     wait(anim_length);
 
-    if(isdefined(level.soul_catcher_clip[self.script_noteworthy]))
+    if(isDefined(level.soul_catcher_clip[self.script_noteworthy]))
       level.soul_catcher_clip[self.script_noteworthy] delete();
 
     self.souls_received = 0;
@@ -169,13 +169,13 @@ grief_soul_catcher_state_manager() {
 }
 
 wolf_spit_out_powerup() {
-  if(!(isdefined(level.enable_magic) && level.enable_magic)) {
+  if(!(isDefined(level.enable_magic) && level.enable_magic)) {
     return;
   }
   power_origin_struct = getstruct("wolf_puke_powerup_origin", "targetname");
 
   if(randomint(100) < 20) {
-    for (i = 0; i < level.zombie_powerup_array.size; i++) {
+    for(i = 0; i < level.zombie_powerup_array.size; i++) {
       if(level.zombie_powerup_array[i] == "meat_stink") {
         level.zombie_powerup_index = i;
         found = 1;
@@ -183,7 +183,7 @@ wolf_spit_out_powerup() {
       }
     }
   } else {
-    while (true) {
+    while(true) {
       level.zombie_powerup_index = randomint(level.zombie_powerup_array.size);
 
       if(level.zombie_powerup_array[level.zombie_powerup_index] == "nuke") {
@@ -198,7 +198,7 @@ wolf_spit_out_powerup() {
   spawn_infinite_powerup_drop(power_origin_struct.origin, level.zombie_powerup_array[level.zombie_powerup_index]);
   power_ups = get_array_of_closest(power_origin_struct.origin, level.active_powerups, undefined, undefined, 100);
 
-  if(isdefined(power_ups[0]))
+  if(isDefined(power_ups[0]))
     power_ups[0] movez(120, 4);
 }
 
@@ -211,7 +211,7 @@ zombie_killed_override(einflictor, attacker, idamage, smeansofdeath, sweapon, vd
     return;
   }
   if(isplayer(attacker)) {
-    for (i = 0; i < level.soul_catchers.size; i++) {
+    for(i = 0; i < level.soul_catchers.size; i++) {
       if(self istouching(level.soul_catchers_vol[i])) {
         if(!level.soul_catchers[i].is_charged) {
           self.deathfunction = ::zombie_soul_catcher_death;
@@ -223,7 +223,7 @@ zombie_killed_override(einflictor, attacker, idamage, smeansofdeath, sweapon, vd
 }
 
 check_for_zombie_in_wolf_area() {
-  for (i = 0; i < level.soul_catchers.size; i++) {
+  for(i = 0; i < level.soul_catchers.size; i++) {
     if(self istouching(level.soul_catchers_vol[i])) {
       if(!level.soul_catchers[i].is_charged && !level.soul_catchers[i].is_eating)
         return true;
@@ -236,7 +236,7 @@ check_for_zombie_in_wolf_area() {
 zombie_soul_catcher_death() {
   self thread maps\mp\zombies\_zm_spawner::zombie_death_animscript();
 
-  if(isdefined(self._race_team))
+  if(isDefined(self._race_team))
     team = self._race_team;
 
   level maps\mp\zombies\_zm_spawner::zombie_death_points(self.origin, self.damagemod, self.damagelocation, self.attacker, self, team);
@@ -285,7 +285,7 @@ zombie_soul_catcher_death() {
 get_correct_model_array() {
   mod = 0;
 
-  if(self.model == "c_zom_guard_body" && isdefined(self.hatmodel) && self.hatmodel == "c_zom_guard_hat")
+  if(self.model == "c_zom_guard_body" && isDefined(self.hatmodel) && self.hatmodel == "c_zom_guard_hat")
     mod = 4;
 
   if(self.headmodel == "c_zom_zombie_barbwire_head")
@@ -328,7 +328,7 @@ which_eating_anim() {
 soul_catcher_check() {
   self.is_charged = 0;
 
-  while (true) {
+  while(true) {
     if(self.souls_received >= 6) {
       level.soul_catchers_charged++;
       level thread maps\mp\zombies\_zm_audio::sndmusicstingerevent("tomahawk_" + level.soul_catchers_charged);
@@ -354,7 +354,7 @@ wolf_head_removal(wolf_head_model_string) {
 }
 
 soul_catchers_charged() {
-  while (true) {
+  while(true) {
     if(level.soul_catchers_charged >= level.soul_catchers.size) {
       flag_set("soul_catchers_charged");
       level notify("soul_catchers_charged");
@@ -373,8 +373,8 @@ first_wolf_encounter_vo() {
   a_players = getplayers();
   a_closest = get_array_of_closest(self.origin, a_players);
 
-  for (i = 0; i < a_closest.size; i++) {
-    if(!(isdefined(a_closest[i].dontspeak) && a_closest[i].dontspeak)) {
+  for(i = 0; i < a_closest.size; i++) {
+    if(!(isDefined(a_closest[i].dontspeak) && a_closest[i].dontspeak)) {
       a_closest[i] thread do_player_general_vox("general", "wolf_encounter");
       level.wolf_encounter_vo_played = 1;
       break;
@@ -390,8 +390,8 @@ first_wolf_complete_vo() {
   a_players = getplayers();
   a_closest = get_array_of_closest(self.origin, a_players);
 
-  for (i = 0; i < a_closest.size; i++) {
-    if(!(isdefined(a_closest[i].dontspeak) && a_closest[i].dontspeak)) {
+  for(i = 0; i < a_closest.size; i++) {
+    if(!(isDefined(a_closest[i].dontspeak) && a_closest[i].dontspeak)) {
       a_closest[i] thread do_player_general_vox("general", "wolf_complete");
       break;
     }
@@ -406,8 +406,8 @@ final_wolf_complete_vo() {
   a_players = getplayers();
   a_closest = get_array_of_closest(self.origin, a_players);
 
-  for (i = 0; i < a_closest.size; i++) {
-    if(!(isdefined(a_closest[i].dontspeak) && a_closest[i].dontspeak)) {
+  for(i = 0; i < a_closest.size; i++) {
+    if(!(isDefined(a_closest[i].dontspeak) && a_closest[i].dontspeak)) {
       a_closest[i] thread do_player_general_vox("general", "wolf_final");
       break;
     }
@@ -415,13 +415,13 @@ final_wolf_complete_vo() {
 }
 
 tomahawk_upgrade_quest() {
-  if(isdefined(level.gamedifficulty) && level.gamedifficulty == 0) {
+  if(isDefined(level.gamedifficulty) && level.gamedifficulty == 0) {
     return;
   }
   self endon("disconnect");
   self.tomahawk_upgrade_kills = 0;
 
-  while (self.tomahawk_upgrade_kills < 15) {
+  while(self.tomahawk_upgrade_kills < 15) {
     self waittill("got_a_tomahawk_kill");
     self.tomahawk_upgrade_kills++;
   }
@@ -433,12 +433,12 @@ tomahawk_upgrade_quest() {
   e_org waittill("easteregg_scream_complete");
   e_org delete();
 
-  while (level.round_number < 10)
+  while(level.round_number < 10)
     wait 0.5;
 
   self ent_flag_init("gg_round_done");
 
-  while (!self ent_flag("gg_round_done")) {
+  while(!self ent_flag("gg_round_done")) {
     level waittill("between_round_over");
     self.killed_with_only_tomahawk = 1;
     self.killed_something_thq = 0;
@@ -465,7 +465,7 @@ tomahawk_upgrade_quest() {
   self notify("hellhole_time");
   self waittill("tomahawk_in_hellhole");
 
-  if(isdefined(self.retriever_trigger))
+  if(isDefined(self.retriever_trigger))
     self.retriever_trigger setinvisibletoplayer(self);
   else {
     trigger = getent("retriever_pickup_trigger", "script_noteworthy");
@@ -494,15 +494,15 @@ toggle_redeemer_trigger() {
   upgraded_tomahawk_trigger setinvisibletoplayer(self);
   tomahawk_model = getent("spinning_tomahawk_pickup", "targetname");
 
-  while (true) {
-    if(isdefined(self.current_tomahawk_weapon) && self.current_tomahawk_weapon == "upgraded_tomahawk_zm") {
+  while(true) {
+    if(isDefined(self.current_tomahawk_weapon) && self.current_tomahawk_weapon == "upgraded_tomahawk_zm") {
       break;
     } else
       wait 1;
   }
 
-  while (true) {
-    if(isdefined(self.afterlife) && self.afterlife) {
+  while(true) {
+    if(isDefined(self.afterlife) && self.afterlife) {
       upgraded_tomahawk_trigger setvisibletoplayer(self);
       tomahawk_model setvisibletoplayer(self);
     } else {
@@ -517,7 +517,7 @@ toggle_redeemer_trigger() {
 hellhole_projectile_watch() {
   self endon("disconnect");
 
-  while (true) {
+  while(true) {
     self waittill("grenade_fire", grenade, weapname);
 
     if(weapname == "frag_grenade_zm")
@@ -529,7 +529,7 @@ hellhole_tomahawk_watch() {
   self endon("disconnect");
   self waittill("hellhole_time");
 
-  while (true) {
+  while(true) {
     self waittill("grenade_fire", grenade, weapname);
 
     if(weapname == "bouncing_tomahawk_zm")
@@ -541,7 +541,7 @@ hellhole_grenades(grenade) {
   grenade endon("death");
   trig_hellhole = getent("trig_cellblock_hellhole", "targetname");
 
-  while (!grenade istouching(trig_hellhole))
+  while(!grenade istouching(trig_hellhole))
     wait 0.05;
 
   self maps\mp\zombies\_zm_score::add_to_player_score(20);
@@ -554,7 +554,7 @@ hellhole_tomahawk(grenade) {
   grenade endon("death");
   trig_hellhole = getent("trig_cellblock_hellhole", "targetname");
 
-  while (!grenade istouching(trig_hellhole))
+  while(!grenade istouching(trig_hellhole))
     wait 0.05;
 
   self notify("tomahawk_in_hellhole");
@@ -565,7 +565,7 @@ hellhole_tomahawk(grenade) {
 }
 
 spawn_infinite_powerup_drop(v_origin, str_type) {
-  if(isdefined(str_type))
+  if(isDefined(str_type))
     intro_powerup = maps\mp\zombies\_zm_powerups::specific_powerup_drop(str_type, v_origin);
   else
     intro_powerup = maps\mp\zombies\_zm_powerups::powerup_drop(v_origin);

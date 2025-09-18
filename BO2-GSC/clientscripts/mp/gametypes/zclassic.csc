@@ -6,6 +6,7 @@
 main() {
   level._zombie_gamemodeprecache = ::onprecachegametype;
   level._zombie_gamemodemain = ::onstartgametype;
+
   println("************ ZCLASSIC MAIN");
 }
 

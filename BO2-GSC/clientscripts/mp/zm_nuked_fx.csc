@@ -8,7 +8,6 @@
 #include clientscripts\mp\_fx;
 
 precache_util_fx() {
-
 }
 
 precache_scripted_fx() {
@@ -139,7 +138,7 @@ fxanim_think(localclientnum) {
   ent = spawn(0, sound_origin, "script_origin");
   ent linkto(self, "dervish_jnt");
 
-  for (;;) {
+  for(;;) {
     wait_time = randomfloatrange(15, 30);
     wait(wait_time);
     self setanimrestart(level.nuked_fxanims["fxanim_mp_dustdevil_anim"], 1.0, 0.0, 1.0);
@@ -172,17 +171,17 @@ fxanim_props_think(localclientnum) {
   self endon("delete");
   wait 3;
 
-  if(isdefined(self.fxanim_wait))
+  if(isDefined(self.fxanim_wait))
     wait(self.fxanim_wait);
 
-  if(isdefined(self.fxanim_scene_1) && self.fxanim_scene_1 == "porch") {
+  if(isDefined(self.fxanim_scene_1) && self.fxanim_scene_1 == "porch") {
     wait(randomintrange(5, 10) * 1000);
     playsound(0, "zmb_porch_collapse", self.origin);
   }
 
   self useanimtree(#animtree);
 
-  if(isdefined(level.scr_anim["fxanim_props"][self.fxanim_scene_1])) {
+  if(isDefined(level.scr_anim["fxanim_props"][self.fxanim_scene_1])) {
     if(issubstr(self.fxanim_scene_1, "wire"))
       self thread fxanim_wire_think(localclientnum);
     else
@@ -199,7 +198,7 @@ fxanim_wire_think(localclientnum) {
   wait 2;
   self setflaggedanim("wire_fx", level.scr_anim["fxanim_props"][self.fxanim_scene_1], 1.0, 0.0, 1.0);
 
-  for (;;) {
+  for(;;) {
     wait(randomintrange(4, 5));
 
     if(self.fxanim_scene_1 == "wirespark_long") {
@@ -220,12 +219,12 @@ main() {
   precache_fxanim_props();
   disablefx = getdvarint(#"_id_C9B177D6");
 
-  if(!isdefined(disablefx) || disablefx <= 0)
+  if(!isDefined(disablefx) || disablefx <= 0)
     precache_scripted_fx();
 
   waitforclient(0);
   players = level.localplayers;
 
-  for (i = 0; i < players.size; i++)
+  for(i = 0; i < players.size; i++)
     play_fx_prop_anims(i);
 }

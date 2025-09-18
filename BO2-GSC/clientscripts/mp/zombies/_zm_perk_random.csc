@@ -1,7 +1,7 @@
-/********************************************************
+/***********************************************************
  * Decompiled and Edited by SyndiShanX
  * Script: clientscripts\mp\zombies\_zm_perk_random.csc
-********************************************************/
+***********************************************************/
 
 init() {
   registerclientfield("scriptmover", "perk_bottle_cycle_state", 14000, 2, "int", ::start_bottle_cycling, 0);
@@ -34,13 +34,12 @@ turn_on_location_indicator(localclientnum, oldval, newval, bnewent, binitialsnap
 }
 
 zone_captured_cb(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump) {
-  if(!isdefined(self.mapped_const)) {
+  if(!isDefined(self.mapped_const)) {
     self mapshaderconstant(localclientnum, 1, "ScriptVector0");
     self.mapped_const = 1;
   }
 
   if(newval == 1) {
-
   } else {
     self.artifact_glow_setting = 1;
     self.machinery_glow_setting = 0.0;
@@ -89,7 +88,7 @@ start_vortex_fx(localclientnum) {
   self endon("activation_electricity_finished");
   self endon("entityshutdown");
 
-  if(!isdefined(self.glow_location)) {
+  if(!isDefined(self.glow_location)) {
     self.glow_location = spawn(localclientnum, self.origin, "script_model");
     self.glow_location.angles = self.angles;
     self.glow_location setmodel("tag_origin");
@@ -110,12 +109,12 @@ stop_vortex_fx(localclientnum) {
   wait 0.5;
   soundstoploopemitter("zmb_rand_perk_vortex", self.origin);
 
-  if(!isdefined(self)) {
+  if(!isDefined(self)) {
     return;
   }
   self notify("activation_electricity_finished");
 
-  if(isdefined(self.glow_location))
+  if(isDefined(self.glow_location))
     self.glow_location delete();
 
   self.artifact_glow_setting = 1;
@@ -127,7 +126,7 @@ fx_artifact_pulse_thread(localclientnum) {
   self endon("activation_electricity_finished");
   self endon("entityshutdown");
 
-  while (isdefined(self)) {
+  while(isDefined(self)) {
     shader_amount = sin(getrealtime() * 0.2);
 
     if(shader_amount < 0)
@@ -145,8 +144,8 @@ fx_activation_electric_loop(localclientnum) {
   self endon("activation_electricity_finished");
   self endon("entityshutdown");
 
-  while (true) {
-    if(isdefined(self.glow_location))
+  while(true) {
+    if(isDefined(self.glow_location))
       playfxontag(localclientnum, level._effect["perk_machine_activation_electric_loop"], self.glow_location, "tag_origin");
 
     wait 0.1;
@@ -156,8 +155,8 @@ fx_activation_electric_loop(localclientnum) {
 fx_bottle_cycling(localclientnum) {
   self endon("bottle_cycling_finished");
 
-  while (true) {
-    if(isdefined(self.glow_location))
+  while(true) {
+    if(isDefined(self.glow_location))
       playfxontag(localclientnum, level._effect["bottle_glow"], self.glow_location, "tag_origin");
 
     wait 0.1;
@@ -168,7 +167,7 @@ fx_departure_steam(localclientnum) {
   self endon("departure_steam_finished");
   n_end_time = getrealtime() + 5000;
 
-  while (isdefined(self) && n_end_time > getrealtime()) {
+  while(isDefined(self) && n_end_time > getrealtime()) {
     self._departure_steam = playfxontag(localclientnum, level._effect["perk_machine_steam"], self, "tag_origin");
     wait 0.1;
   }
@@ -179,8 +178,8 @@ fx_location_indicator(localclientnum) {
   self endon("entityshutdown");
   level endon("demo_jump");
 
-  while (isdefined(self)) {
-    if(isdefined(self))
+  while(isDefined(self)) {
+    if(isDefined(self))
       self._location_indicator = playfx(localclientnum, level._effect["perk_machine_location"], self.origin);
 
     wait(randomfloatrange(3.0, 4.0));

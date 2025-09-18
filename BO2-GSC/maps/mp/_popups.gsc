@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\_popups.gsc
-***************************************/
+**************************************/
 
 #include maps\mp\_utility;
 #include common_scripts\utility;
@@ -54,12 +54,14 @@ init() {
   precachestring(&"MP_EXPLOSIVES_PLANTED_BY");
   precachestring(&"MP_HQ_DESTROYED_BY");
   precachestring(&"KILLSTREAK_DESTROYED_HELICOPTER");
+
   level thread popupsfromconsole();
+
   level thread onplayerconnect();
 }
 
 popupsfromconsole() {
-  while (true) {
+  while(true) {
     timeout = getdvarintdefault("scr_popuptime", 1.0);
 
     if(timeout == 0)
@@ -76,30 +78,30 @@ popupsfromconsole() {
     teammsg = getdvarintdefault("scr_teamslideout", 0);
     challengeindex = getdvarintdefault("scr_challengeIndex", 1);
 
-    for (i = 0; i < medal; i++)
+    for(i = 0; i < medal; i++)
       level.players[0] maps\mp\_medals::codecallback_medal(4);
 
-    for (i = 0; i < challenge; i++) {
+    for(i = 0; i < challenge; i++) {
       level.players[0] maps\mp\gametypes\_persistence::codecallback_challengecomplete(2500, 1, 84, 3, 0, 0, 851);
       level.players[0] maps\mp\gametypes\_persistence::codecallback_challengecomplete(500, 1, 22, 2, 0, 0, 533);
     }
 
-    for (i = 0; i < rank; i++)
+    for(i = 0; i < rank; i++)
       level.players[0] maps\mp\gametypes\_rank::codecallback_rankup(4, 0, 0);
 
-    for (i = 0; i < gun; i++)
+    for(i = 0; i < gun; i++)
       level.players[0] maps\mp\gametypes\_persistence::codecallback_gunchallengecomplete(0, 20, 25, 0);
 
-    for (i = 0; i < contractpass; i++)
+    for(i = 0; i < contractpass; i++)
       level.players[0] maps\mp\gametypes\_persistence::addcontracttoqueue(12, 1);
 
-    for (i = 0; i < contractfail; i++)
+    for(i = 0; i < contractfail; i++)
       level.players[0] maps\mp\gametypes\_persistence::addcontracttoqueue(12, 0);
 
-    for (i = 0; i < teammsg; i++) {
+    for(i = 0; i < teammsg; i++) {
       player = level.players[0];
 
-      if(isdefined(level.players[1]))
+      if(isDefined(level.players[1]))
         player = level.players[1];
 
       level.players[0] displayteammessagetoall(&"KILLSTREAK_DESTROYED_HELICOPTER", player);
@@ -133,13 +135,14 @@ popupsfromconsole() {
         setdvar("scr_teamslideout", 0);
     }
   }
+
 }
 
 displaykillstreakteammessagetoall(killstreak, player) {
-  if(!isdefined(level.killstreaks[killstreak])) {
+  if(!isDefined(level.killstreaks[killstreak])) {
     return;
   }
-  if(!isdefined(level.killstreaks[killstreak].inboundtext)) {
+  if(!isDefined(level.killstreaks[killstreak].inboundtext)) {
     return;
   }
   message = level.killstreaks[killstreak].inboundtext;
@@ -157,7 +160,7 @@ displayteammessagetoall(message, player) {
   if(!shoulddisplayteammessages()) {
     return;
   }
-  for (i = 0; i < level.players.size; i++) {
+  for(i = 0; i < level.players.size; i++) {
     cur_player = level.players[i];
 
     if(cur_player isempjammed()) {
@@ -179,7 +182,7 @@ displayteammessagetoteam(message, player, team) {
   if(!shoulddisplayteammessages()) {
     return;
   }
-  for (i = 0; i < level.players.size; i++) {
+  for(i = 0; i < level.players.size; i++) {
     cur_player = level.players[i];
 
     if(cur_player.team != team) {
@@ -208,7 +211,7 @@ displayteammessagewaiter() {
   level endon("game_ended");
   self.teammessagequeue = [];
 
-  for (;;) {
+  for(;;) {
     if(self.teammessagequeue.size == 0)
       self waittill("received teammessage");
 
@@ -216,7 +219,7 @@ displayteammessagewaiter() {
       nextnotifydata = self.teammessagequeue[0];
       arrayremoveindex(self.teammessagequeue, 0, 0);
 
-      if(!isdefined(nextnotifydata.player) || !isplayer(nextnotifydata.player)) {
+      if(!isDefined(nextnotifydata.player) || !isplayer(nextnotifydata.player)) {
         continue;
       }
       if(self isempjammed()) {
@@ -233,17 +236,17 @@ displaypopupswaiter() {
   self endon("disconnect");
   self.ranknotifyqueue = [];
 
-  if(!isdefined(self.pers["challengeNotifyQueue"]))
+  if(!isDefined(self.pers["challengeNotifyQueue"]))
     self.pers["challengeNotifyQueue"] = [];
 
-  if(!isdefined(self.pers["contractNotifyQueue"]))
+  if(!isDefined(self.pers["contractNotifyQueue"]))
     self.pers["contractNotifyQueue"] = [];
 
   self.messagenotifyqueue = [];
   self.startmessagenotifyqueue = [];
   self.wagernotifyqueue = [];
 
-  while (!level.gameended) {
+  while(!level.gameended) {
     if(self.startmessagenotifyqueue.size == 0 && self.messagenotifyqueue.size == 0)
       self waittill("received award");
 
@@ -257,7 +260,7 @@ displaypopupswaiter() {
       nextnotifydata = self.startmessagenotifyqueue[0];
       arrayremoveindex(self.startmessagenotifyqueue, 0, 0);
 
-      if(isdefined(nextnotifydata.duration))
+      if(isDefined(nextnotifydata.duration))
         duration = nextnotifydata.duration;
       else
         duration = level.startmessagedefaultduration;
@@ -268,7 +271,7 @@ displaypopupswaiter() {
       nextnotifydata = self.messagenotifyqueue[0];
       arrayremoveindex(self.messagenotifyqueue, 0, 0);
 
-      if(isdefined(nextnotifydata.duration))
+      if(isDefined(nextnotifydata.duration))
         duration = nextnotifydata.duration;
       else
         duration = level.regulargamemessages.waittime;
@@ -280,7 +283,7 @@ displaypopupswaiter() {
 }
 
 onplayerconnect() {
-  for (;;) {
+  for(;;) {
     level waittill("connecting", player);
     player.resetgameoverhudrequired = 0;
     player thread displaypopupswaiter();
@@ -293,7 +296,7 @@ onplayerconnect() {
 milestonenotify(index, itemindex, type, tier) {
   level.globalchallenges++;
 
-  if(!isdefined(type))
+  if(!isDefined(type))
     type = "global";
 
   size = self.pers["challengeNotifyQueue"].size;

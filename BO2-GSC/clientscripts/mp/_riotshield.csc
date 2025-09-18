@@ -51,7 +51,7 @@ riotshield_deploy_anim(localclientnum, instant) {
 watch_riotshield_damage() {
   self endon("entityshutdown");
 
-  while (true) {
+  while(true) {
     self waittill("damage", damage_loc, damage_type);
     self useanimtree(#animtree);
 
@@ -65,7 +65,7 @@ watch_riotshield_damage() {
 riotshield_destroy_anim(localclientnum) {
   self endon("entityshutdown");
 
-  if(isdefined(self.shieldlightfx))
+  if(isDefined(self.shieldlightfx))
     stopfx(localclientnum, self.shieldlightfx);
 
   wait 0.05;

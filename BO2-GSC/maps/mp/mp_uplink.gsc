@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\mp_uplink.gsc
-***************************************/
+**************************************/
 
 #include common_scripts\utility;
 #include maps\mp\_utility;
@@ -54,7 +54,7 @@ main() {
   level thread gondola_sway();
   glasses = getstructarray("glass_shatter_on_spawn", "targetname");
 
-  for (i = 0; i < glasses.size; i++)
+  for(i = 0; i < glasses.size; i++)
     radiusdamage(glasses[i].origin, 64, 101, 100);
 }
 
@@ -68,7 +68,7 @@ gondola_sway() {
   gondola_cab = getent("gondola_cab", "targetname");
   gondola_cab setmovingplatformenabled(1);
 
-  while (true) {
+  while(true) {
     randomswingangle = randomfloatrange(0.25, 0.5);
     randomswingtime = randomfloatrange(2.5, 4.0);
     gondola_cab rotateto((randomswingangle * 0.5, randomswingangle * 0.6, randomswingangle * 0.8), randomswingtime, randomswingtime * 0.3, randomswingtime * 0.3);
@@ -85,7 +85,7 @@ destroy_corpses() {
   time = gettime();
   corpses = getcorpsearray();
 
-  for (i = 0; i < corpses.size; i++) {
+  for(i = 0; i < corpses.size; i++) {
     if(corpses[i].birthtime + 3000 < time) {
       if(distance2dsquared(corpses[i].origin, self.origin) < 10000)
         corpses[i] delete();

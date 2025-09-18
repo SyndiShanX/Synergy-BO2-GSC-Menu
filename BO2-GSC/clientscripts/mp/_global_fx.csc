@@ -151,7 +151,7 @@ wind_initial_setting() {
 global_fx(targetname, fxname, fxfile, delay, soundalias) {
   ents = getstructarray(targetname, "targetname");
 
-  if(!isdefined(ents)) {
+  if(!isDefined(ents)) {
     return;
   }
   if(ents.size <= 0) {
@@ -160,15 +160,15 @@ global_fx(targetname, fxname, fxfile, delay, soundalias) {
   if(getdvarint(#"_id_113D4769") > 0)
     println("*** Client : _global_FX - creating " + ents.size + " globalFX " + fxname);
 
-  for (i = 0; i < ents.size; i++) {
+  for(i = 0; i < ents.size; i++) {
     ent = ents[i] global_fx_create(fxname, fxfile, delay, soundalias);
 
-    if(!isdefined(ents[i].script_noteworthy)) {
+    if(!isDefined(ents[i].script_noteworthy)) {
       continue;
     }
     note = ents[i].script_noteworthy;
 
-    if(!isdefined(level._global_fx_ents[note]))
+    if(!isDefined(level._global_fx_ents[note]))
       level._global_fx_ents[note] = [];
 
     level._global_fx_ents[note][level._global_fx_ents[note].size] = ent;
@@ -176,13 +176,13 @@ global_fx(targetname, fxname, fxfile, delay, soundalias) {
 }
 
 global_fx_create(fxname, fxfile, delay, soundalias) {
-  if(!isdefined(level._effect))
+  if(!isDefined(level._effect))
     level._effect = [];
 
-  if(!isdefined(level._effect[fxname]))
+  if(!isDefined(level._effect[fxname]))
     level._effect[fxname] = loadfx(fxfile);
 
-  if(!isdefined(self.angles))
+  if(!isDefined(self.angles))
     self.angles = (0, 0, 0);
 
   ent = clientscripts\mp\_fx::createoneshoteffect(fxname);
@@ -191,7 +191,7 @@ global_fx_create(fxname, fxfile, delay, soundalias) {
   ent.v["fxid"] = fxname;
   ent.v["delay"] = delay;
 
-  if(isdefined(soundalias))
+  if(isDefined(soundalias))
     ent.v["soundalias"] = soundalias;
 
   return ent;

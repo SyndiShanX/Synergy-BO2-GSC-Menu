@@ -137,13 +137,13 @@ createrule(rule, maxallowable, maxallowableperteam) {
 }
 
 addkillstreaktorule(hardpointtype, rule, counttowards, checkagainst) {
-  if(!isdefined(level.killstreaktype[hardpointtype]))
+  if(!isDefined(level.killstreaktype[hardpointtype]))
     level.killstreaktype[hardpointtype] = [];
 
   keys = getarraykeys(level.killstreaktype[hardpointtype]);
-  assert(isdefined(level.killstreakrules[rule]));
+  assert(isDefined(level.killstreakrules[rule]));
 
-  if(!isdefined(level.killstreaktype[hardpointtype][rule]))
+  if(!isDefined(level.killstreaktype[hardpointtype][rule]))
     level.killstreaktype[hardpointtype][rule] = spawnstruct();
 
   level.killstreaktype[hardpointtype][rule].counts = counttowards;
@@ -151,21 +151,21 @@ addkillstreaktorule(hardpointtype, rule, counttowards, checkagainst) {
 }
 
 killstreakstart(hardpointtype, team, hacked, displayteammessage) {
-  assert(isdefined(team), "team needs to be defined");
+  assert(isDefined(team), "team needs to be defined");
 
   if(self iskillstreakallowed(hardpointtype, team) == 0)
     return -1;
 
-  assert(isdefined(hardpointtype));
+  assert(isDefined(hardpointtype));
 
-  if(!isdefined(hacked))
+  if(!isDefined(hacked))
     hacked = 0;
 
-  if(!isdefined(displayteammessage))
+  if(!isDefined(displayteammessage))
     displayteammessage = 1;
 
   if(displayteammessage == 1) {
-    if(isdefined(level.killstreaks[hardpointtype]) && isdefined(level.killstreaks[hardpointtype].inboundtext) && !hacked)
+    if(isDefined(level.killstreaks[hardpointtype]) && isDefined(level.killstreaks[hardpointtype].inboundtext) && !hacked)
       level thread maps\mp\_popups::displaykillstreakteammessagetoall(hardpointtype, self);
   }
 
@@ -175,11 +175,11 @@ killstreakstart(hardpointtype, team, hacked, displayteammessage) {
     if(!level.killstreaktype[hardpointtype][key].counts) {
       continue;
     }
-    assert(isdefined(level.killstreakrules[key]));
+    assert(isDefined(level.killstreakrules[key]));
     level.killstreakrules[key].cur++;
 
     if(level.teambased) {
-      if(!isdefined(level.killstreakrules[key].curteam[team]))
+      if(!isDefined(level.killstreakrules[key].curteam[team]))
         level.killstreakrules[key].curteam[team] = 0;
 
       level.killstreakrules[key].curteam[team]++;
@@ -196,33 +196,37 @@ killstreakstart(hardpointtype, team, hacked, displayteammessage) {
   killstreak_data["type"] = hardpointtype;
   killstreak_data["endtime"] = 0;
   level.killstreaks_triggered[killstreak_id] = killstreak_data;
+
   killstreak_debug_text("Started killstreak: " + hardpointtype + " for team: " + team + " id: " + killstreak_id);
+
   return killstreak_id;
 }
 
 killstreakstop(hardpointtype, team, id) {
-  assert(isdefined(team), "team needs to be defined");
-  assert(isdefined(hardpointtype));
+  assert(isDefined(team), "team needs to be defined");
+  assert(isDefined(hardpointtype));
+
   killstreak_debug_text("Stopped killstreak: " + hardpointtype + " for team: " + team + " id: " + id);
+
   keys = getarraykeys(level.killstreaktype[hardpointtype]);
 
   foreach(key in keys) {
     if(!level.killstreaktype[hardpointtype][key].counts) {
       continue;
     }
-    assert(isdefined(level.killstreakrules[key]));
+    assert(isDefined(level.killstreakrules[key]));
     level.killstreakrules[key].cur--;
     assert(level.killstreakrules[key].cur >= 0);
 
     if(level.teambased) {
-      assert(isdefined(team));
-      assert(isdefined(level.killstreakrules[key].curteam[team]));
+      assert(isDefined(team));
+      assert(isDefined(level.killstreakrules[key].curteam[team]));
       level.killstreakrules[key].curteam[team]--;
       assert(level.killstreakrules[key].curteam[team] >= 0);
     }
   }
 
-  if(!isdefined(id) || id == -1) {
+  if(!isDefined(id) || id == -1) {
     killstreak_debug_text("WARNING! Invalid killstreak id detected for " + hardpointtype);
     bbprint("mpkillstreakuses", "starttime %d endtime %d name %s team %s", 0, gettime(), hardpointtype, team);
     return;
@@ -232,11 +236,11 @@ killstreakstop(hardpointtype, team, id) {
   bbprint("mpkillstreakuses", "starttime %d endtime %d spawnid %d name %s team %s", level.killstreaks_triggered[id]["starttime"], level.killstreaks_triggered[id]["endtime"], level.killstreaks_triggered[id]["spawnid"], hardpointtype, team);
   level.killstreaks_triggered[id] = undefined;
 
-  if(isdefined(level.killstreaks[hardpointtype].menuname)) {
+  if(isDefined(level.killstreaks[hardpointtype].menuname)) {
     recordstreakindex = level.killstreakindices[level.killstreaks[hardpointtype].menuname];
 
-    if(isdefined(recordstreakindex)) {
-      if(isdefined(self.owner))
+    if(isDefined(recordstreakindex)) {
+      if(isDefined(self.owner))
         self.owner recordkillstreakendevent(recordstreakindex);
       else if(isplayer(self))
         self recordkillstreakendevent(recordstreakindex);
@@ -245,8 +249,8 @@ killstreakstop(hardpointtype, team, id) {
 }
 
 iskillstreakallowed(hardpointtype, team) {
-  assert(isdefined(team), "team needs to be defined");
-  assert(isdefined(hardpointtype));
+  assert(isDefined(team), "team needs to be defined");
+  assert(isDefined(hardpointtype));
   isallowed = 1;
   keys = getarraykeys(level.killstreaktype[hardpointtype]);
 
@@ -257,34 +261,39 @@ iskillstreakallowed(hardpointtype, team) {
     if(level.killstreakrules[key].max != 0) {
       if(level.killstreakrules[key].cur >= level.killstreakrules[key].max) {
         killstreak_debug_text("Exceeded " + key + " overall");
+
         isallowed = 0;
         break;
       }
     }
 
     if(level.teambased && level.killstreakrules[key].maxperteam != 0) {
-      if(!isdefined(level.killstreakrules[key].curteam[team]))
+      if(!isDefined(level.killstreakrules[key].curteam[team]))
         level.killstreakrules[key].curteam[team] = 0;
 
       if(level.killstreakrules[key].curteam[team] >= level.killstreakrules[key].maxperteam) {
         isallowed = 0;
+
         killstreak_debug_text("Exceeded " + key + " team");
+
         break;
       }
     }
   }
 
-  if(isdefined(self.laststand) && self.laststand) {
+  if(isDefined(self.laststand) && self.laststand) {
     killstreak_debug_text("In LastStand");
+
     isallowed = 0;
   }
 
   if(self isempjammed()) {
     killstreak_debug_text("EMP active");
+
     isallowed = 0;
 
     if(self maps\mp\killstreaks\_emp::isenemyempkillstreakactive()) {
-      if(isdefined(level.empendtime)) {
+      if(isDefined(level.empendtime)) {
         secondsleft = int((level.empendtime - gettime()) / 1000);
 
         if(secondsleft > 0) {
@@ -296,7 +305,7 @@ iskillstreakallowed(hardpointtype, team) {
   }
 
   if(isallowed == 0) {
-    if(isdefined(level.killstreaks[hardpointtype]) && isdefined(level.killstreaks[hardpointtype].notavailabletext)) {
+    if(isDefined(level.killstreaks[hardpointtype]) && isDefined(level.killstreaks[hardpointtype].notavailabletext)) {
       self iprintlnbold(level.killstreaks[hardpointtype].notavailabletext);
 
       if(hardpointtype == "helicopter_comlink_mp" || hardpointtype == "helicopter_guard_mp" || hardpointtype == "helicopter_player_gunner_mp" || hardpointtype == "remote_mortar_mp" || hardpointtype == "inventory_supply_drop_mp" || hardpointtype == "supply_drop_mp" || hardpointtype == "straferun_mp") {
@@ -313,10 +322,11 @@ iskillstreakallowed(hardpointtype, team) {
 killstreak_debug_text(text) {
   level.killstreak_rule_debug = getdvarintdefault("scr_killstreak_rule_debug", 0);
 
-  if(isdefined(level.killstreak_rule_debug)) {
+  if(isDefined(level.killstreak_rule_debug)) {
     if(level.killstreak_rule_debug == 1.0)
       iprintln("KSR: " + text + "\\n");
     else if(level.killstreak_rule_debug == 2.0)
       iprintlnbold("KSR: " + text);
   }
+
 }

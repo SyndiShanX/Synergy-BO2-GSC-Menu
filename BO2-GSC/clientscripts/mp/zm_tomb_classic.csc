@@ -8,15 +8,7 @@
 #include clientscripts\mp\zombies\_zm_utility;
 #include clientscripts\mp\zm_tomb_craftables;
 
-precache() {
-
-}
-
 premain() {
   clientscripts\mp\zm_tomb_craftables::include_craftables();
   clientscripts\mp\zm_tomb_craftables::init_craftables();
-}
-
-main() {
-
 }

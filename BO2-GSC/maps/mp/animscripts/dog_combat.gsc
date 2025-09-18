@@ -11,17 +11,18 @@ main() {
   debug_anim_print("dog_combat::main() ");
   self endon("killanimscript");
   self setaimanimweights(0, 0);
+
   if(!debug_allow_combat()) {
     combatidle();
     return;
   }
 
-  if(isdefined(level.hostmigrationtimer)) {
+  if(isDefined(level.hostmigrationtimer)) {
     combatidle();
     return;
   }
 
-  assert(isdefined(self.enemy));
+  assert(isDefined(self.enemy));
 
   if(!isalive(self.enemy)) {
     combatidle();

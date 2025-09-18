@@ -1,7 +1,7 @@
-/*******************************************************
+/*********************************************************
  * Decompiled and Edited by SyndiShanX
  * Script: aitype\clientscripts\zm_buried_basic_03.csc
-*******************************************************/
+*********************************************************/
 
 #include character\clientscripts\c_zom_zombie_buried_saloongirl1;
 #include character\clientscripts\c_zom_zombie_buried_saloongirl2;

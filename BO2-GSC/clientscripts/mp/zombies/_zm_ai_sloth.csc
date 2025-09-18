@@ -6,10 +6,6 @@
 #include clientscripts\mp\_utility;
 #include clientscripts\mp\zombies\_zm_utility;
 
-precache() {
-
-}
-
 init() {
   register_sloth_client_fields();
   level._effect["fx_zmb_taser_vomit"] = loadfx("maps/zombie/fx_zmb_taser_vomit");
@@ -41,13 +37,13 @@ sloth_ragdoll_zombie_cb(localclientnum, oldval, newval, bnewent, binitialsnap, f
   p = level.sloth_beserk_origin;
   force_mul = 1;
 
-  if(!isdefined(p)) {
-    if(isdefined(level._sloth_actor[localclientnum])) {
+  if(!isDefined(p)) {
+    if(isDefined(level._sloth_actor[localclientnum])) {
       p = level._sloth_actor[localclientnum].origin;
       force_mul = 1.5;
     }
 
-    if(!isdefined(p))
+    if(!isDefined(p))
       return;
   }
 
@@ -87,13 +83,13 @@ loop_buildable_fx(localclientnum) {
   closest_dist = undefined;
   closest = getent(localclientnum, level.benches[0], "targetname");
 
-  if(isdefined(closest))
+  if(isDefined(closest))
     closest_dist = distancesquared(self.origin, closest.origin);
 
-  for (i = 1; i < level.benches.size; i++) {
+  for(i = 1; i < level.benches.size; i++) {
     bench = getent(localclientnum, level.benches[i], "targetname");
 
-    if(isdefined(bench)) {
+    if(isDefined(bench)) {
       dist = distancesquared(self.origin, bench.origin);
 
       if(dist < closest_dist) {
@@ -103,7 +99,7 @@ loop_buildable_fx(localclientnum) {
     }
   }
 
-  while (true) {
+  while(true) {
     playfx(localclientnum, level._effect["fx_buried_sloth_building"], closest, "tag_origin");
     wait 0.25;
   }

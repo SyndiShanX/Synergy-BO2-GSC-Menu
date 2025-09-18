@@ -82,11 +82,11 @@ init() {
   level.inventory_array = [];
   max_weapon_num = 99;
 
-  for (i = 0; i < max_weapon_num; i++) {
-    if(!isdefined(level.tbl_weaponids[i]) || level.tbl_weaponids[i]["group"] == "") {
+  for(i = 0; i < max_weapon_num; i++) {
+    if(!isDefined(level.tbl_weaponids[i]) || level.tbl_weaponids[i]["group"] == "") {
       continue;
     }
-    if(!isdefined(level.tbl_weaponids[i]) || level.tbl_weaponids[i]["reference"] == "") {
+    if(!isDefined(level.tbl_weaponids[i]) || level.tbl_weaponids[i]["reference"] == "") {
       continue;
     }
     weapon_type = level.tbl_weaponids[i]["group"];
@@ -94,16 +94,16 @@ init() {
     attachment = level.tbl_weaponids[i]["attachment"];
     weapon_class_register(weapon + "_mp", weapon_type);
 
-    if(isdefined(attachment) && attachment != "") {
+    if(isDefined(attachment) && attachment != "") {
       attachment_tokens = strtok(attachment, " ");
 
-      if(isdefined(attachment_tokens)) {
+      if(isDefined(attachment_tokens)) {
         if(attachment_tokens.size == 0) {
           weapon_class_register(weapon + "_" + attachment + "_mp", weapon_type);
           continue;
         }
 
-        for (k = 0; k < attachment_tokens.size; k++)
+        for(k = 0; k < attachment_tokens.size; k++)
           weapon_class_register(weapon + "_" + attachment_tokens[k] + "_mp", weapon_type);
       }
     }
@@ -117,14 +117,14 @@ create_class_exclusion_list() {
   currentdvar = 0;
   level.itemexclusions = [];
 
-  while (getdvarint(#"_id_32DF55CC" + currentdvar)) {
+  while(getdvarint(#"_id_32DF55CC" + currentdvar)) {
     level.itemexclusions[currentdvar] = getdvarint(#"_id_32DF55CC" + currentdvar);
     currentdvar++;
   }
 
   level.attachmentexclusions = [];
 
-  for (currentdvar = 0; getdvar(#"_id_7F6F03E6" + currentdvar) != ""; currentdvar++)
+  for(currentdvar = 0; getdvar(#"_id_7F6F03E6" + currentdvar) != ""; currentdvar++)
     level.attachmentexclusions[currentdvar] = getdvar(#"_id_7F6F03E6" + currentdvar);
 }
 
@@ -134,7 +134,7 @@ is_item_excluded(itemindex) {
 
   numexclusions = level.itemexclusions.size;
 
-  for (exclusionindex = 0; exclusionindex < numexclusions; exclusionindex++) {
+  for(exclusionindex = 0; exclusionindex < numexclusions; exclusionindex++) {
     if(itemindex == level.itemexclusions[exclusionindex])
       return true;
   }
@@ -145,7 +145,7 @@ is_item_excluded(itemindex) {
 is_attachment_excluded(attachment) {
   numexclusions = level.attachmentexclusions.size;
 
-  for (exclusionindex = 0; exclusionindex < numexclusions; exclusionindex++) {
+  for(exclusionindex = 0; exclusionindex < numexclusions; exclusionindex++) {
     if(attachment == level.attachmentexclusions[exclusionindex])
       return true;
   }
@@ -154,7 +154,7 @@ is_attachment_excluded(attachment) {
 }
 
 set_statstable_id() {
-  if(!isdefined(level.statstableid))
+  if(!isDefined(level.statstableid))
     level.statstableid = tablelookupfindcoreasset("mp/statsTable.csv");
 }
 
@@ -202,7 +202,7 @@ cac_init() {
   level.tbl_weaponids = [];
   set_statstable_id();
 
-  for (i = 0; i < 256; i++) {
+  for(i = 0; i < 256; i++) {
     itemrow = tablelookuprownum(level.statstableid, 0, i);
 
     if(itemrow > -1) {
@@ -223,7 +223,7 @@ cac_init() {
 
   level.perknames = [];
 
-  for (i = 0; i < 256; i++) {
+  for(i = 0; i < 256; i++) {
     itemrow = tablelookuprownum(level.statstableid, 0, i);
 
     if(itemrow > -1) {
@@ -247,7 +247,7 @@ cac_init() {
   level.killstreakicons = [];
   level.killstreakindices = [];
 
-  for (i = 0; i < 256; i++) {
+  for(i = 0; i < 256; i++) {
     itemrow = tablelookuprownum(level.statstableid, 0, i);
 
     if(itemrow > -1) {
@@ -274,7 +274,7 @@ cac_init() {
 }
 
 getclasschoice(response) {
-  assert(isdefined(level.classmap[response]));
+  assert(isDefined(level.classmap[response]));
   return level.classmap[response];
 }
 
@@ -299,7 +299,7 @@ getattachmentstring(weaponnum, attachmentnum) {
 }
 
 getattachmentsdisabled() {
-  if(!isdefined(level.attachmentsdisabled))
+  if(!isDefined(level.attachmentsdisabled))
     return 0;
 
   return level.attachmentsdisabled;
@@ -324,28 +324,28 @@ givekillstreaks(classnum) {
   sortedkillstreaks = [];
   currentkillstreak = 0;
 
-  for (killstreaknum = 0; killstreaknum < level.maxkillstreaks; killstreaknum++) {
+  for(killstreaknum = 0; killstreaknum < level.maxkillstreaks; killstreaknum++) {
     killstreakindex = getkillstreakindex(classnum, killstreaknum);
 
-    if(isdefined(killstreakindex) && killstreakindex > 0) {
-      assert(isdefined(level.tbl_killstreakdata[killstreakindex]), "KillStreak #:" + killstreakindex + "'s data is undefined");
+    if(isDefined(killstreakindex) && killstreakindex > 0) {
+      assert(isDefined(level.tbl_killstreakdata[killstreakindex]), "KillStreak #:" + killstreakindex + "'s data is undefined");
 
-      if(isdefined(level.tbl_killstreakdata[killstreakindex])) {
+      if(isDefined(level.tbl_killstreakdata[killstreakindex])) {
         self.killstreak[currentkillstreak] = level.tbl_killstreakdata[killstreakindex];
 
-        if(isdefined(level.usingmomentum) && level.usingmomentum) {
+        if(isDefined(level.usingmomentum) && level.usingmomentum) {
           killstreaktype = maps\mp\killstreaks\_killstreaks::getkillstreakbymenuname(self.killstreak[currentkillstreak]);
 
-          if(isdefined(killstreaktype)) {
+          if(isDefined(killstreaktype)) {
             weapon = maps\mp\killstreaks\_killstreaks::getkillstreakweapon(killstreaktype);
             self giveweapon(weapon);
 
-            if(isdefined(level.usingscorestreaks) && level.usingscorestreaks) {
+            if(isDefined(level.usingscorestreaks) && level.usingscorestreaks) {
               if(maps\mp\killstreaks\_killstreak_weapons::isheldkillstreakweapon(weapon)) {
-                if(!isdefined(self.pers["held_killstreak_ammo_count"][weapon]))
+                if(!isDefined(self.pers["held_killstreak_ammo_count"][weapon]))
                   self.pers["held_killstreak_ammo_count"][weapon] = 0;
 
-                if(!isdefined(self.pers["held_killstreak_clip_count"][weapon]))
+                if(!isDefined(self.pers["held_killstreak_clip_count"][weapon]))
                   self.pers["held_killstreak_clip_count"][weapon] = 0;
 
                 if(self.pers["held_killstreak_ammo_count"][weapon] > 0) {
@@ -356,7 +356,7 @@ givekillstreaks(classnum) {
               } else {
                 quantity = self.pers["killstreak_quantity"][weapon];
 
-                if(!isdefined(quantity))
+                if(!isDefined(quantity))
                   quantity = 0;
 
                 self setweaponammoclip(weapon, quantity);
@@ -368,13 +368,13 @@ givekillstreaks(classnum) {
             sortdata.weapon = weapon;
             sortindex = 0;
 
-            for (sortindex = 0; sortindex < sortedkillstreaks.size; sortindex++) {
+            for(sortindex = 0; sortindex < sortedkillstreaks.size; sortindex++) {
               if(sortedkillstreaks[sortindex].cost > sortdata.cost) {
                 break;
               }
             }
 
-            for (i = sortedkillstreaks.size; i > sortindex; i--)
+            for(i = sortedkillstreaks.size; i > sortindex; i--)
               sortedkillstreaks[i] = sortedkillstreaks[i - 1];
 
             sortedkillstreaks[sortindex] = sortdata;
@@ -391,8 +391,8 @@ givekillstreaks(classnum) {
   actionslotorder[1] = 2;
   actionslotorder[2] = 1;
 
-  if(isdefined(level.usingmomentum) && level.usingmomentum) {
-    for (sortindex = 0; sortindex < sortedkillstreaks.size && sortindex < actionslotorder.size; sortindex++)
+  if(isDefined(level.usingmomentum) && level.usingmomentum) {
+    for(sortindex = 0; sortindex < sortedkillstreaks.size && sortindex < actionslotorder.size; sortindex++)
       self setactionslot(actionslotorder[sortindex], "weapon", sortedkillstreaks[sortindex].weapon);
   }
 }
@@ -405,7 +405,7 @@ is_warlord_perk(itemindex) {
 }
 
 isperkgroup(perkname) {
-  return isdefined(perkname) && isstring(perkname);
+  return isDefined(perkname) && isstring(perkname);
 }
 
 logclasschoice(class, primaryweapon, specialtype, perks) {
@@ -414,7 +414,7 @@ logclasschoice(class, primaryweapon, specialtype, perks) {
   }
   self logstring("choseclass: " + class + " weapon: " + primaryweapon + " special: " + specialtype);
 
-  for (i = 0; i < perks.size; i++)
+  for(i = 0; i < perks.size; i++)
     self logstring("perk" + i + ": " + perks[i]);
 
   self.lastclass = class;
@@ -453,23 +453,23 @@ isleagueitemrestricted(item) {
 giveloadoutlevelspecific(team, class) {
   pixbeginevent("giveLoadoutLevelSpecific");
 
-  if(isdefined(level.givecustomcharacters))
+  if(isDefined(level.givecustomcharacters))
     self[[level.givecustomcharacters]]();
 
-  if(isdefined(level.givecustomloadout))
+  if(isDefined(level.givecustomloadout))
     self[[level.givecustomloadout]]();
 
   pixendevent();
 }
 
 removeduplicateattachments(weapon) {
-  if(!isdefined(weapon))
+  if(!isDefined(weapon))
     return undefined;
 
   attachments = strtok(weapon, "+");
 
-  for (attachmentindex = 1; attachmentindex < attachments.size; attachmentindex++) {
-    for (attachmentindex2 = attachmentindex + 1; attachmentindex2 < attachments.size; attachmentindex2++) {
+  for(attachmentindex = 1; attachmentindex < attachments.size; attachmentindex++) {
+    for(attachmentindex2 = attachmentindex + 1; attachmentindex2 < attachments.size; attachmentindex2++) {
       if(attachments[attachmentindex] == attachments[attachmentindex2])
         attachments[attachmentindex2] = "none";
     }
@@ -477,7 +477,7 @@ removeduplicateattachments(weapon) {
 
   uniqueattachmentsweapon = attachments[0];
 
-  for (attachmentindex = 1; attachmentindex < attachments.size; attachmentindex++) {
+  for(attachmentindex = 1; attachmentindex < attachments.size; attachmentindex++) {
     if(attachments[attachmentindex] != "none")
       uniqueattachmentsweapon = uniqueattachmentsweapon + "+" + attachments[attachmentindex];
   }
@@ -515,7 +515,7 @@ giveloadout(team, class) {
     pixendevent();
   } else {
     pixbeginevent("default class");
-    assert(isdefined(self.pers["class"]), "Player during spawn and loadout got no class!");
+    assert(isDefined(self.pers["class"]), "Player during spawn and loadout got no class!");
     class_num = level.classtoclassnum[class];
     self.class_num = class_num;
     pixendevent();
@@ -526,7 +526,7 @@ giveloadout(team, class) {
   self.specialty = self getloadoutperks(class_num);
 
   if(level.leaguematch) {
-    for (i = 0; i < self.specialty.size; i++) {
+    for(i = 0; i < self.specialty.size; i++) {
       if(isleagueitemrestricted(self.specialty[i])) {
         arrayremoveindex(self.specialty, i);
         i--;
@@ -541,7 +541,7 @@ giveloadout(team, class) {
   spawnweapon = "";
   initialweaponcount = 0;
 
-  if(isdefined(self.pers["weapon"]) && self.pers["weapon"] != "none" && !maps\mp\killstreaks\_killstreaks::iskillstreakweapon(self.pers["weapon"]))
+  if(isDefined(self.pers["weapon"]) && self.pers["weapon"] != "none" && !maps\mp\killstreaks\_killstreaks::iskillstreakweapon(self.pers["weapon"]))
     weapon = self.pers["weapon"];
   else {
     weapon = self getloadoutweapon(class_num, "primary");
@@ -594,6 +594,7 @@ giveloadout(team, class) {
   primaryweapon = weapon;
   primarytokens = strtok(primaryweapon, "_");
   self.pers["primaryWeapon"] = primarytokens[0];
+
   println("^5GiveWeapon( " + weapon + " ) -- weapon");
 
   if(primaryweapon != "" && primaryweapon != "weapon_null_mp" && primaryweapon != "weapon_null") {
@@ -612,10 +613,10 @@ giveloadout(team, class) {
       spawnweapon = "knife_held_mp";
   }
 
-  if(!isdefined(self.spawnweapon) && isdefined(self.pers["spawnWeapon"]))
+  if(!isDefined(self.spawnweapon) && isDefined(self.pers["spawnWeapon"]))
     self.spawnweapon = self.pers["spawnWeapon"];
 
-  if(isdefined(self.spawnweapon) && doesweaponreplacespawnweapon(self.spawnweapon, spawnweapon) && !self.pers["changed_class"])
+  if(isDefined(self.spawnweapon) && doesweaponreplacespawnweapon(self.spawnweapon, spawnweapon) && !self.pers["changed_class"])
     spawnweapon = self.spawnweapon;
 
   self.pers["changed_class"] = 0;
@@ -657,6 +658,7 @@ giveloadout(team, class) {
   }
 
   println("^5GiveWeapon( " + grenadetypeprimary + " ) -- grenadeTypePrimary");
+
   self giveweapon(grenadetypeprimary);
   self setweaponammoclip(grenadetypeprimary, primarygrenadecount);
   self switchtooffhand(grenadetypeprimary);
@@ -668,7 +670,9 @@ giveloadout(team, class) {
 
   if(grenadetypesecondary != "" && grenadetypesecondary != "weapon_null_mp" && isequipmentallowed(grenadetypesecondary)) {
     self setoffhandsecondaryclass(grenadetypesecondary);
+
     println("^5GiveWeapon( " + grenadetypesecondary + " ) -- grenadeTypeSecondary");
+
     self giveweapon(grenadetypesecondary);
     self setweaponammoclip(grenadetypesecondary, grenadesecondarycount);
     self.grenadetypesecondary = grenadetypesecondary;
@@ -678,8 +682,8 @@ giveloadout(team, class) {
   self bbclasschoice(class_num, primaryweapon, sidearm);
 
   if(!sessionmodeiszombiesgame()) {
-    for (i = 0; i < 3; i++) {
-      if(level.loadoutkillstreaksenabled && isdefined(self.killstreak[i]) && isdefined(level.killstreakindices[self.killstreak[i]])) {
+    for(i = 0; i < 3; i++) {
+      if(level.loadoutkillstreaksenabled && isDefined(self.killstreak[i]) && isDefined(level.killstreakindices[self.killstreak[i]])) {
         killstreaks[i] = level.killstreakindices[self.killstreak[i]];
         continue;
       }
@@ -695,20 +699,20 @@ giveloadout(team, class) {
   self thread initweaponattachments(spawnweapon);
   self setplayerrenderoptions(playerrenderoptions);
 
-  if(isdefined(self.movementspeedmodifier))
+  if(isDefined(self.movementspeedmodifier))
     self setmovespeedscale(self.movementspeedmodifier * self getmovespeedscale());
 
-  if(isdefined(level.givecustomloadout)) {
+  if(isDefined(level.givecustomloadout)) {
     spawnweapon = self[[level.givecustomloadout]]();
 
-    if(isdefined(spawnweapon))
+    if(isDefined(spawnweapon))
       self thread initweaponattachments(spawnweapon);
   }
 
   self cac_selector();
 
-  if(!isdefined(self.firstspawn)) {
-    if(isdefined(spawnweapon))
+  if(!isDefined(self.firstspawn)) {
+    if(isDefined(spawnweapon))
       self initialweaponraise(spawnweapon);
     else
       self initialweaponraise(weapon);
@@ -731,11 +735,11 @@ setweaponammooverall(weaponname, amount) {
 }
 
 onplayerconnecting() {
-  for (;;) {
+  for(;;) {
     level waittill("connecting", player);
 
     if(!level.oldschool) {
-      if(!isdefined(player.pers["class"]))
+      if(!isDefined(player.pers["class"]))
         player.pers["class"] = "";
 
       player.class = player.pers["class"];
@@ -774,7 +778,7 @@ cac_selector() {
   perks = self.specialty;
   self.detectexplosives = 0;
 
-  for (i = 0; i < perks.size; i++) {
+  for(i = 0; i < perks.size; i++) {
     perk = perks[i];
 
     if(perk == "specialty_detectexplosive")
@@ -786,7 +790,7 @@ register_perks() {
   perks = self.specialty;
   self clearperks();
 
-  for (i = 0; i < perks.size; i++) {
+  for(i = 0; i < perks.size; i++) {
     perk = perks[i];
 
     if(perk == "specialty_null" || issubstr(perk, "specialty_weapon_") || perk == "weapon_null") {
@@ -815,10 +819,10 @@ cac_get_dvar(dvar, def) {
 }
 
 cac_modified_vehicle_damage(victim, attacker, damage, meansofdeath, weapon, inflictor) {
-  if(!isdefined(victim) || !isdefined(attacker) || !isplayer(attacker))
+  if(!isDefined(victim) || !isDefined(attacker) || !isplayer(attacker))
     return damage;
 
-  if(!isdefined(damage) || !isdefined(meansofdeath) || !isdefined(weapon))
+  if(!isDefined(damage) || !isDefined(meansofdeath) || !isDefined(weapon))
     return damage;
 
   old_damage = damage;
@@ -826,23 +830,28 @@ cac_modified_vehicle_damage(victim, attacker, damage, meansofdeath, weapon, infl
 
   if(attacker hasperk("specialty_bulletdamage") && isprimarydamage(meansofdeath)) {
     final_damage = damage * (100 + level.cac_bulletdamage_data) / 100;
+
     if(getdvarint(#"_id_5ABA6445"))
       println("Perk/> " + attacker.name + "'s bullet damage did extra damage to vehicle");
+
   } else if(attacker hasperk("specialty_explosivedamage") && isplayerexplosiveweapon(weapon, meansofdeath)) {
     final_damage = damage * (100 + level.cac_explosivedamage_data) / 100;
+
     if(getdvarint(#"_id_5ABA6445"))
       println("Perk/> " + attacker.name + "'s explosive damage did extra damage to vehicle");
+
   } else
     final_damage = old_damage;
 
   if(getdvarint(#"_id_5ABA6445"))
     println("Perk/> Damage Factor: " + final_damage / old_damage + " - Pre Damage: " + old_damage + " - Post Damage: " + final_damage);
+
   return int(final_damage);
 }
 
 cac_modified_damage(victim, attacker, damage, mod, weapon, inflictor, hitloc) {
-  assert(isdefined(victim));
-  assert(isdefined(attacker));
+  assert(isDefined(victim));
+  assert(isDefined(attacker));
   assert(isplayer(victim));
 
   if(victim == attacker)
@@ -858,29 +867,39 @@ cac_modified_damage(victim, attacker, damage, mod, weapon, inflictor, hitloc) {
 
   if(getdvarint(#"_id_5ABA6445"))
     debug = 1;
+
   final_damage = damage;
 
   if(attacker hasperk("specialty_bulletdamage") && isprimarydamage(mod)) {
     if(victim hasperk("specialty_armorvest") && !isheaddamage(hitloc)) {
       if(debug)
         println("Perk/> " + victim.name + "'s armor countered " + attacker.name + "'s increased bullet damage");
+
     } else {
       final_damage = damage * (100 + level.cac_bulletdamage_data) / 100;
+
       if(debug)
         println("Perk/> " + attacker.name + "'s bullet damage did extra damage to " + victim.name);
+
     }
   } else if(victim hasperk("specialty_armorvest") && isprimarydamage(mod) && !isheaddamage(hitloc)) {
     final_damage = damage * (level.cac_armorvest_data * 0.01);
+
     if(debug)
       println("Perk/> " + attacker.name + "'s bullet damage did less damage to " + victim.name);
+
   } else if(victim hasperk("specialty_fireproof") && isfiredamage(weapon, mod)) {
     final_damage = damage * ((100 - level.cac_fireproof_data) / 100);
+
     if(debug)
       println("Perk/> " + attacker.name + "'s flames did less damage to " + victim.name);
+
   } else if(attacker hasperk("specialty_explosivedamage") && isplayerexplosiveweapon(weapon, mod)) {
     final_damage = damage * (100 + level.cac_explosivedamage_data) / 100;
+
     if(debug)
       println("Perk/> " + attacker.name + "'s explosive damage did extra damage to " + victim.name);
+
   } else if(victim hasperk("specialty_flakjacket") && isexplosivedamage(weapon, mod) && !victim grenadestuck(inflictor)) {
     cac_data = level.hardcoremode ? level.cac_flakjacket_hardcore_data : level.cac_flakjacket_data;
 
@@ -890,8 +909,10 @@ cac_modified_damage(victim, attacker, damage, mod, weapon, inflictor, hitloc) {
       victim thread maps\mp\_challenges::flakjacketprotected(weapon, attacker);
 
     final_damage = int(damage * (cac_data / 100));
+
     if(debug)
       println("Perk/> " + victim.name + "'s flak jacket decreased " + attacker.name + "'s grenade damage");
+
   }
 
   victim.cac_debug_damage_type = tolower(mod);
@@ -903,6 +924,7 @@ cac_modified_damage(victim, attacker, damage, mod, weapon, inflictor, hitloc) {
 
   if(debug)
     println("Perk/> Damage Factor: " + final_damage / damage + " - Pre Damage: " + damage + " - Post Damage: " + final_damage);
+
   final_damage = int(final_damage);
 
   if(final_damage < 1)
@@ -912,7 +934,7 @@ cac_modified_damage(victim, attacker, damage, mod, weapon, inflictor, hitloc) {
 }
 
 isexplosivedamage(weapon, meansofdeath) {
-  if(isdefined(weapon)) {
+  if(isDefined(weapon)) {
     switch (weapon) {
       case "briefcase_bomb_mp":
       case "concussion_grenade_mp":
@@ -976,5 +998,5 @@ isheaddamage(hitloc) {
 }
 
 grenadestuck(inflictor) {
-  return isdefined(inflictor) && isdefined(inflictor.stucktoplayer) && inflictor.stucktoplayer == self;
+  return isDefined(inflictor) && isDefined(inflictor.stucktoplayer) && inflictor.stucktoplayer == self;
 }

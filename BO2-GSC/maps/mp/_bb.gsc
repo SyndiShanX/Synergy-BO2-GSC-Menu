@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\_bb.gsc
-***************************************/
+**************************************/
 
 #include maps\mp\_utility;
 #include common_scripts\utility;
@@ -11,7 +11,7 @@ init() {
 }
 
 onplayerconnect() {
-  for (;;) {
+  for(;;) {
     level waittill("connected", player);
     player thread onplayerspawned();
     player thread onplayerdeath();
@@ -22,7 +22,7 @@ onplayerspawned() {
   self endon("disconnect");
   self._bbdata = [];
 
-  for (;;) {
+  for(;;) {
     self waittill("spawned_player");
     self._bbdata["score"] = 0;
     self._bbdata["momentum"] = 0;
@@ -33,7 +33,7 @@ onplayerspawned() {
 }
 
 onplayerdisconnect() {
-  for (;;) {
+  for(;;) {
     self waittill("disconnect");
     self commitspawndata();
     break;
@@ -43,25 +43,25 @@ onplayerdisconnect() {
 onplayerdeath() {
   self endon("disconnect");
 
-  for (;;) {
+  for(;;) {
     self waittill("death");
     self commitspawndata();
   }
 }
 
 commitspawndata() {
-  assert(isdefined(self._bbdata));
+  assert(isDefined(self._bbdata));
 
-  if(!isdefined(self._bbdata)) {
+  if(!isDefined(self._bbdata)) {
     return;
   }
   bbprint("mpplayerlives", "gametime %d spawnid %d lifescore %d lifemomentum %d lifetime %d name %s", gettime(), getplayerspawnid(self), self._bbdata["score"], self._bbdata["momentum"], gettime() - self._bbdata["spawntime"], self.name);
 }
 
 commitweapondata(spawnid, currentweapon, time0) {
-  assert(isdefined(self._bbdata));
+  assert(isDefined(self._bbdata));
 
-  if(!isdefined(self._bbdata)) {
+  if(!isDefined(self._bbdata)) {
     return;
   }
   time1 = gettime();
@@ -71,6 +71,6 @@ commitweapondata(spawnid, currentweapon, time0) {
 }
 
 bbaddtostat(statname, delta) {
-  if(isdefined(self._bbdata) && isdefined(self._bbdata[statname]))
+  if(isDefined(self._bbdata) && isDefined(self._bbdata[statname]))
     self._bbdata[statname] = self._bbdata[statname] + delta;
 }

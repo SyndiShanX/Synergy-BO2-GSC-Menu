@@ -1,7 +1,7 @@
-/*************************************************************
+/*********************************************************************
  * Decompiled and Edited by SyndiShanX
  * Script: clientscripts\mp\zombies\_zm_weap_staff_water.csc
-*************************************************************/
+*********************************************************************/
 
 #include clientscripts\mp\_utility;
 #include clientscripts\mp\_fx;
@@ -23,14 +23,14 @@ init() {
 
 attach_model(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump) {
   if(newval == 1) {
-    if(isdefined(self.ice_shard_fx))
+    if(isDefined(self.ice_shard_fx))
       stopfx(localclientnum, self.ice_shard_fx);
 
     self.ice_shard_fx = playfxontag(localclientnum, level._effect["staff_water_ice_shard"], self, "j_spine4");
     self thread ice_freeze_fx(localclientnum);
     self playsound(0, "wpn_waterstaff_freeze_zombie");
   } else {
-    if(isdefined(self.ice_shard_fx)) {
+    if(isDefined(self.ice_shard_fx)) {
       stopfx(localclientnum, self.ice_shard_fx);
       self.ice_shard_fx = undefined;
     }
@@ -46,7 +46,7 @@ ice_freeze_fx(localclientnum) {
   max_charamount = 0.9;
   rate = randomfloatrange(0.005, 0.01);
 
-  for (f = 0.6; f <= max_charamount; f = f + 0.01) {
+  for(f = 0.6; f <= max_charamount; f = f + 0.01) {
     self setshaderconstant(localclientnum, 2, f, 1, 0, 0);
     serverwait(localclientnum, 0.05);
   }
@@ -56,7 +56,7 @@ ice_unfreeze(localclientnum) {
   self endon("entityshutdown");
   self notify("unfreeze");
 
-  for (f = 1.0; f >= 0.6; f = f - 0.05) {
+  for(f = 1.0; f >= 0.6; f = f - 0.05) {
     self setshaderconstant(localclientnum, 2, f, 1, 0, 0);
     serverwait(localclientnum, 0.05);
   }
@@ -68,17 +68,17 @@ staff_blizzard_fx(localclientnum, oldval, newval, bnewent, binitialsnap, fieldna
   if(newval == 1) {
     self.ice_fx = playfxontag(localclientnum, level._effect["staff_water_blizzard"], self, "tag_origin");
 
-    if(!isdefined(self.sndent)) {
+    if(!isDefined(self.sndent)) {
       self.sndent = spawn(0, self.origin, "script_origin");
       self.sndent playsound(0, "wpn_waterstaff_storm_imp");
       self.sndent playloopsound("wpn_waterstaff_storm");
       self.sndent thread clientscripts\mp\zm_tomb::snddemojumpmonitor();
     }
   } else {
-    if(isdefined(self.ice_fx))
+    if(isDefined(self.ice_fx))
       stopfx(localclientnum, self.ice_fx);
 
-    if(isdefined(self.sndent)) {
+    if(isDefined(self.sndent)) {
       self.sndent stoploopsound(1.5);
       self.sndent delete();
       self.sndent = undefined;

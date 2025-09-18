@@ -16,7 +16,9 @@
 init() {
   registerclientfield("allplayers", "charindex", 1, 3, "int");
   registerclientfield("toplayer", "isspeaking", 1, 1, "int");
+
   println("ZM >> Zombiemode Server Scripts Init (_zm_audio.gsc)");
+
   level.audio_get_mod_type = ::get_mod_type;
   level zmbvox();
   level init_music_states();
@@ -30,12 +32,12 @@ setexertvoice(exert_id) {
 }
 
 playerexert(exert) {
-  if(isdefined(self.isspeaking) && self.isspeaking || isdefined(self.isexerting) && self.isexerting) {
+  if(isDefined(self.isspeaking) && self.isspeaking || isDefined(self.isexerting) && self.isexerting) {
     return;
   }
   id = level.exert_sounds[0][exert];
 
-  if(isdefined(self.player_exert_id)) {
+  if(isDefined(self.player_exert_id)) {
     if(isarray(level.exert_sounds[self.player_exert_id][exert]))
       id = random(level.exert_sounds[self.player_exert_id][exert]);
     else
@@ -189,10 +191,10 @@ zmbvox() {
   level.zmb_vox["capzomb"]["crawler"] = "capzomb_crawler";
   level.zmb_vox["capzomb"]["electrocute"] = "zombie_electrocute";
 
-  if(isdefined(level._zmbvoxlevelspecific))
+  if(isDefined(level._zmbvoxlevelspecific))
     level thread[[level._zmbvoxlevelspecific]]();
 
-  if(isdefined(level._zmbvoxgametypespecific))
+  if(isDefined(level._zmbvoxgametypespecific))
     level thread[[level._zmbvoxgametypespecific]]();
 
   announcer_ent = spawn("script_origin", (0, 0, 0));
@@ -201,7 +203,7 @@ zmbvox() {
   level.exert_sounds[0]["hitmed"] = "null";
   level.exert_sounds[0]["hitlrg"] = "null";
 
-  if(isdefined(level.setupcustomcharacterexerts))
+  if(isDefined(level.setupcustomcharacterexerts))
     [[level.setupcustomcharacterexerts]]();
 }
 
@@ -230,7 +232,7 @@ init_audio_functions() {
   self thread zombie_behind_vox();
   self thread player_killstreak_timer();
 
-  if(isdefined(level._custom_zombie_oh_shit_vox_func))
+  if(isDefined(level._custom_zombie_oh_shit_vox_func))
     self thread[[level._custom_zombie_oh_shit_vox_func]]();
   else
     self thread oh_shit_vox();
@@ -239,12 +241,12 @@ init_audio_functions() {
 zombie_behind_vox() {
   self endon("death_or_disconnect");
 
-  if(!isdefined(level._zbv_vox_last_update_time)) {
+  if(!isDefined(level._zbv_vox_last_update_time)) {
     level._zbv_vox_last_update_time = 0;
     level._audio_zbv_shared_ent_list = get_round_enemy_array();
   }
 
-  while (true) {
+  while(true) {
     wait 1;
     t = gettime();
 
@@ -256,8 +258,8 @@ zombie_behind_vox() {
     zombs = level._audio_zbv_shared_ent_list;
     played_sound = 0;
 
-    for (i = 0; i < zombs.size; i++) {
-      if(!isdefined(zombs[i])) {
+    for(i = 0; i < zombs.size; i++) {
+      if(!isDefined(zombs[i])) {
         continue;
       }
       if(zombs[i].isdog) {
@@ -267,7 +269,7 @@ zombie_behind_vox() {
       z_dist = 50;
       alias = level.vox_behind_zombie;
 
-      if(isdefined(zombs[i].zombie_move_speed)) {
+      if(isDefined(zombs[i].zombie_move_speed)) {
         switch (zombs[i].zombie_move_speed) {
           case "walk":
             dist = 200;
@@ -299,44 +301,47 @@ zombie_behind_vox() {
 }
 
 attack_vox_network_choke() {
-  while (true) {
+  while(true) {
     level._num_attack_vox = 0;
     wait_network_frame();
   }
 }
 
 do_zombies_playvocals(alias_type, zombie_type) {
-  if(getdvarint(#"_id_6C610250") > 0)
+  if(getdvarint(#"_id_6C610250") > 0) {
     return;
+  }
   self endon("death");
 
-  if(!isdefined(zombie_type))
+  if(!isDefined(zombie_type))
     zombie_type = "zombie";
 
-  if(isdefined(self.shrinked) && self.shrinked) {
+  if(isDefined(self.shrinked) && self.shrinked) {
     return;
   }
-  if(isdefined(self.is_inert) && self.is_inert) {
+  if(isDefined(self.is_inert) && self.is_inert) {
     return;
   }
-  if(!isdefined(self.talking))
+  if(!isDefined(self.talking))
     self.talking = 0;
 
-  if(isdefined(level.script) && level.script == "zm_tomb") {
-    if(isdefined(self.script_int) && self.script_int >= 2) {
+  if(isDefined(level.script) && level.script == "zm_tomb") {
+    if(isDefined(self.script_int) && self.script_int >= 2) {
       zombie_type = "capzomb";
       self.zmb_vocals_attack = "zmb_vocals_capzomb_attack";
-    } else if(isdefined(self.sndname))
+    } else if(isDefined(self.sndname))
       zombie_type = self.sndname;
   }
 
-  if(!isdefined(level.zmb_vox[zombie_type])) {
+  if(!isDefined(level.zmb_vox[zombie_type])) {
     println("ZM >> AUDIO - ZOMBIE TYPE: " + zombie_type + " has NO aliases set up for it.");
+
     return;
   }
 
-  if(!isdefined(level.zmb_vox[zombie_type][alias_type])) {
+  if(!isDefined(level.zmb_vox[zombie_type][alias_type])) {
     println("ZM >> AUDIO - ZOMBIE TYPE: " + zombie_type + " has NO aliases set up for ALIAS_TYPE: " + alias_type);
+
     return;
   }
 
@@ -358,7 +363,7 @@ do_zombies_playvocals(alias_type, zombie_type) {
   alias = level.zmb_vox["prefix"] + level.zmb_vox[zombie_type][alias_type];
 
   if(alias_type == "attack" || alias_type == "behind" || alias_type == "death" || alias_type == "anger" || alias_type == "steal" || alias_type == "taunt" || alias_type == "teardown") {
-    if(isdefined(level._custom_zombie_audio_func))
+    if(isDefined(level._custom_zombie_audio_func))
       self[[level._custom_zombie_audio_func]](alias, alias_type);
     else
       self playsound(alias);
@@ -375,7 +380,7 @@ do_zombies_playvocals(alias_type, zombie_type) {
 }
 
 sndisnetworksafe() {
-  if(!isdefined(level._num_attack_vox))
+  if(!isDefined(level._num_attack_vox))
     level thread attack_vox_network_choke();
 
   if(level._num_attack_vox > 4)
@@ -395,7 +400,7 @@ is_last_zombie() {
 oh_shit_vox() {
   self endon("death_or_disconnect");
 
-  while (true) {
+  while(true) {
     wait 1;
     players = get_players();
     zombs = get_round_enemy_array();
@@ -403,15 +408,15 @@ oh_shit_vox() {
     if(players.size > 1) {
       close_zombs = 0;
 
-      for (i = 0; i < zombs.size; i++) {
-        if(isdefined(zombs[i].favoriteenemy) && zombs[i].favoriteenemy == self || !isdefined(zombs[i].favoriteenemy)) {
+      for(i = 0; i < zombs.size; i++) {
+        if(isDefined(zombs[i].favoriteenemy) && zombs[i].favoriteenemy == self || !isDefined(zombs[i].favoriteenemy)) {
           if(distancesquared(zombs[i].origin, self.origin) < 62500)
             close_zombs++;
         }
       }
 
       if(close_zombs > 4) {
-        if(randomint(100) > 75 && !(isdefined(self.isonbus) && self.isonbus)) {
+        if(randomint(100) > 75 && !(isDefined(self.isonbus) && self.isonbus)) {
           self create_and_play_dialog("general", "oh_shit");
           wait 4;
         }
@@ -423,23 +428,25 @@ oh_shit_vox() {
 create_and_play_dialog(category, type, response, force_variant, override) {
   waittime = 0.25;
 
-  if(!isdefined(self.zmbvoxid)) {
+  if(!isDefined(self.zmbvoxid)) {
     if(getdvarint(#"_id_0AEB127D") > 0)
       iprintln("DIALOG DEBUGGER: No zmbVoxID setup on this character. Run zmbVoxInitSpeaker on this character in order to play vox");
+
     return;
   }
 
-  if(isdefined(self.dontspeak) && self.dontspeak) {
+  if(isDefined(self.dontspeak) && self.dontspeak) {
     return;
   }
   if(getdvarint(#"_id_0AEB127D") > 0)
     self thread dialog_debugger(category, type);
+
   isresponse = 0;
   alias_suffix = undefined;
   index = undefined;
   prefix = undefined;
 
-  if(!isdefined(level.vox.speaker[self.zmbvoxid].alias[category][type])) {
+  if(!isDefined(level.vox.speaker[self.zmbvoxid].alias[category][type])) {
     return;
   }
   prefix = level.vox.speaker[self.zmbvoxid].prefix;
@@ -456,8 +463,8 @@ create_and_play_dialog(category, type, response, force_variant, override) {
     prefix = prefix + index + "_";
   }
 
-  if(isdefined(response)) {
-    if(isdefined(level.vox.speaker[self.zmbvoxid].response[category][type]))
+  if(isDefined(response)) {
+    if(isDefined(level.vox.speaker[self.zmbvoxid].response[category][type]))
       alias_suffix = response + level.vox.speaker[self.zmbvoxid].response[category][type];
 
     isresponse = 1;
@@ -465,32 +472,34 @@ create_and_play_dialog(category, type, response, force_variant, override) {
 
   sound_to_play = self zmbvoxgetlinevariant(prefix, alias_suffix, force_variant, override);
 
-  if(isdefined(sound_to_play)) {
-    if(isdefined(level._audio_custom_player_playvox))
+  if(isDefined(sound_to_play)) {
+    if(isDefined(level._audio_custom_player_playvox))
       self thread[[level._audio_custom_player_playvox]](prefix, index, sound_to_play, waittime, category, type, override);
     else
       self thread do_player_or_npc_playvox(prefix, index, sound_to_play, waittime, category, type, override, isresponse);
   } else {
     if(getdvarint(#"_id_0AEB127D") > 0)
       iprintln("DIALOG DEBUGGER: SOUND_TO_PLAY is undefined");
+
   }
 }
 
 do_player_or_npc_playvox(prefix, index, sound_to_play, waittime, category, type, override, isresponse) {
   self endon("death_or_disconnect");
 
-  if(isdefined(level.skit_vox_override) && level.skit_vox_override && (isdefined(override) && !override)) {
+  if(isDefined(level.skit_vox_override) && level.skit_vox_override && (isDefined(override) && !override)) {
     return;
   }
-  if(!isdefined(self.isspeaking))
+  if(!isDefined(self.isspeaking))
     self.isspeaking = 0;
 
-  if(isdefined(self.isspeaking) && self.isspeaking) {
+  if(isDefined(self.isspeaking) && self.isspeaking) {
     println("DIALOG DEBUGGER: Can't play (" + (prefix + sound_to_play) + ") because we are speaking already.");
+
     return;
   }
 
-  if(!self arenearbyspeakersactive() || isdefined(self.ignorenearbyspkrs) && self.ignorenearbyspkrs) {
+  if(!self arenearbyspeakersactive() || isDefined(self.ignorenearbyspkrs) && self.ignorenearbyspkrs) {
     self.speakingline = sound_to_play;
     self.isspeaking = 1;
 
@@ -500,7 +509,7 @@ do_player_or_npc_playvox(prefix, index, sound_to_play, waittime, category, type,
     self notify("speaking", type);
     playbacktime = soundgetplaybacktime(prefix + sound_to_play);
 
-    if(!isdefined(playbacktime)) {
+    if(!isDefined(playbacktime)) {
       return;
     }
     if(playbacktime >= 0)
@@ -511,7 +520,7 @@ do_player_or_npc_playvox(prefix, index, sound_to_play, waittime, category, type,
     self playsoundontag(prefix + sound_to_play, "J_Head");
     wait(playbacktime);
 
-    if(isplayer(self) && !(isdefined(isresponse) && isresponse) && isdefined(self.last_vo_played_time)) {
+    if(isplayer(self) && !(isDefined(isresponse) && isresponse) && isDefined(self.last_vo_played_time)) {
       if(gettime() < self.last_vo_played_time + 5000)
         waittime = 15;
     }
@@ -526,12 +535,12 @@ do_player_or_npc_playvox(prefix, index, sound_to_play, waittime, category, type,
     if(isplayer(self))
       self.last_vo_played_time = gettime();
 
-    if(isdefined(isresponse) && isresponse) {
+    if(isDefined(isresponse) && isresponse) {
       return;
     }
-    if(isdefined(level.vox.speaker[self.zmbvoxid].response) && isdefined(level.vox.speaker[self.zmbvoxid].response[category]) && isdefined(level.vox.speaker[self.zmbvoxid].response[category][type])) {
-      if(isdefined(self.isnpc) && self.isnpc || !flag("solo_game")) {
-        if(isdefined(level._audio_custom_response_line))
+    if(isDefined(level.vox.speaker[self.zmbvoxid].response) && isDefined(level.vox.speaker[self.zmbvoxid].response[category]) && isDefined(level.vox.speaker[self.zmbvoxid].response[category][type])) {
+      if(isDefined(self.isnpc) && self.isnpc || !flag("solo_game")) {
+        if(isDefined(level._audio_custom_response_line))
           level thread[[level._audio_custom_response_line]](self, index, category, type);
         else
           level thread setup_response_line(self, index, category, type);
@@ -539,6 +548,7 @@ do_player_or_npc_playvox(prefix, index, sound_to_play, waittime, category, type,
     }
   } else {
     println("DIALOG DEBUGGER: Can't play (" + (prefix + sound_to_play) + ") because someone is nearby speaking already.");
+
   }
 }
 
@@ -579,30 +589,30 @@ setup_hero_rival(player, hero, rival, category, type) {
       rival_player = ent;
   }
 
-  if(isdefined(hero_player) && isdefined(rival_player)) {
+  if(isDefined(hero_player) && isDefined(rival_player)) {
     if(randomint(100) > 50)
       hero_player = undefined;
     else
       rival_player = undefined;
   }
 
-  if(isdefined(hero_player) && distancesquared(player.origin, hero_player.origin) < 250000)
+  if(isDefined(hero_player) && distancesquared(player.origin, hero_player.origin) < 250000)
     hero_player create_and_play_dialog(category, type, "hr_");
-  else if(isdefined(rival_player) && distancesquared(player.origin, rival_player.origin) < 250000)
+  else if(isDefined(rival_player) && distancesquared(player.origin, rival_player.origin) < 250000)
     rival_player create_and_play_dialog(category, type, "riv_");
 }
 
 do_announcer_playvox(category, type, team) {
-  if(!isdefined(level.vox.speaker["announcer"].alias[category]) || !isdefined(level.vox.speaker["announcer"].alias[category][type])) {
+  if(!isDefined(level.vox.speaker["announcer"].alias[category]) || !isDefined(level.vox.speaker["announcer"].alias[category][type])) {
     return;
   }
-  if(!isdefined(level.devil_is_speaking))
+  if(!isDefined(level.devil_is_speaking))
     level.devil_is_speaking = 0;
 
   prefix = level.vox.speaker["announcer"].prefix;
   suffix = level.vox.speaker["announcer"].ent zmbvoxgetlinevariant(prefix, level.vox.speaker["announcer"].alias[category][type]);
 
-  if(!isdefined(suffix)) {
+  if(!isDefined(suffix)) {
     return;
   }
   alias = prefix + suffix;
@@ -610,7 +620,7 @@ do_announcer_playvox(category, type, team) {
   if(level.devil_is_speaking == 0) {
     level.devil_is_speaking = 1;
 
-    if(!isdefined(team))
+    if(!isDefined(team))
       level.vox.speaker["announcer"].ent playsoundwithnotify(alias, "sounddone");
     else
       level thread zmbvoxannouncertoteam(category, type, team);
@@ -624,13 +634,13 @@ zmbvoxannouncertoteam(category, type, team) {
   prefix = level.vox.speaker["announcer"].prefix;
   alias_to_team = prefix + level.vox.speaker["announcer"].ent zmbvoxgetlinevariant(prefix, level.vox.speaker["announcer"].alias[category][type]);
 
-  if(isdefined(level.vox.speaker["announcer"].response[category][type]))
+  if(isDefined(level.vox.speaker["announcer"].response[category][type]))
     alias_to_rival = prefix + level.vox.speaker["announcer"].ent zmbvoxgetlinevariant(prefix, level.vox.speaker["announcer"].response[category][type]);
 
   players = get_players();
 
-  for (i = 0; i < players.size; i++) {
-    if(!isdefined(players[i]._encounters_team)) {
+  for(i = 0; i < players.size; i++) {
+    if(!isDefined(players[i]._encounters_team)) {
       continue;
     }
     if(players[i]._encounters_team == team) {
@@ -638,7 +648,7 @@ zmbvoxannouncertoteam(category, type, team) {
       continue;
     }
 
-    if(isdefined(alias_to_rival))
+    if(isDefined(alias_to_rival))
       level.vox.speaker["announcer"].ent playsoundtoplayer(alias_to_rival, players[i]);
   }
 
@@ -659,18 +669,18 @@ player_killstreak_timer() {
   kills = getdvarint(#"_id_FB12F109");
   time = getdvarint(#"_id_D0575D76");
 
-  if(!isdefined(self.timerisrunning)) {
+  if(!isDefined(self.timerisrunning)) {
     self.timerisrunning = 0;
     self.killcounter = 0;
   }
 
-  while (true) {
+  while(true) {
     self waittill("zom_kill", zomb);
 
-    if(isdefined(zomb._black_hole_bomb_collapse_death) && zomb._black_hole_bomb_collapse_death == 1) {
+    if(isDefined(zomb._black_hole_bomb_collapse_death) && zomb._black_hole_bomb_collapse_death == 1) {
       continue;
     }
-    if(isdefined(zomb.microwavegun_death) && zomb.microwavegun_death) {
+    if(isDefined(zomb.microwavegun_death) && zomb.microwavegun_death) {
       continue;
     }
     self.killcounter++;
@@ -686,25 +696,25 @@ player_zombie_kill_vox(hit_location, player, mod, zombie) {
   weapon = player getcurrentweapon();
   dist = distancesquared(player.origin, zombie.origin);
 
-  if(!isdefined(level.zombie_vars[player.team]["zombie_insta_kill"]))
+  if(!isDefined(level.zombie_vars[player.team]["zombie_insta_kill"]))
     level.zombie_vars[player.team]["zombie_insta_kill"] = 0;
 
   instakill = level.zombie_vars[player.team]["zombie_insta_kill"];
   death = [[level.audio_get_mod_type]](hit_location, mod, weapon, zombie, instakill, dist, player);
   chance = get_response_chance(death);
 
-  if(chance > randomintrange(1, 100) && !(isdefined(player.force_wait_on_kill_line) && player.force_wait_on_kill_line)) {
+  if(chance > randomintrange(1, 100) && !(isDefined(player.force_wait_on_kill_line) && player.force_wait_on_kill_line)) {
     player.force_wait_on_kill_line = 1;
     player create_and_play_dialog("kill", death);
     wait 2;
 
-    if(isdefined(player))
+    if(isDefined(player))
       player.force_wait_on_kill_line = 0;
   }
 }
 
 get_response_chance(event) {
-  if(!isdefined(level.response_chances[event]))
+  if(!isDefined(level.response_chances[event]))
     return 0;
 
   return level.response_chances[event];
@@ -715,7 +725,7 @@ get_mod_type(impact, mod, weapon, zombie, instakill, dist, player) {
   med_dist = 15376;
   far_dist = 160000;
 
-  if(isdefined(zombie._black_hole_bomb_collapse_death) && zombie._black_hole_bomb_collapse_death == 1)
+  if(isDefined(zombie._black_hole_bomb_collapse_death) && zombie._black_hole_bomb_collapse_death == 1)
     return "default";
 
   if(zombie.animname == "screecher_zombie" && mod == "MOD_MELEE")
@@ -742,7 +752,7 @@ get_mod_type(impact, mod, weapon, zombie, instakill, dist, player) {
       return "slipgun_kill";
   }
 
-  if(isdefined(zombie.damageweapon) && zombie.damageweapon == "cymbal_monkey_zm") {
+  if(isDefined(zombie.damageweapon) && zombie.damageweapon == "cymbal_monkey_zm") {
     if(instakill)
       return "weapon_instakill";
     else
@@ -762,14 +772,14 @@ get_mod_type(impact, mod, weapon, zombie, instakill, dist, player) {
       return "melee_instakill";
   }
 
-  if(isdefined(zombie.damageweapon) && zombie.damageweapon == "zombie_nesting_doll_single") {
+  if(isDefined(zombie.damageweapon) && zombie.damageweapon == "zombie_nesting_doll_single") {
     if(!instakill)
       return "dolls";
     else
       return "weapon_instakill";
   }
 
-  if(is_explosive_damage(mod) && weapon != "ray_gun_zm" && !(isdefined(zombie.is_on_fire) && zombie.is_on_fire)) {
+  if(is_explosive_damage(mod) && weapon != "ray_gun_zm" && !(isDefined(zombie.is_on_fire) && zombie.is_on_fire)) {
     if(!instakill)
       return "explosive";
     else
@@ -790,7 +800,7 @@ get_mod_type(impact, mod, weapon, zombie, instakill, dist, player) {
       return "weapon_instakill";
   }
 
-  if(!isdefined(impact))
+  if(!isDefined(impact))
     impact = "";
 
   if(mod == "MOD_RIFLE_BULLET" || mod == "MOD_PISTOL_BULLET") {
@@ -823,7 +833,7 @@ timer_actual(kills, time) {
   self endon("death");
   timer = gettime() + time * 1000;
 
-  while (gettime() < timer) {
+  while(gettime() < timer) {
     if(self.killcounter > kills) {
       self create_and_play_dialog("kill", "streak");
       wait 1;
@@ -840,7 +850,7 @@ timer_actual(kills, time) {
 }
 
 perks_a_cola_jingle_timer() {
-  if(isdefined(level.sndperksacolaloopoverride)) {
+  if(isDefined(level.sndperksacolaloopoverride)) {
     self thread[[level.sndperksacolaloopoverride]]();
     return;
   }
@@ -848,7 +858,7 @@ perks_a_cola_jingle_timer() {
   self endon("death");
   self thread play_random_broken_sounds();
 
-  while (true) {
+  while(true) {
     wait(randomfloatrange(31, 45));
 
     if(randomint(100) < 15)
@@ -857,24 +867,24 @@ perks_a_cola_jingle_timer() {
 }
 
 play_jingle_or_stinger(perksacola) {
-  if(isdefined(level.sndperksacolajingleoverride)) {
+  if(isDefined(level.sndperksacolajingleoverride)) {
     self thread[[level.sndperksacolajingleoverride]]();
     return;
   }
 
   playsoundatposition("evt_electrical_surge", self.origin);
 
-  if(!isdefined(self.jingle_is_playing))
+  if(!isDefined(self.jingle_is_playing))
     self.jingle_is_playing = 0;
 
-  if(isdefined(perksacola)) {
+  if(isDefined(perksacola)) {
     if(self.jingle_is_playing == 0 && level.music_override == 0) {
       self.jingle_is_playing = 1;
       self playsoundontag(perksacola, "tag_origin", "sound_done");
 
       if(issubstr(perksacola, "sting"))
         wait 10;
-      else if(isdefined(self.longjinglewait))
+      else if(isDefined(self.longjinglewait))
         wait 60;
       else
         wait 30;
@@ -888,17 +898,17 @@ play_random_broken_sounds() {
   self endon("death");
   level endon("jingle_playing");
 
-  if(!isdefined(self.script_sound))
+  if(!isDefined(self.script_sound))
     self.script_sound = "null";
 
   if(self.script_sound == "mus_perks_revive_jingle") {
-    while (true) {
+    while(true) {
       wait(randomfloatrange(7, 18));
       playsoundatposition("zmb_perks_broken_jingle", self.origin);
       playsoundatposition("evt_electrical_surge", self.origin);
     }
   } else {
-    while (true) {
+    while(true) {
       wait(randomfloatrange(7, 18));
       playsoundatposition("evt_electrical_surge", self.origin);
     }
@@ -909,8 +919,9 @@ perk_vox(perk) {
   self endon("death");
   self endon("disconnect");
 
-  if(!isdefined(level.vox.speaker["player"].alias["perk"][perk])) {
+  if(!isDefined(level.vox.speaker["player"].alias["perk"][perk])) {
     iprintlnbold(perk + " has no PLR VOX category set up.");
+
     return;
   }
 
@@ -920,12 +931,12 @@ perk_vox(perk) {
 dialog_debugger(category, type) {
   println("DIALOG DEBUGGER: " + self.zmbvoxid + " attempting to speak");
 
-  if(!isdefined(level.vox.speaker[self.zmbvoxid].alias[category][type])) {
+  if(!isDefined(level.vox.speaker[self.zmbvoxid].alias[category][type])) {
     iprintlnbold(self.zmbvoxid + " tried to play a line, but no alias exists. Category: " + category + " Type: " + type);
     println("DIALOG DEBUGGER ERROR: Alias Not Defined For " + category + " " + type);
   }
 
-  if(!isdefined(level.vox.speaker[self.zmbvoxid].response))
+  if(!isDefined(level.vox.speaker[self.zmbvoxid].response))
     println("DIALOG DEBUGGER ERROR: Response Alias Not Defined For " + category + " " + type + "_response");
 }
 
@@ -949,7 +960,7 @@ init_music_states() {
 }
 
 setupmusicstate(state, alias, is_alias, override, round_override, musicstate) {
-  if(!isdefined(level.zmb_music_states[state]))
+  if(!isDefined(level.zmb_music_states[state]))
     level.zmb_music_states[state] = spawnstruct();
 
   level.zmb_music_states[state].music = alias;
@@ -963,14 +974,15 @@ change_zombie_music(state) {
   wait 0.05;
   m = level.zmb_music_states[state];
 
-  if(!isdefined(m)) {
+  if(!isDefined(m)) {
     iprintlnbold("Called change_zombie_music on undefined state: " + state);
+
     return;
   }
 
   do_logic = 1;
 
-  if(!isdefined(level.old_music_state))
+  if(!isDefined(level.old_music_state))
     do_logic = 0;
 
   if(do_logic) {
@@ -980,7 +992,7 @@ change_zombie_music(state) {
       return;
   }
 
-  if(!isdefined(m.round_override))
+  if(!isDefined(m.round_override))
     m.round_override = 0;
 
   if(m.override == 1 && level.music_override == 1) {
@@ -990,7 +1002,7 @@ change_zombie_music(state) {
     return;
   }
   if(m.is_alias) {
-    if(isdefined(m.musicstate))
+    if(isDefined(m.musicstate))
       maps\mp\_music::setmusicstate(m.musicstate);
 
     play_sound_2d(m.music);
@@ -1007,17 +1019,17 @@ weapon_toggle_vox(alias, weapon) {
   sound_to_play = prefix + alias;
   type = undefined;
 
-  if(isdefined(weapon)) {
+  if(isDefined(weapon)) {
     type = get_weapon_num(weapon);
 
-    if(!isdefined(type))
+    if(!isDefined(type))
       return;
   }
 
   self stopsounds();
   wait 0.05;
 
-  if(isdefined(type)) {
+  if(isDefined(type)) {
     self playsoundwithnotify(prefix + "weapon_" + type, "sounddone");
     self waittill("sounddone");
   }
@@ -1044,10 +1056,10 @@ get_weapon_num(weapon) {
 }
 
 addasspeakernpc(ignorenearbyspeakers) {
-  if(!isdefined(level.npcs))
+  if(!isDefined(level.npcs))
     level.npcs = [];
 
-  if(isdefined(ignorenearbyspeakers) && ignorenearbyspeakers)
+  if(isDefined(ignorenearbyspeakers) && ignorenearbyspeakers)
     self.ignorenearbyspkrs = 1;
   else
     self.ignorenearbyspkrs = 0;
@@ -1061,7 +1073,7 @@ arenearbyspeakersactive() {
   nearbyspeakeractive = 0;
   speakers = get_players();
 
-  if(isdefined(level.npcs))
+  if(isDefined(level.npcs))
     speakers = arraycombine(speakers, level.npcs, 1, 0);
 
   foreach(person in speakers) {
@@ -1075,10 +1087,9 @@ arenearbyspeakersactive() {
       if(person maps\mp\zombies\_zm_laststand::player_is_in_laststand())
         continue;
     } else {
-
     }
 
-    if(isdefined(person.isspeaking) && person.isspeaking && !(isdefined(person.ignorenearbyspkrs) && person.ignorenearbyspkrs)) {
+    if(isDefined(person.isspeaking) && person.isspeaking && !(isDefined(person.ignorenearbyspkrs) && person.ignorenearbyspkrs)) {
       if(distancesquared(self.origin, person.origin) < radius * radius)
         nearbyspeakeractive = 1;
     }
@@ -1096,7 +1107,7 @@ zmbvoxcreate() {
 zmbvoxinitspeaker(speaker, prefix, ent) {
   ent.zmbvoxid = speaker;
 
-  if(!isdefined(self.speaker[speaker])) {
+  if(!isDefined(self.speaker[speaker])) {
     self.speaker[speaker] = spawnstruct();
     self.speaker[speaker].alias = [];
   }
@@ -1106,26 +1117,26 @@ zmbvoxinitspeaker(speaker, prefix, ent) {
 }
 
 zmbvoxadd(speaker, category, type, alias, response) {
-  assert(isdefined(speaker));
-  assert(isdefined(category));
-  assert(isdefined(type));
-  assert(isdefined(alias));
+  assert(isDefined(speaker));
+  assert(isDefined(category));
+  assert(isDefined(type));
+  assert(isDefined(alias));
 
-  if(!isdefined(self.speaker[speaker])) {
+  if(!isDefined(self.speaker[speaker])) {
     self.speaker[speaker] = spawnstruct();
     self.speaker[speaker].alias = [];
   }
 
-  if(!isdefined(self.speaker[speaker].alias[category]))
+  if(!isDefined(self.speaker[speaker].alias[category]))
     self.speaker[speaker].alias[category] = [];
 
   self.speaker[speaker].alias[category][type] = alias;
 
-  if(isdefined(response)) {
-    if(!isdefined(self.speaker[speaker].response))
+  if(isDefined(response)) {
+    if(!isDefined(self.speaker[speaker].response))
       self.speaker[speaker].response = [];
 
-    if(!isdefined(self.speaker[speaker].response[category]))
+    if(!isDefined(self.speaker[speaker].response[category]))
       self.speaker[speaker].response[category] = [];
 
     self.speaker[speaker].response[category][type] = response;
@@ -1135,38 +1146,39 @@ zmbvoxadd(speaker, category, type, alias, response) {
 }
 
 zmbvoxgetlinevariant(prefix, alias_suffix, force_variant, override) {
-  if(!isdefined(self.sound_dialog)) {
+  if(!isDefined(self.sound_dialog)) {
     self.sound_dialog = [];
     self.sound_dialog_available = [];
   }
 
-  if(!isdefined(self.sound_dialog[alias_suffix])) {
+  if(!isDefined(self.sound_dialog[alias_suffix])) {
     num_variants = maps\mp\zombies\_zm_spawner::get_number_variants(prefix + alias_suffix);
 
     if(num_variants <= 0) {
       if(getdvarint(#"_id_0AEB127D") > 0)
         println("DIALOG DEBUGGER: No variants found for - " + prefix + alias_suffix);
+
       return undefined;
     }
 
-    for (i = 0; i < num_variants; i++)
+    for(i = 0; i < num_variants; i++)
       self.sound_dialog[alias_suffix][i] = i;
 
     self.sound_dialog_available[alias_suffix] = [];
   }
 
   if(self.sound_dialog_available[alias_suffix].size <= 0) {
-    for (i = 0; i < self.sound_dialog[alias_suffix].size; i++)
+    for(i = 0; i < self.sound_dialog[alias_suffix].size; i++)
       self.sound_dialog_available[alias_suffix][i] = self.sound_dialog[alias_suffix][i];
   }
 
   variation = random(self.sound_dialog_available[alias_suffix]);
   arrayremovevalue(self.sound_dialog_available[alias_suffix], variation);
 
-  if(isdefined(force_variant))
+  if(isDefined(force_variant))
     variation = force_variant;
 
-  if(!isdefined(override))
+  if(!isDefined(override))
     override = 0;
 
   return alias_suffix + "_" + variation;
@@ -1175,15 +1187,15 @@ zmbvoxgetlinevariant(prefix, alias_suffix, force_variant, override) {
 zmbvoxcrowdonteam(alias, team, other_alias) {
   alias = "vox_crowd_" + alias;
 
-  if(!isdefined(team)) {
+  if(!isDefined(team)) {
     level play_sound_2d(alias);
     return;
   }
 
   players = get_players();
 
-  for (i = 0; i < players.size; i++) {
-    if(!isdefined(players[i]._encounters_team)) {
+  for(i = 0; i < players.size; i++) {
+    if(!isDefined(players[i]._encounters_team)) {
       continue;
     }
     if(players[i]._encounters_team == team) {
@@ -1191,7 +1203,7 @@ zmbvoxcrowdonteam(alias, team, other_alias) {
       continue;
     }
 
-    if(isdefined(other_alias))
+    if(isDefined(other_alias))
       players[i] playsoundtoplayer(other_alias, players[i]);
   }
 }
@@ -1207,19 +1219,19 @@ playvoxtoplayer(category, type, force_variant) {
   alias_suffix = level.vox.speaker[self.zmbvoxid].alias[category][type];
   prefix = prefix + self.characterindex + "_";
 
-  if(!isdefined(alias_suffix)) {
+  if(!isDefined(alias_suffix)) {
     return;
   }
   sound_to_play = self zmbvoxgetlinevariant(prefix, alias_suffix, force_variant);
 
-  if(isdefined(sound_to_play)) {
+  if(isDefined(sound_to_play)) {
     sound = prefix + sound_to_play;
     self playsoundtoplayer(sound, self);
   }
 }
 
 sndmusicstingerevent(type, player) {
-  if(isdefined(level.sndmusicstingerevent))
+  if(isDefined(level.sndmusicstingerevent))
     [[level.sndmusicstingerevent]](type, player);
 }
 

@@ -14,7 +14,7 @@
 #include maps\mp\zombies\_zm_audio;
 
 init() {
-  if(isdefined(level.gamedifficulty) && level.gamedifficulty == 0) {
+  if(isDefined(level.gamedifficulty) && level.gamedifficulty == 0) {
     spoon_easy_cleanup();
     return;
   }
@@ -30,6 +30,7 @@ init() {
   level.n_spoon_kill_count = 0;
   flag_init("spoon_obtained");
   flag_init("charged_spoon");
+
   level thread debug_prison_spoon_quest();
 }
 
@@ -55,12 +56,12 @@ extra_death_func_to_check_for_splat_death() {
     }
   }
 
-  if(isdefined(self.attacker.killed_with_only_tomahawk)) {
+  if(isDefined(self.attacker.killed_with_only_tomahawk)) {
     if(self.damageweapon != "bouncing_tomahawk_zm" && self.damageweapon != "none")
       self.attacker.killed_with_only_tomahawk = 0;
   }
 
-  if(isdefined(self.attacker.killed_something_thq))
+  if(isDefined(self.attacker.killed_something_thq))
     self.attacker.killed_something_thq = 1;
 
   return false;
@@ -80,6 +81,7 @@ zombie_spoon_func() {
 
   if(level.n_spoon_kill_count >= 50) {
     iprintlnbold("Spoon Charged");
+
     flag_set("charged_spoon");
   }
 }
@@ -89,7 +91,7 @@ wait_for_initial_conditions() {
   m_spoon_pickup ghost();
   m_spoon_pickup ghostindemo();
 
-  while (!isdefined(level.characters_in_nml) || level.characters_in_nml.size == 0)
+  while(!isDefined(level.characters_in_nml) || level.characters_in_nml.size == 0)
     wait 1;
 
   flag_wait("soul_catchers_charged");
@@ -98,7 +100,7 @@ wait_for_initial_conditions() {
   m_poster setcandamage(1);
   b_poster_knocked_down = 0;
 
-  while (!b_poster_knocked_down) {
+  while(!b_poster_knocked_down) {
     m_poster waittill("damage", damage, attacker, direction, point, type, tagname, modelname, partname, weaponname);
 
     if(weaponname == "frag_grenade_zm" || weaponname == "bouncing_tomahawk_zm" || weaponname == "upgraded_tomahawk_zm") {
@@ -106,7 +108,7 @@ wait_for_initial_conditions() {
       playsoundatposition("zmb_squest_spoon_poster", m_poster.origin);
       m_poster delete();
 
-      if(isdefined(attacker) && isplayer(attacker))
+      if(isDefined(attacker) && isplayer(attacker))
         attacker do_player_general_vox("quest", "secret_poster", undefined, 100);
 
       wait 1.0;
@@ -124,7 +126,7 @@ wait_for_initial_conditions() {
   m_spoon setcandamage(1);
   b_spoon_shocked = 0;
 
-  while (!b_spoon_shocked) {
+  while(!b_spoon_shocked) {
     m_spoon waittill("damage", damage, attacker, direction, point, type, tagname, modelname, partname, weaponname);
     m_spoon.health = m_spoon.health + damage;
 
@@ -166,18 +168,18 @@ tomahawk_the_spoon(grenade, n_grenade_charge_power) {
 }
 
 give_player_spoon_upon_receipt(m_tomahawk, m_player_spoon) {
-  while (isdefined(m_tomahawk))
+  while(isDefined(m_tomahawk))
     wait 0.05;
 
   m_player_spoon delete();
 
-  if(!self hasweapon("spoon_zm_alcatraz") && !self hasweapon("spork_zm_alcatraz") && !(isdefined(self.spoon_in_tub) && self.spoon_in_tub)) {
+  if(!self hasweapon("spoon_zm_alcatraz") && !self hasweapon("spork_zm_alcatraz") && !(isDefined(self.spoon_in_tub) && self.spoon_in_tub)) {
     self giveweapon("spoon_zm_alcatraz");
     self set_player_melee_weapon("spoon_zm_alcatraz");
     level thread maps\mp\zombies\_zm_audio::sndmusicstingerevent("spoon", self);
     weapons = self getweaponslist();
 
-    for (i = 0; i < weapons.size; i++) {
+    for(i = 0; i < weapons.size; i++) {
       if(issubstr(weapons[i], "knife"))
         self takeweapon(weapons[i]);
     }
@@ -198,8 +200,8 @@ bucket_init() {
 }
 
 wait_for_bucket_activated(player) {
-  if(isdefined(player)) {
-    while (true) {
+  if(isDefined(player)) {
+    while(true) {
       level.t_bathtub waittill("trigger", who);
 
       if(who == player)
@@ -242,7 +244,7 @@ thrust_the_spork() {
 }
 
 debug_prison_spoon_quest() {
-  while (true) {
+  while(true) {
     a_players = getplayers();
 
     foreach(player in a_players) {
@@ -254,4 +256,5 @@ debug_prison_spoon_quest() {
 
     wait 1.0;
   }
+
 }

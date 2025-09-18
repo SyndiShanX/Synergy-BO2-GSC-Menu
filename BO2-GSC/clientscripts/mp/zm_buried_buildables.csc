@@ -59,14 +59,14 @@ buildable_setup_glint(localclientnum, oldval, newval, bnewent, binitialsnap, fie
   if(newval == 1) {
     offset = buildable_setup_glint_offset();
     self.buildable_glint = playfx(localclientnum, level._effect["fx_buried_key_glint"], self.origin + offset);
-  } else if(isdefined(self.buildable_glint))
+  } else if(isDefined(self.buildable_glint))
     stopfx(localclientnum, self.buildable_glint);
 }
 
 buildable_setup_glint_offset() {
   offset = (0, 0, 0);
 
-  if(isdefined(self.model)) {
+  if(isDefined(self.model)) {
     if(issubstr(self.model, "booze"))
       offset = vectorscale((0, 0, 1), 14.5);
     else if(issubstr(self.model, "candy"))

@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\bots\_bot_hq.gsc
-***************************************/
+**************************************/
 
 #include maps\mp\gametypes\koth;
 #include common_scripts\utility;
@@ -32,7 +32,7 @@ bot_hq_think() {
     mine = getnearestnode(self.origin);
     node = hq_nearest_node();
 
-    if(isdefined(mine) && nodesvisible(mine, node))
+    if(isDefined(mine) && nodesvisible(mine, node))
       self lookat(level.radio.baseorigin + vectorscale((0, 0, 1), 30.0));
   }
 }
@@ -40,7 +40,7 @@ bot_hq_think() {
 bot_has_hq_goal() {
   origin = self getgoal("hq_radio");
 
-  if(isdefined(origin)) {
+  if(isDefined(origin)) {
     foreach(node in level.radio.nodes) {
       if(distancesquared(origin, node.origin) < 4096)
         return true;
@@ -101,7 +101,7 @@ bot_patrol_hq() {
     nearest = hq_nearest_node();
     mine = getnearestnode(goal);
 
-    if(isdefined(mine) && !nodesvisible(mine, nearest)) {
+    if(isDefined(mine) && !nodesvisible(mine, nearest)) {
       self clearlookat();
       self cancelgoal("hq_patrol");
     }
@@ -129,7 +129,7 @@ bot_patrol_hq() {
 
     mine = getnearestnode(goal);
 
-    if(isdefined(mine) && !nodesvisible(mine, nearest)) {
+    if(isDefined(mine) && !nodesvisible(mine, nearest)) {
       self clearlookat();
       self cancelgoal("hq_patrol");
     }
@@ -140,7 +140,7 @@ bot_patrol_hq() {
   nodes = getvisiblenodes(nearest);
   assert(nodes.size);
 
-  for (i = randomint(nodes.size); i < nodes.size; i++) {
+  for(i = randomint(nodes.size); i < nodes.size; i++) {
     if(self maps\mp\bots\_bot::bot_friend_goal_in_radius("hq_radio", nodes[i].origin, 128) == 0) {
       if(self maps\mp\bots\_bot::bot_friend_goal_in_radius("hq_patrol", nodes[i].origin, 256) == 0) {
         self addgoal(nodes[i], 24, 3, "hq_patrol");
@@ -180,10 +180,10 @@ bot_move_to_hq() {
 bot_get_look_at() {
   enemy = self maps\mp\bots\_bot::bot_get_closest_enemy(self.origin, 1);
 
-  if(isdefined(enemy)) {
+  if(isDefined(enemy)) {
     node = getvisiblenode(self.origin, enemy.origin);
 
-    if(isdefined(node) && distancesquared(self.origin, node.origin) > 16384)
+    if(isDefined(node) && distancesquared(self.origin, node.origin) > 16384)
       return node.origin;
   }
 
@@ -192,17 +192,17 @@ bot_get_look_at() {
   if(enemies.size)
     enemy = random(enemies);
 
-  if(isdefined(enemy)) {
+  if(isDefined(enemy)) {
     node = getvisiblenode(self.origin, enemy.origin);
 
-    if(isdefined(node) && distancesquared(self.origin, node.origin) > 16384)
+    if(isDefined(node) && distancesquared(self.origin, node.origin) > 16384)
       return node.origin;
   }
 
   spawn = random(level.spawnpoints);
   node = getvisiblenode(self.origin, spawn.origin);
 
-  if(isdefined(node) && distancesquared(self.origin, node.origin) > 16384)
+  if(isDefined(node) && distancesquared(self.origin, node.origin) > 16384)
     return node.origin;
 
   return level.radio.baseorigin;
@@ -250,7 +250,7 @@ is_hq_contested(skip_team) {
 
   enemy = self maps\mp\bots\_bot::bot_get_closest_enemy(level.radio.baseorigin, 1);
 
-  if(isdefined(enemy) && distancesquared(enemy.origin, level.radio.baseorigin) < 262144)
+  if(isDefined(enemy) && distancesquared(enemy.origin, level.radio.baseorigin) < 262144)
     return true;
 
   return false;
@@ -278,7 +278,7 @@ bot_hq_grenade() {
 
   enemy = self maps\mp\bots\_bot::bot_get_closest_enemy(level.radio.baseorigin, 0);
 
-  if(isdefined(enemy))
+  if(isDefined(enemy))
     origin = enemy.origin;
   else
     origin = level.radio.baseorigin;
@@ -298,17 +298,17 @@ bot_hq_tactical_insertion() {
   dist = self getlookaheaddist();
   dir = self getlookaheaddir();
 
-  if(!isdefined(dist) || !isdefined(dir)) {
+  if(!isDefined(dist) || !isDefined(dir)) {
     return;
   }
   node = hq_nearest_node();
   mine = getnearestnode(self.origin);
 
-  if(isdefined(mine) && !nodesvisible(mine, node)) {
+  if(isDefined(mine) && !nodesvisible(mine, node)) {
     origin = self.origin + vectorscale(dir, dist);
     next = getnearestnode(origin);
 
-    if(isdefined(next) && nodesvisible(next, node))
+    if(isDefined(next) && nodesvisible(next, node))
       bot_combat_tactical_insertion(self.origin);
   }
 }
@@ -319,5 +319,5 @@ hq_nearest_node() {
 
 hq_is_contested() {
   enemy = self maps\mp\bots\_bot::bot_get_closest_enemy(level.radio.baseorigin, 0);
-  return isdefined(enemy) && distancesquared(enemy.origin, level.radio.baseorigin) < level.radio.node_radius * level.radio.node_radius;
+  return isDefined(enemy) && distancesquared(enemy.origin, level.radio.baseorigin) < level.radio.node_radius * level.radio.node_radius;
 }

@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\mp_drone.gsc
-***************************************/
+**************************************/
 
 #include maps\mp\_utility;
 #include maps\mp\mp_drone_fx;
@@ -91,7 +91,7 @@ levelspawndvars(reset_dvars) {
 geo_changes() {
   rts_floor = getent("overwatch_floor", "targetname");
 
-  if(isdefined(rts_floor))
+  if(isDefined(rts_floor))
     rts_floor delete();
 
   removes = getentarray("rts_only", "targetname");

@@ -18,13 +18,13 @@ anim_get_dvar(dvar, def) {
 
 set_orient_mode(mode, val1) {
   if(level.dog_debug_orient == self getentnum()) {
-    if(isdefined(val1))
+    if(isDefined(val1))
       println("DOG:Setting orient mode: " + mode + " " + val1 + " " + gettime());
     else
       println("DOG:Setting orient mode: " + mode + " " + gettime());
   }
 
-  if(isdefined(val1))
+  if(isDefined(val1))
     self orientmode(mode, val1);
   else
     self orientmode(mode);
@@ -51,15 +51,18 @@ debug_turn_print(text, line) {
     lookaheadyaw = angleclamp180(lookaheadangles[1]);
     println(text + " " + gettime() + " cur: " + currentyaw + " look: " + lookaheadyaw + " desired: " + desiredyaw);
   }
+
 }
 
 debug_allow_movement() {
   return anim_get_dvar_int("debug_dog_allow_movement", "1");
+
   return 1;
 }
 
 debug_allow_combat() {
   return anim_get_dvar_int("debug_dog_allow_combat", "1");
+
   return 1;
 }
 
@@ -70,10 +73,10 @@ current_yaw_line_debug(duration) {
   current_color_index = 0;
   start_time = gettime();
 
-  if(!isdefined(level.lastdebugheight))
+  if(!isDefined(level.lastdebugheight))
     level.lastdebugheight = 15;
 
-  while (gettime() - start_time < 1000) {
+  while(gettime() - start_time < 1000) {
     pos1 = (self.origin[0], self.origin[1], self.origin[2] + level.lastdebugheight);
     pos2 = pos1 + vectorscale(anglestoforward(self.angles), (current_color_index + 1) * 10);
     line(pos1, pos2, currentyawcolor[current_color_index], 0.3, 1, duration);
@@ -101,10 +104,10 @@ getanimdirection(damageyaw) {
 }
 
 setfootstepeffect(name, fx) {
-  assert(isdefined(name), "Need to define the footstep surface type.");
-  assert(isdefined(fx), "Need to define the mud footstep effect.");
+  assert(isDefined(name), "Need to define the footstep surface type.");
+  assert(isDefined(fx), "Need to define the mud footstep effect.");
 
-  if(!isdefined(anim.optionalstepeffects))
+  if(!isDefined(anim.optionalstepeffects))
     anim.optionalstepeffects = [];
 
   anim.optionalstepeffects[anim.optionalstepeffects.size] = name;

@@ -27,7 +27,7 @@ missile_fired(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, 
     objective_seticon(localclientnum, clientobjid, "remotemissile_target");
     objective_seticonsize(localclientnum, clientobjid, 50);
   } else if(newval == 2) {
-    if(isdefined(self.hellfireobjid)) {
+    if(isDefined(self.hellfireobjid)) {
       self notify("hellfire_detonated");
       objective_delete(localclientnum, self.hellfireobjid);
       releaseobjid(localclientnum, self.hellfireobjid);
@@ -56,7 +56,7 @@ destruction_watcher(localclientnum, clientobjid) {
   self waittill_any("death", "entityshutdown");
   wait 0.4;
 
-  if(isdefined(clientobjid)) {
+  if(isDefined(clientobjid)) {
     objective_delete(localclientnum, clientobjid);
     releaseobjid(localclientnum, clientobjid);
   }

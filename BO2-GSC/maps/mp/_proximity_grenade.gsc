@@ -29,6 +29,7 @@ init() {
   level.proximitygrenadeeffectdebug = weapons_get_dvar_int("scr_proximityGrenadeEffectDebug", "0");
   level.proximitygrenadeactivationtime = weapons_get_dvar("scr_proximityGrenadeActivationTime", 0.1);
   level.poisonfxduration = 6;
+
   level thread updatedvars();
 }
 
@@ -37,7 +38,7 @@ register() {
 }
 
 updatedvars() {
-  while (true) {
+  while(true) {
     level.proximitygrenadedetectionradius = weapons_get_dvar_int("scr_proximityGrenadeDetectionRadius", level.proximitygrenadedetectionradius);
     level.proximitygrenadegraceperiod = weapons_get_dvar("scr_proximityGrenadeGracePeriod", level.proximitygrenadegraceperiod);
     level.proximitygrenadedamageradius = weapons_get_dvar_int("scr_proximityGrenadeDamageRadius", level.proximitygrenadedamageradius);
@@ -92,8 +93,8 @@ cleanupkillcamentondeath() {
 }
 
 proximitydetonate(attacker, weaponname) {
-  if(isdefined(weaponname)) {
-    if(isdefined(attacker)) {
+  if(isDefined(weaponname)) {
+    if(isDefined(attacker)) {
       if(self.owner isenemyplayer(attacker)) {
         attacker maps\mp\_challenges::destroyedexplosive(weaponname);
         maps\mp\_scoreevents::processscoreevent("destroyed_proxy", attacker, self.owner, weaponname);
@@ -116,10 +117,10 @@ watchproximitygrenadehitplayer(owner) {
   self setowner(owner);
   self setteam(owner.team);
 
-  while (true) {
+  while(true) {
     self waittill("grenade_bounce", pos, normal, ent, surface);
 
-    if(isdefined(ent) && isplayer(ent) && surface != "riotshield") {
+    if(isDefined(ent) && isplayer(ent) && surface != "riotshield") {
       if(level.teambased && ent.team == self.owner.team) {
         continue;
       }
@@ -147,7 +148,7 @@ damageplayerinradius(position, owner, einflictor) {
   owner endon("disconnect");
   self thread watch_death();
 
-  if(!isdefined(einflictor.killcament)) {
+  if(!isDefined(einflictor.killcament)) {
     killcament = spawn("script_model", self.origin + vectorscale((0, 0, 1), 8.0));
     killcament deleteaftertime(3 + level.proximitygrenadedotdamagetime * level.proximitygrenadedotdamageinstances);
     killcament.soundmod = "taser_spike";
@@ -172,10 +173,10 @@ damageplayerinradius(position, owner, einflictor) {
   self playsound("wpn_taser_mine_zap");
   self setclientuivisibilityflag("hud_visible", 0);
 
-  for (i = 0; i < level.proximitygrenadedotdamageinstances; i++) {
+  for(i = 0; i < level.proximitygrenadedotdamageinstances; i++) {
     wait(level.proximitygrenadedotdamagetime);
-    assert(isdefined(owner));
-    assert(isdefined(killcament));
+    assert(isDefined(owner));
+    assert(isDefined(killcament));
     self dodamage(damage, position, owner, killcament, "none", "MOD_GAS", 0, "proximity_grenade_aoe_mp");
   }
 

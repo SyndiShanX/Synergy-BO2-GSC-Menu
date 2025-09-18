@@ -35,10 +35,10 @@ sndspectatorsetup() {
 sndspectatorafterliferevert() {
   self endon("disconnect");
 
-  while (true) {
+  while(true) {
     self waittill("spawned_spectator");
 
-    while (self.sessionstate == "spectator")
+    while(self.sessionstate == "spectator")
       wait 1;
 
     self clientnotify("sndSR");
@@ -53,13 +53,13 @@ sndsetupendgamemusicstates() {
 }
 
 sndperksacolajingle(perksacola) {
-  if(!isdefined(self.jingle_is_playing))
+  if(!isDefined(self.jingle_is_playing))
     self.jingle_is_playing = 0;
 
-  if(!isdefined(self.script_sound)) {
+  if(!isDefined(self.script_sound)) {
     return;
   }
-  if(!isdefined(self.sndent)) {
+  if(!isDefined(self.sndent)) {
     return;
   }
   if(self.jingle_is_playing == 0 && level.music_override == 0) {
@@ -77,7 +77,7 @@ sndperksacolaloop() {
   self.sndent = spawn("script_origin", self.origin);
   self.sndent playloopsound("zmb_perksacola_alcatraz_loop", 1);
 
-  while (true) {
+  while(true) {
     wait(randomfloatrange(31, 45));
 
     if(randomint(100) < 15)
@@ -96,7 +96,7 @@ sndeventstingertriggers() {
 sndeventstingertriggerthink() {
   struct = getstruct(self.target, "targetname");
 
-  while (true) {
+  while(true) {
     self waittill("trigger");
     playsoundatposition(struct.script_sound, struct.origin);
     level thread maps\mp\zombies\_zm_audio::sndmusicstingerevent("trigger_stinger");
@@ -109,7 +109,7 @@ sndeventtension() {
   wait 30;
   struct = spawnstruct();
 
-  while (true) {
+  while(true) {
     tension = sndgettensionlevel(struct);
     waittime = tension.waittime;
     level thread maps\mp\zombies\_zm_audio::sndmusicstingerevent(tension.tension_level);
@@ -157,7 +157,7 @@ waitfornexttension(time) {
 }
 
 sndboardmonitor() {
-  while (true) {
+  while(true) {
     level waittill("last_board_torn", barrier_origin);
     players = getplayers();
 
@@ -181,7 +181,7 @@ locationstingerwait(zone_name, type) {
   level.sndlastzone = undefined;
   level thread sndlocationbetweenroundswait();
 
-  while (true) {
+  while(true) {
     level waittill("newzoneActive", activezone);
 
     if(!sndlocationshouldplay(array, activezone)) {
@@ -205,7 +205,7 @@ locationstingerwait(zone_name, type) {
 
     level waittill("between_round_over");
 
-    while (is_true(level.sndroundwait))
+    while(is_true(level.sndroundwait))
       wait 0.1;
   }
 }
@@ -271,7 +271,7 @@ sndlocationbetweenrounds() {
   activezones = maps\mp\zombies\_zm_zonemgr::get_active_zone_names();
 
   foreach(zone in activezones) {
-    if(isdefined(level.sndlastzone) && zone == level.sndlastzone) {
+    if(isDefined(level.sndlastzone) && zone == level.sndlastzone) {
       continue;
     }
     players = getplayers();
@@ -292,14 +292,14 @@ sndlocationbetweenrounds() {
 sndlocationbetweenroundswait() {
   flag_wait("afterlife_start_over");
 
-  while (is_true(level.sndroundwait))
+  while(is_true(level.sndroundwait))
     wait 0.1;
 
-  while (true) {
+  while(true) {
     level thread sndlocationbetweenrounds();
     level waittill("between_round_over");
 
-    while (is_true(level.sndroundwait))
+    while(is_true(level.sndroundwait))
       wait 0.1;
   }
 }
@@ -307,7 +307,7 @@ sndlocationbetweenroundswait() {
 sndlocationqueue(zone) {
   level endon("newzoneActive");
 
-  while (is_true(level.sndstinger.isplaying))
+  while(is_true(level.sndstinger.isplaying))
     wait 0.5;
 
   level notify("newzoneActive", zone);
@@ -371,7 +371,7 @@ sndstingersetup() {
 createstingerstate(state, alias, prewait, interrupt) {
   s = level.sndstinger;
 
-  if(!isdefined(s.states[state])) {
+  if(!isDefined(s.states[state])) {
     s.states[state] = spawnstruct();
     s.states[state].alias = alias;
     s.states[state].prewait = prewait;
@@ -382,7 +382,7 @@ createstingerstate(state, alias, prewait, interrupt) {
 sndplaystinger(state, player) {
   s = level.sndstinger;
 
-  if(!isdefined(s.states[state])) {
+  if(!isDefined(s.states[state])) {
     return;
   }
   interrupt = s.states[state].interrupt == "ignore";
@@ -410,18 +410,18 @@ sndplaystinger(state, player) {
 playstinger(state, player, ignore) {
   s = level.sndstinger;
 
-  if(!isdefined(s.states[state])) {
+  if(!isDefined(s.states[state])) {
     return;
   }
   if(is_true(level.music_override)) {
     return;
   }
   if(is_true(ignore)) {
-    if(isdefined(player))
+    if(isDefined(player))
       player playsoundtoplayer(s.states[state].alias, player);
     else
       s.ent playsound(s.states[state].alias);
-  } else if(isdefined(player)) {
+  } else if(isDefined(player)) {
     player playsoundtoplayer(s.states[state].alias, player);
     wait 8;
   } else {
@@ -438,7 +438,7 @@ sndqueuestinger(state, player) {
   else {
     s.queue = 1;
 
-    while (true) {
+    while(true) {
       if(is_true(level.sndroundwait) || is_true(s.isplaying))
         wait 0.5;
       else
@@ -455,7 +455,7 @@ sndstingerroundwait() {
   wait 28;
   level.sndroundwait = 0;
 
-  while (true) {
+  while(true) {
     level waittill("end_of_round");
     level notify("sndStopBrutusLoop");
     level thread sndstingerroundwait_start();
@@ -488,11 +488,11 @@ sndlastlife_solo() {
   return;
   player = getplayers()[0];
 
-  while (true) {
+  while(true) {
     player waittill("sndLifeGone");
 
     if(player.lives == 0) {
-      while (is_true(player.afterlife))
+      while(is_true(player.afterlife))
         wait 0.1;
 
       level notify("sndStopBrutusLoop");
@@ -507,7 +507,7 @@ sndlastlife_multi() {
   level thread sndlastlife_multi_reset();
   sndplayersdead = 0;
 
-  while (true) {
+  while(true) {
     level waittill("bleed_out");
     sndplayersdead++;
     players = getplayers();
@@ -515,10 +515,10 @@ sndlastlife_multi() {
     if(players.size - sndplayersdead <= 1) {
       last_alive = sndlastlife_multi_getlastplayer();
 
-      while (last_alive.lives > 0)
+      while(last_alive.lives > 0)
         wait 0.1;
 
-      while (is_true(last_alive.afterlife))
+      while(is_true(last_alive.afterlife))
         wait 0.1;
 
       level notify("sndStopBrutusLoop");
@@ -554,7 +554,7 @@ sndmusicegg() {
   level.meteor_counter = 0;
   level.music_override = 0;
 
-  for (i = 0; i < origins.size; i++)
+  for(i = 0; i < origins.size; i++)
     level thread sndmusicegg_wait(origins[i]);
 }
 

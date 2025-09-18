@@ -39,10 +39,10 @@ pers_abilities_init_globals() {
   self.pers["zombies_multikilled"] = 0;
   self.non_headshot_kill_counter = 0;
 
-  if(isdefined(level.pers_upgrade_box_weapon) && level.pers_upgrade_box_weapon)
+  if(isDefined(level.pers_upgrade_box_weapon) && level.pers_upgrade_box_weapon)
     self.pers_box_weapon_awarded = undefined;
 
-  if(isdefined(level.pers_upgrade_nube) && level.pers_upgrade_nube)
+  if(isDefined(level.pers_upgrade_nube) && level.pers_upgrade_nube)
     self thread pers_nube_unlock_watcher();
 }
 
@@ -64,7 +64,7 @@ is_pers_system_disabled() {
 }
 
 setup_pers_upgrade_boards() {
-  if(isdefined(level.pers_upgrade_boards) && level.pers_upgrade_boards) {
+  if(isDefined(level.pers_upgrade_boards) && level.pers_upgrade_boards) {
     level.pers_boarding_round_start = 10;
     level.pers_boarding_number_of_boards_required = 74;
     pers_register_upgrade("board", ::pers_upgrade_boards_active, "pers_boarding", level.pers_boarding_number_of_boards_required, 0);
@@ -72,7 +72,7 @@ setup_pers_upgrade_boards() {
 }
 
 setup_pers_upgrade_revive() {
-  if(isdefined(level.pers_upgrade_revive) && level.pers_upgrade_revive) {
+  if(isDefined(level.pers_upgrade_revive) && level.pers_upgrade_revive) {
     level.pers_revivenoperk_number_of_revives_required = 17;
     level.pers_revivenoperk_number_of_chances_to_keep = 1;
     pers_register_upgrade("revive", ::pers_upgrade_revive_active, "pers_revivenoperk", level.pers_revivenoperk_number_of_revives_required, 1);
@@ -80,7 +80,7 @@ setup_pers_upgrade_revive() {
 }
 
 setup_pers_upgrade_multi_kill_headshots() {
-  if(isdefined(level.pers_upgrade_multi_kill_headshots) && level.pers_upgrade_multi_kill_headshots) {
+  if(isDefined(level.pers_upgrade_multi_kill_headshots) && level.pers_upgrade_multi_kill_headshots) {
     level.pers_multikill_headshots_required = 5;
     level.pers_multikill_headshots_upgrade_reset_counter = 25;
     pers_register_upgrade("multikill_headshots", ::pers_upgrade_headshot_active, "pers_multikill_headshots", level.pers_multikill_headshots_required, 0);
@@ -88,7 +88,7 @@ setup_pers_upgrade_multi_kill_headshots() {
 }
 
 setup_pers_upgrade_cash_back() {
-  if(isdefined(level.pers_upgrade_cash_back) && level.pers_upgrade_cash_back) {
+  if(isDefined(level.pers_upgrade_cash_back) && level.pers_upgrade_cash_back) {
     level.pers_cash_back_num_perks_required = 50;
     level.pers_cash_back_perk_buys_prone_required = 15;
     level.pers_cash_back_failed_prones = 1;
@@ -99,7 +99,7 @@ setup_pers_upgrade_cash_back() {
 }
 
 setup_pers_upgrade_insta_kill() {
-  if(isdefined(level.pers_upgrade_insta_kill) && level.pers_upgrade_insta_kill) {
+  if(isDefined(level.pers_upgrade_insta_kill) && level.pers_upgrade_insta_kill) {
     level.pers_insta_kill_num_required = 2;
     level.pers_insta_kill_upgrade_active_time = 18;
     pers_register_upgrade("insta_kill", ::pers_upgrade_insta_kill_active, "pers_insta_kill", level.pers_insta_kill_num_required, 0);
@@ -107,7 +107,7 @@ setup_pers_upgrade_insta_kill() {
 }
 
 setup_pers_upgrade_jugg() {
-  if(isdefined(level.pers_upgrade_jugg) && level.pers_upgrade_jugg) {
+  if(isDefined(level.pers_upgrade_jugg) && level.pers_upgrade_jugg) {
     level.pers_jugg_hit_and_die_total = 3;
     level.pers_jugg_hit_and_die_round_limit = 2;
     level.pers_jugg_round_reached_max = 1;
@@ -118,14 +118,14 @@ setup_pers_upgrade_jugg() {
 }
 
 setup_pers_upgrade_carpenter() {
-  if(isdefined(level.pers_upgrade_carpenter) && level.pers_upgrade_carpenter) {
+  if(isDefined(level.pers_upgrade_carpenter) && level.pers_upgrade_carpenter) {
     level.pers_carpenter_zombie_kills = 1;
     pers_register_upgrade("carpenter", ::pers_upgrade_carpenter_active, "pers_carpenter", level.pers_carpenter_zombie_kills, 0);
   }
 }
 
 setup_pers_upgrade_flopper() {
-  if(isdefined(level.pers_upgrade_flopper) && level.pers_upgrade_flopper) {
+  if(isDefined(level.pers_upgrade_flopper) && level.pers_upgrade_flopper) {
     level.pers_flopper_damage_counter = 6;
     level.pers_flopper_counter = 1;
     level.pers_flopper_min_fall_damage_activate = 30;
@@ -135,7 +135,7 @@ setup_pers_upgrade_flopper() {
 }
 
 setup_pers_upgrade_perk_lose() {
-  if(isdefined(level.pers_upgrade_perk_lose) && level.pers_upgrade_perk_lose) {
+  if(isDefined(level.pers_upgrade_perk_lose) && level.pers_upgrade_perk_lose) {
     level.pers_perk_round_reached_max = 6;
     level.pers_perk_lose_counter = 3;
     pers_register_upgrade("perk_lose", ::pers_upgrade_perk_lose_active, "pers_perk_lose_counter", level.pers_perk_lose_counter, 0);
@@ -143,7 +143,7 @@ setup_pers_upgrade_perk_lose() {
 }
 
 setup_pers_upgrade_pistol_points() {
-  if(isdefined(level.pers_upgrade_pistol_points) && level.pers_upgrade_pistol_points) {
+  if(isDefined(level.pers_upgrade_pistol_points) && level.pers_upgrade_pistol_points) {
     level.pers_pistol_points_num_kills_in_game = 8;
     level.pers_pistol_points_accuracy = 0.25;
     level.pers_pistol_points_counter = 1;
@@ -152,7 +152,7 @@ setup_pers_upgrade_pistol_points() {
 }
 
 setup_pers_upgrade_double_points() {
-  if(isdefined(level.pers_upgrade_double_points) && level.pers_upgrade_double_points) {
+  if(isDefined(level.pers_upgrade_double_points) && level.pers_upgrade_double_points) {
     level.pers_double_points_score = 2500;
     level.pers_double_points_counter = 1;
     pers_register_upgrade("double_points", ::pers_upgrade_double_points_active, "pers_double_points_counter", level.pers_double_points_counter, 0);
@@ -160,7 +160,7 @@ setup_pers_upgrade_double_points() {
 }
 
 setup_pers_upgrade_sniper() {
-  if(isdefined(level.pers_upgrade_sniper) && level.pers_upgrade_sniper) {
+  if(isDefined(level.pers_upgrade_sniper) && level.pers_upgrade_sniper) {
     level.pers_sniper_round_kills_counter = 5;
     level.pers_sniper_kill_distance = 800;
     level.pers_sniper_counter = 1;
@@ -170,7 +170,7 @@ setup_pers_upgrade_sniper() {
 }
 
 setup_pers_upgrade_box_weapon() {
-  if(isdefined(level.pers_upgrade_box_weapon) && level.pers_upgrade_box_weapon) {
+  if(isDefined(level.pers_upgrade_box_weapon) && level.pers_upgrade_box_weapon) {
     level.pers_box_weapon_counter = 5;
     level.pers_box_weapon_lose_round = 10;
     pers_register_upgrade("box_weapon", ::pers_upgrade_box_weapon_active, "pers_box_weapon_counter", level.pers_box_weapon_counter, 0);
@@ -178,7 +178,7 @@ setup_pers_upgrade_box_weapon() {
 }
 
 setup_pers_upgrade_nube() {
-  if(isdefined(level.pers_upgrade_nube) && level.pers_upgrade_nube) {
+  if(isDefined(level.pers_upgrade_nube) && level.pers_upgrade_nube) {
     level.pers_nube_counter = 1;
     level.pers_nube_lose_round = 10;
     level.pers_numb_num_kills_unlock = 5;
@@ -189,7 +189,7 @@ setup_pers_upgrade_nube() {
 pers_upgrade_boards_active() {
   self endon("disconnect");
 
-  for (last_round_number = level.round_number; 1; last_round_number = level.round_number) {
+  for(last_round_number = level.round_number; 1; last_round_number = level.round_number) {
     self waittill("pers_stats_end_of_round");
 
     if(level.round_number >= last_round_number) {
@@ -206,7 +206,7 @@ pers_upgrade_boards_active() {
 pers_upgrade_revive_active() {
   self endon("disconnect");
 
-  while (true) {
+  while(true) {
     self waittill("player_failed_revive");
 
     if(maps\mp\zombies\_zm_pers_upgrades::is_pers_system_active()) {
@@ -222,7 +222,7 @@ pers_upgrade_revive_active() {
 pers_upgrade_headshot_active() {
   self endon("disconnect");
 
-  while (true) {
+  while(true) {
     self waittill("zombie_death_no_headshot");
 
     if(maps\mp\zombies\_zm_pers_upgrades::is_pers_system_active()) {
@@ -243,9 +243,10 @@ pers_upgrade_cash_back_active() {
 
   wait 0.5;
 
-  while (true) {
+  while(true) {
     self waittill("cash_back_failed_prone");
     wait 0.1;
+
     if(maps\mp\zombies\_zm_pers_upgrades::is_pers_system_active()) {
       self.failed_cash_back_prones++;
 
@@ -267,14 +268,14 @@ pers_upgrade_insta_kill_active() {
 
   wait 0.2;
 
-  while (true) {
+  while(true) {
     self waittill("pers_melee_swipe");
 
     if(maps\mp\zombies\_zm_pers_upgrades::is_pers_system_active()) {
-      if(isdefined(level.pers_melee_swipe_zombie_swiper)) {
+      if(isDefined(level.pers_melee_swipe_zombie_swiper)) {
         e_zombie = level.pers_melee_swipe_zombie_swiper;
 
-        if(isalive(e_zombie) && (isdefined(e_zombie.is_zombie) && e_zombie.is_zombie)) {
+        if(isalive(e_zombie) && (isDefined(e_zombie.is_zombie) && e_zombie.is_zombie)) {
           e_zombie.marked_for_insta_upgraded_death = 1;
           e_zombie dodamage(e_zombie.health + 666, e_zombie.origin, self, self, "none", "MOD_PISTOL_BULLET", 0, "knife_zm");
         }
@@ -289,13 +290,12 @@ pers_upgrade_insta_kill_active() {
   self maps\mp\zombies\_zm_stats::zero_client_stat("pers_insta_kill", 0);
   self kill_insta_kill_upgrade_hud_icon();
   wait 0.4;
-
 }
 
 is_insta_kill_upgraded_and_active() {
   if(maps\mp\zombies\_zm_pers_upgrades::is_pers_system_active()) {
     if(self maps\mp\zombies\_zm_powerups::is_insta_kill_active()) {
-      if(isdefined(self.pers_upgrades_awarded["insta_kill"]) && self.pers_upgrades_awarded["insta_kill"])
+      if(isDefined(self.pers_upgrades_awarded["insta_kill"]) && self.pers_upgrades_awarded["insta_kill"])
         return true;
     }
   }
@@ -310,12 +310,11 @@ pers_upgrade_jugg_active() {
   wait 0.5;
   self maps\mp\zombies\_zm_perks::perk_set_max_health_if_jugg("jugg_upgrade", 1, 0);
 
-  while (true) {
+  while(true) {
     level waittill("start_of_round");
 
     if(maps\mp\zombies\_zm_pers_upgrades::is_pers_system_active()) {
       if(level.round_number == level.pers_jugg_round_lose_target) {
-
         self maps\mp\zombies\_zm_stats::increment_client_stat("pers_jugg_downgrade_count", 0);
         wait 0.5;
 
@@ -340,13 +339,14 @@ pers_upgrade_carpenter_active() {
   level waittill("carpenter_finished");
   self.pers_carpenter_kill = undefined;
 
-  while (true) {
+  while(true) {
     self waittill("carpenter_zombie_killed_check_finished");
 
     if(maps\mp\zombies\_zm_pers_upgrades::is_pers_system_active()) {
-      if(!isdefined(self.pers_carpenter_kill)) {
+      if(!isDefined(self.pers_carpenter_kill)) {
         break;
       }
+
     }
 
     self.pers_carpenter_kill = undefined;
@@ -354,13 +354,13 @@ pers_upgrade_carpenter_active() {
 
   self maps\mp\zombies\_zm_stats::zero_client_stat("pers_carpenter", 0);
   wait 0.4;
-
 }
 
 persistent_carpenter_ability_check() {
-  if(isdefined(level.pers_upgrade_carpenter) && level.pers_upgrade_carpenter) {
+  if(isDefined(level.pers_upgrade_carpenter) && level.pers_upgrade_carpenter) {
     self endon("disconnect");
-    if(isdefined(self.pers_upgrades_awarded["carpenter"]) && self.pers_upgrades_awarded["carpenter"])
+
+    if(isDefined(self.pers_upgrades_awarded["carpenter"]) && self.pers_upgrades_awarded["carpenter"])
       level.pers_carpenter_boards_active = 1;
 
     self.pers_carpenter_zombie_check_active = 1;
@@ -369,10 +369,10 @@ persistent_carpenter_ability_check() {
     carpenter_finished_start_time = undefined;
     level.carpenter_finished_start_time = undefined;
 
-    while (true) {
+    while(true) {
       if(!is_pers_system_disabled()) {
-        if(!isdefined(level.carpenter_powerup_active)) {
-          if(!isdefined(level.carpenter_finished_start_time))
+        if(!isDefined(level.carpenter_powerup_active)) {
+          if(!isDefined(level.carpenter_finished_start_time))
             level.carpenter_finished_start_time = gettime();
 
           time = gettime();
@@ -383,8 +383,8 @@ persistent_carpenter_ability_check() {
           }
         }
 
-        if(isdefined(self.pers_carpenter_kill)) {
-          if(isdefined(self.pers_upgrades_awarded["carpenter"]) && self.pers_upgrades_awarded["carpenter"]) {
+        if(isDefined(self.pers_carpenter_kill)) {
+          if(isDefined(self.pers_upgrades_awarded["carpenter"]) && self.pers_upgrades_awarded["carpenter"]) {
             break;
           } else
             self maps\mp\zombies\_zm_stats::increment_client_stat("pers_carpenter", 0);
@@ -403,7 +403,7 @@ persistent_carpenter_ability_check() {
 pers_zombie_death_location_check(attacker, v_pos) {
   if(maps\mp\zombies\_zm_pers_upgrades::is_pers_system_active()) {
     if(is_player_valid(attacker)) {
-      if(isdefined(attacker.pers_carpenter_zombie_check_active)) {
+      if(isDefined(attacker.pers_carpenter_zombie_check_active)) {
         if(!check_point_in_playable_area(v_pos))
           attacker.pers_carpenter_kill = 1;
       }
@@ -426,7 +426,7 @@ time_remaining_pers_upgrade() {
   self endon("disconnect");
   self endon("kill_insta_kill_upgrade_hud_icon");
 
-  while (self.zombie_vars["zombie_powerup_insta_kill_ug_time"] >= 0) {
+  while(self.zombie_vars["zombie_powerup_insta_kill_ug_time"] >= 0) {
     wait 0.05;
     self.zombie_vars["zombie_powerup_insta_kill_ug_time"] = self.zombie_vars["zombie_powerup_insta_kill_ug_time"] - 0.05;
   }
@@ -444,11 +444,15 @@ kill_insta_kill_upgrade_hud_icon() {
 pers_upgrade_flopper_active() {
   self endon("disconnect");
   wait 0.5;
+
   iprintlnbold("*** WE'VE GOT FLOPPER UPGRADED ***");
+
   wait 0.5;
   self thread maps\mp\zombies\_zm_pers_upgrades_functions::pers_upgrade_flopper_watcher();
   self waittill("pers_flopper_lost");
+
   iprintlnbold("*** OH NO: Lost FLOPPER Upgrade ***");
+
   self maps\mp\zombies\_zm_stats::zero_client_stat("pers_flopper_counter", 0);
   self.pers_num_flopper_damages = 0;
 }
@@ -456,21 +460,27 @@ pers_upgrade_flopper_active() {
 pers_upgrade_perk_lose_active() {
   self endon("disconnect");
   wait 0.5;
+
   iprintlnbold("*** WE'VE GOT PERK LOSE UPGRADED ***");
+
   wait 0.5;
   self.pers_perk_lose_start_round = level.round_number;
   self waittill("pers_perk_lose_lost");
+
   iprintlnbold("*** OH NO: Lost PERK LOSE Upgrade ***");
+
   self maps\mp\zombies\_zm_stats::zero_client_stat("pers_perk_lose_counter", 0);
 }
 
 pers_upgrade_pistol_points_active() {
   self endon("disconnect");
   wait 0.5;
+
   iprintlnbold("*** WE'VE GOT PISTOL POINTS UPGRADED ***");
+
   wait 0.5;
 
-  while (true) {
+  while(true) {
     self waittill("pers_pistol_points_kill");
     accuracy = self maps\mp\zombies\_zm_pers_upgrades_functions::pers_get_player_accuracy();
 
@@ -480,38 +490,49 @@ pers_upgrade_pistol_points_active() {
   }
 
   iprintlnbold("*** OH NO: Lost PISTOL POINTS Upgrade ***");
+
   self maps\mp\zombies\_zm_stats::zero_client_stat("pers_pistol_points_counter", 0);
 }
 
 pers_upgrade_double_points_active() {
   self endon("disconnect");
   wait 0.5;
+
   iprintlnbold("*** WE'VE GOT DOUBLE POINTS UPGRADED ***");
+
   wait 0.5;
   self waittill("double_points_lost");
+
   iprintlnbold("*** OH NO: Lost DOUBLE POINTS Upgrade ***");
+
   self maps\mp\zombies\_zm_stats::zero_client_stat("pers_double_points_counter", 0);
 }
 
 pers_upgrade_sniper_active() {
   self endon("disconnect");
   wait 0.5;
+
   iprintlnbold("*** WE'VE GOT SNIPER UPGRADED ***");
+
   wait 0.5;
   self waittill("pers_sniper_lost");
+
   iprintlnbold("*** OH NO: Lost SNIPER Upgrade ***");
+
   self maps\mp\zombies\_zm_stats::zero_client_stat("pers_sniper_counter", 0);
 }
 
 pers_upgrade_box_weapon_active() {
   self endon("disconnect");
   wait 0.5;
+
   iprintlnbold("*** WE'VE GOT BOX WEAPON UPGRADED ***");
+
   self thread maps\mp\zombies\_zm_pers_upgrades_functions::pers_magic_box_teddy_bear();
   wait 0.5;
   self.pers_box_weapon_awarded = 1;
 
-  while (true) {
+  while(true) {
     level waittill("start_of_round");
 
     if(maps\mp\zombies\_zm_pers_upgrades::is_pers_system_active()) {
@@ -522,16 +543,19 @@ pers_upgrade_box_weapon_active() {
   }
 
   iprintlnbold("*** OH NO: Lost BOX WEAPON Upgrade ***");
+
   self maps\mp\zombies\_zm_stats::zero_client_stat("pers_box_weapon_counter", 0);
 }
 
 pers_upgrade_nube_active() {
   self endon("disconnect");
   wait 0.5;
+
   iprintlnbold("*** WE'VE GOT NUBE UPGRADED ***");
+
   wait 0.5;
 
-  while (true) {
+  while(true) {
     level waittill("start_of_round");
 
     if(maps\mp\zombies\_zm_pers_upgrades::is_pers_system_active()) {
@@ -542,5 +566,6 @@ pers_upgrade_nube_active() {
   }
 
   iprintlnbold("*** OH NO: Lost NUBE Upgrade ***");
+
   self maps\mp\zombies\_zm_stats::zero_client_stat("pers_nube_counter", 0);
 }

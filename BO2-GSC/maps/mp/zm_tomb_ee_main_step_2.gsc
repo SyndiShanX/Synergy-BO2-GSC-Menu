@@ -31,6 +31,7 @@ init_stage() {
 
 stage_logic() {
   iprintln(level._cur_stage_name + " of little girl lost started");
+
   flag_wait("ee_all_staffs_placed");
   playsoundatposition("zmb_squest_robot_alarm_high", (-14, -1, 871));
   wait 3;
@@ -54,7 +55,7 @@ remove_plinth() {
   playsoundatposition("zmb_footprintbox_disappear", self.m_plinth.origin);
   wait 3;
 
-  if(isdefined(self.m_plinth.m_staff)) {
+  if(isDefined(self.m_plinth.m_staff)) {
     self.m_plinth.m_staff unlink();
     self.m_plinth.m_staff.origin = self.m_plinth.v_old_origin;
     self.m_plinth.m_staff.angles = self.m_plinth.v_old_angles;
@@ -119,7 +120,7 @@ robot_head_trigger_think() {
   str_weap_staff = "staff_" + self.script_noteworthy + "_upgraded_zm";
   e_upgraded_staff = maps\mp\zm_tomb_craftables::get_staff_info_from_weapon_name(str_weap_staff);
 
-  while (true) {
+  while(true) {
     self waittill("trigger", player);
 
     if(player hasweapon(str_weap_staff)) {

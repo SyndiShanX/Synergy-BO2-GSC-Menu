@@ -63,7 +63,7 @@ achievement_im_your_huckleberry() {
   level endon("end_game");
   num_barriers_broken = 0;
 
-  while (true) {
+  while(true) {
     level waittill("sloth_breaks_barrier");
     num_barriers_broken++;
 
@@ -71,6 +71,7 @@ achievement_im_your_huckleberry() {
       break;
     }
   }
+
   level giveachievement_wrapper("ZM_DLC3_IM_YOUR_HUCKLEBERRY", 1);
 }
 
@@ -87,7 +88,7 @@ achievement_death_from_below() {
   self endon("disconnect");
   num_subwoofer_deaths = 0;
 
-  while (true) {
+  while(true) {
     self waittill("zombie_subwoofer_kill");
     num_subwoofer_deaths++;
 
@@ -95,6 +96,7 @@ achievement_death_from_below() {
       break;
     }
   }
+
   self giveachievement_wrapper("ZM_DLC3_DEATH_FROM_BELOW");
 }
 
@@ -114,8 +116,9 @@ achievement_awaken_the_gazebo() {
   level endon("weapon_locker_grab");
   self waittill("pap_taken");
 
-  if(level.round_number > 1)
+  if(level.round_number > 1) {
     return;
+  }
   self giveachievement_wrapper("ZM_DLC3_AWAKEN_THE_GAZEBO");
 }
 

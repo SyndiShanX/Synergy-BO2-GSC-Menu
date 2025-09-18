@@ -12,7 +12,7 @@ init() {
   precacheshader("zombie_stopwatch");
   precacheshader("zombie_stopwatch_glass");
 
-  if(!isdefined(level.stopwatch_length_width))
+  if(!isDefined(level.stopwatch_length_width))
     level.stopwatch_length_width = 96;
 }
 
@@ -20,7 +20,7 @@ start_timer(time, stop_notify) {
   self notify("stop_prev_timer");
   self endon("stop_prev_timer");
 
-  if(!isdefined(self.stopwatch_elem)) {
+  if(!isDefined(self.stopwatch_elem)) {
     self.stopwatch_elem = newclienthudelem(self);
     self.stopwatch_elem.horzalign = "left";
     self.stopwatch_elem.vertalign = "top";
@@ -42,7 +42,7 @@ start_timer(time, stop_notify) {
 
   self thread update_hud_position();
 
-  if(isdefined(stop_notify))
+  if(isDefined(stop_notify))
     self thread wait_for_stop_notify(stop_notify);
 
   if(time > 60)
@@ -71,7 +71,7 @@ update_hud_position() {
   self endon("stop_prev_timer");
   self endon("countdown_finished");
 
-  while (true) {
+  while(true) {
     self.stopwatch_elem.y = 20;
     self.stopwatch_elem_glass.y = 20;
     wait 0.05;

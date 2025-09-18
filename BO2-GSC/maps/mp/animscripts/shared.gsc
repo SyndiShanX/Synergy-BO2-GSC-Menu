@@ -20,7 +20,7 @@ handledogsoundnotetracks(note) {
 }
 
 growling() {
-  return isdefined(self.script_growl);
+  return isDefined(self.script_growl);
 }
 
 handlenotetrack(note, flagname, customfunction, var1) {
@@ -38,8 +38,8 @@ handlenotetrack(note, flagname, customfunction, var1) {
     case "undefined":
       return note;
     default:
-      if(isdefined(customfunction)) {
-        if(!isdefined(var1))
+      if(isDefined(customfunction)) {
+        if(!isDefined(var1))
           return [
             [customfunction]
           ](note);
@@ -54,26 +54,26 @@ handlenotetrack(note, flagname, customfunction, var1) {
 }
 
 donotetracks(flagname, customfunction, var1) {
-  for (;;) {
+  for(;;) {
     self waittill(flagname, note);
 
-    if(!isdefined(note))
+    if(!isDefined(note))
       note = "undefined";
 
     val = self handlenotetrack(note, flagname, customfunction, var1);
 
-    if(isdefined(val))
+    if(isDefined(val))
       return val;
   }
 }
 
 donotetracksforeverproc(notetracksfunc, flagname, killstring, customfunction, var1) {
-  if(isdefined(killstring))
+  if(isDefined(killstring))
     self endon(killstring);
 
   self endon("killanimscript");
 
-  for (;;) {
+  for(;;) {
     time = gettime();
     returnednote = [
       [notetracksfunc]
@@ -89,6 +89,7 @@ donotetracksforeverproc(notetracksfunc, flagname, killstring, customfunction, va
 
       if(timetaken < 0.05) {
         println(gettime() + " mapsmpanimscriptsshared::DoNoteTracksForever is trying to cause an infinite loop on anim " + flagname + ", returned " + returnednote + ".");
+
         wait(0.05 - timetaken);
       }
     }
@@ -132,10 +133,10 @@ trackloop() {
   } else {
     domaxanglecheck = 1;
 
-    if(self.a.script == "cover_crouch" && isdefined(self.a.covermode) && self.a.covermode == "lean")
+    if(self.a.script == "cover_crouch" && isDefined(self.a.covermode) && self.a.covermode == "lean")
       pitchadd = -1 * anim.covercrouchleanpitch;
 
-    if((self.a.script == "cover_left" || self.a.script == "cover_right") && isdefined(self.a.cornermode) && self.a.cornermode == "lean")
+    if((self.a.script == "cover_left" || self.a.script == "cover_right") && isDefined(self.a.cornermode) && self.a.cornermode == "lean")
       yawadd = self.covernode.angles[1] - self.angles[1];
   }
 
@@ -143,15 +144,15 @@ trackloop() {
   pitchdelta = 0;
   firstframe = 1;
 
-  for (;;) {
+  for(;;) {
     incranimaimweight();
     selfshootatpos = (self.origin[0], self.origin[1], self geteye()[2]);
     shootpos = undefined;
 
-    if(isdefined(self.enemy))
+    if(isDefined(self.enemy))
       shootpos = self.enemy getshootatpos();
 
-    if(!isdefined(shootpos)) {
+    if(!isDefined(shootpos)) {
       yawdelta = 0;
       pitchdelta = 0;
     } else {
@@ -223,7 +224,7 @@ trackloop() {
 }
 
 setanimaimweight(goalweight, goaltime) {
-  if(!isdefined(goaltime) || goaltime <= 0) {
+  if(!isDefined(goaltime) || goaltime <= 0) {
     self.a.aimweight = goalweight;
     self.a.aimweight_start = goalweight;
     self.a.aimweight_end = goalweight;

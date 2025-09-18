@@ -46,8 +46,8 @@ main() {
 
   cablecars = getentarray("cablecar", "targetname");
   cablecarkilltrigger = getentarray("cable_car_kill_trigger", "targetname");
-  assert(isdefined(cablecars));
-  assert(isdefined(cablecarkilltrigger));
+  assert(isDefined(cablecars));
+  assert(isDefined(cablecarkilltrigger));
   level.cablecardefaultangle = cablecars[0].angles;
   distancebetweencars = tracklength / cablecars.size;
 
@@ -56,16 +56,18 @@ main() {
   else
     currentdistanceforcar = distancebetweencars * 0.8;
 
-  for (i = 0; i < cablecars.size; i++) {
+  for(i = 0; i < cablecars.size; i++) {
     cablecar = cablecars[i];
     cablecar thread waitthenplayfx(0.1, level.cablecarlightsfx, "tag_origin");
     cablecar.killtrigger = getclosest(cablecar.origin, cablecarkilltrigger);
-    assert(isdefined(cablecar.killtrigger));
+    assert(isDefined(cablecar.killtrigger));
     cablecar.killtrigger enablelinkto();
     cablecar.killtrigger linkto(cablecar);
     cablecar setpointontrack(currentdistanceforcar, tracklength);
     currentdistanceforcar = currentdistanceforcar + distancebetweencars;
+
     debug_star(cablecar.origin, 120000, (1, 0, 1));
+
     grip = spawn("script_model", cablecar.origin);
 
     if(cablecar.nextnodeindex >= level.cablecartrack.size - 1)
@@ -97,7 +99,7 @@ waitthenplayfx(time, fxnum, tag) {
   self endon("death");
   wait(time);
 
-  for (;;) {
+  for(;;) {
     playfxontag(fxnum, self, tag);
     level waittill("host_migration_end");
   }
@@ -106,12 +108,12 @@ waitthenplayfx(time, fxnum, tag) {
 setpointontrack(distancealongtrack, tracklength) {
   pointontrack = level.cablecartrack[0].origin;
 
-  while (distancealongtrack > tracklength)
+  while(distancealongtrack > tracklength)
     distancealongtrack = tracklength * -1;
 
   remainingdistance = distancealongtrack;
 
-  for (i = 0; i < level.cablecartrack.size; i++) {
+  for(i = 0; i < level.cablecartrack.size; i++) {
     cablecartracknode = level.cablecartrack[i];
     currentnodeisstop = is_true(cablecartracknode.pause);
 
@@ -142,7 +144,7 @@ setpointontrack(distancealongtrack, tracklength) {
     if(nextnodeisstop || currentnodeisstop)
       distance = distance * 2;
 
-    if(!isdefined(distance)) {
+    if(!isDefined(distance)) {
       pointontrack = cablecartracknode.origin;
       self.nextnodeindex = i;
       break;
@@ -177,15 +179,15 @@ createcablecarpath(cablecar) {
   previousnode = undefined;
   movetime = -1;
 
-  while (isdefined(currentnode)) {
+  while(isDefined(currentnode)) {
     cablecarnodestruct = spawnstruct();
     cablecarnodestruct.origin = currentnode.origin;
     level.cablecartrack[level.cablecartrack.size] = cablecarnodestruct;
 
-    if(isdefined(currentnode.target))
+    if(isDefined(currentnode.target))
       nextnode = getent(currentnode.target, "targetname");
 
-    if(!isdefined(nextnode)) {
+    if(!isDefined(nextnode)) {
       break;
     }
 
@@ -195,10 +197,10 @@ createcablecarpath(cablecar) {
     assert(movetime > 0);
     pauseratio = 1;
 
-    if(isdefined(nextnode.script_noteworthy) && nextnode.script_noteworthy == "stop")
+    if(isDefined(nextnode.script_noteworthy) && nextnode.script_noteworthy == "stop")
       pauseratio = pauseratio * 2;
 
-    if(isdefined(currentnode.script_noteworthy)) {
+    if(isDefined(currentnode.script_noteworthy)) {
       if(currentnode.script_noteworthy == "stop") {
         cablecarnodestruct.pause = 1;
         tracklength = tracklength + velocity * 3;
@@ -209,10 +211,10 @@ createcablecarpath(cablecar) {
       else if(currentnode.script_noteworthy == "forceorigin")
         cablecarnodestruct.forceorigin = 1;
       else {
-        if(isdefined(level.gondolasounds[currentnode.script_noteworthy]))
+        if(isDefined(level.gondolasounds[currentnode.script_noteworthy]))
           cablecarnodestruct.playsound = level.gondolasounds[currentnode.script_noteworthy];
 
-        if(isdefined(level.gondolaloopsounds[currentnode.script_noteworthy]))
+        if(isDefined(level.gondolaloopsounds[currentnode.script_noteworthy]))
           cablecarnodestruct.playloopsound = level.gondolaloopsounds[currentnode.script_noteworthy];
       }
     }
@@ -232,7 +234,7 @@ createcablecarpath(cablecar) {
 }
 
 watchpronetouch() {
-  for (;;) {
+  for(;;) {
     self waittill("touch", entity);
 
     if(isplayer(entity)) {
@@ -255,16 +257,16 @@ cablecarrun(cablecar) {
   cablecar.hidden = 0;
   grip.forceangles = 0;
 
-  if(isdefined(cablecar.needtopauseatstart)) {
+  if(isDefined(cablecar.needtopauseatstart)) {
     if(cablecar.needtopauseatstart > 0)
       wait(cablecar.needtopauseatstart);
   }
 
-  for (;;) {
-    for (i = nextnodeindex; i < level.cablecartrack.size; i++) {
+  for(;;) {
+    for(i = nextnodeindex; i < level.cablecartrack.size; i++) {
       nextnode = level.cablecartrack[i + 1];
 
-      if(!isdefined(nextnode))
+      if(!isDefined(nextnode))
         nextnode = level.cablecartrack[0];
 
       currentnode = level.cablecartrack[i];
@@ -272,23 +274,23 @@ cablecarrun(cablecar) {
       deceltime = 0;
       currentmovetime = currentnode.movetime;
 
-      if(isdefined(nextnode.pause) || isdefined(currentnode) && isdefined(currentnode.pause)) {
+      if(isDefined(nextnode.pause) || isDefined(currentnode) && isDefined(currentnode.pause)) {
         currentmovetime = currentmovetime * 2;
 
-        if(isdefined(nextnode.pause))
+        if(isDefined(nextnode.pause))
           deceltime = currentmovetime - 0.1;
 
-        if(isdefined(currentnode) && isdefined(currentnode.pause))
+        if(isDefined(currentnode) && isDefined(currentnode.pause))
           acceltime = currentmovetime - 0.1;
       }
 
       debug_star(nextnode.origin, (1, 1, 1), 1000);
 
-      if(isdefined(currentnode)) {
-        if(isdefined(currentnode.playsound))
+      if(isDefined(currentnode)) {
+        if(isDefined(currentnode.playsound))
           cablecar playsound(currentnode.playsound);
 
-        if(isdefined(currentnode.playloopsound)) {
+        if(isDefined(currentnode.playloopsound)) {
           cablecar stoploopsound();
           cablecar playsound("veh_cable_car_leave");
 
@@ -297,7 +299,7 @@ cablecarrun(cablecar) {
         }
       }
 
-      if(isdefined(currentnode.rotate)) {
+      if(isDefined(currentnode.rotate)) {
         cablecar hide();
         grip hide();
         cablecar.hidden = 1;
@@ -309,7 +311,7 @@ cablecarrun(cablecar) {
           cablecar.angles = cablecar.angles + vectorscale((0, 1, 0), 180.0);
       }
 
-      if(isdefined(currentnode) && isdefined(nextnode)) {
+      if(isDefined(currentnode) && isDefined(nextnode)) {
         angles = vectortoangles(currentnode.origin - nextnode.origin);
         grip.nextangles = angles;
 
@@ -356,7 +358,7 @@ cablecarrun(cablecar) {
 
       firstmove = 0;
 
-      if(isdefined(nextnode.pause)) {
+      if(isDefined(nextnode.pause)) {
         cablecar.ismoving = 0;
         grip thread hostmigrationawaremoveto(nextnode.origin - (0, cos(cablecar.angles[1]) * -12, 8), 300, 0, 0, 3);
         cablecar hostmigrationawaremoveto(nextnode.origin + (0, cos(cablecar.angles[1]) * -15, -66.6), 300, 0, 0, 3);
@@ -365,7 +367,7 @@ cablecarrun(cablecar) {
         cablecar.ismoving = 1;
       }
 
-      if(isdefined(nextnode.forceorigin)) {
+      if(isDefined(nextnode.forceorigin)) {
         cablecar.origin = nextnode.origin + (0, cos(cablecar.angles[1]) * -15, -66.6);
         grip.origin = nextnode.origin - (0, cos(cablecar.angles[1]) * -12, 8);
       }
@@ -380,7 +382,7 @@ hostmigrationawaremoveto(origin, movetime, acceltime, deceltime, waittime) {
   self moveto(origin, movetime, acceltime, deceltime);
   waitcompleted = self waitendonmigration(waittime);
 
-  if(!isdefined(waitcompleted)) {
+  if(!isDefined(waitcompleted)) {
     endtime = gettime();
     maps\mp\gametypes\_hostmigration::waittillhostmigrationdone();
     mstimedifference = starttime + waittime * 1000 - endtime;
@@ -430,11 +432,11 @@ cablecar_ai_watch() {
   self endon("death");
   self endon("delete");
 
-  for (;;) {
+  for(;;) {
     wait 1;
 
-    if(isdefined(self.nodes)) {
-      for (i = 0; i < self.nodes.size; i++) {
+    if(isDefined(self.nodes)) {
+      for(i = 0; i < self.nodes.size; i++) {
         node = self.nodes[i];
 
         foreach(team in level.teams)
@@ -446,7 +448,7 @@ cablecar_ai_watch() {
     dangerorigin = self.origin - dir * 196;
     nodes = getnodesinradius(dangerorigin, 256, 0, 196);
 
-    for (i = 0; i < nodes.size; i++) {
+    for(i = 0; i < nodes.size; i++) {
       node = nodes[i];
 
       foreach(team in level.teams)
@@ -468,7 +470,7 @@ cablecar_move_think(kill_trigger, checkmoving) {
   self.disablefinalkillcam = 1;
   destroycorpses = 0;
 
-  for (;;) {
+  for(;;) {
     wait 0.05;
     pixbeginevent("cablecar_move_think");
 
@@ -480,13 +482,13 @@ cablecar_move_think(kill_trigger, checkmoving) {
     entities = getdamageableentarray(self.origin, 200);
 
     foreach(entity in entities) {
-      if(isdefined(entity.targetname) && entity.targetname == "cablecar") {
+      if(isDefined(entity.targetname) && entity.targetname == "cablecar") {
         continue;
       }
       if(!entity istouching(kill_trigger)) {
         continue;
       }
-      if(isdefined(entity.model) && entity.model == "t6_wpn_tac_insert_world") {
+      if(isDefined(entity.model) && entity.model == "t6_wpn_tac_insert_world") {
         entity maps\mp\_tacticalinsertion::destroy_tactical_insertion();
         continue;
       }
@@ -494,7 +496,7 @@ cablecar_move_think(kill_trigger, checkmoving) {
       if(!isalive(entity)) {
         continue;
       }
-      if(isdefined(entity.targetname)) {
+      if(isDefined(entity.targetname)) {
         if(entity.targetname == "talon") {
           entity notify("death");
           continue;
@@ -507,17 +509,17 @@ cablecar_move_think(kill_trigger, checkmoving) {
         }
       }
 
-      if(isdefined(entity.helitype) && entity.helitype == "qrdrone") {
+      if(isDefined(entity.helitype) && entity.helitype == "qrdrone") {
         watcher = entity.owner maps\mp\gametypes\_weaponobjects::getweaponobjectwatcher("qrdrone");
         watcher thread maps\mp\gametypes\_weaponobjects::waitanddetonate(entity, 0.0, undefined);
         continue;
       }
 
       if(entity.classname == "grenade") {
-        if(!isdefined(entity.name)) {
+        if(!isDefined(entity.name)) {
           continue;
         }
-        if(!isdefined(entity.owner)) {
+        if(!isDefined(entity.owner)) {
           continue;
         }
         if(entity.name == "satchel_charge_mp") {
@@ -534,7 +536,7 @@ cablecar_move_think(kill_trigger, checkmoving) {
         }
         watcher = entity.owner getwatcherforweapon(entity.name);
 
-        if(!isdefined(watcher)) {
+        if(!isDefined(watcher)) {
           continue;
         }
         watcher thread maps\mp\gametypes\_weaponobjects::waitanddetonate(entity, 0.0, undefined, "script_mover_mp");
@@ -543,10 +545,10 @@ cablecar_move_think(kill_trigger, checkmoving) {
         continue;
       }
       if(entity.classname == "auto_turret") {
-        if(isdefined(entity.carried) && entity.carried == 1) {
+        if(isDefined(entity.carried) && entity.carried == 1) {
           continue;
         }
-        if(!isdefined(entity.damagedtodeath) || !entity.damagedtodeath)
+        if(!isDefined(entity.damagedtodeath) || !entity.damagedtodeath)
           entity domaxdamage(self.origin + (0, 0, 1), self, self, 0, "MOD_CRUSH");
 
         continue;
@@ -587,13 +589,13 @@ cablecar_move_think(kill_trigger, checkmoving) {
 }
 
 getwatcherforweapon(weapname) {
-  if(!isdefined(self))
+  if(!isDefined(self))
     return undefined;
 
   if(!isplayer(self))
     return undefined;
 
-  for (i = 0; i < self.weaponobjectwatcherarray.size; i++) {
+  for(i = 0; i < self.weaponobjectwatcherarray.size; i++) {
     if(self.weaponobjectwatcherarray[i].weapon != weapname) {
       continue;
     }
@@ -621,7 +623,7 @@ destroy_supply_crates() {
 destroy_corpses() {
   corpses = getcorpsearray();
 
-  for (i = 0; i < corpses.size; i++) {
+  for(i = 0; i < corpses.size; i++) {
     if(distancesquared(corpses[i].origin, self.origin) < 40000)
       corpses[i] delete();
   }

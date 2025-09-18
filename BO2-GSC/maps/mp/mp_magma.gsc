@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\mp_magma.gsc
-***************************************/
+**************************************/
 
 #include maps\mp\_utility;
 #include common_scripts\utility;
@@ -81,8 +81,8 @@ lava_trigger_init() {
   wait 3;
   killbrushes = getentarray("trigger_hurt", "classname");
 
-  for (i = 0; i < killbrushes.size; i++) {
-    if(isdefined(killbrushes[i].script_noteworthy) && killbrushes[i].script_noteworthy == "lava")
+  for(i = 0; i < killbrushes.size; i++) {
+    if(isDefined(killbrushes[i].script_noteworthy) && killbrushes[i].script_noteworthy == "lava")
       level.levelkillbrushes[level.levelkillbrushes.size] = killbrushes[i];
   }
 }
@@ -93,7 +93,7 @@ levelspawndvars(reset_dvars) {
 }
 
 overrideweaponfunc(sweapon, script_noteworthy) {
-  if(isdefined(script_noteworthy) && script_noteworthy == "lava")
+  if(isDefined(script_noteworthy) && script_noteworthy == "lava")
     sweapon = "lava_mp";
 
   return sweapon;
@@ -117,13 +117,13 @@ destructible_think(clientfield) {
 }
 
 checkcorpseinlava(einflictor, attacker, idamage, smeansofdeath, sweapon, vdir, shitloc, psoffsettime, deathanimduration) {
-  if(!isdefined(einflictor) || !isdefined(einflictor.script_noteworthy)) {
+  if(!isDefined(einflictor) || !isDefined(einflictor.script_noteworthy)) {
     return;
   }
   if(einflictor.script_noteworthy != "lava") {
     return;
   }
-  if(!isdefined(self.body)) {
+  if(!isDefined(self.body)) {
     return;
   }
   playfxontag(level._effect["fx_fire_torso"], self.body, "J_Spine4");
@@ -141,7 +141,7 @@ leveloverridetime(defaulttime) {
 }
 
 isinlava() {
-  if(!isdefined(self.lastattacker) || !isdefined(self.lastattacker.script_noteworthy))
+  if(!isDefined(self.lastattacker) || !isDefined(self.lastattacker.script_noteworthy))
     return false;
 
   if(self.lastattacker.script_noteworthy != "lava")
@@ -156,7 +156,7 @@ testkillbrushonstationary(lavaarray, killbrusharray, player, watcher) {
   self waittill("stationary");
   wait 0.1;
 
-  for (i = 0; i < lavaarray.size; i++) {
+  for(i = 0; i < lavaarray.size; i++) {
     if(self istouching(lavaarray[i])) {
       playfx(level._effect["fx_fire_torso"], self.origin);
       watcher maps\mp\gametypes\_weaponobjects::waitanddetonate(self, 0.0, undefined, "lava_mp");
@@ -164,13 +164,13 @@ testkillbrushonstationary(lavaarray, killbrusharray, player, watcher) {
     }
   }
 
-  for (i = 0; i < killbrusharray.size; i++) {
+  for(i = 0; i < killbrusharray.size; i++) {
     if(self istouching(killbrusharray[i])) {
       if(self.origin[2] > player.origin[2]) {
         break;
       }
 
-      if(isdefined(self))
+      if(isDefined(self))
         self delete();
 
       return;
@@ -186,8 +186,8 @@ deleteonkillbrushoverride(player, watcher) {
   lavaarray = [];
   killbrusharray = [];
 
-  for (i = 0; i < trigger_hurtarray.size; i++) {
-    if(isdefined(trigger_hurtarray[i].script_noteworthy) && trigger_hurtarray[i].script_noteworthy == "lava") {
+  for(i = 0; i < trigger_hurtarray.size; i++) {
+    if(isDefined(trigger_hurtarray[i].script_noteworthy) && trigger_hurtarray[i].script_noteworthy == "lava") {
       lavaarray[lavaarray.size] = trigger_hurtarray[i];
       continue;
     }
@@ -200,8 +200,8 @@ deleteonkillbrushoverride(player, watcher) {
   }
   self thread testkillbrushonstationary(lavaarray, killbrusharray, player, watcher);
 
-  while (true) {
-    for (i = 0; i < lavaarray.size; i++) {
+  while(true) {
+    for(i = 0; i < lavaarray.size; i++) {
       if(self istouching(lavaarray[i])) {
         wait 0.05;
         playfx(level._effect["fx_fire_torso"], self.origin);
@@ -210,13 +210,13 @@ deleteonkillbrushoverride(player, watcher) {
       }
     }
 
-    for (i = 0; i < killbrusharray.size; i++) {
+    for(i = 0; i < killbrusharray.size; i++) {
       if(self istouching(killbrusharray[i])) {
         if(self.origin[2] > player.origin[2]) {
           break;
         }
 
-        if(isdefined(self))
+        if(isDefined(self))
           self delete();
 
         return;
@@ -230,7 +230,7 @@ deleteonkillbrushoverride(player, watcher) {
 spawnkilltrigger() {
   trigger = spawn("trigger_radius", (2132, -1692, -708), 0, 250, 100);
 
-  while (true) {
+  while(true) {
     trigger waittill("trigger", player);
     player dodamage(player.health * 2, trigger.origin, trigger, trigger, "none", "MOD_SUICIDE", 0, "lava_mp");
   }

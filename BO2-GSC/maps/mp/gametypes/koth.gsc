@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\gametypes\koth.gsc
-***************************************/
+**************************************/
 
 #include common_scripts\utility;
 #include maps\mp\_utility;
@@ -84,6 +84,7 @@ main() {
     setscoreboardcolumns("score", "kills", "deaths", "captures", "defends");
 
   maps\mp\gametypes\_globallogic_audio::registerdialoggroup("gamemode_objective", 0);
+
   trigs = getentarray("radiotrigger", "targetname");
 
   foreach(trig in trigs)
@@ -109,13 +110,13 @@ updateobjectivehintmessage(message) {
 getrespawndelay() {
   self.lowermessageoverride = undefined;
 
-  if(!isdefined(level.zone.gameobject))
+  if(!isDefined(level.zone.gameobject))
     return undefined;
 
   zoneowningteam = level.zone.gameobject maps\mp\gametypes\_gameobjects::getownerteam();
 
   if(self.pers["team"] == zoneowningteam) {
-    if(!isdefined(level.zonemovetime))
+    if(!isDefined(level.zonemovetime))
       return undefined;
 
     timeremaining = (level.zonemovetime - gettime()) / 1000;
@@ -134,7 +135,7 @@ getrespawndelay() {
 }
 
 onstartgametype() {
-  if(!isdefined(game["switchedsides"]))
+  if(!isDefined(game["switchedsides"]))
     game["switchedsides"] = 0;
 
   if(game["switchedsides"]) {
@@ -196,6 +197,7 @@ onstartgametype() {
 
   if(!level.spawn_all.size) {
     println("^1No mp_tdm_spawn spawnpoints in level!");
+
     maps\mp\gametypes\_callbacksetup::abortlevel();
     return;
   }
@@ -215,7 +217,7 @@ spawn_first_zone(delay) {
   else
     level.zone = getfirstzone();
 
-  if(isdefined(level.zone)) {
+  if(isDefined(level.zone)) {
     logstring("zone spawned: (" + level.zone.trigorigin[0] + "," + level.zone.trigorigin[1] + "," + level.zone.trigorigin[2] + ")");
     level.zone enable_zone_spawn_influencer(1);
   }
@@ -231,7 +233,7 @@ spawn_next_zone() {
   else
     level.zone = getnextzone();
 
-  if(isdefined(level.zone)) {
+  if(isDefined(level.zone)) {
     logstring("zone spawned: (" + level.zone.trigorigin[0] + "," + level.zone.trigorigin[1] + "," + level.zone.trigorigin[2] + ")");
     level.zone enable_zone_spawn_influencer(1);
   }
@@ -262,7 +264,7 @@ kothcaptureloop() {
   level endon("zone_moved");
   level.kothstarttime = gettime();
 
-  while (true) {
+  while(true) {
     level.zone.gameobject maps\mp\gametypes\_gameobjects::allowuse("any");
     level.zone.gameobject maps\mp\gametypes\_gameobjects::setusetime(level.capturetime);
     level.zone.gameobject maps\mp\gametypes\_gameobjects::setusetext(&"MP_CAPTURING_OBJECTIVE");
@@ -298,7 +300,7 @@ kothcaptureloop() {
 
     thread forcespawnteam(ownerteam);
 
-    if(isdefined(destroy_team))
+    if(isDefined(destroy_team))
       level.zone.gameobject maps\mp\gametypes\_gameobjects::setownerteam(destroy_team);
     else
       level.zone.gameobject maps\mp\gametypes\_gameobjects::setownerteam("none");
@@ -327,7 +329,7 @@ kothmainloop() {
   precachestring(objective_name);
   spawn_first_zone();
 
-  while (level.inprematchperiod)
+  while(level.inprematchperiod)
     wait 0.05;
 
   wait 5;
@@ -346,7 +348,7 @@ kothmainloop() {
     thread hidetimerdisplayongameend(timerdisplay[team]);
   }
 
-  while (true) {
+  while(true) {
     playsoundonplayers("mp_suitcase_pickup");
     maps\mp\gametypes\_globallogic_audio::flushgroupdialog("gamemode_objective");
     maps\mp\gametypes\_globallogic_audio::leaderdialog("koth_located");
@@ -399,7 +401,7 @@ kothmainloop() {
       touchlist = [];
       touchkeys = getarraykeys(level.zone.gameobject.touchlist[ownerteam]);
 
-      for (i = 0; i < touchkeys.size; i++)
+      for(i = 0; i < touchkeys.size; i++)
         touchlist[touchkeys[i]] = level.zone.gameobject.touchlist[ownerteam][touchkeys[i]];
 
       thread give_held_credit(touchlist);
@@ -433,10 +435,10 @@ hidetimerdisplayongameend(timerdisplay) {
 forcespawnteam(team) {
   players = level.players;
 
-  for (i = 0; i < players.size; i++) {
+  for(i = 0; i < players.size; i++) {
     player = players[i];
 
-    if(!isdefined(player)) {
+    if(!isDefined(player)) {
       continue;
     }
     if(player.pers["team"] == team) {
@@ -467,11 +469,11 @@ onzonecapture(player) {
   level.zone.gameobject.iscontested = 0;
   level.usestartspawns = 0;
 
-  if(!isdefined(self.lastcaptureteam) || self.lastcaptureteam != capture_team) {
+  if(!isDefined(self.lastcaptureteam) || self.lastcaptureteam != capture_team) {
     touchlist = [];
     touchkeys = getarraykeys(self.touchlist[capture_team]);
 
-    for (i = 0; i < touchkeys.size; i++)
+    for(i = 0; i < touchkeys.size; i++)
       touchlist[touchkeys[i]] = self.touchlist[capture_team][touchkeys[i]];
 
     thread give_capture_credit(touchlist, string, capturetime, capture_team, self.lastcaptureteam);
@@ -486,10 +488,10 @@ onzonecapture(player) {
 
   foreach(team in level.teams) {
     if(team == capture_team) {
-      if(isdefined(self.lastcaptureteam) && self.lastcaptureteam != team) {
+      if(isDefined(self.lastcaptureteam) && self.lastcaptureteam != team) {
         maps\mp\gametypes\_globallogic_audio::leaderdialog("koth_secured", team, "gamemode_objective");
 
-        for (index = 0; index < level.players.size; index++) {
+        for(index = 0; index < level.players.size; index++) {
           player = level.players[index];
 
           if(player.pers["team"] == team) {
@@ -525,7 +527,7 @@ give_capture_credit(touchlist, string, capturetime, capture_team, lastcapturetea
   maps\mp\gametypes\_globallogic_utils::waittillslowprocessallowed();
   players = getarraykeys(touchlist);
 
-  for (i = 0; i < players.size; i++) {
+  for(i = 0; i < players.size; i++) {
     player = touchlist[players[i]].player;
     player updatecapsperminute(lastcaptureteam);
 
@@ -539,7 +541,7 @@ give_capture_credit(touchlist, string, capturetime, capture_team, lastcapturetea
       player recordgameevent("capture");
       level thread maps\mp\_popups::displayteammessagetoall(string, player);
 
-      if(isdefined(player.pers["captures"])) {
+      if(isDefined(player.pers["captures"])) {
         player.pers["captures"]++;
         player.captures = player.pers["captures"];
       }
@@ -553,6 +555,7 @@ give_capture_credit(touchlist, string, capturetime, capture_team, lastcapturetea
     }
 
     player iprintlnbold("GAMETYPE DEBUG: NOT GIVING YOU CAPTURE CREDIT AS BOOSTING PREVENTION");
+
   }
 }
 
@@ -561,7 +564,7 @@ give_held_credit(touchlist, team) {
   maps\mp\gametypes\_globallogic_utils::waittillslowprocessallowed();
   players = getarraykeys(touchlist);
 
-  for (i = 0; i < players.size; i++)
+  for(i = 0; i < players.size; i++)
     player = touchlist[players[i]].player;
 }
 
@@ -572,7 +575,7 @@ onzonedestroy(player) {
   player recordgameevent("destroy");
   player addplayerstatwithgametype("DESTRUCTIONS", 1);
 
-  if(isdefined(player.pers["destructions"])) {
+  if(isDefined(player.pers["destructions"])) {
     player.pers["destructions"]++;
     player.destructions = player.pers["destructions"];
   }
@@ -637,8 +640,8 @@ movezoneaftertime(time) {
   level.zonedestroyedbytimer = 0;
   wait(time);
 
-  if(!isdefined(level.zone.gameobject.wascontested) || level.zone.gameobject.wascontested == 0) {
-    if(!isdefined(level.zone.gameobject.wasleftunoccupied) || level.zone.gameobject.wasleftunoccupied == 0) {
+  if(!isDefined(level.zone.gameobject.wascontested) || level.zone.gameobject.wascontested == 0) {
+    if(!isDefined(level.zone.gameobject.wasleftunoccupied) || level.zone.gameobject.wasleftunoccupied == 0) {
       zoneowningteam = level.zone.gameobject maps\mp\gametypes\_gameobjects::getownerteam();
       maps\mp\_challenges::controlzoneentirely(zoneowningteam);
     }
@@ -658,7 +661,7 @@ awardcapturepoints(team, lastcaptureteam) {
   seconds = 1;
   score = 1;
 
-  while (!level.gameended) {
+  while(!level.gameended) {
     wait(seconds);
     maps\mp\gametypes\_hostmigration::waittillhostmigrationdone();
 
@@ -679,8 +682,8 @@ onspawnplayer(predictedspawn) {
   spawnpoint = undefined;
 
   if(!level.usestartspawns) {
-    if(isdefined(level.zone)) {
-      if(isdefined(level.zone.gameobject)) {
+    if(isDefined(level.zone)) {
+      if(isDefined(level.zone.gameobject)) {
         zoneowningteam = level.zone.gameobject maps\mp\gametypes\_gameobjects::getownerteam();
 
         if(self.pers["team"] == zoneowningteam)
@@ -693,12 +696,12 @@ onspawnplayer(predictedspawn) {
     }
   }
 
-  if(!isdefined(spawnpoint)) {
+  if(!isDefined(spawnpoint)) {
     spawnteam = self.pers["team"];
     spawnpoint = maps\mp\gametypes\_spawnlogic::getspawnpoint_random(level.spawn_start[spawnteam]);
   }
 
-  assert(isdefined(spawnpoint));
+  assert(isDefined(spawnpoint));
 
   if(predictedspawn)
     self predictspawnpoint(spawnpoint.origin, spawnpoint.angles);
@@ -714,16 +717,18 @@ comparezoneindexes(zone_a, zone_b) {
   script_index_a = zone_a.script_index;
   script_index_b = zone_b.script_index;
 
-  if(!isdefined(script_index_a) && !isdefined(script_index_b))
+  if(!isDefined(script_index_a) && !isDefined(script_index_b))
     return false;
 
-  if(!isdefined(script_index_a) && isdefined(script_index_b)) {
+  if(!isDefined(script_index_a) && isDefined(script_index_b)) {
     println("KOTH: Missing script_index on zone at " + zone_a.origin);
+
     return true;
   }
 
-  if(isdefined(script_index_a) && !isdefined(script_index_b)) {
+  if(isDefined(script_index_a) && !isDefined(script_index_b)) {
     println("KOTH: Missing script_index on zone at " + zone_b.origin);
+
     return false;
   }
 
@@ -736,15 +741,15 @@ comparezoneindexes(zone_a, zone_b) {
 getzonearray() {
   zones = getentarray("koth_zone_center", "targetname");
 
-  if(!isdefined(zones))
+  if(!isDefined(zones))
     return undefined;
 
   swapped = 1;
 
-  for (n = zones.size; swapped; n--) {
+  for(n = zones.size; swapped; n--) {
     swapped = 0;
 
-    for (i = 0; i < n - 1; i++) {
+    for(i = 0; i < n - 1; i++) {
       if(comparezoneindexes(zones[i], zones[i + 1])) {
         temp = zones[i];
         zones[i] = zones[i + 1];
@@ -762,14 +767,14 @@ setupzones() {
   zones = getzonearray();
   trigs = getentarray("koth_zone_trigger", "targetname");
 
-  for (i = 0; i < zones.size; i++) {
+  for(i = 0; i < zones.size; i++) {
     errored = 0;
     zone = zones[i];
     zone.trig = undefined;
 
-    for (j = 0; j < trigs.size; j++) {
+    for(j = 0; j < trigs.size; j++) {
       if(zone istouching(trigs[j])) {
-        if(isdefined(zone.trig)) {
+        if(isDefined(zone.trig)) {
           maperrors[maperrors.size] = "Zone at " + zone.origin + " is touching more than one \"zonetrigger\" trigger";
           errored = 1;
           break;
@@ -780,7 +785,7 @@ setupzones() {
       }
     }
 
-    if(!isdefined(zone.trig)) {
+    if(!isDefined(zone.trig)) {
       if(!errored) {
         maperrors[maperrors.size] = "Zone at " + zone.origin + " is not inside any \"zonetrigger\" trigger";
         continue;
@@ -792,10 +797,10 @@ setupzones() {
     visuals = [];
     visuals[0] = zone;
 
-    if(isdefined(zone.target)) {
+    if(isDefined(zone.target)) {
       othervisuals = getentarray(zone.target, "targetname");
 
-      for (j = 0; j < othervisuals.size; j++)
+      for(j = 0; j < othervisuals.size; j++)
         visuals[visuals.size] = othervisuals[j];
     }
 
@@ -812,11 +817,12 @@ setupzones() {
   if(maperrors.size > 0) {
     println("^1------------ Map Errors ------------");
 
-    for (i = 0; i < maperrors.size; i++)
+    for(i = 0; i < maperrors.size; i++)
       println(maperrors[i]);
 
     println("^1------------------------------------");
     maps\mp\_utility::error("Map errors. See above");
+
     maps\mp\gametypes\_callbacksetup::abortlevel();
     return;
   }
@@ -829,7 +835,7 @@ setupzones() {
 }
 
 setupzoneexclusions() {
-  if(!isdefined(level.levelkothdisable)) {
+  if(!isDefined(level.levelkothdisable)) {
     return;
   }
   foreach(nullzone in level.levelkothdisable) {
@@ -845,8 +851,8 @@ setupzoneexclusions() {
       }
     }
 
-    if(isdefined(foundzone)) {
-      if(!isdefined(foundzone.gameobject.exclusions))
+    if(isDefined(foundzone)) {
+      if(!isDefined(foundzone.gameobject.exclusions))
         foundzone.gameobject.exclusions = [];
 
       foundzone.gameobject.exclusions[foundzone.gameobject.exclusions.size] = nullzone;
@@ -857,13 +863,13 @@ setupzoneexclusions() {
 setupnearbyspawns() {
   spawns = level.spawn_all;
 
-  for (i = 0; i < spawns.size; i++)
+  for(i = 0; i < spawns.size; i++)
     spawns[i].distsq = distancesquared(spawns[i].origin, self.origin);
 
-  for (i = 1; i < spawns.size; i++) {
+  for(i = 1; i < spawns.size; i++) {
     thespawn = spawns[i];
 
-    for (j = i - 1; j >= 0 && thespawn.distsq < spawns[j].distsq; j--)
+    for(j = i - 1; j >= 0 && thespawn.distsq < spawns[j].distsq; j--)
       spawns[j + 1] = spawns[j];
 
     spawns[j + 1] = thespawn;
@@ -875,10 +881,10 @@ setupnearbyspawns() {
   outer = [];
   thirdsize = spawns.size / 3;
 
-  for (i = 0; i <= thirdsize; i++)
+  for(i = 0; i <= thirdsize; i++)
     first[first.size] = spawns[i];
 
-  while (i < spawns.size) {
+  while(i < spawns.size) {
     outer[outer.size] = spawns[i];
 
     if(i <= thirdsize * 2)
@@ -926,16 +932,16 @@ shufflezones() {
   level.zonespawnqueue = [];
   spawnqueue = arraycopy(level.zones);
 
-  for (total_left = spawnqueue.size; total_left > 0; total_left--) {
+  for(total_left = spawnqueue.size; total_left > 0; total_left--) {
     index = randomint(total_left);
     valid_zones = 0;
 
-    for (zone = 0; zone < level.zones.size; zone++) {
-      if(!isdefined(spawnqueue[zone])) {
+    for(zone = 0; zone < level.zones.size; zone++) {
+      if(!isDefined(spawnqueue[zone])) {
         continue;
       }
       if(valid_zones == index) {
-        if(level.zonespawnqueue.size == 0 && isdefined(level.zone) && level.zone == spawnqueue[zone]) {
+        if(level.zonespawnqueue.size == 0 && isDefined(level.zone) && level.zone == spawnqueue[zone]) {
           continue;
         }
         level.zonespawnqueue[level.zonespawnqueue.size] = spawnqueue[zone];
@@ -995,7 +1001,7 @@ pickzonetospawn() {
     num[team] = 0;
   }
 
-  for (i = 0; i < level.players.size; i++) {
+  for(i = 0; i < level.players.size; i++) {
     player = level.players[i];
 
     if(isalive(player)) {
@@ -1005,8 +1011,7 @@ pickzonetospawn() {
   }
 
   if(getcountofteamswithplayers(num) <= 1) {
-    for (zone = level.zones[randomint(level.zones.size)]; isdefined(level.prevzone) && zone == level.prevzone; zone = level.zones[randomint(level.zones.size)]) {
-
+    for(zone = level.zones[randomint(level.zones.size)]; isDefined(level.prevzone) && zone == level.prevzone; zone = level.zones[randomint(level.zones.size)]) {
     }
 
     level.prevzone2 = level.prevzone;
@@ -1026,27 +1031,27 @@ pickzonetospawn() {
   bestzone = undefined;
   lowestcost = undefined;
 
-  for (i = 0; i < level.zones.size; i++) {
+  for(i = 0; i < level.zones.size; i++) {
     zone = level.zones[i];
     cost = getpointcost(avgpos, zone.origin);
 
-    if(isdefined(level.prevzone) && zone == level.prevzone) {
+    if(isDefined(level.prevzone) && zone == level.prevzone) {
       continue;
     }
-    if(isdefined(level.prevzone2) && zone == level.prevzone2) {
+    if(isDefined(level.prevzone2) && zone == level.prevzone2) {
       if(level.zones.size > 2)
         continue;
       else
         cost = cost + 262144;
     }
 
-    if(!isdefined(lowestcost) || cost < lowestcost) {
+    if(!isDefined(lowestcost) || cost < lowestcost) {
       lowestcost = cost;
       bestzone = zone;
     }
   }
 
-  assert(isdefined(bestzone));
+  assert(isDefined(bestzone));
   level.prevzone2 = level.prevzone;
   level.prevzone = bestzone;
   return bestzone;
@@ -1065,12 +1070,12 @@ onplayerkilled(einflictor, attacker, idamage, smeansofdeath, sweapon, vdir, shit
   ownerteam = undefined;
 
   if(level.capturetime == 0) {
-    if(!isdefined(level.zone)) {
+    if(!isDefined(level.zone)) {
       return;
     }
     ownerteam = level.zone.gameobject.ownerteam;
 
-    if(!isdefined(ownerteam) || ownerteam == "neutral")
+    if(!isDefined(ownerteam) || ownerteam == "neutral")
       return;
   }
 
@@ -1096,7 +1101,7 @@ onplayerkilled(einflictor, attacker, idamage, smeansofdeath, sweapon, vdir, shit
         scoreeventprocessed = 1;
       } else {
         if(!medalgiven) {
-          if(isdefined(attacker.pers["defends"])) {
+          if(isDefined(attacker.pers["defends"])) {
             attacker.pers["defends"]++;
             attacker.defends = attacker.pers["defends"];
           }
@@ -1126,7 +1131,7 @@ onplayerkilled(einflictor, attacker, idamage, smeansofdeath, sweapon, vdir, shit
 
       if(team == ownerteam) {
         if(!medalgiven) {
-          if(isdefined(attacker.pers["defends"])) {
+          if(isDefined(attacker.pers["defends"])) {
             attacker.pers["defends"]++;
             attacker.defends = attacker.pers["defends"];
           }
@@ -1170,7 +1175,7 @@ killwhilecontesting() {
   killtime = gettime();
   playerteam = self.pers["team"];
 
-  if(!isdefined(self.clearenemycount))
+  if(!isDefined(self.clearenemycount))
     self.clearenemycount = 0;
 
   self.clearenemycount++;
@@ -1188,7 +1193,7 @@ killwhilecontesting() {
 }
 
 onendgame(winningteam) {
-  for (i = 0; i < level.zones.size; i++)
+  for(i = 0; i < level.zones.size; i++)
     level.zones[i].gameobject maps\mp\gametypes\_gameobjects::allowuse("none");
 }
 
@@ -1205,7 +1210,7 @@ createzonespawninfluencer() {
 }
 
 enable_zone_spawn_influencer(enabled) {
-  if(isdefined(self.spawn_influencer)) {
+  if(isDefined(self.spawn_influencer)) {
     enableinfluencer(self.spawn_influencer, enabled);
     enableinfluencer(self.spawn_influencer_inner, enabled);
   }
@@ -1225,18 +1230,18 @@ koth_gamemodespawndvars(reset_dvars) {
 }
 
 updatecapsperminute(lastownerteam) {
-  if(!isdefined(self.capsperminute)) {
+  if(!isDefined(self.capsperminute)) {
     self.numcaps = 0;
     self.capsperminute = 0;
   }
 
-  if(!isdefined(lastownerteam) || lastownerteam == "neutral") {
+  if(!isDefined(lastownerteam) || lastownerteam == "neutral") {
     return;
   }
   self.numcaps++;
   minutespassed = maps\mp\gametypes\_globallogic_utils::gettimepassed() / 60000;
 
-  if(isplayer(self) && isdefined(self.timeplayed["total"]))
+  if(isplayer(self) && isDefined(self.timeplayed["total"]))
     minutespassed = self.timeplayed["total"] / 60;
 
   self.capsperminute = self.numcaps / minutespassed;

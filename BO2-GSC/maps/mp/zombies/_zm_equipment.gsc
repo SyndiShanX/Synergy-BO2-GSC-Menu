@@ -19,43 +19,43 @@ init() {
   onplayerconnect_callback(::equipment_placement_watcher);
   level._equipment_disappear_fx = loadfx("maps/zombie/fx_zmb_tranzit_electrap_explo");
 
-  if(!(isdefined(level.disable_fx_zmb_tranzit_shield_explo) && level.disable_fx_zmb_tranzit_shield_explo))
+  if(!(isDefined(level.disable_fx_zmb_tranzit_shield_explo) && level.disable_fx_zmb_tranzit_shield_explo))
     level._riotshield_dissapear_fx = loadfx("maps/zombie/fx_zmb_tranzit_shield_explo");
 
   level.placeable_equipment_destroy_fn = [];
 
-  if(!(isdefined(level._no_equipment_activated_clientfield) && level._no_equipment_activated_clientfield))
+  if(!(isDefined(level._no_equipment_activated_clientfield) && level._no_equipment_activated_clientfield))
     registerclientfield("scriptmover", "equipment_activated", 12000, 4, "int");
 }
 
 signal_equipment_activated(val) {
-  if(!isdefined(val))
+  if(!isDefined(val))
     val = 1;
 
-  if(isdefined(level._no_equipment_activated_clientfield) && level._no_equipment_activated_clientfield) {
+  if(isDefined(level._no_equipment_activated_clientfield) && level._no_equipment_activated_clientfield) {
     return;
   }
   self endon("death");
   self setclientfield("equipment_activated", val);
 
-  for (i = 0; i < 2; i++)
+  for(i = 0; i < 2; i++)
     wait_network_frame();
 
   self setclientfield("equipment_activated", 0);
 }
 
 register_equipment(equipment_name, hint, howto_hint, hint_icon, equipmentvo, watcher_thread, transfer_fn, drop_fn, pickup_fn, place_fn) {
-  if(!isdefined(level.zombie_include_equipment) || !(isdefined(level.zombie_include_equipment[equipment_name]) && level.zombie_include_equipment[equipment_name])) {
+  if(!isDefined(level.zombie_include_equipment) || !(isDefined(level.zombie_include_equipment[equipment_name]) && level.zombie_include_equipment[equipment_name])) {
     return;
   }
   precachestring(hint);
 
-  if(isdefined(hint_icon))
+  if(isDefined(hint_icon))
     precacheshader(hint_icon);
 
   struct = spawnstruct();
 
-  if(!isdefined(level.zombie_equipment))
+  if(!isDefined(level.zombie_equipment))
     level.zombie_equipment = [];
 
   struct.equipment_name = equipment_name;
@@ -74,14 +74,14 @@ register_equipment(equipment_name, hint, howto_hint, hint_icon, equipmentvo, wat
 }
 
 is_equipment_included(equipment_name) {
-  if(!isdefined(level.zombie_include_equipment))
+  if(!isDefined(level.zombie_include_equipment))
     return 0;
 
-  return isdefined(level.zombie_include_equipment[equipment_name]);
+  return isDefined(level.zombie_include_equipment[equipment_name]);
 }
 
 include_zombie_equipment(equipment_name) {
-  if(!isdefined(level.zombie_include_equipment))
+  if(!isDefined(level.zombie_include_equipment))
     level.zombie_include_equipment = [];
 
   level.zombie_include_equipment[equipment_name] = 1;
@@ -89,7 +89,7 @@ include_zombie_equipment(equipment_name) {
 }
 
 limit_zombie_equipment(equipment_name, limited) {
-  if(!isdefined(level._limited_equipment))
+  if(!isDefined(level._limited_equipment))
     level._limited_equipment = [];
 
   if(limited)
@@ -102,7 +102,7 @@ init_equipment_upgrade() {
   equipment_spawns = [];
   equipment_spawns = getentarray("zombie_equipment_upgrade", "targetname");
 
-  for (i = 0; i < equipment_spawns.size; i++) {
+  for(i = 0; i < equipment_spawns.size; i++) {
     hint_string = get_equipment_hint(equipment_spawns[i].zombie_equipment_upgrade);
     equipment_spawns[i] sethintstring(hint_string);
     equipment_spawns[i] setcursorhint("HINT_NOICON");
@@ -113,28 +113,28 @@ init_equipment_upgrade() {
 }
 
 get_equipment_hint(equipment_name) {
-  assert(isdefined(level.zombie_equipment[equipment_name]), equipment_name + " was not included or is not registered with the equipment system.");
+  assert(isDefined(level.zombie_equipment[equipment_name]), equipment_name + " was not included or is not registered with the equipment system.");
   return level.zombie_equipment[equipment_name].hint;
 }
 
 get_equipment_howto_hint(equipment_name) {
-  assert(isdefined(level.zombie_equipment[equipment_name]), equipment_name + " was not included or is not registered with the equipment system.");
+  assert(isDefined(level.zombie_equipment[equipment_name]), equipment_name + " was not included or is not registered with the equipment system.");
   return level.zombie_equipment[equipment_name].howto_hint;
 }
 
 get_equipment_icon(equipment_name) {
-  assert(isdefined(level.zombie_equipment[equipment_name]), equipment_name + " was not included or is not registered with the equipment system.");
+  assert(isDefined(level.zombie_equipment[equipment_name]), equipment_name + " was not included or is not registered with the equipment system.");
   return level.zombie_equipment[equipment_name].hint_icon;
 }
 
 add_to_equipment_trigger_list(equipment_name) {
-  assert(isdefined(level.zombie_equipment[equipment_name]), equipment_name + " was not included or is not registered with the equipment system.");
+  assert(isDefined(level.zombie_equipment[equipment_name]), equipment_name + " was not included or is not registered with the equipment system.");
   level.zombie_equipment[equipment_name].triggers[level.zombie_equipment[equipment_name].triggers.size] = self;
   level.zombie_equipment[equipment_name].models[level.zombie_equipment[equipment_name].models.size] = getent(self.target, "targetname");
 }
 
 equipment_spawn_think() {
-  for (;;) {
+  for(;;) {
     self waittill("trigger", player);
 
     if(player in_revive_trigger() || player.is_drinking > 0) {
@@ -145,7 +145,7 @@ equipment_spawn_think() {
     if(is_limited_equipment(self.zombie_equipment_upgrade)) {
       player setup_limited_equipment(self.zombie_equipment_upgrade);
 
-      if(isdefined(level.hacker_tool_positions)) {
+      if(isDefined(level.hacker_tool_positions)) {
         new_pos = random(level.hacker_tool_positions);
         self.origin = new_pos.trigger_org;
         model = getent(self.target, "targetname");
@@ -161,24 +161,24 @@ equipment_spawn_think() {
 set_equipment_invisibility_to_player(equipment, invisible) {
   triggers = level.zombie_equipment[equipment].triggers;
 
-  for (i = 0; i < triggers.size; i++) {
-    if(isdefined(triggers[i]))
+  for(i = 0; i < triggers.size; i++) {
+    if(isDefined(triggers[i]))
       triggers[i] setinvisibletoplayer(self, invisible);
   }
 
   models = level.zombie_equipment[equipment].models;
 
-  for (i = 0; i < models.size; i++) {
-    if(isdefined(models[i]))
+  for(i = 0; i < models.size; i++) {
+    if(isDefined(models[i]))
       models[i] setinvisibletoplayer(self, invisible);
   }
 }
 
 equipment_take(equipment) {
-  if(!isdefined(equipment))
+  if(!isDefined(equipment))
     equipment = self get_player_equipment();
 
-  if(!isdefined(equipment)) {
+  if(!isDefined(equipment)) {
     return;
   }
   if(!self has_player_equipment(equipment)) {
@@ -187,7 +187,7 @@ equipment_take(equipment) {
   current = 0;
   current_weapon = 0;
 
-  if(isdefined(self get_player_equipment()) && equipment == self get_player_equipment())
+  if(isDefined(self get_player_equipment()) && equipment == self get_player_equipment())
     current = 1;
 
   if(equipment == self getcurrentweapon())
@@ -195,7 +195,7 @@ equipment_take(equipment) {
 
   println("ZM EQUIPMENT: " + self.name + " lost " + equipment + "\\n");
 
-  if(isdefined(self.current_equipment_active[equipment]) && self.current_equipment_active[equipment]) {
+  if(isDefined(self.current_equipment_active[equipment]) && self.current_equipment_active[equipment]) {
     self.current_equipment_active[equipment] = 0;
     self notify(equipment + "_deactivate");
   }
@@ -215,22 +215,23 @@ equipment_take(equipment) {
   if(current_weapon) {
     primaryweapons = self getweaponslistprimaries();
 
-    if(isdefined(primaryweapons) && primaryweapons.size > 0)
+    if(isDefined(primaryweapons) && primaryweapons.size > 0)
       self switchtoweapon(primaryweapons[0]);
   }
 }
 
 equipment_give(equipment) {
-  if(!isdefined(equipment)) {
+  if(!isDefined(equipment)) {
     return;
   }
-  if(!isdefined(level.zombie_equipment[equipment])) {
+  if(!isDefined(level.zombie_equipment[equipment])) {
     return;
   }
   if(self has_player_equipment(equipment)) {
     return;
   }
   println("ZM EQUIPMENT: " + self.name + " got " + equipment + "\\n");
+
   curr_weapon = self getcurrentweapon();
   curr_weapon_was_curr_equipment = self is_player_equipment(curr_weapon);
   self equipment_take();
@@ -242,7 +243,7 @@ equipment_give(equipment) {
   self set_equipment_invisibility_to_player(equipment, 1);
   self setactionslot(1, "weapon", equipment);
 
-  if(isdefined(level.zombie_equipment[equipment].watcher_thread))
+  if(isDefined(level.zombie_equipment[equipment].watcher_thread))
     self thread[[level.zombie_equipment[equipment].watcher_thread]]();
 
   self thread equipment_slot_watcher(equipment);
@@ -254,18 +255,18 @@ equipment_slot_watcher(equipment) {
   self endon("kill_equipment_slot_watcher");
   self endon("disconnect");
 
-  while (true) {
+  while(true) {
     self waittill("weapon_change", curr_weapon, prev_weapon);
     self.prev_weapon_before_equipment_change = undefined;
 
-    if(isdefined(prev_weapon) && "none" != prev_weapon) {
+    if(isDefined(prev_weapon) && "none" != prev_weapon) {
       prev_weapon_type = weaponinventorytype(prev_weapon);
 
       if("primary" == prev_weapon_type || "altmode" == prev_weapon_type)
         self.prev_weapon_before_equipment_change = prev_weapon;
     }
 
-    if(isdefined(level.zombie_equipment[equipment].watcher_thread)) {
+    if(isDefined(level.zombie_equipment[equipment].watcher_thread)) {
       if(curr_weapon == equipment) {
         if(self.current_equipment_active[equipment] == 1) {
           self notify(equipment + "_deactivate");
@@ -288,8 +289,8 @@ equipment_slot_watcher(equipment) {
 }
 
 is_limited_equipment(equipment) {
-  if(isdefined(level._limited_equipment)) {
-    for (i = 0; i < level._limited_equipment.size; i++) {
+  if(isDefined(level._limited_equipment)) {
+    for(i = 0; i < level._limited_equipment.size; i++) {
       if(level._limited_equipment[i] == equipment)
         return true;
     }
@@ -301,14 +302,14 @@ is_limited_equipment(equipment) {
 limited_equipment_in_use(equipment) {
   players = get_players();
 
-  for (i = 0; i < players.size; i++) {
+  for(i = 0; i < players.size; i++) {
     current_equipment = players[i] get_player_equipment();
 
-    if(isdefined(current_equipment) && current_equipment == equipment)
+    if(isDefined(current_equipment) && current_equipment == equipment)
       return true;
   }
 
-  if(isdefined(level.dropped_equipment) && isdefined(level.dropped_equipment[equipment]))
+  if(isDefined(level.dropped_equipment) && isDefined(level.dropped_equipment[equipment]))
     return true;
 
   return false;
@@ -317,7 +318,7 @@ limited_equipment_in_use(equipment) {
 setup_limited_equipment(equipment) {
   players = get_players();
 
-  for (i = 0; i < players.size; i++)
+  for(i = 0; i < players.size; i++)
     players[i] set_equipment_invisibility_to_player(equipment, 1);
 
   self thread release_limited_equipment_on_disconnect(equipment);
@@ -329,7 +330,7 @@ release_limited_equipment_on_equipment_taken(equipment) {
   self waittill_either(equipment + "_taken", "spawned_spectator");
   players = get_players();
 
-  for (i = 0; i < players.size; i++)
+  for(i = 0; i < players.size; i++)
     players[i] set_equipment_invisibility_to_player(equipment, 0);
 }
 
@@ -338,14 +339,14 @@ release_limited_equipment_on_disconnect(equipment) {
   self waittill("disconnect");
   players = get_players();
 
-  for (i = 0; i < players.size; i++) {
+  for(i = 0; i < players.size; i++) {
     if(isalive(players[i]))
       players[i] set_equipment_invisibility_to_player(equipment, 0);
   }
 }
 
 is_equipment_active(equipment) {
-  if(!isdefined(self.current_equipment_active) || !isdefined(self.current_equipment_active[equipment]))
+  if(!isDefined(self.current_equipment_active) || !isDefined(self.current_equipment_active[equipment]))
     return 0;
 
   return self.current_equipment_active[equipment];
@@ -365,7 +366,7 @@ setup_equipment_client_hintelem() {
   self endon("death");
   self endon("disconnect");
 
-  if(!isdefined(self.hintelem))
+  if(!isDefined(self.hintelem))
     self.hintelem = newclienthudelem(self);
 
   if(level.splitscreen)
@@ -380,7 +381,7 @@ show_equipment_hint(equipment) {
   self endon("death");
   self endon("disconnect");
 
-  if(isdefined(self.do_not_display_equipment_pickup_hint) && self.do_not_display_equipment_pickup_hint) {
+  if(isDefined(self.do_not_display_equipment_pickup_hint) && self.do_not_display_equipment_pickup_hint) {
     return;
   }
   wait 0.5;
@@ -399,7 +400,7 @@ show_equipment_hint_text(text) {
   self.hintelem.hidewheninmenu = 1;
   time = self waittill_notify_or_timeout("hide_equipment_hint_text", 3.2);
 
-  if(isdefined(time)) {
+  if(isDefined(time)) {
     self.hintelem fadeovertime(0.25);
     self.hintelem.alpha = 0;
     self waittill_notify_or_timeout("hide_equipment_hint_text", 0.25);
@@ -411,15 +412,15 @@ show_equipment_hint_text(text) {
 
 equipment_onspawnretrievableweaponobject(watcher, player) {
   self.plant_parent = self;
-  iswallmount = isdefined(level.placeable_equipment_type[self.name]) && level.placeable_equipment_type[self.name] == "wallmount";
+  iswallmount = isDefined(level.placeable_equipment_type[self.name]) && level.placeable_equipment_type[self.name] == "wallmount";
 
-  if(!isdefined(player.turret_placement) || !player.turret_placement["result"]) {
+  if(!isDefined(player.turret_placement) || !player.turret_placement["result"]) {
     if(iswallmount || !getdvarint(#"tu11_zombie_turret_placement_ignores_bodies")) {
       self waittill("stationary");
       waittillframeend;
 
       if(iswallmount) {
-        if(isdefined(player.planted_wallmount_on_a_zombie) && player.planted_wallmount_on_a_zombie) {
+        if(isDefined(player.planted_wallmount_on_a_zombie) && player.planted_wallmount_on_a_zombie) {
           equip_name = self.name;
           thread equipment_disappear_fx(self.origin, undefined, self.angles);
           self delete();
@@ -440,19 +441,20 @@ equipment_onspawnretrievableweaponobject(watcher, player) {
   }
 
   equipment = watcher.name + "_zm";
-  if(!isdefined(player.current_equipment) || player.current_equipment != equipment) {
+
+  if(!isDefined(player.current_equipment) || player.current_equipment != equipment) {
     assert(player has_deployed_equipment(equipment));
-    assert(!isdefined(player.current_equipment));
+    assert(!isDefined(player.current_equipment));
   }
 
-  if(isdefined(player.current_equipment) && player.current_equipment == equipment)
+  if(isDefined(player.current_equipment) && player.current_equipment == equipment)
     player equipment_to_deployed(equipment);
 
-  if(isdefined(level.zombie_equipment[equipment].place_fn)) {
-    if(isdefined(player.turret_placement) && player.turret_placement["result"]) {
+  if(isDefined(level.zombie_equipment[equipment].place_fn)) {
+    if(isDefined(player.turret_placement) && player.turret_placement["result"]) {
       plant_origin = player.turret_placement["origin"];
       plant_angles = player.turret_placement["angles"];
-    } else if(isdefined(level.placeable_equipment_type[self.name]) && level.placeable_equipment_type[self.name] == "wallmount") {
+    } else if(isDefined(level.placeable_equipment_type[self.name]) && level.placeable_equipment_type[self.name] == "wallmount") {
       plant_origin = self.origin;
       plant_angles = self.angles;
     } else {
@@ -460,46 +462,46 @@ equipment_onspawnretrievableweaponobject(watcher, player) {
       plant_angles = self.angles;
     }
 
-    if(isdefined(level.check_force_deploy_origin)) {
+    if(isDefined(level.check_force_deploy_origin)) {
       if(player[[level.check_force_deploy_origin]](self, plant_origin, plant_angles)) {
         plant_origin = player.origin;
         plant_angles = player.angles;
         self.plant_parent = player;
       }
-    } else if(isdefined(level.check_force_deploy_z)) {
+    } else if(isDefined(level.check_force_deploy_z)) {
       if(player[[level.check_force_deploy_z]](self, plant_origin, plant_angles))
         plant_origin = (plant_origin[0], plant_origin[1], player.origin[2] + 10);
     }
 
-    if(isdefined(iswallmount) && iswallmount)
+    if(isDefined(iswallmount) && iswallmount)
       self ghost();
 
     replacement = player[[level.zombie_equipment[equipment].place_fn]](plant_origin, plant_angles);
 
-    if(isdefined(replacement)) {
+    if(isDefined(replacement)) {
       replacement.owner = player;
       replacement.original_owner = player;
       replacement.name = self.name;
       player notify("equipment_placed", replacement, self.name);
 
-      if(isdefined(level.equipment_planted))
+      if(isDefined(level.equipment_planted))
         player[[level.equipment_planted]](replacement, equipment, self.plant_parent);
 
       player maps\mp\zombies\_zm_buildables::track_buildables_planted(self);
     }
 
-    if(isdefined(self))
+    if(isDefined(self))
       self delete();
   }
 }
 
 equipment_retrieve(player) {
-  if(isdefined(self)) {
+  if(isDefined(self)) {
     self stoploopsound();
     original_owner = self.original_owner;
     weaponname = self.name;
 
-    if(!isdefined(original_owner)) {
+    if(!isDefined(original_owner)) {
       player equipment_give(weaponname);
       self.owner = player;
     } else {
@@ -511,11 +513,11 @@ equipment_retrieve(player) {
       player equipment_from_deployed(weaponname);
     }
 
-    if(isdefined(self.requires_pickup) && self.requires_pickup) {
-      if(isdefined(level.zombie_equipment[weaponname].pickup_fn)) {
+    if(isDefined(self.requires_pickup) && self.requires_pickup) {
+      if(isDefined(level.zombie_equipment[weaponname].pickup_fn)) {
         self.owner = player;
 
-        if(isdefined(self.damage))
+        if(isDefined(self.damage))
           player player_set_equipment_damage(weaponname, self.damage);
 
         player[[level.zombie_equipment[weaponname].pickup_fn]](self);
@@ -542,23 +544,23 @@ equipment_retrieve(player) {
 }
 
 equipment_drop_to_planted(equipment, player) {
-  if(!isdefined(player.current_equipment) || player.current_equipment != equipment) {
+  if(!isDefined(player.current_equipment) || player.current_equipment != equipment) {
     assert(player has_deployed_equipment(equipment));
-    assert(!isdefined(player.current_equipment));
+    assert(!isDefined(player.current_equipment));
   }
 
-  if(isdefined(player.current_equipment) && player.current_equipment == equipment)
+  if(isDefined(player.current_equipment) && player.current_equipment == equipment)
     player equipment_to_deployed(equipment);
 
-  if(isdefined(level.zombie_equipment[equipment].place_fn)) {
+  if(isDefined(level.zombie_equipment[equipment].place_fn)) {
     replacement = player[[level.zombie_equipment[equipment].place_fn]](player.origin, player.angles);
 
-    if(isdefined(replacement)) {
+    if(isDefined(replacement)) {
       replacement.owner = player;
       replacement.original_owner = player;
       replacement.name = equipment;
 
-      if(isdefined(level.equipment_planted))
+      if(isDefined(level.equipment_planted))
         player[[level.equipment_planted]](replacement, equipment, player);
 
       player notify("equipment_placed", replacement, equipment);
@@ -570,6 +572,7 @@ equipment_drop_to_planted(equipment, player) {
 equipment_transfer(weaponname, fromplayer, toplayer) {
   if(is_limited_equipment(weaponname)) {
     println("ZM EQUIPMENT: " + weaponname + " transferred from " + fromplayer.name + " to " + toplayer.name + "\\n");
+
     toplayer equipment_orphaned(weaponname);
     wait 0.05;
     assert(!toplayer has_player_equipment(weaponname));
@@ -577,7 +580,7 @@ equipment_transfer(weaponname, fromplayer, toplayer) {
     toplayer equipment_give(weaponname);
     toplayer equipment_to_deployed(weaponname);
 
-    if(isdefined(level.zombie_equipment[weaponname].transfer_fn))
+    if(isDefined(level.zombie_equipment[weaponname].transfer_fn))
       [[level.zombie_equipment[weaponname].transfer_fn]](fromplayer, toplayer);
 
     fromplayer equipment_release(weaponname);
@@ -588,12 +591,13 @@ equipment_transfer(weaponname, fromplayer, toplayer) {
     fromplayer player_set_equipment_damage(equipment_damage);
   } else {
     println("ZM EQUIPMENT: " + weaponname + " swapped from " + fromplayer.name + " to " + toplayer.name + "\\n");
+
     toplayer equipment_give(weaponname);
 
-    if(isdefined(toplayer.current_equipment) && toplayer.current_equipment == weaponname)
+    if(isDefined(toplayer.current_equipment) && toplayer.current_equipment == weaponname)
       toplayer equipment_to_deployed(weaponname);
 
-    if(isdefined(level.zombie_equipment[weaponname].transfer_fn))
+    if(isDefined(level.zombie_equipment[weaponname].transfer_fn))
       [[level.zombie_equipment[weaponname].transfer_fn]](fromplayer, toplayer);
 
     equipment_damage = toplayer player_get_equipment_damage(weaponname);
@@ -604,21 +608,24 @@ equipment_transfer(weaponname, fromplayer, toplayer) {
 
 equipment_release(equipment) {
   println("ZM EQUIPMENT: " + self.name + " release " + equipment + "\\n");
+
   self equipment_take(equipment);
 }
 
 equipment_drop(equipment) {
-  if(isdefined(level.zombie_equipment[equipment].place_fn)) {
+  if(isDefined(level.zombie_equipment[equipment].place_fn)) {
     equipment_drop_to_planted(equipment, self);
+
     println("ZM EQUIPMENT: " + self.name + " drop to planted " + equipment + "\\n");
-  } else if(isdefined(level.zombie_equipment[equipment].drop_fn)) {
-    if(isdefined(self.current_equipment) && self.current_equipment == equipment)
+
+  } else if(isDefined(level.zombie_equipment[equipment].drop_fn)) {
+    if(isDefined(self.current_equipment) && self.current_equipment == equipment)
       self equipment_to_deployed(equipment);
 
     item = self[[level.zombie_equipment[equipment].drop_fn]]();
 
-    if(isdefined(item)) {
-      if(isdefined(level.equipment_planted))
+    if(isDefined(item)) {
+      if(isDefined(level.equipment_planted))
         self[[level.equipment_planted]](item, equipment, self);
 
       item.owner = undefined;
@@ -626,6 +633,7 @@ equipment_drop(equipment) {
     }
 
     println("ZM EQUIPMENT: " + self.name + " dropped " + equipment + "\\n");
+
   } else
     self equipment_take();
 
@@ -634,9 +642,10 @@ equipment_drop(equipment) {
 
 equipment_grab(equipment, item) {
   println("ZM EQUIPMENT: " + self.name + " picked up " + equipment + "\\n");
+
   self equipment_give(equipment);
 
-  if(isdefined(level.zombie_equipment[equipment].pickup_fn)) {
+  if(isDefined(level.zombie_equipment[equipment].pickup_fn)) {
     item.owner = self;
     self player_set_equipment_damage(equipment, item.damage);
     self[[level.zombie_equipment[equipment].pickup_fn]](item);
@@ -645,38 +654,39 @@ equipment_grab(equipment, item) {
 
 equipment_orphaned(equipment) {
   println("ZM EQUIPMENT: " + self.name + " orphaned " + equipment + "\\n");
+
   self equipment_take(equipment);
 }
 
 equipment_to_deployed(equipment) {
   println("ZM EQUIPMENT: " + self.name + " deployed " + equipment + "\\n");
 
-  if(!isdefined(self.deployed_equipment))
+  if(!isDefined(self.deployed_equipment))
     self.deployed_equipment = [];
 
   assert(self.current_equipment == equipment);
   self.deployed_equipment[self.deployed_equipment.size] = equipment;
   self.current_equipment = undefined;
 
-  if(!isdefined(level.riotshield_name) || equipment != level.riotshield_name)
+  if(!isDefined(level.riotshield_name) || equipment != level.riotshield_name)
     self takeweapon(equipment);
 
   self setactionslot(1, "");
 }
 
 equipment_from_deployed(equipment) {
-  if(!isdefined(equipment))
+  if(!isDefined(equipment))
     equipment = "none";
 
   println("ZM EQUIPMENT: " + self.name + " retrieved " + equipment + "\\n");
 
-  if(isdefined(self.current_equipment) && equipment != self.current_equipment)
+  if(isDefined(self.current_equipment) && equipment != self.current_equipment)
     self equipment_drop(self.current_equipment);
 
   assert(self has_deployed_equipment(equipment));
   self.current_equipment = equipment;
 
-  if(isdefined(level.riotshield_name) && equipment != level.riotshield_name)
+  if(isDefined(level.riotshield_name) && equipment != level.riotshield_name)
     self giveweapon(equipment);
 
   if(self hasweapon(equipment))
@@ -688,7 +698,7 @@ equipment_from_deployed(equipment) {
 }
 
 eqstub_get_unitrigger_origin() {
-  if(isdefined(self.origin_parent))
+  if(isDefined(self.origin_parent))
     return self.origin_parent.origin;
 
   tup = anglestoup(self.angles);
@@ -697,7 +707,7 @@ eqstub_get_unitrigger_origin() {
 }
 
 eqstub_on_spawn_trigger(trigger) {
-  if(isdefined(self.link_parent)) {
+  if(isDefined(self.link_parent)) {
     trigger enablelinkto();
     trigger linkto(self.link_parent);
     trigger setmovingplatformenabled(1);
@@ -707,10 +717,10 @@ eqstub_on_spawn_trigger(trigger) {
 equipment_buy(equipment) {
   println("ZM EQUIPMENT: " + self.name + " bought " + equipment + "\\n");
 
-  if(isdefined(self.current_equipment) && equipment != self.current_equipment)
+  if(isDefined(self.current_equipment) && equipment != self.current_equipment)
     self equipment_drop(self.current_equipment);
 
-  if((equipment == "riotshield_zm" || equipment == "alcatraz_shield_zm") && isdefined(self.player_shield_reset_health))
+  if((equipment == "riotshield_zm" || equipment == "alcatraz_shield_zm") && isDefined(self.player_shield_reset_health))
     self[[self.player_shield_reset_health]]();
   else
     self player_set_equipment_damage(equipment, 0);
@@ -719,39 +729,39 @@ equipment_buy(equipment) {
 }
 
 generate_equipment_unitrigger(classname, origin, angles, flags, radius, script_height, hint, icon, think, moving) {
-  if(!isdefined(radius))
+  if(!isDefined(radius))
     radius = 64;
 
-  if(!isdefined(script_height))
+  if(!isDefined(script_height))
     script_height = 64;
 
   script_width = script_height;
 
-  if(!isdefined(script_width))
+  if(!isDefined(script_width))
     script_width = 64;
 
   script_length = script_height;
 
-  if(!isdefined(script_length))
+  if(!isDefined(script_length))
     script_length = 64;
 
   unitrigger_stub = spawnstruct();
   unitrigger_stub.origin = origin;
 
-  if(isdefined(angles))
+  if(isDefined(angles))
     unitrigger_stub.angles = angles;
 
-  if(isdefined(script_length))
+  if(isDefined(script_length))
     unitrigger_stub.script_length = script_length;
   else
     unitrigger_stub.script_length = 13.5;
 
-  if(isdefined(script_width))
+  if(isDefined(script_width))
     unitrigger_stub.script_width = script_width;
   else
     unitrigger_stub.script_width = 27.5;
 
-  if(isdefined(script_height))
+  if(isDefined(script_height))
     unitrigger_stub.script_height = script_height;
   else
     unitrigger_stub.script_height = 24;
@@ -786,7 +796,7 @@ generate_equipment_unitrigger(classname, origin, angles, flags, radius, script_h
   unitrigger_stub.originfunc = ::eqstub_get_unitrigger_origin;
   unitrigger_stub.onspawnfunc = ::eqstub_on_spawn_trigger;
 
-  if(isdefined(moving) && moving)
+  if(isDefined(moving) && moving)
     maps\mp\zombies\_zm_unitrigger::register_unitrigger(unitrigger_stub, think);
   else
     maps\mp\zombies\_zm_unitrigger::register_static_unitrigger(unitrigger_stub, think);
@@ -801,7 +811,7 @@ can_pick_up_equipment(equipment_name, equipment_trigger) {
   if(self isthrowinggrenade())
     return false;
 
-  if(isdefined(self.screecher_weapon))
+  if(isDefined(self.screecher_weapon))
     return false;
 
   if(self is_jumping())
@@ -810,28 +820,28 @@ can_pick_up_equipment(equipment_name, equipment_trigger) {
   if(self is_player_equipment(equipment_name))
     return false;
 
-  if(isdefined(self.pickup_equipment) && self.pickup_equipment)
+  if(isDefined(self.pickup_equipment) && self.pickup_equipment)
     return false;
 
-  if(isdefined(level.equipment_team_pick_up) && level.equipment_team_pick_up && !self same_team_placed_equipment(equipment_trigger))
+  if(isDefined(level.equipment_team_pick_up) && level.equipment_team_pick_up && !self same_team_placed_equipment(equipment_trigger))
     return false;
 
   return true;
 }
 
 same_team_placed_equipment(equipment_trigger) {
-  return isdefined(equipment_trigger) && isdefined(equipment_trigger.stub) && isdefined(equipment_trigger.stub.model) && isdefined(equipment_trigger.stub.model.owner) && equipment_trigger.stub.model.owner.pers["team"] == self.pers["team"];
+  return isDefined(equipment_trigger) && isDefined(equipment_trigger.stub) && isDefined(equipment_trigger.stub.model) && isDefined(equipment_trigger.stub.model.owner) && equipment_trigger.stub.model.owner.pers["team"] == self.pers["team"];
 }
 
 placed_equipment_think(model, equipname, origin, angles, tradius, toffset) {
   pickupmodel = spawn("script_model", origin);
 
-  if(isdefined(angles))
+  if(isDefined(angles))
     pickupmodel.angles = angles;
 
   pickupmodel setmodel(model);
 
-  if(isdefined(level.equipment_safe_to_drop)) {
+  if(isDefined(level.equipment_safe_to_drop)) {
     if(!self[[level.equipment_safe_to_drop]](pickupmodel)) {
       equipment_disappear_fx(pickupmodel.origin, undefined, pickupmodel.angles);
       pickupmodel delete();
@@ -842,26 +852,26 @@ placed_equipment_think(model, equipname, origin, angles, tradius, toffset) {
 
   watchername = getsubstr(equipname, 0, equipname.size - 3);
 
-  if(isdefined(level.retrievehints[watchername]))
+  if(isDefined(level.retrievehints[watchername]))
     hint = level.retrievehints[watchername].hint;
   else
     hint = & "MP_GENERIC_PICKUP";
 
   icon = get_equipment_icon(equipname);
 
-  if(!isdefined(tradius))
+  if(!isDefined(tradius))
     tradius = 32;
 
   torigin = origin;
 
-  if(isdefined(toffset)) {
+  if(isDefined(toffset)) {
     tforward = anglestoforward(angles);
     torigin = torigin + toffset * tforward;
   }
 
   tup = anglestoup(angles);
   eq_unitrigger_offset = 12 * tup;
-  pickupmodel.stub = generate_equipment_unitrigger("trigger_radius_use", torigin + eq_unitrigger_offset, angles, 0, tradius, 64, hint, equipname, ::placed_equipment_unitrigger_think, isdefined(pickupmodel.canmove) && pickupmodel.canmove);
+  pickupmodel.stub = generate_equipment_unitrigger("trigger_radius_use", torigin + eq_unitrigger_offset, angles, 0, tradius, 64, hint, equipname, ::placed_equipment_unitrigger_think, isDefined(pickupmodel.canmove) && pickupmodel.canmove);
   pickupmodel.stub.model = pickupmodel;
   pickupmodel.stub.equipname = equipname;
   pickupmodel.equipname = equipname;
@@ -869,10 +879,10 @@ placed_equipment_think(model, equipname, origin, angles, tradius, toffset) {
   pickupmodel thread item_watch_explosions();
 
   if(is_limited_equipment(equipname)) {
-    if(!isdefined(level.dropped_equipment))
+    if(!isDefined(level.dropped_equipment))
       level.dropped_equipment = [];
 
-    if(isdefined(level.dropped_equipment[equipname]) && isdefined(level.dropped_equipment[equipname].model))
+    if(isDefined(level.dropped_equipment[equipname]) && isDefined(level.dropped_equipment[equipname].model))
       level.dropped_equipment[equipname].model dropped_equipment_destroy(1);
 
     level.dropped_equipment[equipname] = pickupmodel.stub;
@@ -886,16 +896,16 @@ watch_player_visibility(equipment) {
   self endon("kill_trigger");
   self setinvisibletoall();
 
-  while (isdefined(self)) {
+  while(isDefined(self)) {
     players = getplayers();
 
     foreach(player in players) {
-      if(!isdefined(player)) {
+      if(!isDefined(player)) {
         continue;
       }
       invisible = !player can_pick_up_equipment(equipment, self);
 
-      if(isdefined(self))
+      if(isDefined(self))
         self setinvisibletoplayer(player, invisible);
 
       wait 0.05;
@@ -909,7 +919,7 @@ placed_equipment_unitrigger_think() {
   self endon("kill_trigger");
   self thread watch_player_visibility(self.stub.equipname);
 
-  while (true) {
+  while(true) {
     self waittill("trigger", player);
 
     if(!player can_pick_up_equipment(self.stub.equipname, self)) {
@@ -921,19 +931,19 @@ placed_equipment_unitrigger_think() {
 }
 
 pickup_placed_equipment(player) {
-  assert(!(isdefined(player.pickup_equipment) && player.pickup_equipment));
+  assert(!(isDefined(player.pickup_equipment) && player.pickup_equipment));
   player.pickup_equipment = 1;
   stub = self.stub;
 
-  if(isdefined(player.current_equipment) && stub.equipname != player.current_equipment)
+  if(isDefined(player.current_equipment) && stub.equipname != player.current_equipment)
     player equipment_drop(player.current_equipment);
 
   if(is_limited_equipment(stub.equipname)) {
-    if(isdefined(level.dropped_equipment) && isdefined(level.dropped_equipment[stub.equipname]) && level.dropped_equipment[stub.equipname] == stub)
+    if(isDefined(level.dropped_equipment) && isDefined(level.dropped_equipment[stub.equipname]) && level.dropped_equipment[stub.equipname] == stub)
       level.dropped_equipment[stub.equipname] = undefined;
   }
 
-  if(isdefined(stub.model))
+  if(isDefined(stub.model))
     stub.model equipment_retrieve(player);
 
   thread maps\mp\zombies\_zm_unitrigger::unregister_unitrigger(stub);
@@ -944,12 +954,12 @@ pickup_placed_equipment(player) {
 dropped_equipment_think(model, equipname, origin, angles, tradius, toffset) {
   pickupmodel = spawn("script_model", origin);
 
-  if(isdefined(angles))
+  if(isDefined(angles))
     pickupmodel.angles = angles;
 
   pickupmodel setmodel(model);
 
-  if(isdefined(level.equipment_safe_to_drop)) {
+  if(isDefined(level.equipment_safe_to_drop)) {
     if(!self[[level.equipment_safe_to_drop]](pickupmodel)) {
       equipment_disappear_fx(pickupmodel.origin, undefined, pickupmodel.angles);
       pickupmodel delete();
@@ -960,36 +970,36 @@ dropped_equipment_think(model, equipname, origin, angles, tradius, toffset) {
 
   watchername = getsubstr(equipname, 0, equipname.size - 3);
 
-  if(isdefined(level.retrievehints[watchername]))
+  if(isDefined(level.retrievehints[watchername]))
     hint = level.retrievehints[watchername].hint;
   else
     hint = & "MP_GENERIC_PICKUP";
 
   icon = get_equipment_icon(equipname);
 
-  if(!isdefined(tradius))
+  if(!isDefined(tradius))
     tradius = 32;
 
   torigin = origin;
 
-  if(isdefined(toffset)) {
+  if(isDefined(toffset)) {
     offset = 64;
     tforward = anglestoforward(angles);
     torigin = torigin + toffset * tforward + vectorscale((0, 0, 1), 8.0);
   }
 
-  pickupmodel.stub = generate_equipment_unitrigger("trigger_radius_use", torigin, angles, 0, tradius, 64, hint, equipname, ::dropped_equipment_unitrigger_think, isdefined(pickupmodel.canmove) && pickupmodel.canmove);
+  pickupmodel.stub = generate_equipment_unitrigger("trigger_radius_use", torigin, angles, 0, tradius, 64, hint, equipname, ::dropped_equipment_unitrigger_think, isDefined(pickupmodel.canmove) && pickupmodel.canmove);
   pickupmodel.stub.model = pickupmodel;
   pickupmodel.stub.equipname = equipname;
   pickupmodel.equipname = equipname;
 
-  if(isdefined(level.equipment_planted))
+  if(isDefined(level.equipment_planted))
     self[[level.equipment_planted]](pickupmodel, equipname, self);
 
-  if(!isdefined(level.dropped_equipment))
+  if(!isDefined(level.dropped_equipment))
     level.dropped_equipment = [];
 
-  if(isdefined(level.dropped_equipment[equipname]))
+  if(isDefined(level.dropped_equipment[equipname]))
     level.dropped_equipment[equipname].model dropped_equipment_destroy(1);
 
   level.dropped_equipment[equipname] = pickupmodel.stub;
@@ -1002,7 +1012,7 @@ dropped_equipment_unitrigger_think() {
   self endon("kill_trigger");
   self thread watch_player_visibility(self.stub.equipname);
 
-  while (true) {
+  while(true) {
     self waittill("trigger", player);
 
     if(!player can_pick_up_equipment(self.stub.equipname, self)) {
@@ -1017,7 +1027,7 @@ pickup_dropped_equipment(player) {
   player.pickup_equipment = 1;
   stub = self.stub;
 
-  if(isdefined(player.current_equipment) && stub.equipname != player.current_equipment)
+  if(isDefined(player.current_equipment) && stub.equipname != player.current_equipment)
     player equipment_drop(player.current_equipment);
 
   player equipment_grab(stub.equipname, stub.model);
@@ -1029,42 +1039,42 @@ pickup_dropped_equipment(player) {
 dropped_equipment_destroy(gusto) {
   stub = self.stub;
 
-  if(isdefined(gusto) && gusto)
+  if(isDefined(gusto) && gusto)
     equipment_disappear_fx(self.origin, undefined, self.angles);
 
-  if(isdefined(level.dropped_equipment))
+  if(isDefined(level.dropped_equipment))
     level.dropped_equipment[stub.equipname] = undefined;
 
-  if(isdefined(stub.model))
+  if(isDefined(stub.model))
     stub.model delete();
 
-  if(isdefined(self.original_owner) && (is_limited_equipment(stub.equipname) || maps\mp\zombies\_zm_weapons::is_weapon_included(stub.equipname)))
+  if(isDefined(self.original_owner) && (is_limited_equipment(stub.equipname) || maps\mp\zombies\_zm_weapons::is_weapon_included(stub.equipname)))
     self.original_owner equipment_take(stub.equipname);
 
   thread maps\mp\zombies\_zm_unitrigger::unregister_unitrigger(stub);
 }
 
 add_placeable_equipment(equipment, modelname, destroy_fn, type) {
-  if(!isdefined(level.placeable_equipment))
+  if(!isDefined(level.placeable_equipment))
     level.placeable_equipment = [];
 
   level.placeable_equipment[equipment] = modelname;
   precachemodel(modelname);
   precacheitem(equipment + "_turret");
 
-  if(!isdefined(level.placeable_equipment_destroy_fn))
+  if(!isDefined(level.placeable_equipment_destroy_fn))
     level.placeable_equipment_destroy_fn = [];
 
   level.placeable_equipment_destroy_fn[equipment] = destroy_fn;
 
-  if(!isdefined(level.placeable_equipment_type))
+  if(!isDefined(level.placeable_equipment_type))
     level.placeable_equipment_type = [];
 
   level.placeable_equipment_type[equipment] = type;
 }
 
 is_placeable_equipment(equipment) {
-  if(isdefined(level.placeable_equipment) && isdefined(level.placeable_equipment[equipment]))
+  if(isDefined(level.placeable_equipment) && isDefined(level.placeable_equipment[equipment]))
     return true;
 
   return false;
@@ -1073,7 +1083,7 @@ is_placeable_equipment(equipment) {
 equipment_placement_watcher() {
   self endon("death_or_disconnect");
 
-  for (;;) {
+  for(;;) {
     self waittill("weapon_change", weapon);
 
     if(self.sessionstate != "spectator" && is_placeable_equipment(weapon))
@@ -1091,18 +1101,18 @@ equipment_watch_placement(equipment) {
   placeturret setturretcarried(1);
   placeturret setturretowner(self);
 
-  if(isdefined(level.placeable_equipment_type[equipment]))
+  if(isDefined(level.placeable_equipment_type[equipment]))
     placeturret setturrettype(level.placeable_equipment_type[equipment]);
 
   self carryturret(placeturret, carry_offset, carry_angles);
 
-  if(isdefined(level.use_swipe_protection))
+  if(isDefined(level.use_swipe_protection))
     self thread watch_melee_swipes(equipment, placeturret);
 
   self notify("create_equipment_turret", equipment, placeturret);
   ended = self waittill_any_return("weapon_change", "grenade_fire", "death_or_disconnect");
 
-  if(!(isdefined(level.use_legacy_equipment_placement) && level.use_legacy_equipment_placement))
+  if(!(isDefined(level.use_legacy_equipment_placement) && level.use_legacy_equipment_placement))
     self.turret_placement = self canplayerplaceturret(placeturret);
 
   if(ended == "weapon_change") {
@@ -1124,7 +1134,7 @@ watch_melee_swipes(equipment, turret) {
   self endon("death");
   self endon("disconnect");
 
-  while (true) {
+  while(true) {
     self waittill("melee_swipe", zombie);
 
     if(distancesquared(zombie.origin, self.origin) > zombie.meleeattackdist * zombie.meleeattackdist) {
@@ -1138,7 +1148,7 @@ watch_melee_swipes(equipment, turret) {
       thread equipment_disappear_fx(tpos, undefined, tangles);
       primaryweapons = self getweaponslistprimaries();
 
-      if(isdefined(primaryweapons[0]))
+      if(isDefined(primaryweapons[0]))
         self switchtoweapon(primaryweapons[0]);
 
       if(isalive(self))
@@ -1152,30 +1162,30 @@ watch_melee_swipes(equipment, turret) {
 }
 
 player_get_equipment_damage(equipment) {
-  if(isdefined(self.equipment_damage) && isdefined(self.equipment_damage[equipment]))
+  if(isDefined(self.equipment_damage) && isDefined(self.equipment_damage[equipment]))
     return self.equipment_damage[equipment];
 
   return 0;
 }
 
 player_set_equipment_damage(equipment, damage) {
-  if(!isdefined(self.equipment_damage))
+  if(!isDefined(self.equipment_damage))
     self.equipment_damage = [];
 
   self.equipment_damage[equipment] = damage;
 }
 
 player_damage_equipment(equipment, damage, origin) {
-  if(!isdefined(self.equipment_damage))
+  if(!isDefined(self.equipment_damage))
     self.equipment_damage = [];
 
-  if(!isdefined(self.equipment_damage[equipment]))
+  if(!isDefined(self.equipment_damage[equipment]))
     self.equipment_damage[equipment] = 0;
 
   self.equipment_damage[equipment] = self.equipment_damage[equipment] + damage;
 
   if(self.equipment_damage[equipment] > 1500) {
-    if(isdefined(level.placeable_equipment_destroy_fn[equipment]))
+    if(isDefined(level.placeable_equipment_destroy_fn[equipment]))
       self[[level.placeable_equipment_destroy_fn[equipment]]]();
     else
       equipment_disappear_fx(origin);
@@ -1185,15 +1195,15 @@ player_damage_equipment(equipment, damage, origin) {
 }
 
 item_damage(damage) {
-  if(isdefined(self.isriotshield) && self.isriotshield) {
-    if(isdefined(level.riotshield_damage_callback) && isdefined(self.owner))
+  if(isDefined(self.isriotshield) && self.isriotshield) {
+    if(isDefined(level.riotshield_damage_callback) && isDefined(self.owner))
       self.owner[[level.riotshield_damage_callback]](damage, 0);
-    else if(isdefined(level.deployed_riotshield_damage_callback))
+    else if(isDefined(level.deployed_riotshield_damage_callback))
       self[[level.deployed_riotshield_damage_callback]](damage);
-  } else if(isdefined(self.owner))
+  } else if(isDefined(self.owner))
     self.owner player_damage_equipment(self.equipname, damage, self.origin);
   else {
-    if(!isdefined(self.damage))
+    if(!isDefined(self.damage))
       self.damage = 0;
 
     self.damage = self.damage + damage;
@@ -1208,7 +1218,7 @@ item_watch_damage() {
   self setcandamage(1);
   self.health = 1500;
 
-  while (true) {
+  while(true) {
     self waittill("damage", amount);
     self item_damage(amount);
   }
@@ -1217,7 +1227,7 @@ item_watch_damage() {
 item_watch_explosions() {
   self endon("death");
 
-  while (true) {
+  while(true) {
     level waittill("grenade_exploded", position, radius, idamage, odamage);
     wait(randomfloatrange(0.05, 0.3));
     distsqrd = distancesquared(self.origin, position);
@@ -1234,20 +1244,20 @@ item_watch_explosions() {
 get_item_health() {
   damage = 0;
 
-  if(isdefined(self.isriotshield) && self.isriotshield) {
+  if(isDefined(self.isriotshield) && self.isriotshield) {
     damagemax = level.zombie_vars["riotshield_hit_points"];
 
-    if(isdefined(self.owner))
+    if(isDefined(self.owner))
       damage = self.owner.shielddamagetaken;
-    else if(isdefined(level.deployed_riotshield_damage_callback))
+    else if(isDefined(level.deployed_riotshield_damage_callback))
       damage = self.shielddamagetaken;
-  } else if(isdefined(self.owner)) {
+  } else if(isDefined(self.owner)) {
     damagemax = 1500;
     damage = self.owner player_get_equipment_damage(self.equipname);
   } else {
     damagemax = 1500;
 
-    if(isdefined(self.damage))
+    if(isDefined(self.damage))
       damage = self.damage;
   }
 
@@ -1258,7 +1268,7 @@ debughealth() {
   self endon("death");
   self endon("stop_attracting_zombies");
 
-  while (true) {
+  while(true) {
     if(getdvarint(#"_id_EB512CB7")) {
       health = self get_item_health();
       color = (1 - health, health, 0);
@@ -1268,10 +1278,11 @@ debughealth() {
 
     wait 0.05;
   }
+
 }
 
 item_choke() {
-  if(!isdefined(level.item_choke_count))
+  if(!isDefined(level.item_choke_count))
     level.item_choke_count = 0;
 
   level.item_choke_count++;
@@ -1283,14 +1294,14 @@ item_choke() {
 }
 
 is_equipment_ignored(equipname) {
-  if(isdefined(level.equipment_ignored_by_zombies) && isdefined(equipname) && isdefined(level.equipment_ignored_by_zombies[equipname]))
+  if(isDefined(level.equipment_ignored_by_zombies) && isDefined(equipname) && isDefined(level.equipment_ignored_by_zombies[equipname]))
     return true;
 
   return false;
 }
 
 enemies_ignore_equipment(equipname) {
-  if(!isdefined(level.equipment_ignored_by_zombies))
+  if(!isDefined(level.equipment_ignored_by_zombies))
     level.equipment_ignored_by_zombies = [];
 
   level.equipment_ignored_by_zombies[equipname] = equipname;
@@ -1300,60 +1311,61 @@ item_attract_zombies() {
   self endon("death");
   self notify("stop_attracting_zombies");
   self endon("stop_attracting_zombies");
+
   self thread debughealth();
 
   if(is_equipment_ignored(self.equipname)) {
     return;
   }
-  while (true) {
-    if(isdefined(level.vert_equipment_attack_range))
+  while(true) {
+    if(isDefined(level.vert_equipment_attack_range))
       vdistmax = level.vert_equipment_attack_range;
     else
       vdistmax = 36;
 
-    if(isdefined(level.max_equipment_attack_range))
+    if(isDefined(level.max_equipment_attack_range))
       distmax = level.max_equipment_attack_range * level.max_equipment_attack_range;
     else
       distmax = 4096;
 
-    if(isdefined(level.min_equipment_attack_range))
+    if(isDefined(level.min_equipment_attack_range))
       distmin = level.min_equipment_attack_range * level.min_equipment_attack_range;
     else
       distmin = 2025;
 
     ai = getaiarray(level.zombie_team);
 
-    for (i = 0; i < ai.size; i++) {
-      if(!isdefined(ai[i])) {
+    for(i = 0; i < ai.size; i++) {
+      if(!isDefined(ai[i])) {
         continue;
       }
-      if(isdefined(ai[i].ignore_equipment) && ai[i].ignore_equipment) {
+      if(isDefined(ai[i].ignore_equipment) && ai[i].ignore_equipment) {
         continue;
       }
-      if(isdefined(level.ignore_equipment)) {
+      if(isDefined(level.ignore_equipment)) {
         if(self[[level.ignore_equipment]](ai[i]))
           continue;
       }
 
-      if(isdefined(ai[i].is_inert) && ai[i].is_inert) {
+      if(isDefined(ai[i].is_inert) && ai[i].is_inert) {
         continue;
       }
-      if(isdefined(ai[i].is_traversing) && ai[i].is_traversing) {
+      if(isDefined(ai[i].is_traversing) && ai[i].is_traversing) {
         continue;
       }
       vdist = abs(ai[i].origin[2] - self.origin[2]);
       distsqrd = distance2dsquared(ai[i].origin, self.origin);
 
-      if(isdefined(self.equipname) && (self.equipname == "riotshield_zm" || self.equipname == "alcatraz_shield_zm"))
+      if(isDefined(self.equipname) && (self.equipname == "riotshield_zm" || self.equipname == "alcatraz_shield_zm"))
         vdistmax = 108;
 
       should_attack = 0;
 
-      if(isdefined(level.should_attack_equipment))
+      if(isDefined(level.should_attack_equipment))
         should_attack = self[[level.should_attack_equipment]](distsqrd);
 
       if(distsqrd < distmax && distsqrd > distmin && vdist < vdistmax || should_attack) {
-        if(!(isdefined(ai[i].isscreecher) && ai[i].isscreecher) && !ai[i] is_quad() && !ai[i] is_leaper()) {
+        if(!(isDefined(ai[i].isscreecher) && ai[i].isscreecher) && !ai[i] is_quad() && !ai[i] is_leaper()) {
           ai[i] thread attack_item(self);
           item_choke();
         }
@@ -1371,10 +1383,10 @@ attack_item(item) {
   item endon("death");
   self endon("start_inert");
 
-  if(isdefined(self.doing_equipment_attack) && self.doing_equipment_attack)
+  if(isDefined(self.doing_equipment_attack) && self.doing_equipment_attack)
     return 0;
 
-  if(isdefined(self.not_interruptable) && self.not_interruptable)
+  if(isDefined(self.not_interruptable) && self.not_interruptable)
     return 0;
 
   self thread attack_item_stop(item);
@@ -1388,15 +1400,15 @@ attack_item(item) {
   self maps\mp\zombies\_zm_spawner::zombie_history("doing equipment attack 1 - " + gettime());
   self.item = item;
 
-  if(!isdefined(self) || !isalive(self)) {
+  if(!isDefined(self) || !isalive(self)) {
     return;
   }
-  if(isdefined(item.zombie_attack_callback))
+  if(isDefined(item.zombie_attack_callback))
     item[[item.zombie_attack_callback]](self);
 
   self thread maps\mp\zombies\_zm_audio::do_zombies_playvocals("attack", self.animname);
 
-  if(isdefined(level.attack_item))
+  if(isDefined(level.attack_item))
     self[[level.attack_item]]();
 
   melee_anim = "zm_window_melee";
@@ -1414,7 +1426,7 @@ attack_item(item) {
   self animscripted(self.origin, flat_angle(vectortoangles(item.origin - self.origin)), melee_anim);
   self notify("item_attack");
 
-  if(isdefined(self.custom_item_dmg))
+  if(isDefined(self.custom_item_dmg))
     item thread item_damage(self.custom_item_dmg);
   else
     item thread item_damage(100);
@@ -1427,14 +1439,14 @@ attack_item(item) {
 }
 
 attack_item_interrupt(item) {
-  if(!(isdefined(self.has_legs) && self.has_legs)) {
+  if(!(isDefined(self.has_legs) && self.has_legs)) {
     return;
   }
   self notify("attack_item_interrupt");
   self endon("attack_item_interrupt");
   self endon("death");
 
-  while (isdefined(self.has_legs) && self.has_legs)
+  while(isDefined(self.has_legs) && self.has_legs)
     self waittill("damage");
 
   self stopanimscripted();
@@ -1453,7 +1465,7 @@ attack_item_stop(item) {
   self maps\mp\zombies\_zm_spawner::zombie_history("doing equipment attack 0 from death - " + gettime());
   self.item = undefined;
 
-  if(isdefined(level.attack_item_stop))
+  if(isDefined(level.attack_item_stop))
     self[[level.attack_item_stop]]();
 }
 
@@ -1461,7 +1473,7 @@ window_notetracks(msg, equipment) {
   self endon("death");
   equipment endon("death");
 
-  while (self.doing_equipment_attack) {
+  while(self.doing_equipment_attack) {
     self waittill(msg, notetrack);
 
     if(notetrack == "end") {
@@ -1473,13 +1485,13 @@ window_notetracks(msg, equipment) {
 }
 
 destructible_equipment_list_check() {
-  if(!isdefined(level.destructible_equipment))
+  if(!isDefined(level.destructible_equipment))
     level.destructible_equipment = [];
 
   i = 0;
 
-  while (i < level.destructible_equipment.size) {
-    if(!isdefined(level.destructible_equipment[i]))
+  while(i < level.destructible_equipment.size) {
+    if(!isDefined(level.destructible_equipment[i]))
       arrayremoveindex(level.destructible_equipment, i);
     else
       i++;
@@ -1499,10 +1511,10 @@ get_destructible_equipment_list() {
 equipment_disappear_fx(origin, fx, angles) {
   effect = level._equipment_disappear_fx;
 
-  if(isdefined(fx))
+  if(isDefined(fx))
     effect = fx;
 
-  if(isdefined(angles))
+  if(isDefined(angles))
     playfx(effect, origin, anglestoforward(angles));
   else
     playfx(effect, origin);

@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\gametypes\_hud.gsc
-***************************************/
+**************************************/
 
 init() {
   precacheshader("progress_bar_bg");
@@ -113,10 +113,10 @@ fontpulse(player) {
 fadetoblackforxsec(startwait, blackscreenwait, fadeintime, fadeouttime, shadername) {
   wait(startwait);
 
-  if(!isdefined(self)) {
+  if(!isDefined(self)) {
     return;
   }
-  if(!isdefined(self.blackscreen))
+  if(!isDefined(self.blackscreen))
     self.blackscreen = newclienthudelem(self);
 
   self.blackscreen.x = 0;
@@ -129,7 +129,7 @@ fadetoblackforxsec(startwait, blackscreenwait, fadeintime, fadeouttime, shaderna
   self.blackscreen.immunetodemogamehudsettings = 1;
   self.blackscreen.sort = 50;
 
-  if(isdefined(shadername))
+  if(isDefined(shadername))
     self.blackscreen setshader(shadername, 640, 480);
   else
     self.blackscreen setshader("black", 640, 480);
@@ -142,12 +142,12 @@ fadetoblackforxsec(startwait, blackscreenwait, fadeintime, fadeouttime, shaderna
   self.blackscreen.alpha = 1;
   wait(fadeintime);
 
-  if(!isdefined(self.blackscreen)) {
+  if(!isDefined(self.blackscreen)) {
     return;
   }
   wait(blackscreenwait);
 
-  if(!isdefined(self.blackscreen)) {
+  if(!isDefined(self.blackscreen)) {
     return;
   }
   if(fadeouttime > 0)
@@ -156,7 +156,7 @@ fadetoblackforxsec(startwait, blackscreenwait, fadeintime, fadeouttime, shaderna
   self.blackscreen.alpha = 0;
   wait(fadeouttime);
 
-  if(isdefined(self.blackscreen)) {
+  if(isDefined(self.blackscreen)) {
     self.blackscreen destroy();
     self.blackscreen = undefined;
   }

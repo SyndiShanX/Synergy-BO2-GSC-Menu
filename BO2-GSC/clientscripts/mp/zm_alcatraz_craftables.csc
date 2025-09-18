@@ -1,7 +1,7 @@
-/*******************************************************
+/*********************************************************
  * Decompiled and Edited by SyndiShanX
  * Script: clientscripts\mp\zm_alcatraz_craftables.csc
-*******************************************************/
+*********************************************************/
 
 #include clientscripts\mp\zombies\_zm_utility;
 #include clientscripts\mp\zombies\_zm_craftables;

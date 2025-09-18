@@ -37,7 +37,7 @@ init_animtree() {
 }
 
 register_giant_robot(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump) {
-  if(!isdefined(level.a_giant_robots)) {
+  if(!isDefined(level.a_giant_robots)) {
     level.a_giant_robots = [];
     level.a_giant_robots[localclientnum] = [];
   }
@@ -53,7 +53,7 @@ register_giant_robot(localclientnum, oldval, newval, bnewent, binitialsnap, fiel
 play_foot_stomp_fx(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump) {
   ai_robot = get_clientside_giant_robot_ai(localclientnum, fieldname);
 
-  if(!isdefined(ai_robot)) {
+  if(!isDefined(ai_robot)) {
     return;
   }
   ai_robot thread play_warning_lights_in_footprints_fx(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump);
@@ -72,7 +72,7 @@ play_foot_stomp_fx(localclientnum, oldval, newval, bnewent, binitialsnap, fieldn
 play_foot_open_fx(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump) {
   ai_robot = get_clientside_giant_robot_ai(localclientnum, fieldname);
 
-  if(!isdefined(ai_robot)) {
+  if(!isDefined(ai_robot)) {
     return;
   }
   v_fx_offset = vectorscale((0, 0, 1), 56.0);
@@ -93,7 +93,7 @@ play_foot_open_fx(localclientnum, oldval, newval, bnewent, binitialsnap, fieldna
     ai_robot.e_damage_fx linkto(ai_robot, "tag_hatch_fx_le");
     ai_robot.e_damage_fx playsound(0, "zmb_zombieblood_3rd_plane_explode");
     playfxontag(localclientnum, level._effect["mechz_death"], ai_robot.e_damage_fx, "tag_origin");
-  } else if(isdefined(ai_robot.e_damage_fx))
+  } else if(isDefined(ai_robot.e_damage_fx))
     ai_robot.e_damage_fx delete();
 }
 
@@ -104,7 +104,7 @@ play_eject_warning_fx(localclientnum, oldval, newval, bnewent, binitialsnap, fie
     level.fieldname[localclientnum] = spawn(localclientnum, v_fx_pos, "script_model");
     level.fieldname[localclientnum] setmodel("tag_origin");
     playfxontag(localclientnum, level._effect["eject_warning"], level.fieldname[localclientnum], "tag_origin");
-  } else if(isdefined(level.fieldname[localclientnum]))
+  } else if(isDefined(level.fieldname[localclientnum]))
     level.fieldname[localclientnum] delete();
 }
 
@@ -114,7 +114,7 @@ play_eject_steam_fx(localclientnum, oldval, newval, bnewent, binitialsnap, field
   else {
     self notify("stop_eject_steam_fx");
 
-    if(isdefined(self.fieldname))
+    if(isDefined(self.fieldname))
       stopfx(localclientnum, self.fieldname);
   }
 }
@@ -126,7 +126,7 @@ loop_eject_steam_fx(localclientnum) {
   s_tube = a_s_tubes[0];
   self thread sndplaysteamfx("stop_eject_steam_fx", s_tube.origin);
 
-  while (true) {
+  while(true) {
     self.fieldname = playfx(localclientnum, level._effect["eject_steam"], s_tube.origin, anglestoforward(s_tube.angles), anglestoup(s_tube.angles));
     wait 0.1;
   }
@@ -148,7 +148,7 @@ all_tubes_play_eject_steam_fx(localclientnum, oldval, newval, bnewent, binitials
         n_index++;
       }
     }
-  } else if(isdefined(level.a_s_tubes[localclientnum])) {
+  } else if(isDefined(level.a_s_tubes[localclientnum])) {
     foreach(struct in level.a_s_tubes[localclientnum])
     struct notify("stop_all_tubes_eject_steam");
   }
@@ -158,7 +158,7 @@ loop_all_tube_steam(localclientnum) {
   self endon("stop_all_tubes_eject_steam");
   self thread sndplaysteamfx("stop_all_tubes_eject_steam", self.origin);
 
-  while (true) {
+  while(true) {
     playfx(localclientnum, level._effect["eject_steam"], self.origin, anglestoforward(self.angles), anglestoup(self.angles));
     wait 0.1;
   }
@@ -173,12 +173,12 @@ sndplaysteamfx(the_notify, origin) {
 gr_eject_player_impact_fx(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump) {
   if(newval == 1)
     self.fieldname = playfx(localclientnum, level._effect["beacon_shell_explosion"], self.origin);
-  else if(isdefined(self.fieldname))
+  else if(isDefined(self.fieldname))
     stopfx(localclientnum, self.fieldname);
 }
 
 get_clientside_giant_robot_ai(localclientnum, fieldname) {
-  if(!isdefined(level.a_giant_robots) || !isdefined(level.a_giant_robots[localclientnum]))
+  if(!isDefined(level.a_giant_robots) || !isDefined(level.a_giant_robots[localclientnum]))
     return undefined;
 
   ai_robot = undefined;
@@ -186,17 +186,17 @@ get_clientside_giant_robot_ai(localclientnum, fieldname) {
   if(issubstr(fieldname, 0)) {
     ai_robot = level.a_giant_robots[localclientnum][0];
 
-    if(isdefined(ai_robot))
+    if(isDefined(ai_robot))
       ai_robot._index_for_lights = 0;
   } else if(issubstr(fieldname, 1)) {
     ai_robot = level.a_giant_robots[localclientnum][1];
 
-    if(isdefined(ai_robot))
+    if(isDefined(ai_robot))
       ai_robot._index_for_lights = 1;
   } else {
     ai_robot = level.a_giant_robots[localclientnum][2];
 
-    if(isdefined(ai_robot))
+    if(isDefined(ai_robot))
       ai_robot._index_for_lights = 2;
   }
 
@@ -204,7 +204,7 @@ get_clientside_giant_robot_ai(localclientnum, fieldname) {
 }
 
 toggle_robot_warning_lights(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump) {
-  if(!isdefined(level.robot_light_positions)) {
+  if(!isDefined(level.robot_light_positions)) {
     level.robot_light_positions = [];
     level.robot_light_positions[0] = spawnstruct();
     level.robot_light_positions[0].struct_name = "nml_warn_light_fp_ref";
@@ -224,7 +224,7 @@ toggle_robot_warning_lights(localclientnum, oldval, newval, bnewent, binitialsna
 
   ai_robot = get_clientside_giant_robot_ai(localclientnum, fieldname);
 
-  if(!isdefined(ai_robot) || !isdefined(level.robot_light_positions[ai_robot._index_for_lights])) {
+  if(!isDefined(ai_robot) || !isDefined(level.robot_light_positions[ai_robot._index_for_lights])) {
     return;
   }
   if(newval == 1) {
@@ -243,8 +243,8 @@ turn_on_warning_lights(localclientnum, struct_footprint) {
   a_lights = get_warning_lights_closest(struct_footprint);
 
   foreach(light in a_lights) {
-    if(!isdefined(light.fx_is_on_and_id)) {
-      if(!isdefined(light.angles))
+    if(!isDefined(light.fx_is_on_and_id)) {
+      if(!isDefined(light.angles))
         light.angles = (0, 0, 0);
 
       light.fx_is_on_and_id = playfx(localclientnum, level._effect["giant_robot_footstep_warning_light"], light.origin, anglestoforward(light.angles), anglestoup(light.angles));
@@ -256,7 +256,7 @@ turn_off_warning_lights(localclientnum, struct_footprint) {
   a_lights = get_warning_lights_closest(struct_footprint);
 
   foreach(light in a_lights) {
-    if(isdefined(light.fx_is_on_and_id)) {
+    if(isDefined(light.fx_is_on_and_id)) {
       stopfx(localclientnum, light.fx_is_on_and_id);
       light.fx_is_on_and_id = undefined;
     }
@@ -265,7 +265,7 @@ turn_off_warning_lights(localclientnum, struct_footprint) {
 
 turn_off_all_warning_lights_for_this_robot(localclientnum) {
   foreach(light in level.robot_light_positions[self._index_for_lights].warning_lights) {
-    if(isdefined(light.fx_is_on_and_id)) {
+    if(isDefined(light.fx_is_on_and_id)) {
       stopfx(localclientnum, light.fx_is_on_and_id);
       light.fx_is_on_and_id = undefined;
     }
@@ -287,14 +287,14 @@ play_warning_lights_in_footprints_fx(localclientnum, oldval, newval, bnewent, bi
   wait 1.0;
 
   if(newval == 1) {
-    if(isdefined(self.next_foot_right)) {
+    if(isDefined(self.next_foot_right)) {
       foot_origin = self gettagorigin("tag_hatch_fx_ri");
 
       if(distancesquared(self.next_foot_right.origin, foot_origin) < 300 * 300) {
         turn_off_warning_lights(localclientnum, self.next_foot_right);
         wait 0.05;
 
-        if(isdefined(self.next_foot_right.target)) {
+        if(isDefined(self.next_foot_right.target)) {
           self.next_foot_right = getstruct(self.next_foot_right.target, "targetname");
           turn_on_warning_lights(localclientnum, self.next_foot_right);
         } else
@@ -302,14 +302,14 @@ play_warning_lights_in_footprints_fx(localclientnum, oldval, newval, bnewent, bi
       }
     }
   } else if(newval == 2) {
-    if(isdefined(self.next_foot_left)) {
+    if(isDefined(self.next_foot_left)) {
       foot_origin = self gettagorigin("tag_hatch_fx_le");
 
       if(distancesquared(self.next_foot_left.origin, foot_origin) < 300 * 300) {
         turn_off_warning_lights(localclientnum, self.next_foot_left);
         wait 0.05;
 
-        if(isdefined(self.next_foot_left.target)) {
+        if(isDefined(self.next_foot_left.target)) {
           self.next_foot_left = getstruct(self.next_foot_left.target, "targetname");
           turn_on_warning_lights(localclientnum, self.next_foot_left);
         } else

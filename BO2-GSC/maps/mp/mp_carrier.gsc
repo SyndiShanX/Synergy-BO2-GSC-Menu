@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\mp_carrier.gsc
-***************************************/
+**************************************/
 
 #include maps\mp\_utility;
 #include maps\mp\mp_carrier_fx;
@@ -96,7 +96,7 @@ water_trigger_init() {
 }
 
 water_trigger_think() {
-  for (;;) {
+  for(;;) {
     self waittill("trigger", entity);
 
     if(isplayer(entity)) {

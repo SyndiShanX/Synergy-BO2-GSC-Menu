@@ -82,7 +82,7 @@ zombie_turned_ir(localclientnum, oldval, newval, bnewent, binitialsnap, fieldnam
   if(!self islocalplayer()) {
     return;
   }
-  if(!isdefined(self getlocalclientnumber())) {
+  if(!isDefined(self getlocalclientnumber())) {
     return;
   }
   if(self getlocalclientnumber() != localclientnum) {
@@ -99,7 +99,7 @@ zombie_turned_ir(localclientnum, oldval, newval, bnewent, binitialsnap, fieldnam
 zombie_turned_demo_ir() {
   lcn = 0;
 
-  while (true) {
+  while(true) {
     assert(isdemoplaying());
 
     if(getlocalplayer(lcn).is_player_zombie)

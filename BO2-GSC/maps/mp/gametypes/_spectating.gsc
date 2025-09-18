@@ -11,7 +11,7 @@ init() {
 }
 
 onplayerconnect() {
-  for (;;) {
+  for(;;) {
     level waittill("connecting", player);
     player thread onjoinedteam();
     player thread onjoinedspectators();
@@ -22,7 +22,7 @@ onplayerconnect() {
 onplayerspawned() {
   self endon("disconnect");
 
-  for (;;) {
+  for(;;) {
     self waittill("spawned_player");
     self setspectatepermissions();
   }
@@ -31,7 +31,7 @@ onplayerspawned() {
 onjoinedteam() {
   self endon("disconnect");
 
-  for (;;) {
+  for(;;) {
     self waittill("joined_team");
     self setspectatepermissionsformachine();
   }
@@ -40,7 +40,7 @@ onjoinedteam() {
 onjoinedspectators() {
   self endon("disconnect");
 
-  for (;;) {
+  for(;;) {
     self waittill("joined_spectators");
     self setspectatepermissionsformachine();
   }
@@ -49,13 +49,13 @@ onjoinedspectators() {
 updatespectatesettings() {
   level endon("game_ended");
 
-  for (index = 0; index < level.players.size; index++)
+  for(index = 0; index < level.players.size; index++)
     level.players[index] setspectatepermissions();
 }
 
 getsplitscreenteam() {
-  for (index = 0; index < level.players.size; index++) {
-    if(!isdefined(level.players[index])) {
+  for(index = 0; index < level.players.size; index++) {
+    if(!isDefined(level.players[index])) {
       continue;
     }
     if(level.players[index] == self) {
@@ -74,8 +74,8 @@ getsplitscreenteam() {
 }
 
 otherlocalplayerstillalive() {
-  for (index = 0; index < level.players.size; index++) {
-    if(!isdefined(level.players[index])) {
+  for(index = 0; index < level.players.size; index++) {
+    if(!isDefined(level.players[index])) {
       continue;
     }
     if(level.players[index] == self) {
@@ -144,7 +144,7 @@ setspectatepermissions() {
         self allowspectateteam("none", 1);
         self allowspectateteam("freelook", 0);
         self allowspectateteam("localplayers", 1);
-      } else if(isdefined(team) && isdefined(level.teams[team])) {
+      } else if(isDefined(team) && isDefined(level.teams[team])) {
         self allowspectateteam(team, 1);
         self allowspectateallteamsexceptteam(team, 0);
         self allowspectateteam("freelook", 0);
@@ -166,11 +166,11 @@ setspectatepermissions() {
       break;
   }
 
-  if(isdefined(team) && isdefined(level.teams[team])) {
-    if(isdefined(level.spectateoverride[team].allowfreespectate))
+  if(isDefined(team) && isDefined(level.teams[team])) {
+    if(isDefined(level.spectateoverride[team].allowfreespectate))
       self allowspectateteam("freelook", 1);
 
-    if(isdefined(level.spectateoverride[team].allowenemyspectate))
+    if(isDefined(level.spectateoverride[team].allowenemyspectate))
       self allowspectateallteamsexceptteam(team, 1);
   }
 }
@@ -181,8 +181,8 @@ setspectatepermissionsformachine() {
   if(!self issplitscreen()) {
     return;
   }
-  for (index = 0; index < level.players.size; index++) {
-    if(!isdefined(level.players[index])) {
+  for(index = 0; index < level.players.size; index++) {
+    if(!isDefined(level.players[index])) {
       continue;
     }
     if(level.players[index] == self) {

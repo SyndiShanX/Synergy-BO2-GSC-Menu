@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: aitype\zm_nuked_dog.gsc
-***************************************/
+**************************************/
 
 #include codescripts\character;
 #include character\character_sp_zombie_dog;

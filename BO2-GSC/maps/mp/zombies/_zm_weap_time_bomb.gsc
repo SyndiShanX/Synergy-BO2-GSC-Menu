@@ -24,12 +24,12 @@
 #include maps\mp\zombies\_zm_ai_basic;
 
 register_time_bomb_enemy(str_type, func_conditions_for_round, func_save_enemy_data, func_respawn_enemies) {
-  assert(isdefined(str_type), "str_type is a required parameter for register_time_bomb_enemy! This identifies the round type");
-  assert(isdefined(func_conditions_for_round), "func_conditions_for_round is a required parameter for register_time_bomb_enemy! This returns a bool that tells the script what type of round it is.");
-  assert(isdefined(func_save_enemy_data), "func_save_enemy_data is a required parameter for register_time_bomb_enemy! This should store all relevant data about an individual enemy, and requires one input argument.");
-  assert(isdefined(func_respawn_enemies), "func_respawn is a required parameter for register_time_bomb_enemy! This will run a function to respawn the new creature type.");
+  assert(isDefined(str_type), "str_type is a required parameter for register_time_bomb_enemy! This identifies the round type");
+  assert(isDefined(func_conditions_for_round), "func_conditions_for_round is a required parameter for register_time_bomb_enemy! This returns a bool that tells the script what type of round it is.");
+  assert(isDefined(func_save_enemy_data), "func_save_enemy_data is a required parameter for register_time_bomb_enemy! This should store all relevant data about an individual enemy, and requires one input argument.");
+  assert(isDefined(func_respawn_enemies), "func_respawn is a required parameter for register_time_bomb_enemy! This will run a function to respawn the new creature type.");
 
-  if(!isdefined(level._time_bomb.enemy_type[str_type]))
+  if(!isDefined(level._time_bomb.enemy_type[str_type]))
     level._time_bomb.enemy_type[str_type] = spawnstruct();
 
   level._time_bomb.enemy_type[str_type].conditions_for_round = func_conditions_for_round;
@@ -38,32 +38,32 @@ register_time_bomb_enemy(str_type, func_conditions_for_round, func_save_enemy_da
 }
 
 register_time_bomb_enemy_save_filter(str_type, func_filter_save) {
-  assert(isdefined(str_type), "str_type is a required parameter for register_time_bomb_enemy_save_filter! This identifies the round type where the filter function should run.");
-  assert(isdefined(level._time_bomb.enemy_type), str_type + " enemy type is not yet registered with the time bomb system scripts. Register that type before calling register_time_bomb_enemy_save_filter()");
+  assert(isDefined(str_type), "str_type is a required parameter for register_time_bomb_enemy_save_filter! This identifies the round type where the filter function should run.");
+  assert(isDefined(level._time_bomb.enemy_type), str_type + " enemy type is not yet registered with the time bomb system scripts. Register that type before calling register_time_bomb_enemy_save_filter()");
   level._time_bomb.enemy_type[str_type].enemy_data_save_filter_func = func_filter_save;
 }
 
 register_time_bomb_enemy_default(str_type) {
-  assert(isdefined(level._time_bomb.enemy_type[str_type]), str_type + " enemy type is not set up in time bomb enemy array! Initialize this enemy before trying to make it the default.");
+  assert(isDefined(level._time_bomb.enemy_type[str_type]), str_type + " enemy type is not set up in time bomb enemy array! Initialize this enemy before trying to make it the default.");
   level._time_bomb.enemy_type_default = str_type;
 }
 
 time_bomb_add_custom_func_global_save(func_save) {
-  if(!isdefined(level._time_bomb.custom_funcs_save))
+  if(!isDefined(level._time_bomb.custom_funcs_save))
     level._time_bomb.custom_funcs_save = [];
 
   level._time_bomb.custom_funcs_save[level._time_bomb.custom_funcs_save.size] = func_save;
 }
 
 time_bomb_add_custom_func_global_restore(func_restore) {
-  if(!isdefined(level._time_bomb.custom_funcs_restore))
+  if(!isDefined(level._time_bomb.custom_funcs_restore))
     level._time_bomb.custom_funcs_restore = [];
 
   level._time_bomb.custom_funcs_restore[level._time_bomb.custom_funcs_restore.size] = func_restore;
 }
 
 get_time_bomb_saved_round_type() {
-  if(!isdefined(level.time_bomb_save_data) || !isdefined(level.time_bomb_save_data.round_type))
+  if(!isDefined(level.time_bomb_save_data) || !isDefined(level.time_bomb_save_data.round_type))
     str_type = "none";
   else
     str_type = level.time_bomb_save_data.round_type;
@@ -95,7 +95,7 @@ init_time_bomb() {
   register_equipment_for_level("time_bomb_zm");
   register_equipment_for_level("time_bomb_detonator_zm");
 
-  if(!isdefined(level.round_wait_func))
+  if(!isDefined(level.round_wait_func))
     level.round_wait_func = ::time_bomb_round_wait;
 
   level.zombie_round_change_custom = ::time_bomb_custom_round_change;
@@ -109,6 +109,7 @@ init_time_bomb() {
   register_time_bomb_enemy_default("zombie");
   level._time_bomb.last_round_restored = -1;
   flag_set("time_bomb_detonation_enabled");
+
   level thread test_mode();
 }
 
@@ -146,7 +147,7 @@ sndwatchforweapswitch() {
   self endon("disconnect");
   self.sndlastweapon = "";
 
-  while (true) {
+  while(true) {
     self waittill("weapon_change", weapon);
 
     if(weapon == "time_bomb_zm") {
@@ -167,11 +168,11 @@ time_bomb_think() {
   self endon("disconnect");
   self endon("player_lost_time_bomb");
 
-  while (true) {
+  while(true) {
     self waittill("grenade_fire", e_grenade, str_grenade_name);
 
     if(str_grenade_name == "time_bomb_zm") {
-      if(isdefined(str_grenade_name) && str_grenade_name == "time_bomb_zm") {
+      if(isDefined(str_grenade_name) && str_grenade_name == "time_bomb_zm") {
         e_grenade thread setup_time_bomb_detonation_model();
         time_bomb_saves_data();
         e_grenade time_bomb_model_init();
@@ -198,7 +199,7 @@ time_bomb_model_init() {
 }
 
 delete_existing_time_bomb_model() {
-  if(isdefined(level.time_bomb_save_data) && isdefined(level.time_bomb_save_data.time_bomb_model) && isdefined(level.time_bomb_save_data.time_bomb_model.origin))
+  if(isDefined(level.time_bomb_save_data) && isDefined(level.time_bomb_save_data.time_bomb_model) && isDefined(level.time_bomb_save_data.time_bomb_model.origin))
     level.time_bomb_save_data.time_bomb_model delete_time_bomb_model();
 }
 
@@ -207,7 +208,7 @@ setup_time_bomb_detonation_model() {
 }
 
 detonate_time_bomb() {
-  if(isdefined(level.time_bomb_save_data.time_bomb_model) && isdefined(level.time_bomb_save_data.time_bomb_model.origin))
+  if(isDefined(level.time_bomb_save_data.time_bomb_model) && isDefined(level.time_bomb_save_data.time_bomb_model.origin))
     playsoundatposition("zmb_timebomb_3d_timer_end", level.time_bomb_save_data.time_bomb_model.origin);
 
   delete_time_bomb_model();
@@ -217,7 +218,7 @@ detonate_time_bomb() {
 }
 
 delete_time_bomb_model() {
-  if(isdefined(self) && isdefined(self.origin)) {
+  if(isDefined(self) && isDefined(self.origin)) {
     playfx(level._effect["time_bomb_set"], self.origin);
     self delete();
   }
@@ -229,7 +230,7 @@ watch_for_tactical_grenade_change() {
   self endon("death");
   self endon("disconnect");
 
-  while (self hasweapon("time_bomb_zm"))
+  while(self hasweapon("time_bomb_zm"))
     self waittill("new_tactical_grenade");
 
   if(self hasweapon("time_bomb_detonator_zm"))
@@ -259,18 +260,18 @@ time_bomb_saves_data(b_show_icon, save_struct) {
 }
 
 _time_bomb_saves_data(b_show_icon, save_struct) {
-  if(!isdefined(b_show_icon))
+  if(!isDefined(b_show_icon))
     b_show_icon = 1;
 
   debug_time_bomb_print("TIME BOMB SET! Saving...");
 
-  if(!isdefined(save_struct) && !time_bomb_save_exists())
+  if(!isDefined(save_struct) && !time_bomb_save_exists())
     level.time_bomb_save_data = spawnstruct();
 
   time_bomb_saves_global_data(save_struct);
   time_bomb_saves_player_data(save_struct);
 
-  if(isdefined(save_struct))
+  if(isDefined(save_struct))
     save_struct.save_ready = 1;
   else
     level.time_bomb_save_data.save_ready = 1;
@@ -280,7 +281,7 @@ _time_bomb_saves_data(b_show_icon, save_struct) {
 }
 
 time_bomb_saves_global_data(save_struct) {
-  if(!isdefined(save_struct))
+  if(!isDefined(save_struct))
     s_temp = level.time_bomb_save_data;
   else
     s_temp = save_struct;
@@ -296,12 +297,12 @@ time_bomb_saves_global_data(save_struct) {
 
   s_temp.custom_data = spawnstruct();
 
-  if(isdefined(level._time_bomb.custom_funcs_save)) {
-    for (i = 0; i < level._time_bomb.custom_funcs_save.size; i++)
+  if(isDefined(level._time_bomb.custom_funcs_save)) {
+    for(i = 0; i < level._time_bomb.custom_funcs_save.size; i++)
       s_temp.custom_data[[level._time_bomb.custom_funcs_save[i]]]();
   }
 
-  if(!isdefined(save_struct))
+  if(!isDefined(save_struct))
     level.time_bomb_save_data = s_temp;
 }
 
@@ -317,8 +318,8 @@ store_door_state(s_temp) {
   s_door_struct = spawnstruct();
   s_door_struct.doors = [];
 
-  if(isdefined(self._door_open) && self._door_open || isdefined(self.has_been_opened) && self.has_been_opened) {
-    if(isdefined(self.is_moving) && self.is_moving)
+  if(isDefined(self._door_open) && self._door_open || isDefined(self.has_been_opened) && self.has_been_opened) {
+    if(isDefined(self.is_moving) && self.is_moving)
       self waittill_either("movedone", "rotatedone");
 
     foreach(door in self.doors) {
@@ -344,8 +345,9 @@ store_door_state(s_temp) {
 }
 
 _time_bomb_restores_door_states(s_temp) {
-  if(!isdefined(s_temp.door_states)) {
+  if(!isDefined(s_temp.door_states)) {
     assertmsg("Trying to restore door states, where none have been saved.");
+
     return;
   }
 
@@ -358,17 +360,18 @@ _time_bomb_restores_door_states(s_temp) {
 restore_door_state(s_temp) {
   s_door_struct = s_temp.door_states[self getentitynumber()];
 
-  if(!isdefined(s_door_struct)) {
+  if(!isDefined(s_door_struct)) {
     assertmsg("Trying to restore doorstate for door @ " + self.origin + " but none saved.");
+
     return;
   }
 
-  if(isdefined(self._door_open) && self._door_open || isdefined(self.has_been_opened) && self.has_been_opened) {
+  if(isDefined(self._door_open) && self._door_open || isDefined(self.has_been_opened) && self.has_been_opened) {
     if(s_door_struct.state == 1) {
       return;
     }
-    for (i = 0; i < s_door_struct.doors.size; i++) {
-      if(isdefined(self.doors[i].script_string) && self.doors[i].script_string == "rotate") {
+    for(i = 0; i < s_door_struct.doors.size; i++) {
+      if(isDefined(self.doors[i].script_string) && self.doors[i].script_string == "rotate") {
         self.doors[i] rotateto(self.doors[i].og_angles, 0.05, 0, 0);
         wait 0.05;
       }
@@ -386,8 +389,8 @@ restore_door_state(s_temp) {
     if(s_door_struct.state == 0) {
       return;
     }
-    for (i = 0; i < s_door_struct.doors.size; i++) {
-      if(isdefined(self.doors[i].script_string) && self.doors[i].script_string == "rotate")
+    for(i = 0; i < s_door_struct.doors.size; i++) {
+      if(isDefined(self.doors[i].script_string) && self.doors[i].script_string == "rotate")
         self.doors[i] rotateto(s_door_struct.doors[i].script_angles, 0.05, 0, 0);
 
       self.doors[i] notsolid();
@@ -405,12 +408,12 @@ _time_bomb_saves_enemy_info(s_temp) {
   s_temp.enemies = [];
   s_temp.zombie_total = level.zombie_total;
   a_enemies = time_bomb_get_enemy_array();
-  assert(isdefined(level._time_bomb.enemy_type[s_temp.round_type].enemy_data_save_func), "enemy save data func is missing for AI type " + s_temp.round_type);
+  assert(isDefined(level._time_bomb.enemy_type[s_temp.round_type].enemy_data_save_func), "enemy save data func is missing for AI type " + s_temp.round_type);
 
-  for (i = 0; i < a_enemies.size; i++) {
+  for(i = 0; i < a_enemies.size; i++) {
     s_data = spawnstruct();
 
-    if(!isdefined(level._time_bomb.enemy_type[s_temp.round_type].enemy_data_save_filter_func) || a_enemies[i][
+    if(!isDefined(level._time_bomb.enemy_type[s_temp.round_type].enemy_data_save_filter_func) || a_enemies[i][
         [level._time_bomb.enemy_type[s_temp.round_type].enemy_data_save_filter_func]
       ]()) {
       a_enemies[i][
@@ -426,13 +429,13 @@ _time_bomb_saves_enemy_info(s_temp) {
 time_bomb_saves_player_data(save_struct) {
   a_players = get_players();
 
-  if(isdefined(save_struct))
+  if(isDefined(save_struct))
     save_struct.player_saves = [];
 
   foreach(player in a_players) {
     player_save_struct = undefined;
 
-    if(isdefined(save_struct)) {
+    if(isDefined(save_struct)) {
       save_struct.player_saves[player getentitynumber()] = spawnstruct();
       player_save_struct = save_struct;
     }
@@ -442,7 +445,7 @@ time_bomb_saves_player_data(save_struct) {
 }
 
 _time_bomb_save_internal(save_struct) {
-  if(!isdefined(save_struct) && !isdefined(self.time_bomb_save_data))
+  if(!isDefined(save_struct) && !isDefined(self.time_bomb_save_data))
     self.time_bomb_save_data = spawnstruct();
 
   if(!self ent_flag_exist("time_bomb_restore_thread_done"))
@@ -452,7 +455,7 @@ _time_bomb_save_internal(save_struct) {
   s_temp = spawnstruct();
   s_temp.weapons = spawnstruct();
 
-  if(isdefined(save_struct))
+  if(isDefined(save_struct))
     s_temp.n_time_id = save_struct.n_time_id;
   else
     s_temp.n_time_id = level.time_bomb_save_data.n_time_id;
@@ -472,7 +475,7 @@ _time_bomb_save_internal(save_struct) {
   if(s_temp.weapons.primary == "none" || s_temp.weapons.primary == "time_bomb_zm")
     self thread _save_time_bomb_weapon_after_switch(save_struct);
 
-  for (i = 0; i < s_temp.weapons.array.size; i++) {
+  for(i = 0; i < s_temp.weapons.array.size; i++) {
     str_weapon_temp = s_temp.weapons.array[i];
     s_temp.weapons.ammo_reserve[i] = self getweaponammostock(str_weapon_temp);
 
@@ -497,7 +500,7 @@ _time_bomb_save_internal(save_struct) {
   s_temp.perk_count = self.num_perks;
   s_temp.lives_remaining = self.lives;
 
-  if(isdefined(self.perks_active))
+  if(isDefined(self.perks_active))
     s_temp.perks_active = arraycopy(self.perks_active);
 
   s_temp.points_current = self.score;
@@ -508,14 +511,14 @@ _time_bomb_save_internal(save_struct) {
   s_temp.account_value = self.account_value;
   s_temp.save_ready = 1;
 
-  if(isdefined(save_struct))
+  if(isDefined(save_struct))
     save_struct.player_saves[self getentitynumber()] = s_temp;
   else
     self.time_bomb_save_data = s_temp;
 }
 
 is_weapon_locker_available_in_game() {
-  return isdefined(level.weapon_locker_online) && level.weapon_locker_online && isdefined(level.weapon_locker_map);
+  return isDefined(level.weapon_locker_online) && level.weapon_locker_online && isDefined(level.weapon_locker_map);
 }
 
 _save_time_bomb_weapon_after_switch(save_struct) {
@@ -536,9 +539,9 @@ _save_time_bomb_weapon_after_switch(save_struct) {
       str_type = weapontype(str_weapon);
       b_valid_weapon = str_type != "grenade" && str_type != "melee" && str_weapon != "time_bomb_zm";
     }
-    while (!b_valid_weapon);
+    while(!b_valid_weapon);
 
-    if(isdefined(save_struct))
+    if(isDefined(save_struct))
       save_struct.player_saves[self getentitynumber()].weapons.primary = str_weapon;
     else
       self.time_bomb_save_data.weapons.primary = str_weapon;
@@ -546,7 +549,7 @@ _save_time_bomb_weapon_after_switch(save_struct) {
 }
 
 time_bomb_save_exists() {
-  return isdefined(level.time_bomb_save_data) && (isdefined(level.time_bomb_save_data.save_ready) && level.time_bomb_save_data.save_ready);
+  return isDefined(level.time_bomb_save_data) && (isDefined(level.time_bomb_save_data.save_ready) && level.time_bomb_save_data.save_ready);
 }
 
 detonator_think() {
@@ -557,7 +560,7 @@ detonator_think() {
   self endon("player_lost_time_bomb");
   debug_time_bomb_print("player picked up detonator");
 
-  while (true) {
+  while(true) {
     self waittill("detonate");
     debug_time_bomb_print("detonate detected! ");
 
@@ -585,7 +588,7 @@ _watch_for_detonation() {
   self endon("disconnect");
   self endon("_kill_detonator_watcher");
 
-  while (true) {
+  while(true) {
     self waittill("detonate");
 
     if(time_bomb_save_exists())
@@ -600,7 +603,7 @@ time_bomb_inventory_slot_think() {
   self endon("player_lost_time_bomb");
   self.time_bomb_detonator_only = 0;
 
-  while (true) {
+  while(true) {
     self waittill("zmb_max_ammo");
 
     if(self.time_bomb_detonator_only)
@@ -611,7 +614,7 @@ time_bomb_inventory_slot_think() {
 }
 
 time_bomb_restores_saved_data(b_show_fx, save_struct) {
-  if(!isdefined(b_show_fx))
+  if(!isDefined(b_show_fx))
     b_show_fx = 1;
 
   level setclientfield("time_bomb_lua_override", 1);
@@ -619,7 +622,7 @@ time_bomb_restores_saved_data(b_show_fx, save_struct) {
   n_time_start = gettime();
   flag_set("time_bomb_restore_active");
 
-  if(isdefined(level._time_bomb.functionality_override) && level._time_bomb.functionality_override) {
+  if(isDefined(level._time_bomb.functionality_override) && level._time_bomb.functionality_override) {
     return;
   }
   if(b_show_fx) {
@@ -636,7 +639,7 @@ time_bomb_restores_saved_data(b_show_fx, save_struct) {
   time_bomb_restores_player_data(n_time_start, save_struct);
   timebomb_wait_for_hostmigration();
 
-  if(!isdefined(save_struct)) {
+  if(!isDefined(save_struct)) {
     time_bomb_clears_global_data();
     time_bomb_clears_player_data();
   }
@@ -655,7 +658,7 @@ time_bomb_restores_saved_data(b_show_fx, save_struct) {
 }
 
 timebomb_wait_for_hostmigration() {
-  while (isdefined(level.hostmigrationtimer))
+  while(isDefined(level.hostmigrationtimer))
     wait 0.05;
 }
 
@@ -663,7 +666,7 @@ time_bomb_restores_global_data(save_struct, n_time_start) {
   timebomb_wait_for_hostmigration();
   debug_time_bomb_print("TIME BOMB RESTORE GLOBAL DATA");
 
-  if(isdefined(save_struct))
+  if(isDefined(save_struct))
     s_temp = save_struct;
   else
     s_temp = level.time_bomb_save_data;
@@ -691,8 +694,8 @@ time_bomb_restores_global_data(save_struct, n_time_start) {
   close_magic_boxes();
   timebomb_wait_for_hostmigration();
 
-  if(isdefined(level._time_bomb.custom_funcs_restore)) {
-    for (i = 0; i < level._time_bomb.custom_funcs_restore.size; i++)
+  if(isDefined(level._time_bomb.custom_funcs_restore)) {
+    for(i = 0; i < level._time_bomb.custom_funcs_restore.size; i++)
       s_temp.custom_data[[level._time_bomb.custom_funcs_restore[i]]]();
   }
 
@@ -708,7 +711,7 @@ _pack_a_punch_sequence_ends() {
     foreach(trigger in level.pap_triggers) {
       trigger notify("pap_player_disconnected");
 
-      if(isdefined(trigger.current_weapon) && !isdefined(trigger.upgrade_name))
+      if(isDefined(trigger.current_weapon) && !isDefined(trigger.upgrade_name))
         trigger.upgrade_name = maps\mp\zombies\_zm_weapons::get_upgrade_weapon(trigger.current_weapon, trigger will_upgrade_weapon_as_attachment(self.current_weapon));
     }
 
@@ -720,12 +723,12 @@ _pack_a_punch_sequence_ends() {
 }
 
 close_magic_boxes() {
-  if(isdefined(level.chest_index) && isdefined(level.chests) && level.chests.size > 0)
+  if(isDefined(level.chest_index) && isDefined(level.chests) && level.chests.size > 0)
     level.chests[level.chest_index] _close_magic_box();
 
-  if(isdefined(level.zombie_vars["zombie_powerup_fire_sale_on"]) && level.zombie_vars["zombie_powerup_fire_sale_on"]) {
-    for (i = 0; i < level.chests.size; i++) {
-      if(isdefined(level.chest_index) && i != level.chest_index && (isdefined(level.chests[i]._box_opened_by_fire_sale) && level.chests[i]._box_opened_by_fire_sale))
+  if(isDefined(level.zombie_vars["zombie_powerup_fire_sale_on"]) && level.zombie_vars["zombie_powerup_fire_sale_on"]) {
+    for(i = 0; i < level.chests.size; i++) {
+      if(isDefined(level.chest_index) && i != level.chest_index && (isDefined(level.chests[i]._box_opened_by_fire_sale) && level.chests[i]._box_opened_by_fire_sale))
         level.chests[i] _close_magic_box();
     }
   }
@@ -733,7 +736,7 @@ close_magic_boxes() {
 
 _close_magic_box() {
   if(!flag("moving_chest_now") && self.zbarrier.state == "open") {
-    if(isdefined(self.weapon_out) && self.weapon_out && !isdefined(self.zbarrier.weapon_model)) {
+    if(isDefined(self.weapon_out) && self.weapon_out && !isDefined(self.zbarrier.weapon_model)) {
       self.zbarrier waittill("randomization_done");
       wait_network_frame();
     }
@@ -748,7 +751,7 @@ _close_magic_box() {
 _time_bomb_restores_enemies(save_struct, n_time_start) {
   _time_bomb_resets_all_barrier_attack_spots_taken();
   str_type = save_struct.round_type;
-  assert(isdefined(level._time_bomb.enemy_type[str_type]), str_type + " respawn type isn't set up for time bomb!");
+  assert(isDefined(level._time_bomb.enemy_type[str_type]), str_type + " respawn type isn't set up for time bomb!");
   _get_wait_time(n_time_start);
   timebomb_wait_for_hostmigration();
   [[level._time_bomb.enemy_type[str_type].respawn_func]](save_struct);
@@ -767,8 +770,8 @@ _get_time_bomb_zombie_spawn_location() {
   a_spawn_locations = level.zombie_spawn_locations;
   a_valid_spawners = [];
 
-  for (i = 0; i < a_spawn_locations.size; i++) {
-    b_is_standard_spawn = isdefined(a_spawn_locations[i].script_noteworthy) && a_spawn_locations[i].script_noteworthy == "spawn_location";
+  for(i = 0; i < a_spawn_locations.size; i++) {
+    b_is_standard_spawn = isDefined(a_spawn_locations[i].script_noteworthy) && a_spawn_locations[i].script_noteworthy == "spawn_location";
 
     if(b_is_standard_spawn)
       a_valid_spawners[a_valid_spawners.size] = a_spawn_locations[i];
@@ -793,7 +796,7 @@ time_bomb_restores_player_data(n_time_start, save_struct) {
 has_packapunch_weapon() {
   b_player_has_packapunch_weapon = 0;
 
-  if(isdefined(level.machine_assets) && isdefined(level.machine_assets["packapunch"]) && isdefined(level.machine_assets["packapunch"].weapon))
+  if(isDefined(level.machine_assets) && isDefined(level.machine_assets["packapunch"]) && isDefined(level.machine_assets["packapunch"].weapon))
     b_player_has_packapunch_weapon = self hasweapon(level.machine_assets["packapunch"].weapon);
 
   return b_player_has_packapunch_weapon;
@@ -806,12 +809,12 @@ _time_bomb_restores_player_data_internal(save_struct) {
   if(self maps\mp\zombies\_zm_laststand::player_is_in_laststand()) {
     debug_time_bomb_print("TIMEBOMB >> " + self.name + " in last stand, reviving...");
     self maps\mp\zombies\_zm_laststand::auto_revive(self);
-  } else if(isdefined(self.sessionstate) && self.sessionstate == "spectator") {
+  } else if(isDefined(self.sessionstate) && self.sessionstate == "spectator") {
     self[[level.spawnplayer]]();
     self thread refresh_player_navcard_hud();
   }
 
-  if(isdefined(self.is_drinking) && self.is_drinking) {
+  if(isDefined(self.is_drinking) && self.is_drinking) {
     if(self has_packapunch_weapon())
       self.is_drinking++;
 
@@ -821,10 +824,10 @@ _time_bomb_restores_player_data_internal(save_struct) {
   if(self can_time_bomb_restore_data_on_player(save_struct)) {
     debug_time_bomb_print("TIMEBOMB >> restoring player " + self.name);
 
-    if(!isdefined(self.time_bomb_save_data) && !isdefined(save_struct))
+    if(!isDefined(self.time_bomb_save_data) && !isDefined(save_struct))
       self.time_bomb_save_data = spawnstruct();
 
-    if(!isdefined(save_struct))
+    if(!isDefined(save_struct))
       s_temp = self.time_bomb_save_data;
     else
       s_temp = save_struct.player_saves[self getentitynumber()];
@@ -841,20 +844,20 @@ _time_bomb_restores_player_data_internal(save_struct) {
       self maps\mp\zombies\_zm_score::minus_to_player_score(abs(n_difference_in_score));
 
     if(is_weapon_locker_available_in_game()) {
-      if(isdefined(s_temp.weapon_locker_data))
+      if(isDefined(s_temp.weapon_locker_data))
         self maps\mp\zombies\_zm_weapon_locker::wl_set_stored_weapondata(s_temp.weapon_locker_data);
       else
         self maps\mp\zombies\_zm_weapon_locker::wl_clear_stored_weapondata();
     }
 
-    if(isdefined(s_temp.account_value) && isdefined(level.banking_map)) {
+    if(isDefined(s_temp.account_value) && isDefined(level.banking_map)) {
       self.account_value = s_temp.account_value;
       self maps\mp\zombies\_zm_stats::set_map_stat("depositBox", self.account_value, level.banking_map);
     }
 
     s_temp.save_ready = 1;
 
-    if(!isdefined(save_struct))
+    if(!isDefined(save_struct))
       self.time_bomb_save_data = s_temp;
 
     self ent_flag_wait("time_bomb_restore_thread_done");
@@ -867,11 +870,11 @@ _time_bomb_restores_player_data_internal(save_struct) {
 }
 
 _restore_player_perks_and_weapons(s_temp) {
-  if(isdefined(s_temp.is_spectator) && s_temp.is_spectator)
+  if(isDefined(s_temp.is_spectator) && s_temp.is_spectator)
     self restore_player_to_initial_loadout(s_temp);
-  else if(isdefined(s_temp.is_last_stand) && s_temp.is_last_stand) {
+  else if(isDefined(s_temp.is_last_stand) && s_temp.is_last_stand) {
     self.stored_weapon_info = s_temp.stored_weapon_info;
-    assert(isdefined(level.zombie_last_stand_ammo_return), "time bomb attempting to give player back weapons taken by last stand, but level.zombie_last_stand_ammo_return is undefined!");
+    assert(isDefined(level.zombie_last_stand_ammo_return), "time bomb attempting to give player back weapons taken by last stand, but level.zombie_last_stand_ammo_return is undefined!");
     self[[level.zombie_last_stand_ammo_return]]();
   } else {
     a_current_perks = self get_player_perk_list();
@@ -882,21 +885,21 @@ _restore_player_perks_and_weapons(s_temp) {
     wait_network_frame();
 
     if(get_players().size == 1) {
-      if(isinarray(s_temp.perks_all, "specialty_quickrevive") && isdefined(level.solo_lives_given) && level.solo_lives_given > 0 && level.solo_lives_given < 3 && isdefined(self.lives) && self.lives == 1)
+      if(isinarray(s_temp.perks_all, "specialty_quickrevive") && isDefined(level.solo_lives_given) && level.solo_lives_given > 0 && level.solo_lives_given < 3 && isDefined(self.lives) && self.lives == 1)
         level.solo_lives_given--;
     }
 
-    if(isdefined(s_temp.perks_active)) {
-      for (i = 0; i < s_temp.perks_active.size; i++) {
+    if(isDefined(s_temp.perks_active)) {
+      for(i = 0; i < s_temp.perks_active.size; i++) {
         if(get_players().size == 1 && s_temp.perks_active[i] == "specialty_quickrevive") {
-          if(isdefined(level.solo_lives_given) && level.solo_lives_given == 3 && isdefined(self.lives) && self.lives == 0)
+          if(isDefined(level.solo_lives_given) && level.solo_lives_given == 3 && isDefined(self.lives) && self.lives == 0)
             continue;
         }
 
         self maps\mp\zombies\_zm_perks::give_perk(s_temp.perks_active[i]);
         wait_network_frame();
 
-        if(isdefined(s_temp.perks_disabled) && isdefined(s_temp.perks_disabled[s_temp.perks_active[i]]) && s_temp.perks_disabled[s_temp.perks_active[i]]) {
+        if(isDefined(s_temp.perks_disabled) && isDefined(s_temp.perks_disabled[s_temp.perks_active[i]]) && s_temp.perks_disabled[s_temp.perks_active[i]]) {
           self maps\mp\zombies\_zm_perks::perk_pause(s_temp.perks_active[i]);
           wait_network_frame();
         }
@@ -909,14 +912,14 @@ _restore_player_perks_and_weapons(s_temp) {
     self takeallweapons();
     self set_player_melee_weapon(level.zombie_melee_weapon_player_init);
 
-    for (i = 0; i < s_temp.weapons.array.size; i++) {
+    for(i = 0; i < s_temp.weapons.array.size; i++) {
       str_weapon_temp = s_temp.weapons.array[i];
       n_ammo_reserve = s_temp.weapons.ammo_reserve[i];
       n_ammo_clip = s_temp.weapons.ammo_clip[i];
       n_type = s_temp.weapons.type[i];
 
       if(!is_temporary_zombie_weapon(str_weapon_temp) && str_weapon_temp != "time_bomb_zm") {
-        if(isdefined(level.zombie_weapons[str_weapon_temp]) && isdefined(level.zombie_weapons[str_weapon_temp].vox))
+        if(isDefined(level.zombie_weapons[str_weapon_temp]) && isDefined(level.zombie_weapons[str_weapon_temp].vox))
           self maps\mp\zombies\_zm_weapons::weapon_give(str_weapon_temp, issubstr(str_weapon_temp, "upgrade"));
         else
           self giveweapon(str_weapon_temp, 0, self maps\mp\zombies\_zm_weapons::get_pack_a_punch_weapon_options(str_weapon_temp));
@@ -925,7 +928,7 @@ _restore_player_perks_and_weapons(s_temp) {
           self setweaponammofuel(str_weapon_temp, n_ammo_clip);
         else if(n_type == 2)
           self setweaponoverheating(0, n_ammo_clip, str_weapon_temp);
-        else if(isdefined(n_ammo_clip))
+        else if(isDefined(n_ammo_clip))
           self setweaponammoclip(str_weapon_temp, n_ammo_clip);
 
         self setweaponammostock(str_weapon_temp, n_ammo_reserve);
@@ -933,7 +936,7 @@ _restore_player_perks_and_weapons(s_temp) {
     }
 
     if(s_temp.weapons.primary == "none" || s_temp.weapons.primary == "time_bomb_zm") {
-      for (i = 0; i < s_temp.weapons.array.size; i++) {
+      for(i = 0; i < s_temp.weapons.array.size; i++) {
         str_weapon_type = weapontype(s_temp.weapons.array[i]);
 
         if(!is_player_equipment(str_weapon_type) && str_weapon_type == "bullet" || str_weapon_type == "projectile") {
@@ -948,10 +951,10 @@ _restore_player_perks_and_weapons(s_temp) {
 
     self maps\mp\zombies\_zm_equipment::equipment_take(self.current_equipment);
 
-    if(isdefined(self.deployed_equipment) && isinarray(self.deployed_equipment, s_temp.current_equipment))
+    if(isDefined(self.deployed_equipment) && isinarray(self.deployed_equipment, s_temp.current_equipment))
       self maps\mp\zombies\_zm_equipment::equipment_take(s_temp.current_equipment);
 
-    if(isdefined(s_temp.current_equipment)) {
+    if(isDefined(s_temp.current_equipment)) {
       self.do_not_display_equipment_pickup_hint = 1;
       self maps\mp\zombies\_zm_equipment::equipment_give(s_temp.current_equipment);
       self.do_not_display_equipment_pickup_hint = undefined;
@@ -970,16 +973,16 @@ _restore_player_perks_and_weapons(s_temp) {
 get_player_perk_list() {
   a_perks = [];
 
-  if(isdefined(self.disabled_perks) && isarray(self.disabled_perks)) {
+  if(isDefined(self.disabled_perks) && isarray(self.disabled_perks)) {
     a_keys = getarraykeys(self.disabled_perks);
 
-    for (i = 0; i < a_keys.size; i++) {
+    for(i = 0; i < a_keys.size; i++) {
       if(self.disabled_perks[a_keys[i]])
         a_perks[a_perks.size] = a_keys[i];
     }
   }
 
-  if(isdefined(self.perks_active) && isarray(self.perks_active))
+  if(isDefined(self.perks_active) && isarray(self.perks_active))
     a_perks = arraycombine(self.perks_active, a_perks, 0, 0);
 
   return a_perks;
@@ -987,27 +990,27 @@ get_player_perk_list() {
 
 restore_player_to_initial_loadout(s_temp) {
   self takeallweapons();
-  assert(isdefined(level.start_weapon), "time bomb attempting to restore a spectator, but level.start_weapon isn't defined!");
+  assert(isDefined(level.start_weapon), "time bomb attempting to restore a spectator, but level.start_weapon isn't defined!");
   self maps\mp\zombies\_zm_weapons::weapon_give(level.start_weapon);
-  assert(isdefined(level.zombie_lethal_grenade_player_init), "time bomb attempting to restore a spectator, but level.zombie_lethal_grenade_player_init isn't defined!");
+  assert(isDefined(level.zombie_lethal_grenade_player_init), "time bomb attempting to restore a spectator, but level.zombie_lethal_grenade_player_init isn't defined!");
   self set_player_lethal_grenade(level.zombie_lethal_grenade_player_init);
   self giveweapon(level.zombie_lethal_grenade_player_init);
   self setweaponammoclip(level.zombie_lethal_grenade_player_init, 2);
-  assert(isdefined(level.zombie_melee_weapon_player_init), "time bomb attempting to restore a spectator, but level.zombie_melee_weapon_player_init isn't defined!");
+  assert(isDefined(level.zombie_melee_weapon_player_init), "time bomb attempting to restore a spectator, but level.zombie_melee_weapon_player_init isn't defined!");
   self giveweapon(level.zombie_melee_weapon_player_init);
   a_current_perks = self get_player_perk_list();
 
   foreach(perk in a_current_perks)
   self notify(perk + "_stop");
 
-  if(isdefined(s_temp) && s_temp.points_current < 1500 && self.score < 1500 && level.round_number > 6 || self.score < 1500 && level.round_number > 6)
+  if(isDefined(s_temp) && s_temp.points_current < 1500 && self.score < 1500 && level.round_number > 6 || self.score < 1500 && level.round_number > 6)
     self.score = 1500;
 }
 
 _give_revive_points(save_struct) {
-  if(isdefined(save_struct) && isdefined(save_struct.player_used) && save_struct.player_used == self) {
+  if(isDefined(save_struct) && isDefined(save_struct.player_used) && save_struct.player_used == self) {
     foreach(player in get_players()) {
-      if(isdefined(player.score_lost_when_downed))
+      if(isDefined(player.score_lost_when_downed))
         self maps\mp\zombies\_zm_score::player_add_points("reviver", player.score_lost_when_downed);
     }
   }
@@ -1016,11 +1019,11 @@ _give_revive_points(save_struct) {
 can_time_bomb_restore_data_on_player(save_struct) {
   b_can_restore_data_on_player = 0;
 
-  if(isdefined(save_struct))
-    b_can_restore_data_on_player = isdefined(save_struct.player_saves) && isdefined(save_struct.player_saves[self getentitynumber()]);
+  if(isDefined(save_struct))
+    b_can_restore_data_on_player = isDefined(save_struct.player_saves) && isDefined(save_struct.player_saves[self getentitynumber()]);
   else {
-    b_global_save_exists = isdefined(level.time_bomb_save_data.n_time_id);
-    b_player_save_exists = isdefined(self.time_bomb_save_data) && isdefined(self.time_bomb_save_data.n_time_id);
+    b_global_save_exists = isDefined(level.time_bomb_save_data.n_time_id);
+    b_player_save_exists = isDefined(self.time_bomb_save_data) && isDefined(self.time_bomb_save_data.n_time_id);
 
     if(b_global_save_exists && b_player_save_exists) {
       if(level.time_bomb_save_data.n_time_id == self.time_bomb_save_data.n_time_id)
@@ -1034,7 +1037,7 @@ can_time_bomb_restore_data_on_player(save_struct) {
 time_bomb_clears_global_data() {
   level setclientfield("time_bomb_saved_round_number", 0);
 
-  if(isdefined(level.time_bomb_save_data)) {
+  if(isDefined(level.time_bomb_save_data)) {
     level.time_bomb_save_data.save_ready = 0;
     level.time_bomb_save_data.ammo_respawned_in_round = undefined;
   }
@@ -1044,7 +1047,7 @@ time_bomb_clears_player_data() {
   a_players = get_players();
 
   foreach(player in a_players) {
-    if(isdefined(player.time_bomb_save_data))
+    if(isDefined(player.time_bomb_save_data))
       player.time_bomb_save_data = undefined;
   }
 }
@@ -1082,11 +1085,11 @@ timebomb_change_to_round(n_target_round) {
 _time_bomb_kill_all_active_enemies() {
   flag_clear("spawn_zombies");
 
-  for (zombies = time_bomb_get_enemy_array(); zombies.size > 0; zombies = time_bomb_get_enemy_array()) {
-    for (i = 0; i < zombies.size; i++) {
+  for(zombies = time_bomb_get_enemy_array(); zombies.size > 0; zombies = time_bomb_get_enemy_array()) {
+    for(i = 0; i < zombies.size; i++) {
       timebomb_wait_for_hostmigration();
 
-      if(isdefined(zombies[i]))
+      if(isDefined(zombies[i]))
         zombies[i] thread _kill_time_bomb_enemy();
 
       if(i % 3 == 0)
@@ -1102,13 +1105,13 @@ _kill_time_bomb_enemy() {
   self ghost();
   playfx(level._effect["time_bomb_kills_enemy"], self.origin);
 
-  if(isdefined(self) && isdefined(self.anchor))
+  if(isDefined(self) && isDefined(self.anchor))
     self.anchor delete();
 
   wait_network_frame();
 
-  if(isdefined(self)) {
-    if(isdefined(self.script_mover))
+  if(isDefined(self)) {
+    if(isDefined(self.script_mover))
       self.script_mover delete();
 
     self delete();
@@ -1116,7 +1119,7 @@ _kill_time_bomb_enemy() {
 }
 
 time_bomb_get_enemy_array() {
-  if(isdefined(level._time_bomb.custom_funcs_get_enemies))
+  if(isDefined(level._time_bomb.custom_funcs_get_enemies))
     a_enemies = [
       [level._time_bomb.custom_funcs_get_enemies]
     ]();
@@ -1143,7 +1146,7 @@ _time_bomb_show_overlay() {
 _time_bomb_hide_overlay(n_time_start) {
   n_time_end = gettime();
 
-  if(isdefined(n_time_start)) {
+  if(isDefined(n_time_start)) {
     n_time_elapsed = (n_time_end - n_time_start) * 0.001;
     n_delay = 4 - n_time_elapsed;
     n_delay = clamp(n_delay, 0, 4);
@@ -1181,8 +1184,9 @@ _disable_invulnerability() {
   wait 2;
 
   if(!self maps\mp\zombies\_zm_laststand::player_is_in_laststand()) {
-    if(getdvarint(#"_id_FA81816F") >= 1)
+    if(getdvarint(#"_id_FA81816F") >= 1) {
       return;
+    }
     debug_time_bomb_print("disabling invulnerability on " + self.name);
     self disableinvulnerability();
   }
@@ -1197,10 +1201,10 @@ time_bomb_spawn_func() {
   self endon("death");
   s_temp = level.time_bomb_save_data;
 
-  if(isdefined(level.timebomb_override_struct))
+  if(isDefined(level.timebomb_override_struct))
     s_temp = level.timebomb_override_struct;
 
-  if(!isdefined(s_temp.respawn_count))
+  if(!isDefined(s_temp.respawn_count))
     s_temp.respawn_count = 0;
 
   b_can_respawn_zombie = s_temp.enemies.size > s_temp.respawn_count;
@@ -1219,7 +1223,7 @@ time_bomb_spawn_func() {
 }
 
 time_bomb_enemy_respawn_failsafe() {
-  while (!flag("time_bomb_zombie_respawning_done")) {
+  while(!flag("time_bomb_zombie_respawning_done")) {
     if(get_current_zombie_count() >= level.zombie_ai_limit || level.zombie_total == 0)
       flag_set("time_bomb_zombie_respawning_done");
 
@@ -1228,7 +1232,7 @@ time_bomb_enemy_respawn_failsafe() {
 }
 
 _time_bomb_spawns_zombie() {
-  if(isdefined(self.anchor))
+  if(isDefined(self.anchor))
     self.anchor delete();
 
   self maps\mp\zombies\_zm_spawner::do_zombie_spawn();
@@ -1236,7 +1240,7 @@ _time_bomb_spawns_zombie() {
 }
 
 _restore_zombie_data(s_info) {
-  if(isdefined(s_info.zombie_move_speed))
+  if(isDefined(s_info.zombie_move_speed))
     self.zombie_move_speed = s_info.zombie_move_speed;
 
   self.targetname = s_info.targetname;
@@ -1244,7 +1248,7 @@ _restore_zombie_data(s_info) {
   self.script_string = s_info.script_string;
   self.target = s_info.target;
 
-  if(isdefined(s_info.is_traversing) && s_info.is_traversing || isdefined(self.is_traversing) && self.is_traversing)
+  if(isDefined(s_info.is_traversing) && s_info.is_traversing || isDefined(self.is_traversing) && self.is_traversing)
     self notify("killanimscript");
 
   self.is_traversing = 0;
@@ -1256,44 +1260,43 @@ _restore_zombie_data(s_info) {
   self.entrance_nodes = s_info.entrance_nodes;
   self.attacking_spot_string = s_info.attacking_spot_string;
 
-  if(!isdefined(s_info.completed_emerging_into_playable_area))
+  if(!isDefined(s_info.completed_emerging_into_playable_area))
     s_info.completed_emerging_into_playable_area = 0;
 
   self.completed_emerging_into_playable_area = s_info.completed_emerging_into_playable_area;
 
-  if(isdefined(self.completed_emerging_into_playable_area) && self.completed_emerging_into_playable_area) {
-
+  if(isDefined(self.completed_emerging_into_playable_area) && self.completed_emerging_into_playable_area) {
   }
 
-  if(isdefined(s_info.has_legs)) {
+  if(isDefined(s_info.has_legs)) {
     self.has_legs = s_info.has_legs;
 
-    if(!(isdefined(self.has_legs) && self.has_legs))
+    if(!(isDefined(self.has_legs) && self.has_legs))
       self setphysparams(15, 0, 24);
   }
 
   self.a.gib_ref = s_info.gib_ref;
 
-  if(isdefined(self.has_legs) && !self.has_legs && isdefined(self.a.gib_ref))
+  if(isDefined(self.has_legs) && !self.has_legs && isDefined(self.a.gib_ref))
     self thread maps\mp\animscripts\zm_death::do_gib();
 
-  if(isdefined(s_info.in_the_ground) && s_info.in_the_ground) {
+  if(isDefined(s_info.in_the_ground) && s_info.in_the_ground) {
     self maps\mp\zombies\_zm_spawner::zombie_eye_glow();
     self._rise_spot = s_info;
   }
 
-  if(isdefined(s_info.zombie_faller_location) && isdefined(s_info.spawn_point) && isdefined(s_info.spawn_point.script_noteworthy))
+  if(isDefined(s_info.zombie_faller_location) && isDefined(s_info.spawn_point) && isDefined(s_info.spawn_point.script_noteworthy))
     s_info.script_noteworthy = s_info.spawn_point.script_noteworthy;
 
   self.doing_equipment_attack = s_info.doing_equipment_attack;
 
-  if(isdefined(self.doing_equipment_attack) && self.doing_equipment_attack)
+  if(isDefined(self.doing_equipment_attack) && self.doing_equipment_attack)
     self stopanimscripted();
 
   self.is_traversing = s_info.is_traversing;
   self.spawn_point = s_info.spawn_point;
 
-  if(isdefined(s_info.spawn_point) && !self.completed_emerging_into_playable_area) {
+  if(isDefined(s_info.spawn_point) && !self.completed_emerging_into_playable_area) {
     self.script_noteworthy = s_info.spawn_point.script_noteworthy;
     self.script_string = s_info.spawn_point.script_string;
     self.target = s_info.spawn_point.target;
@@ -1306,11 +1309,11 @@ _restore_zombie_data(s_info) {
 time_bomb_round_wait() {
   maps\mp\zombies\_zm::round_wait();
 
-  if(isdefined(level._time_bomb.restoring_initialized_round) && level._time_bomb.restoring_initialized_round && isdefined(level.time_bomb_save_data) && isdefined(level.time_bomb_save_data.round_initialized) && !level.time_bomb_save_data.round_initialized)
+  if(isDefined(level._time_bomb.restoring_initialized_round) && level._time_bomb.restoring_initialized_round && isDefined(level.time_bomb_save_data) && isDefined(level.time_bomb_save_data.round_initialized) && !level.time_bomb_save_data.round_initialized)
     level.round_number--;
-  else if(isdefined(level._time_bomb.changing_round) && !level._time_bomb.changing_round && !level.time_bomb_save_data.round_initialized && level._time_bomb.round_initialized)
+  else if(isDefined(level._time_bomb.changing_round) && !level._time_bomb.changing_round && !level.time_bomb_save_data.round_initialized && level._time_bomb.round_initialized)
     level.round_number--;
-  else if(isdefined(level._time_bomb.changing_round) && level._time_bomb.changing_round && !level._time_bomb.round_initialized)
+  else if(isDefined(level._time_bomb.changing_round) && level._time_bomb.changing_round && !level._time_bomb.round_initialized)
     level.round_number--;
 
   level._time_bomb.changing_round = undefined;
@@ -1325,7 +1328,7 @@ time_bomb_round_wait() {
     }
   }
 
-  if(isdefined(level.time_bomb_restored_into_current_round) && level.time_bomb_restored_into_current_round) {
+  if(isDefined(level.time_bomb_restored_into_current_round) && level.time_bomb_restored_into_current_round) {
     level.old_music_state = undefined;
     level.time_bomb_restored_into_current_round = undefined;
   }
@@ -1336,7 +1339,7 @@ time_bomb_round_wait() {
 _zombies_go_back_into_ai_when_time_bomb_is_done() {
   self endon("death");
 
-  if(isdefined(self)) {
+  if(isDefined(self)) {
     playfxontag(level._effect["time_bomb_respawns_enemy"], self, "J_SpineLower");
     self setgoalpos(self.origin);
     self.angles = self.time_bomb_restored_data.angles;
@@ -1345,16 +1348,16 @@ _zombies_go_back_into_ai_when_time_bomb_is_done() {
     s_temp = self.time_bomb_restored_data;
     str_notify_message = undefined;
 
-    if(isdefined(str_restore_state)) {
+    if(isDefined(str_restore_state)) {
       if(str_restore_state == "find_flesh")
         str_notify_message = self _handle_find_flesh(s_temp);
       else if(str_restore_state == "zombie_goto_entrance")
         str_notify_message = self _send_zombie_to_barricade();
       else if(str_restore_state == "zombie_think" || str_restore_state == "idle") {
-        if(isdefined(self.in_the_ground) && self.in_the_ground) {
+        if(isDefined(self.in_the_ground) && self.in_the_ground) {
           self waittill("risen");
           str_notify_message = self _handle_find_flesh(s_temp);
-        } else if(isdefined(self.completed_emerging_into_playable_area)) {
+        } else if(isDefined(self.completed_emerging_into_playable_area)) {
           if(self.completed_emerging_into_playable_area)
             str_notify_message = self _handle_find_flesh(s_temp);
           else
@@ -1365,7 +1368,7 @@ _zombies_go_back_into_ai_when_time_bomb_is_done() {
 
     self notify("zombie_custom_think_done", str_notify_message);
 
-    if(!isdefined(str_notify_message))
+    if(!isDefined(str_notify_message))
       str_notify_message = "<undefined>";
 
     self zombie_history("time bomb -> zombie restored with string = " + str_notify_message);
@@ -1383,7 +1386,7 @@ _handle_find_flesh(s_temp) {
 }
 
 _send_zombie_to_barricade() {
-  if(isdefined(self.time_bomb_restored_data.entrance_nodes) && self.time_bomb_restored_data.entrance_nodes.size > 0)
+  if(isDefined(self.time_bomb_restored_data.entrance_nodes) && self.time_bomb_restored_data.entrance_nodes.size > 0)
     a_entrance_nodes = self.time_bomb_restored_data.entrance_nodes;
   else
     a_entrance_nodes = level.exterior_goals;
@@ -1391,7 +1394,7 @@ _send_zombie_to_barricade() {
   nd_closest = getclosest(self.origin, a_entrance_nodes);
   str_notify_message = nd_closest.script_string;
 
-  if(isdefined(self.time_bomb_restored_data.traversing_over_barrier_into_playspace) && self.time_bomb_restored_data.traversing_over_barrier_into_playspace)
+  if(isDefined(self.time_bomb_restored_data.traversing_over_barrier_into_playspace) && self.time_bomb_restored_data.traversing_over_barrier_into_playspace)
     self thread _barrier_jump_failsafe();
 
   return str_notify_message;
@@ -1401,7 +1404,7 @@ _barrier_jump_failsafe() {
   self endon("death");
   wait(randomfloatrange(2.5, 3.0));
 
-  if(!isdefined(self.completed_emerging_into_playable_area) || !self.completed_emerging_into_playable_area && self in_playable_area()) {
+  if(!isDefined(self.completed_emerging_into_playable_area) || !self.completed_emerging_into_playable_area && self in_playable_area()) {
     self notify("goal");
     self zombie_complete_emerging_into_playable_area();
     self thread maps\mp\zombies\_zm_ai_basic::find_flesh();
@@ -1429,7 +1432,7 @@ _monitor_zombie_total_init() {
 }
 
 is_time_bomb_round_change() {
-  return isdefined(level.time_bomb_round_change) && level.time_bomb_round_change;
+  return isDefined(level.time_bomb_round_change) && level.time_bomb_round_change;
 }
 
 time_bomb_overlay_lerp_thread() {
@@ -1437,10 +1440,10 @@ time_bomb_overlay_lerp_thread() {
   n_frames = 40;
   n_change_per_frame = 1 / n_frames;
 
-  for (i = 0; i < n_frames; i++) {
+  for(i = 0; i < n_frames; i++) {
     a_players = get_players();
 
-    for (j = 0; j < a_players.size; j++)
+    for(j = 0; j < a_players.size; j++)
       self maps\mp\_visionset_mgr::vsmgr_set_state_active(a_players[j], clamp(i * n_change_per_frame, 0, 1));
 
     wait 0.05;
@@ -1448,10 +1451,10 @@ time_bomb_overlay_lerp_thread() {
 
   flag_wait("time_bomb_restore_done");
 
-  for (i = 0; i < n_frames; i++) {
+  for(i = 0; i < n_frames; i++) {
     a_players = get_players();
 
-    for (j = 0; j < a_players.size; j++)
+    for(j = 0; j < a_players.size; j++)
       self maps\mp\_visionset_mgr::vsmgr_set_state_active(a_players[j], clamp(1 - i * n_change_per_frame, 0, 1));
 
     wait 0.05;
@@ -1463,7 +1466,7 @@ time_bomb_overlay_lerp_thread() {
 _deactivate_lerp_thread() {
   a_players = get_players();
 
-  for (i = 0; i < a_players.size; i++)
+  for(i = 0; i < a_players.size; i++)
     maps\mp\_visionset_mgr::deactivate_per_player("overlay", "zombie_time_bomb_overlay", a_players[i]);
 
   level notify("time_bomb_overlay_deactivated");
@@ -1515,15 +1518,15 @@ time_bomb_saves_zombie_data(s_data) {
   s_data.targetname = self.targetname;
   s_data.script_noteworthy = self.script_noteworthy;
 
-  if(!isdefined(s_data.script_noteworthy))
+  if(!isDefined(s_data.script_noteworthy))
     s_data.script_noteworthy = "spawn_location";
 
   s_data.spawn_point = self.spawn_point;
   s_data.is_traversing = self.is_traversing;
   s_data.traversestartnode = self.traversestartnode;
 
-  if(isdefined(s_data.is_traversing) && s_data.is_traversing) {
-    if(isdefined(self.traversestartnode) && isdefined(self.traversestartnode.origin))
+  if(isDefined(s_data.is_traversing) && s_data.is_traversing) {
+    if(isDefined(self.traversestartnode) && isDefined(self.traversestartnode.origin))
       s_data.origin = self.traversestartnode.origin;
   }
 
@@ -1539,7 +1542,7 @@ time_bomb_saves_zombie_data(s_data) {
   s_data.attacking_spot = self.attacking_spot;
   s_data.attacking_spot_index = self.attacking_spot_index;
 
-  if(isdefined(s_data.attacking_node))
+  if(isDefined(s_data.attacking_node))
     s_data.attacking_spot_string = self.attacking_node.script_string;
 
   s_data.entrance_nodes = self.entrance_nodes;
@@ -1557,7 +1560,7 @@ time_bomb_saves_zombie_data(s_data) {
 }
 
 _is_traversing_over_barrier_from_outside_playable_space() {
-  b_is_traversing_into_playspace = (!isdefined(self.completed_emerging_into_playable_area) || !self.completed_emerging_into_playable_area) && isdefined(self.entrance_nodes) && self.entrance_nodes.size == 1 && self.ai_state == "zombie_goto_entrance" && self isinscriptedstate() && isdefined(self.target) && self.target == self.entrance_nodes[0].neg_start.targetname;
+  b_is_traversing_into_playspace = (!isDefined(self.completed_emerging_into_playable_area) || !self.completed_emerging_into_playable_area) && isDefined(self.entrance_nodes) && self.entrance_nodes.size == 1 && self.ai_state == "zombie_goto_entrance" && self isinscriptedstate() && isDefined(self.target) && self.target == self.entrance_nodes[0].neg_start.targetname;
   return b_is_traversing_into_playspace;
 }
 
@@ -1565,7 +1568,7 @@ _get_time_bomb_round_type() {
   a_round_type = [];
   a_keys = getarraykeys(level._time_bomb.enemy_type);
 
-  for (i = 0; i < a_keys.size; i++) {
+  for(i = 0; i < a_keys.size; i++) {
     if([
         [level._time_bomb.enemy_type[a_keys[i]].conditions_for_round]
       ]())
@@ -1578,10 +1581,11 @@ _get_time_bomb_round_type() {
   if(a_round_type.size > 1) {
     str_types = "";
 
-    for (i = 0; i < a_round_type.size; i++)
+    for(i = 0; i < a_round_type.size; i++)
       str_types = str_types + " " + a_round_type;
 
     assertmsg("_get_time_bomb_round_type conditions passed multiple times for the following types: " + str_types);
+
   }
 
   debug_time_bomb_print("round type = " + a_round_type[0]);
@@ -1589,12 +1593,12 @@ _get_time_bomb_round_type() {
 }
 
 is_spectator() {
-  return isplayer(self) && isdefined(self.sessionstate) && self.sessionstate == "spectator";
+  return isplayer(self) && isDefined(self.sessionstate) && self.sessionstate == "spectator";
 }
 
 _time_bomb_resets_all_barrier_attack_spots_taken() {
   foreach(barrier in level.exterior_goals) {
-    for (i = 0; i < barrier.attack_spots_taken.size; i++)
+    for(i = 0; i < barrier.attack_spots_taken.size; i++)
       barrier.attack_spots_taken[i] = 0;
   }
 }
@@ -1609,7 +1613,7 @@ show_time_bomb_hints() {
   self endon("death_or_disconnect");
   self endon("player_lost_time_bomb");
 
-  if(!isdefined(self.time_bomb_hints_shown))
+  if(!isDefined(self.time_bomb_hints_shown))
     self.time_bomb_hints_shown = 0;
 
   if(!self.time_bomb_hints_shown) {
@@ -1620,7 +1624,7 @@ show_time_bomb_hints() {
     self waittill_notify_or_timeout("player_holding_time_bomb", 3.5);
     self clean_up_time_bomb_notifications();
 
-    if(!isdefined(self.time_bomb_held))
+    if(!isDefined(self.time_bomb_held))
       self waittill("player_holding_time_bomb");
 
     wait 0.5;
@@ -1635,7 +1639,7 @@ _watch_for_player_switch_to_time_bomb() {
 
   do
     self waittill("weapon_change", new_weapon);
-  while (!(new_weapon == "time_bomb_zm"));
+  while(!(new_weapon == "time_bomb_zm"));
 
   self notify("player_holding_time_bomb");
   self.time_bomb_held = 1;
@@ -1687,20 +1691,20 @@ all_actors_resume_speed() {
 set_actor_traverse_callbacks() {
   actors = getaispeciesarray("all", "all");
 
-  for (i = 0; i < actors.size; i++) {
+  for(i = 0; i < actors.size; i++) {
     actors[i].pre_traverse_old = actors[i].pre_traverse;
     actors[i].pre_traverse = ::time_bomb_pre_traverse;
     actors[i].post_traverse_old = actors[i].post_traverse;
     actors[i].post_traverse = ::time_bomb_post_traverse;
 
-    if(isdefined(actors[i].in_the_ground) && actors[i].in_the_ground || actors[i] isinscriptedstate() || (!isdefined(actors[i].zombie_init_done) || !actors[i].zombie_init_done)) {
+    if(isDefined(actors[i].in_the_ground) && actors[i].in_the_ground || actors[i] isinscriptedstate() || (!isDefined(actors[i].zombie_init_done) || !actors[i].zombie_init_done)) {
       actors[i].do_not_set_anim_rate = 1;
       actors[i] setclientfield("anim_rate", 1);
       qrate = actors[i] getclientfield("anim_rate");
       actors[i] setentityanimrate(qrate);
     }
 
-    if(isdefined(level.time_bomb_custom_actor_speedup_func))
+    if(isDefined(level.time_bomb_custom_actor_speedup_func))
       actors[i][
         [level.time_bomb_custom_actor_speedup_func]
       ]();
@@ -1710,14 +1714,14 @@ set_actor_traverse_callbacks() {
 restore_actor_traverse_callbacks() {
   actors = getaispeciesarray("all", "all");
 
-  for (i = 0; i < actors.size; i++) {
+  for(i = 0; i < actors.size; i++) {
     actors[i].pre_traverse = undefined;
     actors[i].post_traverse = undefined;
 
-    if(isdefined(actors[i].pre_traverse_old))
+    if(isDefined(actors[i].pre_traverse_old))
       actors[i].pre_traverse = actors[i].pre_traverse_old;
 
-    if(isdefined(actors[i].post_traverse_old))
+    if(isDefined(actors[i].post_traverse_old))
       actors[i].post_traverse = actors[i].post_traverse_old;
   }
 }
@@ -1731,17 +1735,17 @@ time_bomb_post_traverse() {
 }
 
 set_actor_anim_rate(rate, b_force_update) {
-  if(!isdefined(b_force_update))
+  if(!isDefined(b_force_update))
     b_force_update = 0;
 
   self endon("death");
   level endon("time_bomb_stop_slow_all_actors");
 
   if(!b_force_update) {
-    if(isdefined(self.in_the_ground) && self.in_the_ground || self isinscriptedstate() || isdefined(self.do_not_set_anim_rate) && self.do_not_set_anim_rate) {
+    if(isDefined(self.in_the_ground) && self.in_the_ground || self isinscriptedstate() || isDefined(self.do_not_set_anim_rate) && self.do_not_set_anim_rate) {
       return;
     }
-    if(isdefined(self.is_about_to_traverse) || isdefined(self.ignore_timebomb_slowdown) && self.ignore_timebomb_slowdown)
+    if(isDefined(self.is_about_to_traverse) || isDefined(self.ignore_timebomb_slowdown) && self.ignore_timebomb_slowdown)
       rate = 1.0;
   }
 
@@ -1757,14 +1761,14 @@ set_actor_anim_rate(rate, b_force_update) {
 set_all_actor_anim_rate(rate, b_force) {
   actors = getaispeciesarray("all", "all");
 
-  for (i = 0; i < actors.size; i++)
+  for(i = 0; i < actors.size; i++)
     actors[i] thread set_actor_anim_rate(rate, b_force);
 }
 
 cleanup_actor_anim_flags() {
   actors = getaispeciesarray("all", "all");
 
-  for (i = 0; i < actors.size; i++)
+  for(i = 0; i < actors.size; i++)
     actors[i].preserve_asd_substates = 0;
 }
 
@@ -1800,7 +1804,7 @@ swap_weapon_to_detonator(e_grenade) {
   self endon("player_lost_time_bomb");
   b_switch_to_weapon = 0;
 
-  if(isdefined(e_grenade)) {
+  if(isDefined(e_grenade)) {
     b_switch_to_weapon = 1;
     e_grenade waittill_notify_or_timeout("stationary", 0.6);
   }
@@ -1826,7 +1830,7 @@ swap_weapon_to_time_bomb() {
 test_mode() {
   self endon("death_or_disconnect");
 
-  while (true) {
+  while(true) {
     level waittill("time_bomb_test_mode_start");
     _test_mode_loop();
   }
@@ -1839,7 +1843,7 @@ _test_mode_loop() {
   if(!player hasweapon("time_bomb_zm"))
     player player_give_time_bomb();
 
-  while (true) {
+  while(true) {
     time_bomb_saves_data();
     print_ent_count();
     wait 8;

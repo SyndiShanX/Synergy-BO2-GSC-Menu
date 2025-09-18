@@ -26,6 +26,7 @@
 
 init() {
   println("ZM >> Zombiemode Client Scripts Init (_zm.csc) ");
+
   level thread clientscripts\mp\zombies\_zm_ffotd::main_start();
   level.onlinegame = sessionmodeisonlinegame();
   level.swimmingfeature = 0;
@@ -42,9 +43,13 @@ init() {
   level.playerfalldamagesound = clientscripts\mp\zombies\_zm_audio::playerfalldamagesound;
   thread clientscripts\mp\_audio::audio_init(0);
   clientscripts\mp\zombies\_zm_audio::init();
+
   println("ZM >> init_client_flags (_zm.csc) ");
+
   init_client_flags();
+
   println("ZM >> init_client_flag_callback_funcs (_zm.csc) ");
+
   init_client_flag_callback_funcs();
   registerclientfield("actor", "zombie_has_eyes", 1, 1, "int", ::zombie_eyes_clientfield_cb, 0);
   registerclientfield("actor", "zombie_ragdoll_explode", 1, 1, "int", ::zombie_ragdoll_explode_cb, 0);
@@ -99,22 +104,22 @@ init() {
 zombe_gametype_premain() {
   gamemode = getdvar(#"ui_gametype");
 
-  if(!isdefined(level.gamemode_map_location_main) || !isdefined(level.gamemode_map_location_main[gamemode])) {
+  if(!isDefined(level.gamemode_map_location_main) || !isDefined(level.gamemode_map_location_main[gamemode])) {
     return;
   }
   if(getdvar(#"createfx") != "") {
     return;
   }
-  if(isdefined(level._zombie_gamemodepremain))
+  if(isDefined(level._zombie_gamemodepremain))
     level thread[[level._zombie_gamemodepremain]]();
 
-  if(isdefined(level.gamemode_map_location_main[gamemode])) {
+  if(isDefined(level.gamemode_map_location_main[gamemode])) {
     loc = getdvar(#"ui_zm_mapstartlocation");
 
-    if(loc == "" && isdefined(level.default_start_location))
+    if(loc == "" && isDefined(level.default_start_location))
       loc = level.default_start_location;
 
-    if(isdefined(level.gamemode_map_location_premain[gamemode][loc]))
+    if(isDefined(level.gamemode_map_location_premain[gamemode][loc]))
       level thread[[level.gamemode_map_location_premain[gamemode][loc]]]();
   }
 }
@@ -122,30 +127,30 @@ zombe_gametype_premain() {
 start_zombie_gametype() {
   gamemode = getdvar(#"ui_gametype");
 
-  if(!isdefined(level.gamemode_map_location_main) || !isdefined(level.gamemode_map_location_main[gamemode])) {
+  if(!isDefined(level.gamemode_map_location_main) || !isDefined(level.gamemode_map_location_main[gamemode])) {
     return;
   }
   if(getdvar(#"createfx") != "") {
     return;
   }
-  if(isdefined(level.gamemode_map_main)) {
-    if(isdefined(level.gamemode_map_main[gamemode]))
+  if(isDefined(level.gamemode_map_main)) {
+    if(isDefined(level.gamemode_map_main[gamemode]))
       level thread delay_for_clients_then_execute(level.gamemode_map_main[gamemode]);
   }
 
-  if(isdefined(level.gamemode_map_location_main)) {
-    if(isdefined(level.gamemode_map_location_main[gamemode])) {
+  if(isDefined(level.gamemode_map_location_main)) {
+    if(isDefined(level.gamemode_map_location_main[gamemode])) {
       loc = getdvar(#"ui_zm_mapstartlocation");
 
-      if(loc == "" && isdefined(level.default_start_location))
+      if(loc == "" && isDefined(level.default_start_location))
         loc = level.default_start_location;
 
-      if(isdefined(level.gamemode_map_location_main[gamemode][loc]))
+      if(isDefined(level.gamemode_map_location_main[gamemode][loc]))
         level thread delay_for_clients_then_execute(level.gamemode_map_location_main[gamemode][loc]);
     }
   }
 
-  if(isdefined(level._zombie_gamemodemain))
+  if(isDefined(level._zombie_gamemodemain))
     level thread delay_for_clients_then_execute(level._zombie_gamemodemain);
 }
 
@@ -153,8 +158,8 @@ delay_for_clients_then_execute(func) {
   wait 0.1;
   players = getlocalplayers();
 
-  for (x = 0; x < players.size; x++) {
-    while (!clienthassnapshot(x))
+  for(x = 0; x < players.size; x++) {
+    while(!clienthassnapshot(x))
       wait 0.05;
   }
 
@@ -165,41 +170,41 @@ delay_for_clients_then_execute(func) {
 precache_zombie_gametype() {
   gamemode = getdvar(#"ui_gametype");
 
-  if(!isdefined(level.gamemode_map_location_main) || !isdefined(level.gamemode_map_location_main[gamemode])) {
+  if(!isDefined(level.gamemode_map_location_main) || !isDefined(level.gamemode_map_location_main[gamemode])) {
     return;
   }
-  if(isdefined(level._zombie_gamemodeprecache))
+  if(isDefined(level._zombie_gamemodeprecache))
     [[level._zombie_gamemodeprecache]]();
 
-  if(isdefined(level.gamemode_map_precache)) {
-    if(isdefined(level.gamemode_map_precache[gamemode]))
+  if(isDefined(level.gamemode_map_precache)) {
+    if(isDefined(level.gamemode_map_precache[gamemode]))
       [[level.gamemode_map_precache[gamemode]]]();
   }
 
-  if(isdefined(level.gamemode_map_location_precache)) {
-    if(isdefined(level.gamemode_map_location_precache[gamemode])) {
+  if(isDefined(level.gamemode_map_location_precache)) {
+    if(isDefined(level.gamemode_map_location_precache[gamemode])) {
       loc = getdvar(#"ui_zm_mapstartlocation");
 
-      if(loc == "" && isdefined(level.default_start_location))
+      if(loc == "" && isDefined(level.default_start_location))
         loc = level.default_start_location;
 
-      if(isdefined(level.gamemode_map_location_precache[gamemode][loc]))
+      if(isDefined(level.gamemode_map_location_precache[gamemode][loc]))
         [[level.gamemode_map_location_precache[gamemode][loc]]]();
     }
   }
 }
 
 add_map_gamemode(mode, precache_func, main_func) {
-  if(!isdefined(level.gamemode_map_location_init))
+  if(!isDefined(level.gamemode_map_location_init))
     level.gamemode_map_location_init = [];
 
-  if(!isdefined(level.gamemode_map_location_main))
+  if(!isDefined(level.gamemode_map_location_main))
     level.gamemode_map_location_main = [];
 
-  if(!isdefined(level.gamemode_map_precache))
+  if(!isDefined(level.gamemode_map_precache))
     level.gamemode_map_precache = [];
 
-  if(!isdefined(level.gamemode_map_main))
+  if(!isDefined(level.gamemode_map_main))
     level.gamemode_map_main = [];
 
   level.gamemode_map_main[mode] = main_func;
@@ -210,8 +215,9 @@ add_map_gamemode(mode, precache_func, main_func) {
 }
 
 add_map_location_gamemode(mode, location, precache_func, premain_func, main_func) {
-  if(!isdefined(level.gamemode_map_location_precache[mode])) {
+  if(!isDefined(level.gamemode_map_location_precache[mode])) {
     println("*** ERROR : " + mode + " has not been added to the map using add_map_gamemode.");
+
     return;
   }
 
@@ -225,7 +231,7 @@ drive_client_connected_notifies(player, localclientnum) {
 }
 
 basic_player_connect(localclientnum) {
-  if(!isdefined(level._laststand))
+  if(!isDefined(level._laststand))
     level._laststand = [];
 
   level._laststand[localclientnum] = 0;
@@ -235,7 +241,7 @@ basic_player_connect(localclientnum) {
 force_update_player_clientfields(localclientnum) {
   self endon("entityshutdown");
 
-  while (!clienthassnapshot(localclientnum))
+  while(!clienthassnapshot(localclientnum))
     wait 0.25;
 
   wait 0.25;
@@ -244,16 +250,19 @@ force_update_player_clientfields(localclientnum) {
 
 playerspawned(localclientnum) {
   self endon("entityshutdown");
+
   println("Player spawned");
+
   level.localplayers = getlocalplayers();
 
-  if(isdefined(level._faceanimcbfunc))
+  if(isDefined(level._faceanimcbfunc))
     self thread[[level._faceanimcbfunc]](localclientnum);
 }
 
 entityspawned(localclientnum) {
-  if(!isdefined(self.type)) {
+  if(!isDefined(self.type)) {
     println("Entity type undefined!");
+
     return;
   }
 
@@ -290,7 +299,7 @@ init_wallbuy_fx() {
   if(!is_false(level._uses_taser_knuckles))
     level._effect["tazer_knuckles_zm_fx"] = loadfx("maps/zombie/fx_zmb_wall_buy_taseknuck");
 
-  if(isdefined(level.buildable_wallbuy_weapons))
+  if(isDefined(level.buildable_wallbuy_weapons))
     level._effect["dynamic_wallbuy_fx"] = loadfx("maps/zombie/fx_zmb_wall_buy_question");
 }
 
@@ -299,7 +308,7 @@ init_blocker_fx() {
 }
 
 init_riser_fx() {
-  if(isdefined(level.use_new_riser_water) && level.use_new_riser_water) {
+  if(isDefined(level.use_new_riser_water) && level.use_new_riser_water) {
     level._effect["rise_burst_water"] = loadfx("maps/zombie/fx_mp_zombie_hand_water_burst");
     level._effect["rise_billow_water"] = loadfx("maps/zombie/fx_mp_zombie_body_water_billowing");
     level._effect["rise_dust_water"] = loadfx("maps/zombie/fx_zombie_body_wtr_falling");
@@ -309,7 +318,7 @@ init_riser_fx() {
   level._effect["rise_billow"] = loadfx("maps/zombie/fx_mp_zombie_body_dirt_billowing");
   level._effect["rise_dust"] = loadfx("maps/zombie/fx_mp_zombie_body_dust_falling");
 
-  if(isdefined(level.riser_type) && level.riser_type == "snow") {
+  if(isDefined(level.riser_type) && level.riser_type == "snow") {
     level._effect["rise_burst_snow"] = loadfx("maps/zombie/fx_mp_zombie_hand_snow_burst");
     level._effect["rise_billow_snow"] = loadfx("maps/zombie/fx_mp_zombie_body_snow_billowing");
     level._effect["rise_dust_snow"] = loadfx("maps/zombie/fx_mp_zombie_body_snow_falling");
@@ -318,14 +327,15 @@ init_riser_fx() {
 
 init_client_flags() {
   println("ZM >> init_client_flags START(_zm.csc) ");
+
   level._zombie_scriptmover_flag_box_random = 15;
 
-  if(isdefined(level.use_clientside_board_fx) && level.use_clientside_board_fx) {
+  if(isDefined(level.use_clientside_board_fx) && level.use_clientside_board_fx) {
     level._zombie_scriptmover_flag_board_horizontal_fx = 14;
     level._zombie_scriptmover_flag_board_vertical_fx = 13;
   }
 
-  if(isdefined(level.use_clientside_rock_tearin_fx) && level.use_clientside_rock_tearin_fx)
+  if(isDefined(level.use_clientside_rock_tearin_fx) && level.use_clientside_rock_tearin_fx)
     level._zombie_scriptmover_flag_rock_fx = 12;
 }
 
@@ -335,17 +345,19 @@ init_client_flag_callback_funcs() {
   level._client_flag_callbacks["player"] = [];
   level._client_flag_callbacks["actor"] = [];
   level._client_flag_callbacks["scriptmover"] = [];
+
   println("ZM >> init_client_flag_callback_funcs START (_zm.csc) ");
 
-  if(isdefined(level.use_clientside_board_fx) && level.use_clientside_board_fx) {
+  if(isDefined(level.use_clientside_board_fx) && level.use_clientside_board_fx) {
     register_clientflag_callback("scriptmover", level._zombie_scriptmover_flag_board_vertical_fx, ::handle_vertical_board_clientside_fx);
     register_clientflag_callback("scriptmover", level._zombie_scriptmover_flag_board_horizontal_fx, ::handle_horizontal_board_clientside_fx);
   }
 
-  if(isdefined(level.use_clientside_rock_tearin_fx) && level.use_clientside_rock_tearin_fx)
+  if(isDefined(level.use_clientside_rock_tearin_fx) && level.use_clientside_rock_tearin_fx)
     register_clientflag_callback("scriptmover", level._zombie_scriptmover_flag_rock_fx, ::handle_rock_clientside_fx);
 
   println("ZM >> register_clientflag_callback (_ZOMBIE_SCRIPTMOVER_FLAG_BOX_RANDOM) weapon_box_callback - client scripts");
+
   register_clientflag_callback("scriptmover", level._zombie_scriptmover_flag_box_random, clientscripts\mp\zombies\_zm_weapons::weapon_box_callback);
 
   if(!is_true(level.disable_deadshot_clientfield))
@@ -378,7 +390,7 @@ handle_horizontal_board_clientside_fx(localclientnum, set, newent) {
     localplayers = level.localplayers;
     snd_played = 0;
 
-    for (i = 0; i < localplayers.size; i++) {
+    for(i = 0; i < localplayers.size; i++) {
       playfx(i, level._effect["wood_chunk_destory"], self.origin + vectorscale((0, 0, 1), 30.0));
       wait(randomfloatrange(0.3, 0.6));
 
@@ -396,7 +408,7 @@ handle_horizontal_board_clientside_fx(localclientnum, set, newent) {
     wait 0.3;
     playsound(0, "zmb_board_slam", self.origin);
 
-    for (i = 0; i < localplayers.size; i++) {
+    for(i = 0; i < localplayers.size; i++) {
       localplayers[i] earthquake(randomfloatrange(0.3, 0.4), randomfloatrange(0.2, 0.4), self.origin, 150);
       playfx(i, level._effect["wood_chunk_destory"], self.origin + vectorscale((0, 0, 1), 30.0));
       wait(randomfloatrange(0.3, 0.6));
@@ -413,7 +425,7 @@ handle_vertical_board_clientside_fx(localclientnum, set, newent) {
     localplayers = level.localplayers;
     snd_played = 0;
 
-    for (i = 0; i < localplayers.size; i++) {
+    for(i = 0; i < localplayers.size; i++) {
       playfx(i, level._effect["wood_chunk_destory"], self.origin + vectorscale((1, 0, 0), 30.0));
       wait(randomfloatrange(0.3, 0.6));
 
@@ -431,7 +443,7 @@ handle_vertical_board_clientside_fx(localclientnum, set, newent) {
     wait 0.3;
     playsound(0, "zmb_board_slam", self.origin);
 
-    for (i = 0; i < localplayers.size; i++) {
+    for(i = 0; i < localplayers.size; i++) {
       localplayers[i] earthquake(randomfloatrange(0.3, 0.4), randomfloatrange(0.2, 0.4), self.origin, 150);
       playfx(i, level._effect["wood_chunk_destory"], self.origin + vectorscale((1, 0, 0), 30.0));
       wait(randomfloatrange(0.3, 0.6));
@@ -448,7 +460,7 @@ handle_rock_clientside_fx(localclientnum, set, newent) {
     localplayers = level.localplayers;
     snd_played = 0;
 
-    for (i = 0; i < localplayers.size; i++) {
+    for(i = 0; i < localplayers.size; i++) {
       playfx(i, level._effect["wood_chunk_destory"], self.origin + vectorscale((1, 0, 0), 30.0));
       wait(randomfloatrange(0.3, 0.6));
 
@@ -465,7 +477,7 @@ handle_rock_clientside_fx(localclientnum, set, newent) {
     playsound(0, "zmb_repair_boards", self.origin);
     playsound(0, "zmb_cha_ching", self.origin);
 
-    for (i = 0; i < localplayers.size; i++) {
+    for(i = 0; i < localplayers.size; i++) {
       localplayers[i] earthquake(randomfloatrange(0.3, 0.4), randomfloatrange(0.2, 0.4), self.origin, 150);
       playfx(i, level._effect["wood_chunk_destory"], self.origin + vectorscale((1, 0, 0), 30.0));
       wait(randomfloatrange(0.3, 0.6));
@@ -496,12 +508,12 @@ do_teardown_sound(type) {
 }
 
 box_monitor(clientnum, state, oldstate) {
-  if(isdefined(level._custom_box_monitor))
+  if(isDefined(level._custom_box_monitor))
     [[level._custom_box_monitor]](clientnum, state, oldstate);
 }
 
 zpo_listener() {
-  while (true) {
+  while(true) {
     level waittill("ZPO");
     level notify("power_on");
     level notify("revive_on");
@@ -516,7 +528,7 @@ zpo_listener() {
 }
 
 zpoff_listener() {
-  while (true)
+  while(true)
     level waittill("ZPOff");
 }
 
@@ -528,7 +540,7 @@ zombie_power_clientfield_cb(localclientnum, oldval, newval, bnewent, binitialsna
 }
 
 player_deadshot_perk_handler(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump) {
-  if(!self islocalplayer() || isspectating(localclientnum, 0) || isdefined(level.localplayers[localclientnum]) && self getentitynumber() != level.localplayers[localclientnum] getentitynumber()) {
+  if(!self islocalplayer() || isspectating(localclientnum, 0) || isDefined(level.localplayers[localclientnum]) && self getentitynumber() != level.localplayers[localclientnum] getentitynumber()) {
     return;
   }
   if(newval)
@@ -541,20 +553,20 @@ createzombieeyesinternal(localclientnum) {
   self endon("entityshutdown");
   self waittill_dobj(localclientnum);
 
-  if(!isdefined(self._eyearray))
+  if(!isDefined(self._eyearray))
     self._eyearray = [];
 
-  if(!isdefined(self._eyearray[localclientnum])) {
+  if(!isDefined(self._eyearray[localclientnum])) {
     linktag = "J_Eyeball_LE";
     effect = level._effect["eye_glow"];
 
-    if(isdefined(level._override_eye_fx))
+    if(isDefined(level._override_eye_fx))
       effect = level._override_eye_fx;
 
-    if(isdefined(self._eyeglow_fx_override))
+    if(isDefined(self._eyeglow_fx_override))
       effect = self._eyeglow_fx_override;
 
-    if(isdefined(self._eyeglow_tag_override))
+    if(isDefined(self._eyeglow_tag_override))
       linktag = self._eyeglow_tag_override;
 
     self._eyearray[localclientnum] = playfxontag(localclientnum, effect, self, linktag);
@@ -566,8 +578,8 @@ createzombieeyes(localclientnum) {
 }
 
 deletezombieeyes(localclientnum) {
-  if(isdefined(self._eyearray)) {
-    if(isdefined(self._eyearray[localclientnum])) {
+  if(isDefined(self._eyearray)) {
+    if(isDefined(self._eyearray[localclientnum])) {
       deletefx(localclientnum, self._eyearray[localclientnum], 1);
       self._eyearray[localclientnum] = undefined;
     }
@@ -602,7 +614,7 @@ player_eye_color_clientfield_cb(localclientnum, oldval, newval, bnewent, binitia
       return;
   }
 
-  if(!isdefined(self.special_eyes) || self.special_eyes != newval) {
+  if(!isDefined(self.special_eyes) || self.special_eyes != newval) {
     self.special_eyes = newval;
 
     if(is_true(self.special_eyes))
@@ -622,7 +634,7 @@ zombie_eyes_handle_demo_jump(localclientnum) {
   self endon("death_or_disconnect");
   self endon("new_zombie_eye_cb");
 
-  while (true) {
+  while(true) {
     level waittill_any("demo_jump", "demo_player_switch");
     self deletezombieeyes(localclientnum);
     self mapshaderconstant(localclientnum, 0, "scriptVector2", 0, 0.25, self get_eyeball_color());
@@ -637,7 +649,7 @@ zombie_eyes_demo_watcher(localclientnum, oldval, newval, bnewent, binitialsnap, 
   self thread zombie_eyes_handle_demo_jump(localclientnum);
 
   if(newval) {
-    while (true) {
+    while(true) {
       if(!self islocalplayer() || isspectating(localclientnum, 1) || localclientnum != self getlocalclientnumber()) {
         if(!is_true(self.eyes_spawned)) {
           self createzombieeyes(localclientnum);
@@ -665,7 +677,7 @@ zombie_eyes_demo_clientfield_cb(localclientnum, oldval, newval, bnewent, binitia
 }
 
 zombie_eyes_clientfield_cb(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump) {
-  if(!isdefined(newval)) {
+  if(!isDefined(newval)) {
     return;
   }
   if(newval) {
@@ -676,12 +688,12 @@ zombie_eyes_clientfield_cb(localclientnum, oldval, newval, bnewent, binitialsnap
     self mapshaderconstant(localclientnum, 0, "scriptVector2", 0, 0.25, self get_eyeball_color());
   }
 
-  if(isdefined(level.zombie_eyes_clientfield_cb_additional))
+  if(isDefined(level.zombie_eyes_clientfield_cb_additional))
     self[[level.zombie_eyes_clientfield_cb_additional]](localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump);
 }
 
 get_eyeball_luminance() {
-  if(isdefined(level.eyeball_luminance_override))
+  if(isDefined(level.eyeball_luminance_override))
     return level.eyeball_luminance_override;
 
   return 2;
@@ -690,10 +702,10 @@ get_eyeball_luminance() {
 get_eyeball_color() {
   val = 0;
 
-  if(isdefined(level.zombie_eyeball_color_override))
+  if(isDefined(level.zombie_eyeball_color_override))
     val = level.zombie_eyeball_color_override;
 
-  if(isdefined(self.zombie_eyeball_color_override))
+  if(isDefined(self.zombie_eyeball_color_override))
     val = self.zombie_eyeball_color_override;
 
   return val;
@@ -706,10 +718,10 @@ zombie_ragdoll_explode_cb(localclientnum, oldval, newval, bnewent, binitialsnap,
 
 zombie_gut_explosion_cb(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump) {
   if(newval) {
-    if(isdefined(level._effect["zombie_guts_explosion"])) {
+    if(isDefined(level._effect["zombie_guts_explosion"])) {
       org = self gettagorigin("J_SpineLower");
 
-      if(isdefined(org))
+      if(isDefined(org))
         playfx(localclientnum, level._effect["zombie_guts_explosion"], org);
     }
   }
@@ -722,23 +734,23 @@ init_zombie_explode_fx() {
 zombie_wait_explode(localclientnum) {
   where = self gettagorigin("J_SpineLower");
 
-  if(!isdefined(where))
+  if(!isDefined(where))
     where = self.origin;
 
   start = gettime();
 
-  while (gettime() - start < 2000) {
-    if(isdefined(self)) {
+  while(gettime() - start < 2000) {
+    if(isDefined(self)) {
       where = self gettagorigin("J_SpineLower");
 
-      if(!isdefined(where))
+      if(!isDefined(where))
         where = self.origin;
     }
 
     wait 0.05;
   }
 
-  if(isdefined(level._effect["zombie_guts_explosion"]) && is_mature())
+  if(isDefined(level._effect["zombie_guts_explosion"]) && is_mature())
     playfx(localclientnum, level._effect["zombie_guts_explosion"], where);
 }
 
@@ -768,8 +780,8 @@ perk_start_up() {
   duration = 0.1;
   machines = getstructarray("perksacola", "targetname");
 
-  while (true) {
-    for (i = 0; i < machines.size; i++) {
+  while(true) {
+    for(i = 0; i < machines.size; i++) {
       switch (machines[i].script_sound) {
         case "mx_jugger_jingle":
           machines[i] thread vending_machine_flicker_light("jugger_light", duration);
@@ -812,7 +824,7 @@ perk_start_up() {
 vending_machine_flicker_light(fx_light, duration) {
   players = level.localplayers;
 
-  for (i = 0; i < players.size; i++)
+  for(i = 0; i < players.size; i++)
     self thread play_perk_fx_on_client(i, fx_light, duration);
 }
 
@@ -825,17 +837,17 @@ play_perk_fx_on_client(client_num, fx_light, duration) {
 }
 
 mark_piece_gibbed(piece_index) {
-  if(!isdefined(self.gibbed_pieces))
+  if(!isDefined(self.gibbed_pieces))
     self.gibbed_pieces = [];
 
   self.gibbed_pieces[self.gibbed_pieces.size] = piece_index;
 }
 
 has_gibbed_piece(piece_index) {
-  if(!isdefined(self.gibbed_pieces))
+  if(!isDefined(self.gibbed_pieces))
     return false;
 
-  for (i = 0; i < self.gibbed_pieces.size; i++) {
+  for(i = 0; i < self.gibbed_pieces.size; i++) {
     if(self.gibbed_pieces[i] == piece_index)
       return true;
   }
@@ -850,7 +862,7 @@ do_headshot_gib_fx() {
   forwardvec = anglestoforward(self gettagangles(fxtag));
   players = level.localplayers;
 
-  for (i = 0; i < players.size; i++) {
+  for(i = 0; i < players.size; i++) {
     playfx(i, level._effect["headshot"], fxorigin, forwardvec, upvec);
     playfx(i, level._effect["headshot_nochunks"], fxorigin, forwardvec, upvec);
   }
@@ -858,10 +870,10 @@ do_headshot_gib_fx() {
   playsound(0, "zombie_head_gib", fxorigin);
   wait 0.3;
 
-  if(isdefined(self)) {
+  if(isDefined(self)) {
     players = level.localplayers;
 
-    for (i = 0; i < players.size; i++)
+    for(i = 0; i < players.size; i++)
       playfxontag(i, level._effect["bloodspurt"], self, fxtag);
   }
 }
@@ -869,7 +881,7 @@ do_headshot_gib_fx() {
 do_gib_fx(tag) {
   players = level.localplayers;
 
-  for (i = 0; i < players.size; i++)
+  for(i = 0; i < players.size; i++)
     playfxontag(i, level._effect["animscript_gib_fx"], self, tag);
 
   playsound(0, "zmb_death_gibs", self gettagorigin(tag));
@@ -882,7 +894,7 @@ do_gib(model, tag) {
   end_pos = undefined;
   angles = undefined;
 
-  if(!isdefined(self)) {
+  if(!isDefined(self)) {
     end_pos = start_pos + anglestoforward(start_angles) * 10;
     angles = start_angles;
   } else {
@@ -890,7 +902,7 @@ do_gib(model, tag) {
     angles = self gettagangles(tag);
   }
 
-  if(isdefined(self._gib_vel)) {
+  if(isDefined(self._gib_vel)) {
     forward = self._gib_vel;
     self._gib_vel = undefined;
   } else {
@@ -901,7 +913,7 @@ do_gib(model, tag) {
 
   createdynentandlaunch(0, model, end_pos, angles, start_pos, forward, level._effect["animscript_gibtrail_fx"], 1);
 
-  if(isdefined(self))
+  if(isDefined(self))
     self do_gib_fx(tag);
   else
     playsound(0, "zmb_death_gibs", end_pos);
@@ -925,7 +937,7 @@ check_should_gib() {
 resetgibcounter() {
   self endon("disconnect");
 
-  while (true) {
+  while(true) {
     wait(level.gibresettime);
     level.gibtimer = 0;
     level.gibcount = 0;
@@ -939,10 +951,10 @@ on_gib_event(localclientnum, type, locations) {
   if(!is_mature()) {
     return;
   }
-  if(!isdefined(self._gib_def)) {
+  if(!isDefined(self._gib_def)) {
     return;
   }
-  if(isdefined(level._gib_overload_func)) {
+  if(isDefined(level._gib_overload_func)) {
     if(self[[level._gib_overload_func]](type, locations))
       return;
   }
@@ -952,25 +964,25 @@ on_gib_event(localclientnum, type, locations) {
   }
   level.gibcount++;
 
-  for (i = 0; i < locations.size; i++) {
-    if(isdefined(self.gibbed) && level._zombie_gib_piece_index_head != locations[i]) {
+  for(i = 0; i < locations.size; i++) {
+    if(isDefined(self.gibbed) && level._zombie_gib_piece_index_head != locations[i]) {
       continue;
     }
     switch (locations[i]) {
       case 0:
-        if(isdefined(self._gib_def.gibspawn1) && isdefined(self._gib_def.gibspawntag1))
+        if(isDefined(self._gib_def.gibspawn1) && isDefined(self._gib_def.gibspawntag1))
           self thread do_gib(self._gib_def.gibspawn1, self._gib_def.gibspawntag1);
 
-        if(isdefined(self._gib_def.gibspawn2) && isdefined(self._gib_def.gibspawntag2))
+        if(isDefined(self._gib_def.gibspawn2) && isDefined(self._gib_def.gibspawntag2))
           self thread do_gib(self._gib_def.gibspawn2, self._gib_def.gibspawntag2);
 
-        if(isdefined(self._gib_def.gibspawn3) && isdefined(self._gib_def.gibspawntag3))
+        if(isDefined(self._gib_def.gibspawn3) && isDefined(self._gib_def.gibspawntag3))
           self thread do_gib(self._gib_def.gibspawn3, self._gib_def.gibspawntag3);
 
-        if(isdefined(self._gib_def.gibspawn4) && isdefined(self._gib_def.gibspawntag4))
+        if(isDefined(self._gib_def.gibspawn4) && isDefined(self._gib_def.gibspawntag4))
           self thread do_gib(self._gib_def.gibspawn4, self._gib_def.gibspawntag4);
 
-        if(isdefined(self._gib_def.gibspawn5) && isdefined(self._gib_def.gibspawntag5))
+        if(isDefined(self._gib_def.gibspawn5) && isDefined(self._gib_def.gibspawntag5))
           self thread do_hat_gib(self._gib_def.gibspawn5, self._gib_def.gibspawntag5);
 
         self thread do_headshot_gib_fx();
@@ -983,43 +995,39 @@ on_gib_event(localclientnum, type, locations) {
         mark_piece_gibbed(level._zombie_gib_piece_index_hat);
         break;
       case 1:
-        if(isdefined(self._gib_def.gibspawn1) && isdefined(self._gib_def.gibspawntag1))
+        if(isDefined(self._gib_def.gibspawn1) && isDefined(self._gib_def.gibspawntag1))
           self thread do_gib(self._gib_def.gibspawn1, self._gib_def.gibspawntag1);
         else {
-          if(!isdefined(self._gib_def.gibspawn1)) {
-
+          if(!isDefined(self._gib_def.gibspawn1)) {
           }
 
-          if(!isdefined(self._gib_def.gibspawntag1)) {
-
+          if(!isDefined(self._gib_def.gibspawntag1)) {
           }
         }
 
         mark_piece_gibbed(level._zombie_gib_piece_index_right_arm);
         break;
       case 2:
-        if(isdefined(self._gib_def.gibspawn2) && isdefined(self._gib_def.gibspawntag2))
+        if(isDefined(self._gib_def.gibspawn2) && isDefined(self._gib_def.gibspawntag2))
           self thread do_gib(self._gib_def.gibspawn2, self._gib_def.gibspawntag2);
         else {
-          if(!isdefined(self._gib_def.gibspawn2)) {
-
+          if(!isDefined(self._gib_def.gibspawn2)) {
           }
 
-          if(!isdefined(self._gib_def.gibspawntag2)) {
-
+          if(!isDefined(self._gib_def.gibspawntag2)) {
           }
         }
 
         mark_piece_gibbed(level._zombie_gib_piece_index_left_arm);
         break;
       case 3:
-        if(isdefined(self._gib_def.gibspawn3) && isdefined(self._gib_def.gibspawntag3))
+        if(isDefined(self._gib_def.gibspawn3) && isDefined(self._gib_def.gibspawntag3))
           self thread do_gib(self._gib_def.gibspawn3, self._gib_def.gibspawntag3);
 
         mark_piece_gibbed(level._zombie_gib_piece_index_right_leg);
         break;
       case 4:
-        if(isdefined(self._gib_def.gibspawn4) && isdefined(self._gib_def.gibspawntag4))
+        if(isDefined(self._gib_def.gibspawn4) && isDefined(self._gib_def.gibspawntag4))
           self thread do_gib(self._gib_def.gibspawn4, self._gib_def.gibspawntag4);
 
         mark_piece_gibbed(level._zombie_gib_piece_index_left_leg);
@@ -1032,7 +1040,7 @@ on_gib_event(localclientnum, type, locations) {
         self thread do_gib_fx("J_SpineLower");
         break;
       case 7:
-        if(isdefined(self._gib_def.gibspawn5) && isdefined(self._gib_def.gibspawntag5))
+        if(isDefined(self._gib_def.gibspawn5) && isDefined(self._gib_def.gibspawntag5))
           self thread do_hat_gib(self._gib_def.gibspawn5, self._gib_def.gibspawntag5);
 
         mark_piece_gibbed(level._zombie_gib_piece_index_hat);
@@ -1047,28 +1055,28 @@ zombie_vision_set_apply(str_visionset, int_priority, flt_transition_time, int_cl
   self endon("death");
   self endon("disconnect");
 
-  if(!isdefined(self._zombie_visionset_list))
+  if(!isDefined(self._zombie_visionset_list))
     self._zombie_visionset_list = [];
 
-  if(!isdefined(str_visionset) || !isdefined(int_priority)) {
+  if(!isDefined(str_visionset) || !isDefined(int_priority)) {
     return;
   }
-  if(!isdefined(flt_transition_time))
+  if(!isDefined(flt_transition_time))
     flt_transition_time = 1;
 
-  if(!isdefined(int_clientnum)) {
+  if(!isDefined(int_clientnum)) {
     if(self islocalplayer())
       int_clientnum = self getlocalclientnumber();
 
-    if(!isdefined(int_clientnum))
+    if(!isDefined(int_clientnum))
       return;
   }
 
   already_in_array = 0;
 
   if(self._zombie_visionset_list.size != 0) {
-    for (i = 0; i < self._zombie_visionset_list.size; i++) {
-      if(isdefined(self._zombie_visionset_list[i].vision_set) && self._zombie_visionset_list[i].vision_set == str_visionset) {
+    for(i = 0; i < self._zombie_visionset_list.size; i++) {
+      if(isDefined(self._zombie_visionset_list[i].vision_set) && self._zombie_visionset_list[i].vision_set == str_visionset) {
         already_in_array = 1;
 
         if(self._zombie_visionset_list[i].priority != int_priority)
@@ -1088,7 +1096,7 @@ zombie_vision_set_apply(str_visionset, int_priority, flt_transition_time, int_cl
 
   vision_to_set = self zombie_highest_vision_set_apply();
 
-  if(isdefined(vision_to_set))
+  if(isDefined(vision_to_set))
     visionsetnaked(int_clientnum, vision_to_set, flt_transition_time);
   else
     visionsetnaked(int_clientnum, "undefined", flt_transition_time);
@@ -1098,50 +1106,50 @@ zombie_vision_set_remove(str_visionset, flt_transition_time, int_clientnum) {
   self endon("death");
   self endon("disconnect");
 
-  if(!isdefined(str_visionset)) {
+  if(!isDefined(str_visionset)) {
     return;
   }
-  if(!isdefined(flt_transition_time))
+  if(!isDefined(flt_transition_time))
     flt_transition_time = 1;
 
-  if(!isdefined(self._zombie_visionset_list))
+  if(!isDefined(self._zombie_visionset_list))
     self._zombie_visionset_list = [];
 
-  if(!isdefined(int_clientnum)) {
+  if(!isDefined(int_clientnum)) {
     if(self islocalplayer())
       int_clientnum = self getlocalclientnumber();
 
-    if(!isdefined(int_clientnum))
+    if(!isDefined(int_clientnum))
       return;
   }
 
   temp_struct = undefined;
 
-  for (i = 0; i < self._zombie_visionset_list.size; i++) {
-    if(isdefined(self._zombie_visionset_list[i].vision_set) && self._zombie_visionset_list[i].vision_set == str_visionset)
+  for(i = 0; i < self._zombie_visionset_list.size; i++) {
+    if(isDefined(self._zombie_visionset_list[i].vision_set) && self._zombie_visionset_list[i].vision_set == str_visionset)
       temp_struct = self._zombie_visionset_list[i];
   }
 
-  if(isdefined(temp_struct))
+  if(isDefined(temp_struct))
     arrayremovevalue(self._zombie_visionset_list, temp_struct);
 
   vision_to_set = self zombie_highest_vision_set_apply();
 
-  if(isdefined(vision_to_set))
+  if(isDefined(vision_to_set))
     visionsetnaked(int_clientnum, vision_to_set, flt_transition_time);
   else
     visionsetnaked(int_clientnum, "undefined", flt_transition_time);
 }
 
 zombie_highest_vision_set_apply() {
-  if(!isdefined(self._zombie_visionset_list)) {
+  if(!isDefined(self._zombie_visionset_list)) {
     return;
   }
   highest_score = 0;
   highest_score_vision = undefined;
 
-  for (i = 0; i < self._zombie_visionset_list.size; i++) {
-    if(isdefined(self._zombie_visionset_list[i].priority) && self._zombie_visionset_list[i].priority > highest_score) {
+  for(i = 0; i < self._zombie_visionset_list.size; i++) {
+    if(isDefined(self._zombie_visionset_list[i].priority) && self._zombie_visionset_list[i].priority > highest_score) {
       highest_score = self._zombie_visionset_list[i].priority;
       highest_score_vision = self._zombie_visionset_list[i].vision_set;
     }
@@ -1161,7 +1169,7 @@ handle_zombie_risers_foliage(localclientnum, oldval, newval, bnewent, binitialsn
     billow_fx = level._effect["rise_billow_foliage"];
     type = "foliage";
 
-    for (i = 0; i < localplayers.size; i++)
+    for(i = 0; i < localplayers.size; i++)
       self thread rise_dust_fx(i, type, billow_fx, burst_fx);
   }
 }
@@ -1177,7 +1185,7 @@ handle_zombie_risers_water(localclientnum, oldval, newval, bnewent, binitialsnap
     billow_fx = level._effect["rise_billow_water"];
     type = "water";
 
-    for (i = 0; i < localplayers.size; i++)
+    for(i = 0; i < localplayers.size; i++)
       self thread rise_dust_fx(i, type, billow_fx, burst_fx);
   }
 }
@@ -1193,7 +1201,7 @@ handle_zombie_risers(localclientnum, oldval, newval, bnewent, binitialsnap, fiel
     billow_fx = level._effect["rise_billow"];
     type = "dirt";
 
-    if(isdefined(level.riser_type) && level.riser_type == "snow") {
+    if(isDefined(level.riser_type) && level.riser_type == "snow") {
       sound = "zmb_zombie_spawn_snow";
       burst_fx = level._effect["rise_burst_snow"];
       billow_fx = level._effect["rise_billow_snow"];
@@ -1202,7 +1210,7 @@ handle_zombie_risers(localclientnum, oldval, newval, bnewent, binitialsnap, fiel
 
     playsound(0, sound, self.origin);
 
-    for (i = 0; i < localplayers.size; i++)
+    for(i = 0; i < localplayers.size; i++)
       self thread rise_dust_fx(i, type, billow_fx, burst_fx);
   }
 }
@@ -1218,7 +1226,7 @@ handle_zombie_risers_lowg(localclientnum, oldval, newval, bnewent, binitialsnap,
     billow_fx = level._effect["rise_billow_lg"];
     type = "dirt";
 
-    if(isdefined(level.riser_type) && level.riser_type == "snow") {
+    if(isDefined(level.riser_type) && level.riser_type == "snow") {
       sound = "zmb_zombie_spawn_snow";
       burst_fx = level._effect["rise_burst_snow"];
       billow_fx = level._effect["rise_billow_snow"];
@@ -1227,7 +1235,7 @@ handle_zombie_risers_lowg(localclientnum, oldval, newval, bnewent, binitialsnap,
 
     playsound(0, sound, self.origin);
 
-    for (i = 0; i < localplayers.size; i++)
+    for(i = 0; i < localplayers.size; i++)
       self thread rise_dust_fx(i, type, billow_fx, burst_fx);
   }
 }
@@ -1237,27 +1245,27 @@ rise_dust_fx(clientnum, type, billow_fx, burst_fx) {
   self endon("entityshutdown");
   level endon("demo_jump");
 
-  if(isdefined(level.zombie_custom_riser_fx_handler)) {
+  if(isDefined(level.zombie_custom_riser_fx_handler)) {
     s_info = self[[level.zombie_custom_riser_fx_handler]]();
 
-    if(isdefined(s_info)) {
-      if(isdefined(s_info.burst_fx))
+    if(isDefined(s_info)) {
+      if(isDefined(s_info.burst_fx))
         burst_fx = s_info.burst_fx;
 
-      if(isdefined(s_info.billow_fx))
+      if(isDefined(s_info.billow_fx))
         billow_fx = s_info.billow_fx;
 
-      if(isdefined(s_info.type))
+      if(isDefined(s_info.type))
         type = s_info.type;
     }
   }
 
-  if(isdefined(burst_fx))
+  if(isDefined(burst_fx))
     playfx(clientnum, burst_fx, self.origin + (0, 0, randomintrange(5, 10)));
 
   wait 0.25;
 
-  if(isdefined(billow_fx))
+  if(isDefined(billow_fx))
     playfx(clientnum, billow_fx, self.origin + (randomintrange(-10, 10), randomintrange(-10, 10), randomintrange(5, 10)));
 
   wait 2;
@@ -1275,7 +1283,7 @@ rise_dust_fx(clientnum, type, billow_fx, burst_fx) {
   else if(type == "none") {
     return;
   }
-  for (t = 0; t < dust_time; t = t + dust_interval) {
+  for(t = 0; t < dust_time; t = t + dust_interval) {
     playfxontag(clientnum, effect, self, dust_tag);
     wait(dust_interval);
   }
@@ -1283,20 +1291,26 @@ rise_dust_fx(clientnum, type, billow_fx, burst_fx) {
 
 end_last_stand(clientnum) {
   self waittill("lastStandEnd");
+
   println("Last stand ending for client " + clientnum);
+
   waitrealtime(0.7);
+
   println("Gasp.");
+
   playsound(clientnum, "revive_gasp");
 }
 
 last_stand_thread(clientnum) {
   self thread end_last_stand(clientnum);
   self endon("lastStandEnd");
+
   println("*** Client : Last stand starts on client " + clientnum);
+
   pause = 0.5;
   vol = 0.5;
 
-  while (true) {
+  while(true) {
     id = playsound(clientnum, "chr_heart_beat");
     setsoundvolume(id, vol);
     waitrealtime(pause);
@@ -1321,12 +1335,12 @@ last_stand_monitor(clientnum, state, oldstate) {
   player = level.localplayers[clientnum];
   players = level.localplayers;
 
-  if(!isdefined(player)) {
+  if(!isDefined(player)) {
     return;
   }
   if(state == "1") {
     if(!level._laststand[clientnum]) {
-      if(!isdefined(level.lslooper))
+      if(!isDefined(level.lslooper))
         level.lslooper = spawn(0, player.origin, "script.origin");
 
       player thread last_stand_thread(clientnum);
@@ -1337,7 +1351,7 @@ last_stand_monitor(clientnum, state, oldstate) {
       level._laststand[clientnum] = 1;
     }
   } else if(level._laststand[clientnum]) {
-    if(isdefined(level.lslooper)) {
+    if(isDefined(level.lslooper)) {
       level.lslooper stoploopsound(0.7);
       playsound(0, "evt_laststand_in", (0, 0, 0));
     }

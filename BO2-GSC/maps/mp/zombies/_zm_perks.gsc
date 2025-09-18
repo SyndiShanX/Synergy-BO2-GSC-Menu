@@ -35,8 +35,8 @@ init() {
   vending_weapon_upgrade_trigger = [];
   vending_triggers = getentarray("zombie_vending", "targetname");
 
-  for (i = 0; i < vending_triggers.size; i++) {
-    if(isdefined(vending_triggers[i].script_noteworthy) && vending_triggers[i].script_noteworthy == "specialty_weapupgrade") {
+  for(i = 0; i < vending_triggers.size; i++) {
+    if(isDefined(vending_triggers[i].script_noteworthy) && vending_triggers[i].script_noteworthy == "specialty_weapupgrade") {
       vending_weapon_upgrade_trigger[vending_weapon_upgrade_trigger.size] = vending_triggers[i];
       arrayremovevalue(vending_triggers, vending_triggers[i]);
     }
@@ -44,7 +44,7 @@ init() {
 
   old_packs = getentarray("zombie_vending_upgrade", "targetname");
 
-  for (i = 0; i < old_packs.size; i++)
+  for(i = 0; i < old_packs.size; i++)
     vending_weapon_upgrade_trigger[vending_weapon_upgrade_trigger.size] = old_packs[i];
 
   flag_init("pack_machine_in_use");
@@ -57,12 +57,12 @@ init() {
 
   level.machine_assets = [];
 
-  if(!isdefined(level.custom_vending_precaching))
+  if(!isDefined(level.custom_vending_precaching))
     level.custom_vending_precaching = ::default_vending_precaching;
 
   [[level.custom_vending_precaching]]();
 
-  if(!isdefined(level.packapunch_timeout))
+  if(!isDefined(level.packapunch_timeout))
     level.packapunch_timeout = 15;
 
   set_zombie_var("zombie_perk_cost", 2000);
@@ -71,55 +71,55 @@ init() {
   array_thread(vending_triggers, ::vending_trigger_think);
   array_thread(vending_triggers, ::electric_perks_dialog);
 
-  if(isdefined(level.zombiemode_using_doubletap_perk) && level.zombiemode_using_doubletap_perk)
+  if(isDefined(level.zombiemode_using_doubletap_perk) && level.zombiemode_using_doubletap_perk)
     level thread turn_doubletap_on();
 
-  if(isdefined(level.zombiemode_using_marathon_perk) && level.zombiemode_using_marathon_perk)
+  if(isDefined(level.zombiemode_using_marathon_perk) && level.zombiemode_using_marathon_perk)
     level thread turn_marathon_on();
 
-  if(isdefined(level.zombiemode_using_juggernaut_perk) && level.zombiemode_using_juggernaut_perk)
+  if(isDefined(level.zombiemode_using_juggernaut_perk) && level.zombiemode_using_juggernaut_perk)
     level thread turn_jugger_on();
 
-  if(isdefined(level.zombiemode_using_revive_perk) && level.zombiemode_using_revive_perk)
+  if(isDefined(level.zombiemode_using_revive_perk) && level.zombiemode_using_revive_perk)
     level thread turn_revive_on();
 
-  if(isdefined(level.zombiemode_using_sleightofhand_perk) && level.zombiemode_using_sleightofhand_perk)
+  if(isDefined(level.zombiemode_using_sleightofhand_perk) && level.zombiemode_using_sleightofhand_perk)
     level thread turn_sleight_on();
 
-  if(isdefined(level.zombiemode_using_deadshot_perk) && level.zombiemode_using_deadshot_perk)
+  if(isDefined(level.zombiemode_using_deadshot_perk) && level.zombiemode_using_deadshot_perk)
     level thread turn_deadshot_on();
 
-  if(isdefined(level.zombiemode_using_tombstone_perk) && level.zombiemode_using_tombstone_perk)
+  if(isDefined(level.zombiemode_using_tombstone_perk) && level.zombiemode_using_tombstone_perk)
     level thread turn_tombstone_on();
 
-  if(isdefined(level.zombiemode_using_additionalprimaryweapon_perk) && level.zombiemode_using_additionalprimaryweapon_perk)
+  if(isDefined(level.zombiemode_using_additionalprimaryweapon_perk) && level.zombiemode_using_additionalprimaryweapon_perk)
     level thread turn_additionalprimaryweapon_on();
 
-  if(isdefined(level.zombiemode_using_chugabud_perk) && level.zombiemode_using_chugabud_perk)
+  if(isDefined(level.zombiemode_using_chugabud_perk) && level.zombiemode_using_chugabud_perk)
     level thread turn_chugabud_on();
 
   if(level._custom_perks.size > 0) {
     a_keys = getarraykeys(level._custom_perks);
 
-    for (i = 0; i < a_keys.size; i++) {
-      if(isdefined(level._custom_perks[a_keys[i]].perk_machine_thread))
+    for(i = 0; i < a_keys.size; i++) {
+      if(isDefined(level._custom_perks[a_keys[i]].perk_machine_thread))
         level thread[[level._custom_perks[a_keys[i]].perk_machine_thread]]();
     }
   }
 
-  if(isdefined(level._custom_turn_packapunch_on))
+  if(isDefined(level._custom_turn_packapunch_on))
     level thread[[level._custom_turn_packapunch_on]]();
   else
     level thread turn_packapunch_on();
 
-  if(isdefined(level.quantum_bomb_register_result_func))
+  if(isDefined(level.quantum_bomb_register_result_func))
     [[level.quantum_bomb_register_result_func]]("give_nearest_perk", ::quantum_bomb_give_nearest_perk_result, 10, ::quantum_bomb_give_nearest_perk_validation);
 
   level thread perk_hostmigration();
 }
 
 default_vending_precaching() {
-  if(isdefined(level.zombiemode_using_pack_a_punch) && level.zombiemode_using_pack_a_punch) {
+  if(isDefined(level.zombiemode_using_pack_a_punch) && level.zombiemode_using_pack_a_punch) {
     precacheitem("zombie_knuckle_crack");
     precachemodel("p6_anim_zm_buildable_pap");
     precachemodel("p6_anim_zm_buildable_pap_on");
@@ -132,7 +132,7 @@ default_vending_precaching() {
     level.machine_assets["packapunch"].on_model = "p6_anim_zm_buildable_pap_on";
   }
 
-  if(isdefined(level.zombiemode_using_additionalprimaryweapon_perk) && level.zombiemode_using_additionalprimaryweapon_perk) {
+  if(isDefined(level.zombiemode_using_additionalprimaryweapon_perk) && level.zombiemode_using_additionalprimaryweapon_perk) {
     precacheitem("zombie_perk_bottle_additionalprimaryweapon");
     precacheshader("specialty_additionalprimaryweapon_zombies");
     precachemodel("zombie_vending_three_gun");
@@ -145,7 +145,7 @@ default_vending_precaching() {
     level.machine_assets["additionalprimaryweapon"].on_model = "zombie_vending_three_gun_on";
   }
 
-  if(isdefined(level.zombiemode_using_deadshot_perk) && level.zombiemode_using_deadshot_perk) {
+  if(isDefined(level.zombiemode_using_deadshot_perk) && level.zombiemode_using_deadshot_perk) {
     precacheitem("zombie_perk_bottle_deadshot");
     precacheshader("specialty_ads_zombies");
     precachemodel("zombie_vending_ads");
@@ -158,7 +158,7 @@ default_vending_precaching() {
     level.machine_assets["deadshot"].on_model = "zombie_vending_ads_on";
   }
 
-  if(isdefined(level.zombiemode_using_doubletap_perk) && level.zombiemode_using_doubletap_perk) {
+  if(isDefined(level.zombiemode_using_doubletap_perk) && level.zombiemode_using_doubletap_perk) {
     precacheitem("zombie_perk_bottle_doubletap");
     precacheshader("specialty_doubletap_zombies");
     precachemodel("zombie_vending_doubletap2");
@@ -171,7 +171,7 @@ default_vending_precaching() {
     level.machine_assets["doubletap"].on_model = "zombie_vending_doubletap2_on";
   }
 
-  if(isdefined(level.zombiemode_using_juggernaut_perk) && level.zombiemode_using_juggernaut_perk) {
+  if(isDefined(level.zombiemode_using_juggernaut_perk) && level.zombiemode_using_juggernaut_perk) {
     precacheitem("zombie_perk_bottle_jugg");
     precacheshader("specialty_juggernaut_zombies");
     precachemodel("zombie_vending_jugg");
@@ -184,7 +184,7 @@ default_vending_precaching() {
     level.machine_assets["juggernog"].on_model = "zombie_vending_jugg_on";
   }
 
-  if(isdefined(level.zombiemode_using_marathon_perk) && level.zombiemode_using_marathon_perk) {
+  if(isDefined(level.zombiemode_using_marathon_perk) && level.zombiemode_using_marathon_perk) {
     precacheitem("zombie_perk_bottle_marathon");
     precacheshader("specialty_marathon_zombies");
     precachemodel("zombie_vending_marathon");
@@ -197,7 +197,7 @@ default_vending_precaching() {
     level.machine_assets["marathon"].on_model = "zombie_vending_marathon_on";
   }
 
-  if(isdefined(level.zombiemode_using_revive_perk) && level.zombiemode_using_revive_perk) {
+  if(isDefined(level.zombiemode_using_revive_perk) && level.zombiemode_using_revive_perk) {
     precacheitem("zombie_perk_bottle_revive");
     precacheshader("specialty_quickrevive_zombies");
     precachemodel("zombie_vending_revive");
@@ -211,7 +211,7 @@ default_vending_precaching() {
     level.machine_assets["revive"].on_model = "zombie_vending_revive_on";
   }
 
-  if(isdefined(level.zombiemode_using_sleightofhand_perk) && level.zombiemode_using_sleightofhand_perk) {
+  if(isDefined(level.zombiemode_using_sleightofhand_perk) && level.zombiemode_using_sleightofhand_perk) {
     precacheitem("zombie_perk_bottle_sleight");
     precacheshader("specialty_fastreload_zombies");
     precachemodel("zombie_vending_sleight");
@@ -224,7 +224,7 @@ default_vending_precaching() {
     level.machine_assets["speedcola"].on_model = "zombie_vending_sleight_on";
   }
 
-  if(isdefined(level.zombiemode_using_tombstone_perk) && level.zombiemode_using_tombstone_perk) {
+  if(isDefined(level.zombiemode_using_tombstone_perk) && level.zombiemode_using_tombstone_perk) {
     precacheitem("zombie_perk_bottle_tombstone");
     precacheshader("specialty_tombstone_zombies");
     precachemodel("zombie_vending_tombstone");
@@ -238,7 +238,7 @@ default_vending_precaching() {
     level.machine_assets["tombstone"].on_model = "zombie_vending_tombstone_on";
   }
 
-  if(isdefined(level.zombiemode_using_chugabud_perk) && level.zombiemode_using_chugabud_perk) {
+  if(isDefined(level.zombiemode_using_chugabud_perk) && level.zombiemode_using_chugabud_perk) {
     precacheitem("zombie_perk_bottle_whoswho");
     precacheshader("specialty_quickrevive_zombies");
     precachemodel("p6_zm_vending_chugabud");
@@ -255,8 +255,8 @@ default_vending_precaching() {
   if(level._custom_perks.size > 0) {
     a_keys = getarraykeys(level._custom_perks);
 
-    for (i = 0; i < a_keys.size; i++) {
-      if(isdefined(level._custom_perks[a_keys[i]].precache_func))
+    for(i = 0; i < a_keys.size; i++) {
+      if(isDefined(level._custom_perks[a_keys[i]].precache_func))
         level[[level._custom_perks[a_keys[i]].precache_func]]();
     }
   }
@@ -268,13 +268,13 @@ pap_weapon_move_in(trigger, origin_offset, angles_offset) {
   trigger.worldgun rotateto(self.angles + angles_offset + vectorscale((0, 1, 0), 90.0), 0.35, 0, 0);
   offsetdw = vectorscale((1, 1, 1), 3.0);
 
-  if(isdefined(trigger.worldgun.worldgundw))
+  if(isDefined(trigger.worldgun.worldgundw))
     trigger.worldgun.worldgundw rotateto(self.angles + angles_offset + vectorscale((0, 1, 0), 90.0), 0.35, 0, 0);
 
   wait 0.5;
   trigger.worldgun moveto(self.origin + origin_offset, 0.5, 0, 0);
 
-  if(isdefined(trigger.worldgun.worldgundw))
+  if(isDefined(trigger.worldgun.worldgundw))
     trigger.worldgun.worldgundw moveto(self.origin + origin_offset + offsetdw, 0.5, 0, 0);
 }
 
@@ -283,22 +283,22 @@ pap_weapon_move_out(trigger, origin_offset, interact_offset) {
   trigger endon("pap_player_disconnected");
   offsetdw = vectorscale((1, 1, 1), 3.0);
 
-  if(!isdefined(trigger.worldgun)) {
+  if(!isDefined(trigger.worldgun)) {
     return;
   }
   trigger.worldgun moveto(self.origin + interact_offset, 0.5, 0, 0);
 
-  if(isdefined(trigger.worldgun.worldgundw))
+  if(isDefined(trigger.worldgun.worldgundw))
     trigger.worldgun.worldgundw moveto(self.origin + interact_offset + offsetdw, 0.5, 0, 0);
 
   wait 0.5;
 
-  if(!isdefined(trigger.worldgun)) {
+  if(!isDefined(trigger.worldgun)) {
     return;
   }
   trigger.worldgun moveto(self.origin + origin_offset, level.packapunch_timeout, 0, 0);
 
-  if(isdefined(trigger.worldgun.worldgundw))
+  if(isDefined(trigger.worldgun.worldgundw))
     trigger.worldgun.worldgundw moveto(self.origin + origin_offset + offsetdw, level.packapunch_timeout, 0, 0);
 }
 
@@ -316,8 +316,8 @@ third_person_weapon_upgrade(current_weapon, upgrade_weapon, packa_rollers, perk_
   origin_base = self.origin;
   angles_base = self.angles;
 
-  if(isdefined(rel_entity)) {
-    if(isdefined(level.pap_interaction_height))
+  if(isDefined(rel_entity)) {
+    if(isDefined(level.pap_interaction_height))
       origin_offset = (0, 0, level.pap_interaction_height);
     else
       origin_offset = vectorscale((0, 0, 1), 35.0);
@@ -331,14 +331,14 @@ third_person_weapon_upgrade(current_weapon, upgrade_weapon, packa_rollers, perk_
   forward = anglestoforward(angles_base + angles_offset);
   interact_offset = origin_offset + forward * -25;
 
-  if(!isdefined(perk_machine.fx_ent)) {
+  if(!isDefined(perk_machine.fx_ent)) {
     perk_machine.fx_ent = spawn("script_model", origin_base + origin_offset + (0, 1, -34));
     perk_machine.fx_ent.angles = angles_base + angles_offset;
     perk_machine.fx_ent setmodel("tag_origin");
     perk_machine.fx_ent linkto(perk_machine);
   }
 
-  if(isdefined(level._effect["packapunch_fx"]))
+  if(isDefined(level._effect["packapunch_fx"]))
     fx = playfxontag(level._effect["packapunch_fx"], perk_machine.fx_ent, "tag_origin");
 
   offsetdw = vectorscale((1, 1, 1), 3.0);
@@ -351,25 +351,25 @@ third_person_weapon_upgrade(current_weapon, upgrade_weapon, packa_rollers, perk_
 
   trigger.worldgun.worldgundw = worldgundw;
 
-  if(isdefined(level.custom_pap_move_in))
+  if(isDefined(level.custom_pap_move_in))
     perk_machine[[level.custom_pap_move_in]](trigger, origin_offset, angles_offset, perk_machine);
   else
     perk_machine pap_weapon_move_in(trigger, origin_offset, angles_offset);
 
   self playsound("zmb_perks_packa_upgrade");
 
-  if(isdefined(perk_machine.wait_flag))
+  if(isDefined(perk_machine.wait_flag))
     perk_machine.wait_flag rotateto(perk_machine.wait_flag.angles + vectorscale((1, 0, 0), 179.0), 0.25, 0, 0);
 
   wait 0.35;
   trigger.worldgun delete();
 
-  if(isdefined(worldgundw))
+  if(isDefined(worldgundw))
     worldgundw delete();
 
   wait 3;
 
-  if(isdefined(self))
+  if(isDefined(self))
     self playsound("zmb_perks_packa_ready");
   else
     return;
@@ -385,10 +385,10 @@ third_person_weapon_upgrade(current_weapon, upgrade_weapon, packa_rollers, perk_
 
   trigger.worldgun.worldgundw = worldgundw;
 
-  if(isdefined(perk_machine.wait_flag))
+  if(isDefined(perk_machine.wait_flag))
     perk_machine.wait_flag rotateto(perk_machine.wait_flag.angles - vectorscale((1, 0, 0), 179.0), 0.25, 0, 0);
 
-  if(isdefined(level.custom_pap_move_out))
+  if(isDefined(level.custom_pap_move_out))
     rel_entity thread[[level.custom_pap_move_out]](trigger, origin_offset, interact_offset);
   else
     rel_entity thread pap_weapon_move_out(trigger, origin_offset, interact_offset);
@@ -415,7 +415,7 @@ can_pack_weapon(weaponname) {
 }
 
 player_use_can_pack_now() {
-  if(self maps\mp\zombies\_zm_laststand::player_is_in_laststand() || isdefined(self.intermission) && self.intermission || self isthrowinggrenade())
+  if(self maps\mp\zombies\_zm_laststand::player_is_in_laststand() || isDefined(self.intermission) && self.intermission || self isthrowinggrenade())
     return false;
 
   if(!self can_buy_weapon())
@@ -434,11 +434,11 @@ vending_machine_trigger_think() {
   self endon("death");
   self endon("Pack_A_Punch_off");
 
-  while (true) {
+  while(true) {
     players = get_players();
 
-    for (i = 0; i < players.size; i++) {
-      if(isdefined(self.pack_player) && self.pack_player != players[i] || !players[i] player_use_can_pack_now()) {
+    for(i = 0; i < players.size; i++) {
+      if(isDefined(self.pack_player) && self.pack_player != players[i] || !players[i] player_use_can_pack_now()) {
         self setinvisibletoplayer(players[i], 1);
         continue;
       }
@@ -461,7 +461,7 @@ vending_weapon_upgrade() {
   packa_rollers linkto(self);
   packa_timer linkto(self);
 
-  if(isdefined(perk_machine.target))
+  if(isDefined(perk_machine.target))
     perk_machine.wait_flag = getent(perk_machine.target, "targetname");
 
   pap_is_buildable = self is_buildable();
@@ -470,14 +470,14 @@ vending_weapon_upgrade() {
     self trigger_off();
     perk_machine hide();
 
-    if(isdefined(perk_machine.wait_flag))
+    if(isDefined(perk_machine.wait_flag))
       perk_machine.wait_flag hide();
 
     wait_for_buildable("pap");
     self trigger_on();
     perk_machine show();
 
-    if(isdefined(perk_machine.wait_flag))
+    if(isDefined(perk_machine.wait_flag))
       perk_machine.wait_flag show();
   }
 
@@ -495,7 +495,7 @@ vending_weapon_upgrade() {
 
   self enable_trigger();
 
-  if(isdefined(level.machine_assets["packapunch"].power_on_callback))
+  if(isDefined(level.machine_assets["packapunch"].power_on_callback))
     perk_machine thread[[level.machine_assets["packapunch"].power_on_callback]]();
 
   self thread vending_machine_trigger_think();
@@ -503,7 +503,7 @@ vending_weapon_upgrade() {
   self thread shutoffpapsounds(perk_machine, packa_rollers, packa_timer);
   self thread vending_weapon_upgrade_cost();
 
-  for (;;) {
+  for(;;) {
     self.pack_player = undefined;
     self waittill("trigger", player);
     index = maps\mp\zombies\_zm_weapons::get_player_index(player);
@@ -514,19 +514,19 @@ vending_weapon_upgrade() {
 
     current_weapon = player maps\mp\zombies\_zm_weapons::switch_from_alt_weapon(current_weapon);
 
-    if(isdefined(level.custom_pap_validation)) {
+    if(isDefined(level.custom_pap_validation)) {
       valid = self[[level.custom_pap_validation]](player);
 
       if(!valid)
         continue;
     }
 
-    if(!player maps\mp\zombies\_zm_magicbox::can_buy_weapon() || player maps\mp\zombies\_zm_laststand::player_is_in_laststand() || isdefined(player.intermission) && player.intermission || player isthrowinggrenade() || !player maps\mp\zombies\_zm_weapons::can_upgrade_weapon(current_weapon)) {
+    if(!player maps\mp\zombies\_zm_magicbox::can_buy_weapon() || player maps\mp\zombies\_zm_laststand::player_is_in_laststand() || isDefined(player.intermission) && player.intermission || player isthrowinggrenade() || !player maps\mp\zombies\_zm_weapons::can_upgrade_weapon(current_weapon)) {
       wait 0.1;
       continue;
     }
 
-    if(isdefined(level.pap_moving) && level.pap_moving) {
+    if(isDefined(level.pap_moving) && level.pap_moving) {
       continue;
     }
     if(player isswitchingweapons()) {
@@ -562,7 +562,7 @@ vending_weapon_upgrade() {
     if(player.score < current_cost) {
       self playsound("deny");
 
-      if(isdefined(level.custom_pap_deny_vo_func))
+      if(isDefined(level.custom_pap_deny_vo_func))
         player[[level.custom_pap_deny_vo_func]]();
       else
         player maps\mp\zombies\_zm_audio::create_and_play_dialog("general", "perk_deny", undefined, 0);
@@ -584,7 +584,7 @@ vending_weapon_upgrade() {
     player maps\mp\zombies\_zm_audio::create_and_play_dialog("weapon_pickup", "upgrade_wait");
     self disable_trigger();
 
-    if(!(isdefined(upgrade_as_attachment) && upgrade_as_attachment))
+    if(!(isDefined(upgrade_as_attachment) && upgrade_as_attachment))
       player thread do_player_general_vox("general", "pap_wait", 10, 100);
     else
       player thread do_player_general_vox("general", "pap_wait2", 10, 100);
@@ -596,7 +596,7 @@ vending_weapon_upgrade() {
     self enable_trigger();
     self sethintstring(&"ZOMBIE_GET_UPGRADED");
 
-    if(isdefined(player)) {
+    if(isDefined(player)) {
       self setinvisibletoall();
       self setvisibletoplayer(player);
       self thread wait_for_player_to_take(player, current_weapon, packa_timer, upgrade_as_attachment);
@@ -606,13 +606,13 @@ vending_weapon_upgrade() {
     self waittill_any("pap_timeout", "pap_taken", "pap_player_disconnected");
     self.current_weapon = "";
 
-    if(isdefined(self.worldgun) && isdefined(self.worldgun.worldgundw))
+    if(isDefined(self.worldgun) && isDefined(self.worldgun.worldgundw))
       self.worldgun.worldgundw delete();
 
-    if(isdefined(self.worldgun))
+    if(isDefined(self.worldgun))
       self.worldgun delete();
 
-    if(isdefined(level.zombiemode_reusing_pack_a_punch) && level.zombiemode_reusing_pack_a_punch)
+    if(isDefined(level.zombiemode_reusing_pack_a_punch) && level.zombiemode_reusing_pack_a_punch)
       self sethintstring(&"ZOMBIE_PERK_PACKAPUNCH_ATT", self.cost);
     else
       self sethintstring(&"ZOMBIE_PERK_PACKAPUNCH", self.cost);
@@ -624,7 +624,7 @@ vending_weapon_upgrade() {
 }
 
 shutoffpapsounds(ent1, ent2, ent3) {
-  while (true) {
+  while(true) {
     level waittill("Pack_A_Punch_off");
     level thread turnonpapsounds(ent1);
     ent1 stoploopsound(0.1);
@@ -641,11 +641,11 @@ turnonpapsounds(ent) {
 vending_weapon_upgrade_cost() {
   level endon("Pack_A_Punch_off");
 
-  while (true) {
+  while(true) {
     self.cost = 5000;
     self.attachment_cost = 2000;
 
-    if(isdefined(level.zombiemode_reusing_pack_a_punch) && level.zombiemode_reusing_pack_a_punch)
+    if(isDefined(level.zombiemode_reusing_pack_a_punch) && level.zombiemode_reusing_pack_a_punch)
       self sethintstring(&"ZOMBIE_PERK_PACKAPUNCH_ATT", self.cost);
     else
       self sethintstring(&"ZOMBIE_PERK_PACKAPUNCH", self.cost);
@@ -654,7 +654,7 @@ vending_weapon_upgrade_cost() {
     self.cost = 1000;
     self.attachment_cost = 1000;
 
-    if(isdefined(level.zombiemode_reusing_pack_a_punch) && level.zombiemode_reusing_pack_a_punch)
+    if(isDefined(level.zombiemode_reusing_pack_a_punch) && level.zombiemode_reusing_pack_a_punch)
       self sethintstring(&"ZOMBIE_PERK_PACKAPUNCH_ATT", self.cost);
     else
       self sethintstring(&"ZOMBIE_PERK_PACKAPUNCH", self.cost);
@@ -666,17 +666,17 @@ vending_weapon_upgrade_cost() {
 wait_for_player_to_take(player, weapon, packa_timer, upgrade_as_attachment) {
   current_weapon = self.current_weapon;
   upgrade_name = self.upgrade_name;
-  assert(isdefined(current_weapon), "wait_for_player_to_take: weapon does not exist");
-  assert(isdefined(upgrade_name), "wait_for_player_to_take: upgrade_weapon does not exist");
+  assert(isDefined(current_weapon), "wait_for_player_to_take: weapon does not exist");
+  assert(isDefined(upgrade_name), "wait_for_player_to_take: upgrade_weapon does not exist");
   upgrade_weapon = upgrade_name;
   self endon("pap_timeout");
   level endon("Pack_A_Punch_off");
 
-  while (true) {
+  while(true) {
     packa_timer playloopsound("zmb_perks_packa_ticktock");
     self waittill("trigger", trigger_player);
 
-    if(isdefined(level.pap_grab_by_anyone) && level.pap_grab_by_anyone)
+    if(isDefined(level.pap_grab_by_anyone) && level.pap_grab_by_anyone)
       player = trigger_player;
 
     packa_timer stoploopsound(0.05);
@@ -685,6 +685,7 @@ wait_for_player_to_take(player, weapon, packa_timer, upgrade_as_attachment) {
       player maps\mp\zombies\_zm_stats::increment_client_stat("pap_weapon_grabbed");
       player maps\mp\zombies\_zm_stats::increment_player_stat("pap_weapon_grabbed");
       current_weapon = player getcurrentweapon();
+
       if("none" == current_weapon)
         iprintlnbold("WEAPON IS NONE, PACKAPUNCH RETRIEVAL DENIED");
 
@@ -694,7 +695,7 @@ wait_for_player_to_take(player, weapon, packa_timer, upgrade_as_attachment) {
         player notify("pap_taken");
         player.pap_used = 1;
 
-        if(!(isdefined(upgrade_as_attachment) && upgrade_as_attachment))
+        if(!(isDefined(upgrade_as_attachment) && upgrade_as_attachment))
           player thread do_player_general_vox("general", "pap_arm", 15, 100);
         else
           player thread do_player_general_vox("general", "pap_arm2", 15, 100);
@@ -703,7 +704,7 @@ wait_for_player_to_take(player, weapon, packa_timer, upgrade_as_attachment) {
         player maps\mp\zombies\_zm_weapons::take_fallback_weapon();
         primaries = player getweaponslistprimaries();
 
-        if(isdefined(primaries) && primaries.size >= weapon_limit)
+        if(isDefined(primaries) && primaries.size >= weapon_limit)
           player maps\mp\zombies\_zm_weapons::weapon_give(upgrade_weapon);
         else {
           player giveweapon(upgrade_weapon, 0, player maps\mp\zombies\_zm_weapons::get_pack_a_punch_weapon_options(upgrade_weapon));
@@ -712,7 +713,7 @@ wait_for_player_to_take(player, weapon, packa_timer, upgrade_as_attachment) {
 
         player switchtoweapon(upgrade_weapon);
 
-        if(isdefined(player.restore_ammo) && player.restore_ammo) {
+        if(isDefined(player.restore_ammo) && player.restore_ammo) {
           new_clip = player.restore_clip + (weaponclipsize(upgrade_weapon) - player.restore_clip_size);
           new_stock = player.restore_stock + (weaponmaxammo(upgrade_weapon) - player.restore_max);
           player setweaponammostock(upgrade_weapon, new_stock);
@@ -743,7 +744,7 @@ wait_for_timeout(weapon, packa_timer, player) {
   packa_timer playsound("zmb_perks_packa_deny");
   maps\mp\zombies\_zm_weapons::unacquire_weapon_toggle(weapon);
 
-  if(isdefined(player)) {
+  if(isDefined(player)) {
     player maps\mp\zombies\_zm_stats::increment_client_stat("pap_weapon_not_grabbed");
     player maps\mp\zombies\_zm_stats::increment_player_stat("pap_weapon_not_grabbed");
   }
@@ -753,10 +754,11 @@ wait_for_disconnect(player) {
   self endon("pap_taken");
   self endon("pap_timeout");
 
-  while (isdefined(player))
+  while(isDefined(player))
     wait 0.1;
 
   println("*** PAP : User disconnected.");
+
   self notify("pap_player_disconnected");
 }
 
@@ -766,8 +768,8 @@ destroy_weapon_on_disconnect(player) {
   level endon("Pack_A_Punch_off");
   player waittill("disconnect");
 
-  if(isdefined(self.worldgun)) {
-    if(isdefined(self.worldgun.worldgundw))
+  if(isDefined(self.worldgun)) {
+    if(isDefined(self.worldgun.worldgundw))
       self.worldgun.worldgundw delete();
 
     self.worldgun delete();
@@ -780,12 +782,12 @@ destroy_weapon_in_blackout(player) {
   self endon("pap_player_disconnected");
   level waittill("Pack_A_Punch_off");
 
-  if(isdefined(self.worldgun)) {
+  if(isDefined(self.worldgun)) {
     self.worldgun rotateto(self.worldgun.angles + (randomint(90) - 45, 0, randomint(360) - 180), 1.5, 0, 0);
     player playlocalsound(level.zmb_laugh_alias);
     wait 1.5;
 
-    if(isdefined(self.worldgun.worldgundw))
+    if(isDefined(self.worldgun.worldgundw))
       self.worldgun.worldgundw delete();
 
     self.worldgun delete();
@@ -823,7 +825,7 @@ upgrade_knuckle_crack_end(gun) {
   self enable_player_move_states();
   weapon = level.machine_assets["packapunch"].weapon;
 
-  if(self maps\mp\zombies\_zm_laststand::player_is_in_laststand() || isdefined(self.intermission) && self.intermission) {
+  if(self maps\mp\zombies\_zm_laststand::player_is_in_laststand() || isDefined(self.intermission) && self.intermission) {
     self takeweapon(weapon);
     return;
   }
@@ -834,7 +836,7 @@ upgrade_knuckle_crack_end(gun) {
 
   if(self.is_drinking > 0)
     return;
-  else if(isdefined(primaries) && primaries.size > 0)
+  else if(isDefined(primaries) && primaries.size > 0)
     self switchtoweapon(primaries[0]);
   else if(self hasweapon(level.laststandpistol))
     self switchtoweapon(level.laststandpistol);
@@ -846,29 +848,29 @@ turn_packapunch_on() {
   vending_weapon_upgrade_trigger = getentarray("specialty_weapupgrade", "script_noteworthy");
   level.pap_triggers = vending_weapon_upgrade_trigger;
 
-  for (i = 0; i < vending_weapon_upgrade_trigger.size; i++) {
+  for(i = 0; i < vending_weapon_upgrade_trigger.size; i++) {
     perk = getent(vending_weapon_upgrade_trigger[i].target, "targetname");
 
-    if(isdefined(perk))
+    if(isDefined(perk))
       perk setmodel(level.machine_assets["packapunch"].off_model);
   }
 
-  for (;;) {
+  for(;;) {
     level waittill("Pack_A_Punch_on");
 
-    for (i = 0; i < vending_weapon_upgrade_trigger.size; i++) {
+    for(i = 0; i < vending_weapon_upgrade_trigger.size; i++) {
       perk = getent(vending_weapon_upgrade_trigger[i].target, "targetname");
 
-      if(isdefined(perk))
+      if(isDefined(perk))
         perk thread activate_packapunch();
     }
 
     level waittill("Pack_A_Punch_off");
 
-    for (i = 0; i < vending_weapon_upgrade_trigger.size; i++) {
+    for(i = 0; i < vending_weapon_upgrade_trigger.size; i++) {
       perk = getent(vending_weapon_upgrade_trigger[i].target, "targetname");
 
-      if(isdefined(perk))
+      if(isDefined(perk))
         perk thread deactivate_packapunch();
     }
   }
@@ -887,12 +889,13 @@ deactivate_packapunch() {
 }
 
 do_initial_power_off_callback(machine_array, perkname) {
-  if(!isdefined(level.machine_assets[perkname])) {
+  if(!isDefined(level.machine_assets[perkname])) {
     println("Error: doing setup for a machine with no level.machine_assets! Check your perk initialization!");
+
     return;
   }
 
-  if(!isdefined(level.machine_assets[perkname].power_off_callback)) {
+  if(!isDefined(level.machine_assets[perkname].power_off_callback)) {
     return;
   }
   wait 0.05;
@@ -900,18 +903,18 @@ do_initial_power_off_callback(machine_array, perkname) {
 }
 
 turn_sleight_on() {
-  while (true) {
+  while(true) {
     machine = getentarray("vending_sleight", "targetname");
     machine_triggers = getentarray("vending_sleight", "target");
 
-    for (i = 0; i < machine.size; i++)
+    for(i = 0; i < machine.size; i++)
       machine[i] setmodel(level.machine_assets["speedcola"].off_model);
 
     level thread do_initial_power_off_callback(machine, "speedcola");
     array_thread(machine_triggers, ::set_power_on, 0);
     level waittill("sleight_on");
 
-    for (i = 0; i < machine.size; i++) {
+    for(i = 0; i < machine.size; i++) {
       machine[i] setmodel(level.machine_assets["speedcola"].on_model);
       machine[i] vibrate(vectorscale((0, -1, 0), 100.0), 0.3, 0.4, 3);
       machine[i] playsound("zmb_perks_power_on");
@@ -921,26 +924,26 @@ turn_sleight_on() {
 
     array_thread(machine_triggers, ::set_power_on, 1);
 
-    if(isdefined(level.machine_assets["speedcola"].power_on_callback))
+    if(isDefined(level.machine_assets["speedcola"].power_on_callback))
       array_thread(machine, level.machine_assets["speedcola"].power_on_callback);
 
     level notify("specialty_fastreload_power_on");
     level waittill("sleight_off");
     array_thread(machine, ::turn_perk_off);
 
-    if(isdefined(level.machine_assets["speedcola"].power_off_callback))
+    if(isDefined(level.machine_assets["speedcola"].power_off_callback))
       array_thread(machine, level.machine_assets["speedcola"].power_off_callback);
   }
 }
 
 use_solo_revive() {
-  if(isdefined(level.using_solo_revive))
+  if(isDefined(level.using_solo_revive))
     return level.using_solo_revive;
 
   players = get_players();
   solo_mode = 0;
 
-  if(players.size == 1 || isdefined(level.force_solo_quick_revive) && level.force_solo_quick_revive)
+  if(players.size == 1 || isDefined(level.force_solo_quick_revive) && level.force_solo_quick_revive)
     solo_mode = 1;
 
   level.using_solo_revive = solo_mode;
@@ -954,7 +957,7 @@ turn_revive_on() {
   machine_model = undefined;
   machine_clip = undefined;
 
-  if(!(isdefined(level.zombiemode_using_revive_perk) && level.zombiemode_using_revive_perk)) {
+  if(!(isDefined(level.zombiemode_using_revive_perk) && level.zombiemode_using_revive_perk)) {
     return;
   }
   flag_wait("start_zombie_round_logic");
@@ -967,20 +970,20 @@ turn_revive_on() {
   start_state = 0;
   start_state = solo_mode;
 
-  while (true) {
+  while(true) {
     machine = getentarray("vending_revive", "targetname");
     machine_triggers = getentarray("vending_revive", "target");
 
-    for (i = 0; i < machine.size; i++) {
+    for(i = 0; i < machine.size; i++) {
       if(flag_exists("solo_game") && flag_exists("solo_revive") && flag("solo_game") && flag("solo_revive"))
         machine[i] hide();
 
       machine[i] setmodel(level.machine_assets["revive"].off_model);
 
-      if(isdefined(level.quick_revive_final_pos))
+      if(isDefined(level.quick_revive_final_pos))
         level.quick_revive_default_origin = level.quick_revive_final_pos;
 
-      if(!isdefined(level.quick_revive_default_origin)) {
+      if(!isDefined(level.quick_revive_default_origin)) {
         level.quick_revive_default_origin = machine[i].origin;
         level.quick_revive_default_angles = machine[i].angles;
       }
@@ -990,14 +993,14 @@ turn_revive_on() {
 
     array_thread(machine_triggers, ::set_power_on, 0);
 
-    if(!(isdefined(start_state) && start_state))
+    if(!(isDefined(start_state) && start_state))
       level waittill("revive_on");
 
     start_state = 0;
 
-    for (i = 0; i < machine.size; i++) {
-      if(isdefined(machine[i].classname) && machine[i].classname == "script_model") {
-        if(isdefined(machine[i].script_noteworthy) && machine[i].script_noteworthy == "clip") {
+    for(i = 0; i < machine.size; i++) {
+      if(isDefined(machine[i].classname) && machine[i].classname == "script_model") {
+        if(isDefined(machine[i].script_noteworthy) && machine[i].script_noteworthy == "clip") {
           machine_clip = machine[i];
           continue;
         }
@@ -1010,27 +1013,27 @@ turn_revive_on() {
         machine[i] notify("stop_loopsound");
         machine[i] thread play_loop_on_machine();
 
-        if(isdefined(machine_triggers[i]))
+        if(isDefined(machine_triggers[i]))
           machine_clip = machine_triggers[i].clip;
 
-        if(isdefined(machine_triggers[i]))
+        if(isDefined(machine_triggers[i]))
           blocker_model = machine_triggers[i].blocker_model;
       }
     }
 
     wait_network_frame();
 
-    if(solo_mode && isdefined(machine_model) && !is_true(machine_model.ishidden))
+    if(solo_mode && isDefined(machine_model) && !is_true(machine_model.ishidden))
       machine_model thread revive_solo_fx(machine_clip, blocker_model);
 
     array_thread(machine_triggers, ::set_power_on, 1);
 
-    if(isdefined(level.machine_assets["revive"].power_on_callback))
+    if(isDefined(level.machine_assets["revive"].power_on_callback))
       array_thread(machine, level.machine_assets["revive"].power_on_callback);
 
     level notify("specialty_quickrevive_power_on");
 
-    if(isdefined(machine_model))
+    if(isDefined(machine_model))
       machine_model.ishidden = 0;
 
     notify_str = level waittill_any_return("revive_off", "revive_hide");
@@ -1039,11 +1042,11 @@ turn_revive_on() {
     if(notify_str == "revive_hide")
       should_hide = 1;
 
-    if(isdefined(level.machine_assets["revive"].power_off_callback))
+    if(isDefined(level.machine_assets["revive"].power_off_callback))
       array_thread(machine, level.machine_assets["revive"].power_off_callback);
 
-    for (i = 0; i < machine.size; i++) {
-      if(isdefined(machine[i].classname) && machine[i].classname == "script_model")
+    for(i = 0; i < machine.size; i++) {
+      if(isDefined(machine[i].classname) && machine[i].classname == "script_model")
         machine[i] turn_perk_off(should_hide);
     }
   }
@@ -1053,10 +1056,10 @@ revive_solo_fx(machine_clip, blocker_model) {
   if(level flag_exists("solo_revive") && flag("solo_revive") && !flag("solo_game")) {
     return;
   }
-  if(isdefined(machine_clip))
+  if(isDefined(machine_clip))
     level.quick_revive_machine_clip = machine_clip;
 
-  if(!isdefined(level.solo_revive_init)) {
+  if(!isDefined(level.solo_revive_init)) {
     level.solo_revive_init = 1;
     flag_init("solo_revive");
   }
@@ -1066,19 +1069,19 @@ revive_solo_fx(machine_clip, blocker_model) {
   self endon("death");
   flag_wait("solo_revive");
 
-  if(isdefined(level.revive_solo_fx_func))
+  if(isDefined(level.revive_solo_fx_func))
     level thread[[level.revive_solo_fx_func]]();
 
   wait 2.0;
   self playsound("zmb_box_move");
   playsoundatposition("zmb_whoosh", self.origin);
 
-  if(isdefined(self._linked_ent))
+  if(isDefined(self._linked_ent))
     self unlink();
 
   self moveto(self.origin + vectorscale((0, 0, 1), 40.0), 3);
 
-  if(isdefined(level.custom_vibrate_func))
+  if(isDefined(level.custom_vibrate_func))
     [[level.custom_vibrate_func]](self);
   else {
     direction = self.origin;
@@ -1097,35 +1100,35 @@ revive_solo_fx(machine_clip, blocker_model) {
   playsoundatposition("zmb_box_poof", self.origin);
   level clientnotify("drb");
 
-  if(isdefined(self.fx)) {
+  if(isDefined(self.fx)) {
     self.fx unlink();
     self.fx delete();
   }
 
-  if(isdefined(machine_clip)) {
+  if(isDefined(machine_clip)) {
     machine_clip trigger_off();
     machine_clip connectpaths();
   }
 
-  if(isdefined(blocker_model))
+  if(isDefined(blocker_model))
     blocker_model show();
 
   level notify("revive_hide");
 }
 
 turn_jugger_on() {
-  while (true) {
+  while(true) {
     machine = getentarray("vending_jugg", "targetname");
     machine_triggers = getentarray("vending_jugg", "target");
 
-    for (i = 0; i < machine.size; i++)
+    for(i = 0; i < machine.size; i++)
       machine[i] setmodel(level.machine_assets["juggernog"].off_model);
 
     level thread do_initial_power_off_callback(machine, "juggernog");
     array_thread(machine_triggers, ::set_power_on, 0);
     level waittill("juggernog_on");
 
-    for (i = 0; i < machine.size; i++) {
+    for(i = 0; i < machine.size; i++) {
       machine[i] setmodel(level.machine_assets["juggernog"].on_model);
       machine[i] vibrate(vectorscale((0, -1, 0), 100.0), 0.3, 0.4, 3);
       machine[i] playsound("zmb_perks_power_on");
@@ -1136,12 +1139,12 @@ turn_jugger_on() {
     level notify("specialty_armorvest_power_on");
     array_thread(machine_triggers, ::set_power_on, 1);
 
-    if(isdefined(level.machine_assets["juggernog"].power_on_callback))
+    if(isDefined(level.machine_assets["juggernog"].power_on_callback))
       array_thread(machine, level.machine_assets["juggernog"].power_on_callback);
 
     level waittill("juggernog_off");
 
-    if(isdefined(level.machine_assets["juggernog"].power_off_callback))
+    if(isDefined(level.machine_assets["juggernog"].power_off_callback))
       array_thread(machine, level.machine_assets["juggernog"].power_off_callback);
 
     array_thread(machine, ::turn_perk_off);
@@ -1149,18 +1152,18 @@ turn_jugger_on() {
 }
 
 turn_doubletap_on() {
-  while (true) {
+  while(true) {
     machine = getentarray("vending_doubletap", "targetname");
     machine_triggers = getentarray("vending_doubletap", "target");
 
-    for (i = 0; i < machine.size; i++)
+    for(i = 0; i < machine.size; i++)
       machine[i] setmodel(level.machine_assets["doubletap"].off_model);
 
     level thread do_initial_power_off_callback(machine, "doubletap");
     array_thread(machine_triggers, ::set_power_on, 0);
     level waittill("doubletap_on");
 
-    for (i = 0; i < machine.size; i++) {
+    for(i = 0; i < machine.size; i++) {
       machine[i] setmodel(level.machine_assets["doubletap"].on_model);
       machine[i] vibrate(vectorscale((0, -1, 0), 100.0), 0.3, 0.4, 3);
       machine[i] playsound("zmb_perks_power_on");
@@ -1171,12 +1174,12 @@ turn_doubletap_on() {
     level notify("specialty_rof_power_on");
     array_thread(machine_triggers, ::set_power_on, 1);
 
-    if(isdefined(level.machine_assets["doubletap"].power_on_callback))
+    if(isDefined(level.machine_assets["doubletap"].power_on_callback))
       array_thread(machine, level.machine_assets["doubletap"].power_on_callback);
 
     level waittill("doubletap_off");
 
-    if(isdefined(level.machine_assets["doubletap"].power_off_callback))
+    if(isDefined(level.machine_assets["doubletap"].power_off_callback))
       array_thread(machine, level.machine_assets["doubletap"].power_off_callback);
 
     array_thread(machine, ::turn_perk_off);
@@ -1184,18 +1187,18 @@ turn_doubletap_on() {
 }
 
 turn_marathon_on() {
-  while (true) {
+  while(true) {
     machine = getentarray("vending_marathon", "targetname");
     machine_triggers = getentarray("vending_marathon", "target");
 
-    for (i = 0; i < machine.size; i++)
+    for(i = 0; i < machine.size; i++)
       machine[i] setmodel(level.machine_assets["marathon"].off_model);
 
     array_thread(machine_triggers, ::set_power_on, 0);
     level thread do_initial_power_off_callback(machine, "marathon");
     level waittill("marathon_on");
 
-    for (i = 0; i < machine.size; i++) {
+    for(i = 0; i < machine.size; i++) {
       machine[i] setmodel(level.machine_assets["marathon"].on_model);
       machine[i] vibrate(vectorscale((0, -1, 0), 100.0), 0.3, 0.4, 3);
       machine[i] playsound("zmb_perks_power_on");
@@ -1206,12 +1209,12 @@ turn_marathon_on() {
     level notify("specialty_longersprint_power_on");
     array_thread(machine_triggers, ::set_power_on, 1);
 
-    if(isdefined(level.machine_assets["marathon"].power_on_callback))
+    if(isDefined(level.machine_assets["marathon"].power_on_callback))
       array_thread(machine, level.machine_assets["marathon"].power_on_callback);
 
     level waittill("marathon_off");
 
-    if(isdefined(level.machine_assets["marathon"].power_off_callback))
+    if(isDefined(level.machine_assets["marathon"].power_off_callback))
       array_thread(machine, level.machine_assets["marathon"].power_off_callback);
 
     array_thread(machine, ::turn_perk_off);
@@ -1219,18 +1222,18 @@ turn_marathon_on() {
 }
 
 turn_deadshot_on() {
-  while (true) {
+  while(true) {
     machine = getentarray("vending_deadshot_model", "targetname");
     machine_triggers = getentarray("vending_deadshot", "target");
 
-    for (i = 0; i < machine.size; i++)
+    for(i = 0; i < machine.size; i++)
       machine[i] setmodel(level.machine_assets["deadshot"].off_model);
 
     level thread do_initial_power_off_callback(machine, "deadshot");
     array_thread(machine_triggers, ::set_power_on, 0);
     level waittill("deadshot_on");
 
-    for (i = 0; i < machine.size; i++) {
+    for(i = 0; i < machine.size; i++) {
       machine[i] setmodel(level.machine_assets["deadshot"].on_model);
       machine[i] vibrate(vectorscale((0, -1, 0), 100.0), 0.3, 0.4, 3);
       machine[i] playsound("zmb_perks_power_on");
@@ -1241,12 +1244,12 @@ turn_deadshot_on() {
     level notify("specialty_deadshot_power_on");
     array_thread(machine_triggers, ::set_power_on, 1);
 
-    if(isdefined(level.machine_assets["deadshot"].power_on_callback))
+    if(isDefined(level.machine_assets["deadshot"].power_on_callback))
       array_thread(machine, level.machine_assets["deadshot"].power_on_callback);
 
     level waittill("deadshot_off");
 
-    if(isdefined(level.machine_assets["deadshot"].power_off_callback))
+    if(isDefined(level.machine_assets["deadshot"].power_off_callback))
       array_thread(machine, level.machine_assets["deadshot"].power_off_callback);
 
     array_thread(machine, ::turn_perk_off);
@@ -1256,18 +1259,18 @@ turn_deadshot_on() {
 turn_tombstone_on() {
   level endon("tombstone_removed");
 
-  while (true) {
+  while(true) {
     machine = getentarray("vending_tombstone", "targetname");
     machine_triggers = getentarray("vending_tombstone", "target");
 
-    for (i = 0; i < machine.size; i++)
+    for(i = 0; i < machine.size; i++)
       machine[i] setmodel(level.machine_assets["tombstone"].off_model);
 
     level thread do_initial_power_off_callback(machine, "tombstone");
     array_thread(machine_triggers, ::set_power_on, 0);
     level waittill("tombstone_on");
 
-    for (i = 0; i < machine.size; i++) {
+    for(i = 0; i < machine.size; i++) {
       machine[i] setmodel(level.machine_assets["tombstone"].on_model);
       machine[i] vibrate(vectorscale((0, -1, 0), 100.0), 0.3, 0.4, 3);
       machine[i] playsound("zmb_perks_power_on");
@@ -1278,12 +1281,12 @@ turn_tombstone_on() {
     level notify("specialty_scavenger_power_on");
     array_thread(machine_triggers, ::set_power_on, 1);
 
-    if(isdefined(level.machine_assets["tombstone"].power_on_callback))
+    if(isDefined(level.machine_assets["tombstone"].power_on_callback))
       array_thread(machine, level.machine_assets["tombstone"].power_on_callback);
 
     level waittill("tombstone_off");
 
-    if(isdefined(level.machine_assets["tombstone"].power_off_callback))
+    if(isDefined(level.machine_assets["tombstone"].power_off_callback))
       array_thread(machine, level.machine_assets["tombstone"].power_off_callback);
 
     array_thread(machine, ::turn_perk_off);
@@ -1295,18 +1298,18 @@ turn_tombstone_on() {
 }
 
 turn_additionalprimaryweapon_on() {
-  while (true) {
+  while(true) {
     machine = getentarray("vending_additionalprimaryweapon", "targetname");
     machine_triggers = getentarray("vending_additionalprimaryweapon", "target");
 
-    for (i = 0; i < machine.size; i++)
+    for(i = 0; i < machine.size; i++)
       machine[i] setmodel(level.machine_assets["additionalprimaryweapon"].off_model);
 
     level thread do_initial_power_off_callback(machine, "additionalprimaryweapon");
     array_thread(machine_triggers, ::set_power_on, 0);
     level waittill("additionalprimaryweapon_on");
 
-    for (i = 0; i < machine.size; i++) {
+    for(i = 0; i < machine.size; i++) {
       machine[i] setmodel(level.machine_assets["additionalprimaryweapon"].on_model);
       machine[i] vibrate(vectorscale((0, -1, 0), 100.0), 0.3, 0.4, 3);
       machine[i] playsound("zmb_perks_power_on");
@@ -1317,12 +1320,12 @@ turn_additionalprimaryweapon_on() {
     level notify("specialty_additionalprimaryweapon_power_on");
     array_thread(machine_triggers, ::set_power_on, 1);
 
-    if(isdefined(level.machine_assets["additionalprimaryweapon"].power_on_callback))
+    if(isDefined(level.machine_assets["additionalprimaryweapon"].power_on_callback))
       array_thread(machine, level.machine_assets["additionalprimaryweapon"].power_on_callback);
 
     level waittill("additionalprimaryweapon_off");
 
-    if(isdefined(level.machine_assets["additionalprimaryweapon"].power_off_callback))
+    if(isDefined(level.machine_assets["additionalprimaryweapon"].power_off_callback))
       array_thread(machine, level.machine_assets["additionalprimaryweapon"].power_off_callback);
 
     array_thread(machine, ::turn_perk_off);
@@ -1332,21 +1335,21 @@ turn_additionalprimaryweapon_on() {
 turn_chugabud_on() {
   maps\mp\zombies\_zm_chugabud::init();
 
-  if(isdefined(level.vsmgr_prio_visionset_zm_whos_who))
+  if(isDefined(level.vsmgr_prio_visionset_zm_whos_who))
     maps\mp\_visionset_mgr::vsmgr_register_info("visionset", "zm_whos_who", 5000, level.vsmgr_prio_visionset_zm_whos_who, 1, 1);
 
-  while (true) {
+  while(true) {
     machine = getentarray("vending_chugabud", "targetname");
     machine_triggers = getentarray("vending_chugabud", "target");
 
-    for (i = 0; i < machine.size; i++)
+    for(i = 0; i < machine.size; i++)
       machine[i] setmodel(level.machine_assets["whoswho"].off_model);
 
     level thread do_initial_power_off_callback(machine, "whoswho");
     array_thread(machine_triggers, ::set_power_on, 0);
     level waittill("chugabud_on");
 
-    for (i = 0; i < machine.size; i++) {
+    for(i = 0; i < machine.size; i++) {
       machine[i] setmodel(level.machine_assets["whoswho"].on_model);
       machine[i] vibrate(vectorscale((0, -1, 0), 100.0), 0.3, 0.4, 3);
       machine[i] playsound("zmb_perks_power_on");
@@ -1357,12 +1360,12 @@ turn_chugabud_on() {
     level notify("specialty_finalstand_power_on");
     array_thread(machine_triggers, ::set_power_on, 1);
 
-    if(isdefined(level.machine_assets["whoswho"].power_on_callback))
+    if(isDefined(level.machine_assets["whoswho"].power_on_callback))
       array_thread(machine, level.machine_assets["whoswho"].power_on_callback);
 
     level waittill("chugabud_off");
 
-    if(isdefined(level.machine_assets["whoswho"].power_off_callback))
+    if(isDefined(level.machine_assets["whoswho"].power_off_callback))
       array_thread(machine, level.machine_assets["whoswho"].power_off_callback);
 
     array_thread(machine, ::turn_perk_off);
@@ -1392,7 +1395,7 @@ turn_perk_off(ishidden) {
 }
 
 play_loop_on_machine() {
-  if(isdefined(level.sndperksacolaloopoverride)) {
+  if(isDefined(level.sndperksacolaloopoverride)) {
     return;
   }
   sound_ent = spawn("script_origin", self.origin);
@@ -1404,12 +1407,12 @@ play_loop_on_machine() {
 }
 
 perk_fx(fx, turnofffx) {
-  if(isdefined(turnofffx))
+  if(isDefined(turnofffx))
     self.perk_fx = 0;
   else {
     wait 3;
 
-    if(isdefined(self) && !is_true(self.perk_fx)) {
+    if(isDefined(self) && !is_true(self.perk_fx)) {
       playfxontag(level._effect[fx], self, "tag_origin");
       self.perk_fx = 1;
     }
@@ -1429,12 +1432,12 @@ electric_perks_dialog() {
   level endon("switch_flipped");
   timer = 0;
 
-  while (true) {
+  while(true) {
     wait 0.5;
     players = get_players();
 
-    for (i = 0; i < players.size; i++) {
-      if(!isdefined(players[i])) {
+    for(i = 0; i < players.size; i++) {
+      if(!isDefined(players[i])) {
         continue;
       }
       dist = distancesquared(players[i].origin, self.origin);
@@ -1450,13 +1453,15 @@ electric_perks_dialog() {
       }
 
       if(dist < 4900 && timer == 3) {
-        if(!isdefined(players[i])) {
+        if(!isDefined(players[i])) {
           continue;
         }
         players[i] thread do_player_vo("vox_start", 5);
         wait 3;
         self notify("warning_dialog");
+
         iprintlnbold("warning_given");
+
       }
     }
   }
@@ -1511,8 +1516,8 @@ reset_vending_hint_string() {
       self sethintstring(perk + " Cost: " + level.zombie_vars["zombie_perk_cost"]);
   }
 
-  if(isdefined(level._custom_perks)) {
-    if(isdefined(level._custom_perks[perk]) && isdefined(level._custom_perks[perk].cost) && isdefined(level._custom_perks[perk].hint_string))
+  if(isDefined(level._custom_perks)) {
+    if(isDefined(level._custom_perks[perk]) && isDefined(level._custom_perks[perk].cost) && isDefined(level._custom_perks[perk].hint_string))
       self sethintstring(level._custom_perks[perk].hint_string, level._custom_perks[perk].cost);
   }
 }
@@ -1525,7 +1530,7 @@ vending_trigger_think() {
   start_on = 0;
   level.revive_machine_is_solo = 0;
 
-  if(isdefined(perk) && (perk == "specialty_quickrevive" || perk == "specialty_quickrevive_upgrade")) {
+  if(isDefined(perk) && (perk == "specialty_quickrevive" || perk == "specialty_quickrevive_upgrade")) {
     flag_wait("start_zombie_round_logic");
     solo = use_solo_revive();
     self endon("stop_quickrevive_logic");
@@ -1537,7 +1542,7 @@ vending_trigger_think() {
         players = get_players();
 
         foreach(player in players) {
-          if(!isdefined(player.lives))
+          if(!isDefined(player.lives))
             player.lives = 0;
         }
 
@@ -1588,7 +1593,7 @@ vending_trigger_think() {
       break;
   }
 
-  if(isdefined(level._custom_perks[perk]) && isdefined(level._custom_perks[perk].cost))
+  if(isDefined(level._custom_perks[perk]) && isDefined(level._custom_perks[perk].cost))
     cost = level._custom_perks[perk].cost;
 
   self.cost = cost;
@@ -1600,12 +1605,12 @@ vending_trigger_think() {
 
   start_on = 0;
 
-  if(!isdefined(level._perkmachinenetworkchoke))
+  if(!isDefined(level._perkmachinenetworkchoke))
     level._perkmachinenetworkchoke = 0;
   else
     level._perkmachinenetworkchoke++;
 
-  for (i = 0; i < level._perkmachinenetworkchoke; i++)
+  for(i = 0; i < level._perkmachinenetworkchoke; i++)
     wait_network_frame();
 
   self thread maps\mp\zombies\_zm_audio::perks_a_cola_jingle_timer();
@@ -1656,14 +1661,14 @@ vending_trigger_think() {
       self sethintstring(perk + " Cost: " + level.zombie_vars["zombie_perk_cost"]);
   }
 
-  if(isdefined(level._custom_perks[perk]) && isdefined(level._custom_perks[perk].hint_string))
+  if(isDefined(level._custom_perks[perk]) && isDefined(level._custom_perks[perk].hint_string))
     self sethintstring(level._custom_perks[perk].hint_string, cost);
 
-  for (;;) {
+  for(;;) {
     self waittill("trigger", player);
     index = maps\mp\zombies\_zm_weapons::get_player_index(player);
 
-    if(player maps\mp\zombies\_zm_laststand::player_is_in_laststand() || isdefined(player.intermission) && player.intermission) {
+    if(player maps\mp\zombies\_zm_laststand::player_is_in_laststand() || isDefined(player.intermission) && player.intermission) {
       continue;
     }
     if(player in_revive_trigger()) {
@@ -1691,6 +1696,7 @@ vending_trigger_think() {
 
     if(player hasperk(perk) || player has_perk_paused(perk)) {
       cheat = 0;
+
       if(getdvarint(#"_id_FA81816F") >= 5)
         cheat = 1;
 
@@ -1701,7 +1707,7 @@ vending_trigger_think() {
       }
     }
 
-    if(isdefined(level.custom_perk_validation)) {
+    if(isDefined(level.custom_perk_validation)) {
       valid = self[[level.custom_perk_validation]](player);
 
       if(!valid)
@@ -1746,18 +1752,18 @@ vending_trigger_post_think(player, perk) {
 
   player perk_give_bottle_end(gun, perk);
 
-  if(player maps\mp\zombies\_zm_laststand::player_is_in_laststand() || isdefined(player.intermission) && player.intermission) {
+  if(player maps\mp\zombies\_zm_laststand::player_is_in_laststand() || isDefined(player.intermission) && player.intermission) {
     return;
   }
   player notify("burp");
 
-  if(isdefined(level.pers_upgrade_cash_back) && level.pers_upgrade_cash_back)
+  if(isDefined(level.pers_upgrade_cash_back) && level.pers_upgrade_cash_back)
     player maps\mp\zombies\_zm_pers_upgrades_functions::cash_back_player_drinks_perk();
 
-  if(isdefined(level.pers_upgrade_perk_lose) && level.pers_upgrade_perk_lose)
+  if(isDefined(level.pers_upgrade_perk_lose) && level.pers_upgrade_perk_lose)
     player thread maps\mp\zombies\_zm_pers_upgrades_functions::pers_upgrade_perk_lose_bought();
 
-  if(isdefined(level.perk_bought_func))
+  if(isDefined(level.perk_bought_func))
     player[[level.perk_bought_func]](perk);
 
   player.perk_purchased = undefined;
@@ -1785,13 +1791,13 @@ solo_revive_buy_trigger_move_trigger(revive_perk_trigger) {
   if(level.solo_lives_given >= 3) {
     revive_perk_trigger trigger_off();
 
-    if(isdefined(level._solo_revive_machine_expire_func))
+    if(isDefined(level._solo_revive_machine_expire_func))
       revive_perk_trigger[[level._solo_revive_machine_expire_func]]();
 
     return;
   }
 
-  while (self.lives > 0)
+  while(self.lives > 0)
     wait 0.1;
 
   revive_perk_trigger setvisibletoplayer(self);
@@ -1807,11 +1813,11 @@ wait_give_perk(perk, bought) {
 }
 
 return_retained_perks() {
-  if(isdefined(self._retain_perks_array)) {
+  if(isDefined(self._retain_perks_array)) {
     keys = getarraykeys(self._retain_perks_array);
 
     foreach(perk in keys) {
-      if(isdefined(self._retain_perks_array[perk]) && self._retain_perks_array[perk])
+      if(isDefined(self._retain_perks_array[perk]) && self._retain_perks_array[perk])
         self give_perk(perk, 0);
     }
   }
@@ -1821,10 +1827,10 @@ give_perk(perk, bought) {
   self setperk(perk);
   self.num_perks++;
 
-  if(isdefined(bought) && bought) {
+  if(isDefined(bought) && bought) {
     self maps\mp\zombies\_zm_audio::playerexert("burp");
 
-    if(isdefined(level.remove_perk_vo_delay) && level.remove_perk_vo_delay)
+    if(isDefined(level.remove_perk_vo_delay) && level.remove_perk_vo_delay)
       self maps\mp\zombies\_zm_audio::perk_vox(perk);
     else
       self delay_thread(1.5, maps\mp\zombies\_zm_audio::perk_vox, perk);
@@ -1837,7 +1843,7 @@ give_perk(perk, bought) {
 
   self perk_set_max_health_if_jugg(perk, 1, 0);
 
-  if(!(isdefined(level.disable_deadshot_clientfield) && level.disable_deadshot_clientfield)) {
+  if(!(isDefined(level.disable_deadshot_clientfield) && level.disable_deadshot_clientfield)) {
     if(perk == "specialty_deadshot")
       self setclientfieldtoplayer("deadshot_perk", 1);
     else if(perk == "specialty_deadshot_upgrade")
@@ -1852,10 +1858,10 @@ give_perk(perk, bought) {
   if(use_solo_revive() && perk == "specialty_quickrevive") {
     self.lives = 1;
 
-    if(!isdefined(level.solo_lives_given))
+    if(!isDefined(level.solo_lives_given))
       level.solo_lives_given = 0;
 
-    if(isdefined(level.solo_game_free_player_quickrevive))
+    if(isDefined(level.solo_game_free_player_quickrevive))
       level.solo_game_free_player_quickrevive = undefined;
     else
       level.solo_lives_given++;
@@ -1872,7 +1878,7 @@ give_perk(perk, bought) {
     self notify("perk_chugabud_activated");
   }
 
-  if(isdefined(level._custom_perks[perk]) && isdefined(level._custom_perks[perk].player_thread_give))
+  if(isDefined(level._custom_perks[perk]) && isDefined(level._custom_perks[perk].player_thread_give))
     self thread[[level._custom_perks[perk].player_thread_give]]();
 
   self set_perk_clientfield(perk, 1);
@@ -1882,12 +1888,12 @@ give_perk(perk, bought) {
   self maps\mp\zombies\_zm_stats::increment_player_stat(perk + "_drank");
   self maps\mp\zombies\_zm_stats::increment_player_stat("perks_drank");
 
-  if(!isdefined(self.perk_history))
+  if(!isDefined(self.perk_history))
     self.perk_history = [];
 
   self.perk_history = add_to_array(self.perk_history, perk, 0);
 
-  if(!isdefined(self.perks_active))
+  if(!isDefined(self.perks_active))
     self.perks_active = [];
 
   self.perks_active[self.perks_active.size] = perk;
@@ -1919,13 +1925,13 @@ perk_set_max_health_if_jugg(perk, set_premaxhealth, clamp_health_to_max_health) 
   } else if(perk == "health_reboot")
     max_total_health = 100;
 
-  if(isdefined(max_total_health)) {
+  if(isDefined(max_total_health)) {
     if(self maps\mp\zombies\_zm_pers_upgrades_functions::pers_jugg_active())
       max_total_health = max_total_health + level.pers_jugg_upgrade_health_bonus;
 
     self setmaxhealth(max_total_health);
 
-    if(isdefined(clamp_health_to_max_health) && clamp_health_to_max_health == 1) {
+    if(isDefined(clamp_health_to_max_health) && clamp_health_to_max_health == 1) {
       if(self.health > self.maxhealth)
         self.health = self.maxhealth;
     }
@@ -1934,14 +1940,16 @@ perk_set_max_health_if_jugg(perk, set_premaxhealth, clamp_health_to_max_health) 
 
 check_player_has_perk(perk) {
   self endon("death");
-  if(getdvarint(#"_id_FA81816F") >= 5)
+
+  if(getdvarint(#"_id_FA81816F") >= 5) {
     return;
+  }
   dist = 16384;
 
-  while (true) {
+  while(true) {
     players = get_players();
 
-    for (i = 0; i < players.size; i++) {
+    for(i = 0; i < players.size; i++) {
       if(distancesquared(players[i].origin, self.origin) < dist) {
         if(!players[i] hasperk(perk) && !players[i] has_perk_paused(perk) && !players[i] in_revive_trigger() && !is_equipment_that_blocks_purchase(players[i] getcurrentweapon()) && !players[i] hacker_active()) {
           self setinvisibletoplayer(players[i], 0);
@@ -1966,9 +1974,10 @@ vending_set_hintstring(perk) {
 
 perk_think(perk) {
   if(getdvarint(#"_id_FA81816F") >= 5) {
-    if(isdefined(self.perk_hud[perk]))
+    if(isDefined(self.perk_hud[perk]))
       return;
   }
+
   perk_str = perk + "_stop";
   result = self waittill_any_return("fake_death", "death", "player_downed", perk_str);
   do_retain = 1;
@@ -1977,9 +1986,9 @@ perk_think(perk) {
     do_retain = 0;
 
   if(do_retain) {
-    if(isdefined(self._retain_perks) && self._retain_perks)
+    if(isDefined(self._retain_perks) && self._retain_perks)
       return;
-    else if(isdefined(self._retain_perks_array) && (isdefined(self._retain_perks_array[perk]) && self._retain_perks_array[perk]))
+    else if(isDefined(self._retain_perks_array) && (isDefined(self._retain_perks_array[perk]) && self._retain_perks_array[perk]))
       return;
   }
 
@@ -1996,27 +2005,27 @@ perk_think(perk) {
 
       break;
     case "specialty_deadshot":
-      if(!(isdefined(level.disable_deadshot_clientfield) && level.disable_deadshot_clientfield))
+      if(!(isDefined(level.disable_deadshot_clientfield) && level.disable_deadshot_clientfield))
         self setclientfieldtoplayer("deadshot_perk", 0);
 
       break;
     case "specialty_deadshot_upgrade":
-      if(!(isdefined(level.disable_deadshot_clientfield) && level.disable_deadshot_clientfield))
+      if(!(isDefined(level.disable_deadshot_clientfield) && level.disable_deadshot_clientfield))
         self setclientfieldtoplayer("deadshot_perk", 0);
 
       break;
   }
 
-  if(isdefined(level._custom_perks[perk]) && isdefined(level._custom_perks[perk].player_thread_take))
+  if(isDefined(level._custom_perks[perk]) && isDefined(level._custom_perks[perk].player_thread_take))
     self thread[[level._custom_perks[perk].player_thread_take]]();
 
   self set_perk_clientfield(perk, 0);
   self.perk_purchased = undefined;
 
-  if(isdefined(level.perk_lost_func))
+  if(isDefined(level.perk_lost_func))
     self[[level.perk_lost_func]](perk);
 
-  if(isdefined(self.perks_active) && isinarray(self.perks_active, perk))
+  if(isDefined(self.perks_active) && isinarray(self.perks_active, perk))
     arrayremovevalue(self.perks_active, perk, 0);
 
   self notify("perk_lost");
@@ -2058,7 +2067,7 @@ set_perk_clientfield(perk, state) {
       break;
   }
 
-  if(isdefined(level._custom_perks[perk]) && isdefined(level._custom_perks[perk].clientfield_set))
+  if(isDefined(level._custom_perks[perk]) && isDefined(level._custom_perks[perk].clientfield_set))
     self[[level._custom_perks[perk].clientfield_set]](state);
 }
 
@@ -2111,16 +2120,16 @@ perk_flash_audio(perk) {
       break;
   }
 
-  if(isdefined(alias))
+  if(isDefined(alias))
     self playlocalsound(alias);
 }
 
 perk_hud_start_flash(perk) {
-  if(self hasperk(perk) && isdefined(self.perk_hud)) {
+  if(self hasperk(perk) && isDefined(self.perk_hud)) {
     hud = self.perk_hud[perk];
 
-    if(isdefined(hud)) {
-      if(!(isdefined(hud.flash) && hud.flash)) {
+    if(isDefined(hud)) {
+      if(!(isDefined(hud.flash) && hud.flash)) {
         hud thread perk_hud_flash();
         self thread perk_flash_audio(perk);
       }
@@ -2129,13 +2138,13 @@ perk_hud_start_flash(perk) {
 }
 
 perk_hud_stop_flash(perk, taken) {
-  if(self hasperk(perk) && isdefined(self.perk_hud)) {
+  if(self hasperk(perk) && isDefined(self.perk_hud)) {
     hud = self.perk_hud[perk];
 
-    if(isdefined(hud)) {
+    if(isDefined(hud)) {
       hud.flash = undefined;
 
-      if(isdefined(taken))
+      if(isDefined(taken))
         hud notify("stop_flash_perk");
     }
   }
@@ -2190,7 +2199,7 @@ perk_give_bottle_begin(perk) {
       break;
   }
 
-  if(isdefined(level._custom_perks[perk]) && isdefined(level._custom_perks[perk].perk_bottle))
+  if(isDefined(level._custom_perks[perk]) && isDefined(level._custom_perks[perk].perk_bottle))
     weapon = level._custom_perks[perk].perk_bottle;
 
   self giveweapon(weapon);
@@ -2250,10 +2259,10 @@ perk_give_bottle_end(gun, perk) {
       break;
   }
 
-  if(isdefined(level._custom_perks[perk]) && isdefined(level._custom_perks[perk].perk_bottle))
+  if(isDefined(level._custom_perks[perk]) && isDefined(level._custom_perks[perk].perk_bottle))
     weapon = level._custom_perks[perk].perk_bottle;
 
-  if(self maps\mp\zombies\_zm_laststand::player_is_in_laststand() || isdefined(self.intermission) && self.intermission) {
+  if(self maps\mp\zombies\_zm_laststand::player_is_in_laststand() || isDefined(self.intermission) && self.intermission) {
     self takeweapon(weapon);
     return;
   }
@@ -2273,13 +2282,13 @@ perk_give_bottle_end(gun, perk) {
   } else {
     primaryweapons = self getweaponslistprimaries();
 
-    if(isdefined(primaryweapons) && primaryweapons.size > 0)
+    if(isDefined(primaryweapons) && primaryweapons.size > 0)
       self switchtoweapon(primaryweapons[0]);
   }
 
   self waittill("weapon_change_complete");
 
-  if(!self maps\mp\zombies\_zm_laststand::player_is_in_laststand() && !(isdefined(self.intermission) && self.intermission))
+  if(!self maps\mp\zombies\_zm_laststand::player_is_in_laststand() && !(isDefined(self.intermission) && self.intermission))
     self decrement_is_drinking();
 }
 
@@ -2289,7 +2298,7 @@ perk_abort_drinking(post_delay) {
     self decrement_is_drinking();
     self enable_player_move_states();
 
-    if(isdefined(post_delay))
+    if(isDefined(post_delay))
       wait(post_delay);
   }
 }
@@ -2299,10 +2308,10 @@ give_random_perk() {
   vending_triggers = getentarray("zombie_vending", "targetname");
   perks = [];
 
-  for (i = 0; i < vending_triggers.size; i++) {
+  for(i = 0; i < vending_triggers.size; i++) {
     perk = vending_triggers[i].script_noteworthy;
 
-    if(isdefined(self.perk_purchased) && self.perk_purchased == perk) {
+    if(isDefined(self.perk_purchased) && self.perk_purchased == perk) {
       continue;
     }
     if(perk == "specialty_weapupgrade") {
@@ -2326,10 +2335,10 @@ lose_random_perk() {
   vending_triggers = getentarray("zombie_vending", "targetname");
   perks = [];
 
-  for (i = 0; i < vending_triggers.size; i++) {
+  for(i = 0; i < vending_triggers.size; i++) {
     perk = vending_triggers[i].script_noteworthy;
 
-    if(isdefined(self.perk_purchased) && self.perk_purchased == perk) {
+    if(isDefined(self.perk_purchased) && self.perk_purchased == perk) {
       continue;
     }
     if(self hasperk(perk) || self has_perk_paused(perk))
@@ -2348,10 +2357,10 @@ lose_random_perk() {
 }
 
 update_perk_hud() {
-  if(isdefined(self.perk_hud)) {
+  if(isDefined(self.perk_hud)) {
     keys = getarraykeys(self.perk_hud);
 
-    for (i = 0; i < self.perk_hud.size; i++)
+    for(i = 0; i < self.perk_hud.size; i++)
       self.perk_hud[keys[i]].x = i * 30;
   }
 }
@@ -2360,7 +2369,7 @@ quantum_bomb_give_nearest_perk_validation(position) {
   vending_triggers = getentarray("zombie_vending", "targetname");
   range_squared = 32400;
 
-  for (i = 0; i < vending_triggers.size; i++) {
+  for(i = 0; i < vending_triggers.size; i++) {
     if(distancesquared(vending_triggers[i].origin, position) < range_squared)
       return true;
   }
@@ -2373,7 +2382,7 @@ quantum_bomb_give_nearest_perk_result(position) {
   vending_triggers = getentarray("zombie_vending", "targetname");
   nearest = 0;
 
-  for (i = 1; i < vending_triggers.size; i++) {
+  for(i = 1; i < vending_triggers.size; i++) {
     if(distancesquared(vending_triggers[i].origin, position) < distancesquared(vending_triggers[nearest].origin, position))
       nearest = i;
   }
@@ -2381,13 +2390,13 @@ quantum_bomb_give_nearest_perk_result(position) {
   players = get_players();
   perk = vending_triggers[nearest].script_noteworthy;
 
-  for (i = 0; i < players.size; i++) {
+  for(i = 0; i < players.size; i++) {
     player = players[i];
 
     if(player.sessionstate == "spectator" || player maps\mp\zombies\_zm_laststand::player_is_in_laststand()) {
       continue;
     }
-    if(!player hasperk(perk) && (!isdefined(player.perk_purchased) || player.perk_purchased != perk) && randomint(5)) {
+    if(!player hasperk(perk) && (!isDefined(player.perk_purchased) || player.perk_purchased != perk) && randomint(5)) {
       if(player == self)
         self thread maps\mp\zombies\_zm_audio::create_and_play_dialog("kill", "quant_good");
 
@@ -2401,13 +2410,13 @@ perk_pause(perk) {
   if(perk == "Pack_A_Punch" || perk == "specialty_weapupgrade") {
     return;
   }
-  for (j = 0; j < get_players().size; j++) {
+  for(j = 0; j < get_players().size; j++) {
     player = get_players()[j];
 
-    if(!isdefined(player.disabled_perks))
+    if(!isDefined(player.disabled_perks))
       player.disabled_perks = [];
 
-    player.disabled_perks[perk] = isdefined(player.disabled_perks[perk]) && player.disabled_perks[perk] || player hasperk(perk);
+    player.disabled_perks[perk] = isDefined(player.disabled_perks[perk]) && player.disabled_perks[perk] || player hasperk(perk);
 
     if(player.disabled_perks[perk]) {
       player unsetperk(perk);
@@ -2423,28 +2432,30 @@ perk_pause(perk) {
       if(perk == "specialty_additionalprimaryweapon" || perk == "specialty_additionalprimaryweapon_upgrade")
         player maps\mp\zombies\_zm::take_additionalprimaryweapon();
 
-      if(isdefined(level._custom_perks[perk]) && isdefined(level._custom_perks[perk].player_thread_take))
+      if(isDefined(level._custom_perks[perk]) && isDefined(level._custom_perks[perk].player_thread_take))
         player thread[[level._custom_perks[perk].player_thread_take]]();
 
       println(" ZM PERKS " + player.name + " paused perk " + perk + "\\n");
+
     }
   }
 }
 
 perk_unpause(perk) {
-  if(!isdefined(perk)) {
+  if(!isDefined(perk)) {
     return;
   }
   if(perk == "Pack_A_Punch") {
     return;
   }
-  for (j = 0; j < get_players().size; j++) {
+  for(j = 0; j < get_players().size; j++) {
     player = get_players()[j];
 
-    if(isdefined(player.disabled_perks) && (isdefined(player.disabled_perks[perk]) && player.disabled_perks[perk])) {
+    if(isDefined(player.disabled_perks) && (isDefined(player.disabled_perks[perk]) && player.disabled_perks[perk])) {
       player.disabled_perks[perk] = 0;
       player set_perk_clientfield(perk, 1);
       player setperk(perk);
+
       println(" ZM PERKS " + player.name + " unpaused perk " + perk + "\\n");
 
       if(issubstr(perk, "specialty_scavenger"))
@@ -2452,7 +2463,7 @@ perk_unpause(perk) {
 
       player perk_set_max_health_if_jugg(perk, 0, 0);
 
-      if(isdefined(level._custom_perks[perk]) && isdefined(level._custom_perks[perk].player_thread_give))
+      if(isDefined(level._custom_perks[perk]) && isDefined(level._custom_perks[perk].player_thread_give))
         player thread[[level._custom_perks[perk].player_thread_give]]();
     }
   }
@@ -2473,14 +2484,14 @@ perk_unpause_all_perks() {
 }
 
 has_perk_paused(perk) {
-  if(isdefined(self.disabled_perks) && isdefined(self.disabled_perks[perk]) && self.disabled_perks[perk])
+  if(isDefined(self.disabled_perks) && isDefined(self.disabled_perks[perk]) && self.disabled_perks[perk])
     return true;
 
   return false;
 }
 
 getvendingmachinenotify() {
-  if(!isdefined(self))
+  if(!isDefined(self))
     return "";
 
   switch (self.script_noteworthy) {
@@ -2530,32 +2541,32 @@ getvendingmachinenotify() {
 
   str_perk = undefined;
 
-  if(isdefined(level._custom_perks[self.script_noteworthy]) && isdefined(isdefined(level._custom_perks[self.script_noteworthy].alias)))
+  if(isDefined(level._custom_perks[self.script_noteworthy]) && isDefined(isDefined(level._custom_perks[self.script_noteworthy].alias)))
     str_perk = level._custom_perks[self.script_noteworthy].alias;
 
   return str_perk;
 }
 
 perk_machine_removal(machine, replacement_model) {
-  if(!isdefined(machine)) {
+  if(!isDefined(machine)) {
     return;
   }
   trig = getent(machine, "script_noteworthy");
   machine_model = undefined;
 
-  if(isdefined(trig)) {
+  if(isDefined(trig)) {
     trig notify("warning_dialog");
 
-    if(isdefined(trig.target)) {
+    if(isDefined(trig.target)) {
       parts = getentarray(trig.target, "targetname");
 
-      for (i = 0; i < parts.size; i++) {
-        if(isdefined(parts[i].classname) && parts[i].classname == "script_model") {
+      for(i = 0; i < parts.size; i++) {
+        if(isDefined(parts[i].classname) && parts[i].classname == "script_model") {
           machine_model = parts[i];
           continue;
         }
 
-        if(isdefined(parts[i].script_noteworthy && parts[i].script_noteworthy == "clip")) {
+        if(isDefined(parts[i].script_noteworthy && parts[i].script_noteworthy == "clip")) {
           model_clip = parts[i];
           continue;
         }
@@ -2564,19 +2575,19 @@ perk_machine_removal(machine, replacement_model) {
       }
     }
 
-    if(isdefined(replacement_model) && isdefined(machine_model))
+    if(isDefined(replacement_model) && isDefined(machine_model))
       machine_model setmodel(replacement_model);
-    else if(!isdefined(replacement_model) && isdefined(machine_model)) {
+    else if(!isDefined(replacement_model) && isDefined(machine_model)) {
       machine_model delete();
 
-      if(isdefined(model_clip))
+      if(isDefined(model_clip))
         model_clip delete();
 
-      if(isdefined(trig.clip))
+      if(isDefined(trig.clip))
         trig.clip delete();
     }
 
-    if(isdefined(trig.bump))
+    if(isDefined(trig.bump))
       trig.bump delete();
 
     trig delete();
@@ -2587,19 +2598,19 @@ perk_machine_spawn_init() {
   match_string = "";
   location = level.scr_zm_map_start_location;
 
-  if((location == "default" || location == "") && isdefined(level.default_start_location))
+  if((location == "default" || location == "") && isDefined(level.default_start_location))
     location = level.default_start_location;
 
   match_string = level.scr_zm_ui_gametype + "_perks_" + location;
   pos = [];
 
-  if(isdefined(level.override_perk_targetname))
+  if(isDefined(level.override_perk_targetname))
     structs = getstructarray(level.override_perk_targetname, "targetname");
   else
     structs = getstructarray("zm_perk_machine", "targetname");
 
   foreach(struct in structs) {
-    if(isdefined(struct.script_string)) {
+    if(isDefined(struct.script_string)) {
       tokens = strtok(struct.script_string, " ");
 
       foreach(token in tokens) {
@@ -2613,15 +2624,15 @@ perk_machine_spawn_init() {
     pos[pos.size] = struct;
   }
 
-  if(!isdefined(pos) || pos.size == 0) {
+  if(!isDefined(pos) || pos.size == 0) {
     return;
   }
   precachemodel("zm_collision_perks1");
 
-  for (i = 0; i < pos.size; i++) {
+  for(i = 0; i < pos.size; i++) {
     perk = pos[i].script_noteworthy;
 
-    if(isdefined(perk) && isdefined(pos[i].model)) {
+    if(isDefined(perk) && isDefined(pos[i].model)) {
       use_trigger = spawn("trigger_radius_use", pos[i].origin + vectorscale((0, 0, 1), 30.0), 0, 40, 70);
       use_trigger.targetname = "zombie_vending";
       use_trigger.script_noteworthy = perk;
@@ -2630,7 +2641,7 @@ perk_machine_spawn_init() {
       perk_machine.angles = pos[i].angles;
       perk_machine setmodel(pos[i].model);
 
-      if(isdefined(level._no_vending_machine_bump_trigs) && level._no_vending_machine_bump_trigs)
+      if(isDefined(level._no_vending_machine_bump_trigs) && level._no_vending_machine_bump_trigs)
         bump_trigger = undefined;
       else {
         bump_trigger = spawn("trigger_radius", pos[i].origin, 0, 35, 64);
@@ -2651,13 +2662,13 @@ perk_machine_spawn_init() {
       use_trigger.machine = perk_machine;
       use_trigger.bump = bump_trigger;
 
-      if(isdefined(pos[i].blocker_model))
+      if(isDefined(pos[i].blocker_model))
         use_trigger.blocker_model = pos[i].blocker_model;
 
-      if(isdefined(pos[i].script_int))
+      if(isDefined(pos[i].script_int))
         perk_machine.script_int = pos[i].script_int;
 
-      if(isdefined(pos[i].turn_on_notify))
+      if(isDefined(pos[i].turn_on_notify))
         perk_machine.turn_on_notify = pos[i].turn_on_notify;
 
       switch (perk) {
@@ -2670,7 +2681,7 @@ perk_machine_spawn_init() {
           perk_machine.script_string = "revive_perk";
           perk_machine.targetname = "vending_revive";
 
-          if(isdefined(bump_trigger))
+          if(isDefined(bump_trigger))
             bump_trigger.script_string = "revive_perk";
 
           break;
@@ -2683,7 +2694,7 @@ perk_machine_spawn_init() {
           perk_machine.script_string = "speedcola_perk";
           perk_machine.targetname = "vending_sleight";
 
-          if(isdefined(bump_trigger))
+          if(isDefined(bump_trigger))
             bump_trigger.script_string = "speedcola_perk";
 
           break;
@@ -2696,7 +2707,7 @@ perk_machine_spawn_init() {
           perk_machine.script_string = "marathon_perk";
           perk_machine.targetname = "vending_marathon";
 
-          if(isdefined(bump_trigger))
+          if(isDefined(bump_trigger))
             bump_trigger.script_string = "marathon_perk";
 
           break;
@@ -2710,7 +2721,7 @@ perk_machine_spawn_init() {
           perk_machine.script_string = "jugg_perk";
           perk_machine.targetname = "vending_jugg";
 
-          if(isdefined(bump_trigger))
+          if(isDefined(bump_trigger))
             bump_trigger.script_string = "jugg_perk";
 
           break;
@@ -2723,7 +2734,7 @@ perk_machine_spawn_init() {
           perk_machine.script_string = "tombstone_perk";
           perk_machine.targetname = "vending_tombstone";
 
-          if(isdefined(bump_trigger))
+          if(isDefined(bump_trigger))
             bump_trigger.script_string = "tombstone_perk";
 
           break;
@@ -2736,7 +2747,7 @@ perk_machine_spawn_init() {
           perk_machine.script_string = "tap_perk";
           perk_machine.targetname = "vending_doubletap";
 
-          if(isdefined(bump_trigger))
+          if(isDefined(bump_trigger))
             bump_trigger.script_string = "tap_perk";
 
           break;
@@ -2749,7 +2760,7 @@ perk_machine_spawn_init() {
           perk_machine.script_string = "tap_perk";
           perk_machine.targetname = "vending_chugabud";
 
-          if(isdefined(bump_trigger))
+          if(isDefined(bump_trigger))
             bump_trigger.script_string = "tap_perk";
 
           break;
@@ -2762,7 +2773,7 @@ perk_machine_spawn_init() {
           perk_machine.script_string = "tap_perk";
           perk_machine.targetname = "vending_additionalprimaryweapon";
 
-          if(isdefined(bump_trigger))
+          if(isDefined(bump_trigger))
             bump_trigger.script_string = "tap_perk";
 
           break;
@@ -2774,7 +2785,7 @@ perk_machine_spawn_init() {
           perk_machine.targetname = "vending_packapunch";
           flag_pos = getstruct(pos[i].target, "targetname");
 
-          if(isdefined(flag_pos)) {
+          if(isDefined(flag_pos)) {
             perk_machine_flag = spawn("script_model", flag_pos.origin);
             perk_machine_flag.angles = flag_pos.angles;
             perk_machine_flag setmodel(flag_pos.model);
@@ -2782,7 +2793,7 @@ perk_machine_spawn_init() {
             perk_machine.target = "pack_flag";
           }
 
-          if(isdefined(bump_trigger))
+          if(isDefined(bump_trigger))
             bump_trigger.script_string = "perks_rattle";
 
           break;
@@ -2795,7 +2806,7 @@ perk_machine_spawn_init() {
           perk_machine.script_string = "deadshot_vending";
           perk_machine.targetname = "vending_deadshot_model";
 
-          if(isdefined(bump_trigger))
+          if(isDefined(bump_trigger))
             bump_trigger.script_string = "deadshot_vending";
 
           break;
@@ -2807,24 +2818,24 @@ perk_machine_spawn_init() {
           perk_machine.script_string = "speedcola_perk";
           perk_machine.targetname = "vending_sleight";
 
-          if(isdefined(bump_trigger))
+          if(isDefined(bump_trigger))
             bump_trigger.script_string = "speedcola_perk";
 
           break;
       }
 
-      if(isdefined(level._custom_perks[perk]) && isdefined(level._custom_perks[perk].perk_machine_set_kvps))
+      if(isDefined(level._custom_perks[perk]) && isDefined(level._custom_perks[perk].perk_machine_set_kvps))
         [[level._custom_perks[perk].perk_machine_set_kvps]](use_trigger, perk_machine, bump_trigger, collision);
     }
   }
 }
 
 get_perk_machine_start_state(perk) {
-  if(isdefined(level.vending_machines_powered_on_at_start) && level.vending_machines_powered_on_at_start)
+  if(isDefined(level.vending_machines_powered_on_at_start) && level.vending_machines_powered_on_at_start)
     return 1;
 
   if(perk == "specialty_quickrevive" || perk == "specialty_quickrevive_upgrade") {
-    assert(isdefined(level.revive_machine_is_solo));
+    assert(isDefined(level.revive_machine_is_solo));
     return level.revive_machine_is_solo;
   }
 
@@ -2832,58 +2843,58 @@ get_perk_machine_start_state(perk) {
 }
 
 perks_register_clientfield() {
-  if(isdefined(level.zombiemode_using_additionalprimaryweapon_perk) && level.zombiemode_using_additionalprimaryweapon_perk)
+  if(isDefined(level.zombiemode_using_additionalprimaryweapon_perk) && level.zombiemode_using_additionalprimaryweapon_perk)
     registerclientfield("toplayer", "perk_additional_primary_weapon", 1, 2, "int");
 
-  if(isdefined(level.zombiemode_using_deadshot_perk) && level.zombiemode_using_deadshot_perk)
+  if(isDefined(level.zombiemode_using_deadshot_perk) && level.zombiemode_using_deadshot_perk)
     registerclientfield("toplayer", "perk_dead_shot", 1, 2, "int");
 
-  if(isdefined(level.zombiemode_using_doubletap_perk) && level.zombiemode_using_doubletap_perk)
+  if(isDefined(level.zombiemode_using_doubletap_perk) && level.zombiemode_using_doubletap_perk)
     registerclientfield("toplayer", "perk_double_tap", 1, 2, "int");
 
-  if(isdefined(level.zombiemode_using_juggernaut_perk) && level.zombiemode_using_juggernaut_perk)
+  if(isDefined(level.zombiemode_using_juggernaut_perk) && level.zombiemode_using_juggernaut_perk)
     registerclientfield("toplayer", "perk_juggernaut", 1, 2, "int");
 
-  if(isdefined(level.zombiemode_using_marathon_perk) && level.zombiemode_using_marathon_perk)
+  if(isDefined(level.zombiemode_using_marathon_perk) && level.zombiemode_using_marathon_perk)
     registerclientfield("toplayer", "perk_marathon", 1, 2, "int");
 
-  if(isdefined(level.zombiemode_using_revive_perk) && level.zombiemode_using_revive_perk)
+  if(isDefined(level.zombiemode_using_revive_perk) && level.zombiemode_using_revive_perk)
     registerclientfield("toplayer", "perk_quick_revive", 1, 2, "int");
 
-  if(isdefined(level.zombiemode_using_sleightofhand_perk) && level.zombiemode_using_sleightofhand_perk)
+  if(isDefined(level.zombiemode_using_sleightofhand_perk) && level.zombiemode_using_sleightofhand_perk)
     registerclientfield("toplayer", "perk_sleight_of_hand", 1, 2, "int");
 
-  if(isdefined(level.zombiemode_using_tombstone_perk) && level.zombiemode_using_tombstone_perk)
+  if(isDefined(level.zombiemode_using_tombstone_perk) && level.zombiemode_using_tombstone_perk)
     registerclientfield("toplayer", "perk_tombstone", 1, 2, "int");
 
-  if(isdefined(level.zombiemode_using_perk_intro_fx) && level.zombiemode_using_perk_intro_fx)
+  if(isDefined(level.zombiemode_using_perk_intro_fx) && level.zombiemode_using_perk_intro_fx)
     registerclientfield("scriptmover", "clientfield_perk_intro_fx", 1000, 1, "int");
 
-  if(isdefined(level.zombiemode_using_chugabud_perk) && level.zombiemode_using_chugabud_perk)
+  if(isDefined(level.zombiemode_using_chugabud_perk) && level.zombiemode_using_chugabud_perk)
     registerclientfield("toplayer", "perk_chugabud", 1000, 1, "int");
 
-  if(isdefined(level._custom_perks)) {
+  if(isDefined(level._custom_perks)) {
     a_keys = getarraykeys(level._custom_perks);
 
-    for (i = 0; i < a_keys.size; i++) {
-      if(isdefined(level._custom_perks[a_keys[i]].clientfield_register))
+    for(i = 0; i < a_keys.size; i++) {
+      if(isDefined(level._custom_perks[a_keys[i]].clientfield_register))
         level[[level._custom_perks[a_keys[i]].clientfield_register]]();
     }
   }
 }
 
 thread_bump_trigger() {
-  for (;;) {
+  for(;;) {
     self waittill("trigger", trigplayer);
     trigplayer playsound(self.script_sound);
 
-    while (is_player_valid(trigplayer) && trigplayer istouching(self))
+    while(is_player_valid(trigplayer) && trigplayer istouching(self))
       wait 0.5;
   }
 }
 
 reenable_quickrevive(machine_clip, solo_mode) {
-  if(isdefined(level.revive_machine_spawned) && !is_true(level.revive_machine_spawned)) {
+  if(isDefined(level.revive_machine_spawned) && !is_true(level.revive_machine_spawned)) {
     return;
   }
   wait 0.1;
@@ -2895,12 +2906,12 @@ reenable_quickrevive(machine_clip, solo_mode) {
     players = get_players();
 
     foreach(player in players) {
-      if(isdefined(player.lives) && player.lives > 0 && power_state) {
+      if(isDefined(player.lives) && player.lives > 0 && power_state) {
         should_pause = 0;
         continue;
       }
 
-      if(isdefined(player.lives) && player.lives < 1)
+      if(isDefined(player.lives) && player.lives < 1)
         should_pause = 1;
     }
 
@@ -2909,7 +2920,7 @@ reenable_quickrevive(machine_clip, solo_mode) {
     else
       perk_unpause("specialty_quickrevive");
 
-    if(isdefined(level.solo_revive_init) && level.solo_revive_init && flag("solo_revive")) {
+    if(isDefined(level.solo_revive_init) && level.solo_revive_init && flag("solo_revive")) {
       disable_quickrevive(machine_clip);
       return;
     }
@@ -2921,7 +2932,7 @@ reenable_quickrevive(machine_clip, solo_mode) {
     wait 0.1;
     level notify("stop_quickrevive_logic");
   } else {
-    if(!(isdefined(level._dont_unhide_quickervive_on_hotjoin) && level._dont_unhide_quickervive_on_hotjoin)) {
+    if(!(isDefined(level._dont_unhide_quickervive_on_hotjoin) && level._dont_unhide_quickervive_on_hotjoin)) {
       unhide_quickrevive();
       level notify("revive_off");
       wait 0.1;
@@ -2958,16 +2969,16 @@ reenable_quickrevive(machine_clip, solo_mode) {
       continue;
     }
     if(player hasperk("specialty_quickrevive")) {
-      if(!isdefined(player.lives))
+      if(!isDefined(player.lives))
         player.lives = 0;
 
-      if(!isdefined(level.solo_lives_given))
+      if(!isDefined(level.solo_lives_given))
         level.solo_lives_given = 0;
 
       level.solo_lives_given++;
       player.lives++;
 
-      if(isdefined(player.lives) && player.lives > 0 && power_state) {
+      if(isDefined(player.lives) && player.lives > 0 && power_state) {
         should_pause = 0;
         continue;
       }
@@ -2984,20 +2995,20 @@ reenable_quickrevive(machine_clip, solo_mode) {
 
 update_quickrevive_power_state(poweron) {
   foreach(item in level.powered_items) {
-    if(isdefined(item.target) && isdefined(item.target.script_noteworthy) && item.target.script_noteworthy == "specialty_quickrevive") {
+    if(isDefined(item.target) && isDefined(item.target.script_noteworthy) && item.target.script_noteworthy == "specialty_quickrevive") {
       if(item.power && !poweron) {
-        if(!isdefined(item.powered_count))
+        if(!isDefined(item.powered_count))
           item.powered_count = 0;
         else if(item.powered_count > 0)
           item.powered_count--;
       } else if(!item.power && poweron) {
-        if(!isdefined(item.powered_count))
+        if(!isDefined(item.powered_count))
           item.powered_count = 0;
 
         item.powered_count++;
       }
 
-      if(!isdefined(item.depowered_count))
+      if(!isDefined(item.depowered_count))
         item.depowered_count = 0;
 
       item.power = poweron;
@@ -3009,7 +3020,7 @@ restart_quickrevive() {
   triggers = getentarray("zombie_vending", "targetname");
 
   foreach(trigger in triggers) {
-    if(!isdefined(trigger.script_noteworthy)) {
+    if(!isDefined(trigger.script_noteworthy)) {
       continue;
     }
     if(trigger.script_noteworthy == "specialty_quickrevive" || trigger.script_noteworthy == "specialty_quickrevive_upgrade") {
@@ -3021,11 +3032,11 @@ restart_quickrevive() {
 }
 
 disable_quickrevive(machine_clip) {
-  if(is_true(level.solo_revive_init) && flag("solo_revive") && isdefined(level.quick_revive_machine)) {
+  if(is_true(level.solo_revive_init) && flag("solo_revive") && isDefined(level.quick_revive_machine)) {
     triggers = getentarray("zombie_vending", "targetname");
 
     foreach(trigger in triggers) {
-      if(!isdefined(trigger.script_noteworthy)) {
+      if(!isDefined(trigger.script_noteworthy)) {
         continue;
       }
       if(trigger.script_noteworthy == "specialty_quickrevive" || trigger.script_noteworthy == "specialty_quickrevive_upgrade")
@@ -3033,23 +3044,23 @@ disable_quickrevive(machine_clip) {
     }
 
     foreach(item in level.powered_items) {
-      if(isdefined(item.target) && isdefined(item.target.script_noteworthy) && item.target.script_noteworthy == "specialty_quickrevive") {
+      if(isDefined(item.target) && isDefined(item.target.script_noteworthy) && item.target.script_noteworthy == "specialty_quickrevive") {
         item.power = 1;
         item.self_powered = 1;
       }
     }
 
-    if(isdefined(level.quick_revive_machine.original_pos)) {
+    if(isDefined(level.quick_revive_machine.original_pos)) {
       level.quick_revive_default_origin = level.quick_revive_machine.original_pos;
       level.quick_revive_default_angles = level.quick_revive_machine.original_angles;
     }
 
     move_org = level.quick_revive_default_origin;
 
-    if(isdefined(level.quick_revive_linked_ent)) {
+    if(isDefined(level.quick_revive_linked_ent)) {
       move_org = level.quick_revive_linked_ent.origin;
 
-      if(isdefined(level.quick_revive_linked_ent_offset))
+      if(isDefined(level.quick_revive_linked_ent_offset))
         move_org = move_org + level.quick_revive_linked_ent_offset;
 
       level.quick_revive_machine unlink();
@@ -3069,14 +3080,14 @@ disable_quickrevive(machine_clip) {
     level.quick_revive_machine hide();
     level.quick_revive_machine.ishidden = 1;
 
-    if(isdefined(level.quick_revive_machine_clip)) {
+    if(isDefined(level.quick_revive_machine_clip)) {
       level.quick_revive_machine_clip connectpaths();
       level.quick_revive_machine_clip trigger_off();
     }
 
     playfx(level._effect["poltergeist"], level.quick_revive_machine.origin);
 
-    if(isdefined(level.quick_revive_trigger) && isdefined(level.quick_revive_trigger.blocker_model))
+    if(isDefined(level.quick_revive_trigger) && isDefined(level.quick_revive_trigger.blocker_model))
       level.quick_revive_trigger.blocker_model show();
 
     level notify("revive_hide");
@@ -3084,25 +3095,25 @@ disable_quickrevive(machine_clip) {
 }
 
 unhide_quickrevive() {
-  while (players_are_in_perk_area(level.quick_revive_machine))
+  while(players_are_in_perk_area(level.quick_revive_machine))
     wait 0.1;
 
-  if(isdefined(level.quick_revive_machine_clip)) {
+  if(isDefined(level.quick_revive_machine_clip)) {
     level.quick_revive_machine_clip trigger_on();
     level.quick_revive_machine_clip disconnectpaths();
   }
 
-  if(isdefined(level.quick_revive_final_pos))
+  if(isDefined(level.quick_revive_final_pos))
     level.quick_revive_machine.origin = level.quick_revive_final_pos;
 
   playfx(level._effect["poltergeist"], level.quick_revive_machine.origin);
 
-  if(isdefined(level.quick_revive_trigger) && isdefined(level.quick_revive_trigger.blocker_model))
+  if(isDefined(level.quick_revive_trigger) && isDefined(level.quick_revive_trigger.blocker_model))
     level.quick_revive_trigger.blocker_model hide();
 
   level.quick_revive_machine show();
 
-  if(isdefined(level.quick_revive_machine.original_pos)) {
+  if(isDefined(level.quick_revive_machine.original_pos)) {
     level.quick_revive_default_origin = level.quick_revive_machine.original_pos;
     level.quick_revive_default_angles = level.quick_revive_machine.original_angles;
   }
@@ -3117,23 +3128,23 @@ unhide_quickrevive() {
 
   org = level.quick_revive_default_origin;
 
-  if(isdefined(level.quick_revive_linked_ent)) {
+  if(isDefined(level.quick_revive_linked_ent)) {
     org = level.quick_revive_linked_ent.origin;
 
-    if(isdefined(level.quick_revive_linked_ent_offset))
+    if(isDefined(level.quick_revive_linked_ent_offset))
       org = org + level.quick_revive_linked_ent_offset;
   }
 
-  if(!(isdefined(level.quick_revive_linked_ent_moves) && level.quick_revive_linked_ent_moves) && level.quick_revive_machine.origin != org) {
+  if(!(isDefined(level.quick_revive_linked_ent_moves) && level.quick_revive_linked_ent_moves) && level.quick_revive_machine.origin != org) {
     level.quick_revive_machine moveto(org, 3);
     level.quick_revive_machine vibrate(direction, 10, 0.5, 2.9);
     level.quick_revive_machine waittill("movedone");
     level.quick_revive_machine.angles = level.quick_revive_default_angles;
   } else {
-    if(isdefined(level.quick_revive_linked_ent)) {
+    if(isDefined(level.quick_revive_linked_ent)) {
       org = level.quick_revive_linked_ent.origin;
 
-      if(isdefined(level.quick_revive_linked_ent_offset))
+      if(isDefined(level.quick_revive_linked_ent_offset))
         org = org + level.quick_revive_linked_ent_offset;
 
       level.quick_revive_machine.origin = org;
@@ -3142,7 +3153,7 @@ unhide_quickrevive() {
     level.quick_revive_machine vibrate(vectorscale((0, -1, 0), 100.0), 0.3, 0.4, 3);
   }
 
-  if(isdefined(level.quick_revive_linked_ent))
+  if(isDefined(level.quick_revive_linked_ent))
     level.quick_revive_machine linkto(level.quick_revive_linked_ent);
 
   level.quick_revive_machine.ishidden = 0;
@@ -3151,10 +3162,10 @@ unhide_quickrevive() {
 players_are_in_perk_area(perk_machine) {
   perk_area_origin = level.quick_revive_default_origin;
 
-  if(isdefined(perk_machine._linked_ent)) {
+  if(isDefined(perk_machine._linked_ent)) {
     perk_area_origin = perk_machine._linked_ent.origin;
 
-    if(isdefined(perk_machine._linked_ent_offset))
+    if(isDefined(perk_machine._linked_ent_offset))
       perk_area_origin = perk_area_origin + perk_machine._linked_ent_offset;
   }
 
@@ -3175,7 +3186,7 @@ perk_hostmigration() {
   level notify("perk_hostmigration");
   level endon("perk_hostmigration");
 
-  while (true) {
+  while(true) {
     level waittill("host_migration_end");
     jug = getentarray("vending_jugg", "targetname");
     tap = getentarray("vending_doubletap", "targetname");
@@ -3188,63 +3199,63 @@ perk_hostmigration() {
     chugabud = getentarray("vending_chugabud", "targetname");
 
     foreach(perk in jug) {
-      if(isdefined(perk.model) && perk.model == level.machine_assets["juggernog"].on_model) {
+      if(isDefined(perk.model) && perk.model == level.machine_assets["juggernog"].on_model) {
         perk perk_fx(undefined, 1);
         perk thread perk_fx("jugger_light");
       }
     }
 
     foreach(perk in tap) {
-      if(isdefined(perk.model) && perk.model == level.machine_assets["doubletap"].on_model) {
+      if(isDefined(perk.model) && perk.model == level.machine_assets["doubletap"].on_model) {
         perk perk_fx(undefined, 1);
         perk thread perk_fx("doubletap_light");
       }
     }
 
     foreach(perk in mar) {
-      if(isdefined(perk.model) && perk.model == level.machine_assets["marathon"].on_model) {
+      if(isDefined(perk.model) && perk.model == level.machine_assets["marathon"].on_model) {
         perk perk_fx(undefined, 1);
         perk thread perk_fx("marathon_light");
       }
     }
 
     foreach(perk in deadshot) {
-      if(isdefined(perk.model) && perk.model == level.machine_assets["deadshot"].on_model) {
+      if(isDefined(perk.model) && perk.model == level.machine_assets["deadshot"].on_model) {
         perk perk_fx(undefined, 1);
         perk thread perk_fx("deadshot_light");
       }
     }
 
     foreach(perk in tomb) {
-      if(isdefined(perk.model) && perk.model == level.machine_assets["tombstone"].on_model) {
+      if(isDefined(perk.model) && perk.model == level.machine_assets["tombstone"].on_model) {
         perk perk_fx(undefined, 1);
         perk thread perk_fx("tombstone_light");
       }
     }
 
     foreach(perk in extraweap) {
-      if(isdefined(perk.model) && perk.model == level.machine_assets["additionalprimaryweapon"].on_model) {
+      if(isDefined(perk.model) && perk.model == level.machine_assets["additionalprimaryweapon"].on_model) {
         perk perk_fx(undefined, 1);
         perk thread perk_fx("additionalprimaryweapon_light");
       }
     }
 
     foreach(perk in sleight) {
-      if(isdefined(perk.model) && perk.model == level.machine_assets["speedcola"].on_model) {
+      if(isDefined(perk.model) && perk.model == level.machine_assets["speedcola"].on_model) {
         perk perk_fx(undefined, 1);
         perk thread perk_fx("sleight_light");
       }
     }
 
     foreach(perk in revive) {
-      if(isdefined(perk.model) && perk.model == level.machine_assets["revive"].on_model) {
+      if(isDefined(perk.model) && perk.model == level.machine_assets["revive"].on_model) {
         perk perk_fx(undefined, 1);
         perk thread perk_fx("revive_light");
       }
     }
 
     foreach(perk in chugabud) {
-      if(isdefined(perk.model) && perk.model == level.machine_assets["revive"].on_model) {
+      if(isDefined(perk.model) && perk.model == level.machine_assets["revive"].on_model) {
         perk perk_fx(undefined, 1);
         perk thread perk_fx("tombstone_light");
       }
@@ -3253,8 +3264,8 @@ perk_hostmigration() {
     if(level._custom_perks.size > 0) {
       a_keys = getarraykeys(level._custom_perks);
 
-      for (i = 0; i < a_keys.size; i++) {
-        if(isdefined(level._custom_perks[a_keys[i]].host_migration_func))
+      for(i = 0; i < a_keys.size; i++) {
+        if(isDefined(level._custom_perks[a_keys[i]].host_migration_func))
           level thread[[level._custom_perks[a_keys[i]].host_migration_func]]();
       }
     }
@@ -3288,7 +3299,7 @@ get_perk_array(ignore_chugabud) {
   if(self hasperk("specialty_additionalprimaryweapon"))
     perk_array[perk_array.size] = "specialty_additionalprimaryweapon";
 
-  if(!isdefined(ignore_chugabud) || ignore_chugabud == 0) {
+  if(!isDefined(ignore_chugabud) || ignore_chugabud == 0) {
     if(self hasperk("specialty_finalstand"))
       perk_array[perk_array.size] = "specialty_finalstand";
   }
@@ -3296,7 +3307,7 @@ get_perk_array(ignore_chugabud) {
   if(level._custom_perks.size > 0) {
     a_keys = getarraykeys(level._custom_perks);
 
-    for (i = 0; i < a_keys.size; i++) {
+    for(i = 0; i < a_keys.size; i++) {
       if(self hasperk(a_keys[i]))
         perk_array[perk_array.size] = a_keys[i];
     }
@@ -3306,16 +3317,16 @@ get_perk_array(ignore_chugabud) {
 }
 
 initialize_custom_perk_arrays() {
-  if(!isdefined(level._custom_perks))
+  if(!isDefined(level._custom_perks))
     level._custom_perks = [];
 }
 
 register_perk_basic_info(str_perk, str_alias, n_perk_cost, str_hint_string, str_perk_bottle_weapon) {
-  assert(isdefined(str_perk), "str_perk is a required argument for register_perk_basic_info!");
-  assert(isdefined(str_alias), "str_alias is a required argument for register_perk_basic_info!");
-  assert(isdefined(n_perk_cost), "n_perk_cost is a required argument for register_perk_basic_info!");
-  assert(isdefined(str_hint_string), "str_hint_string is a required argument for register_perk_basic_info!");
-  assert(isdefined(str_perk_bottle_weapon), "str_perk_bottle_weapon is a required argument for register_perk_basic_info!");
+  assert(isDefined(str_perk), "str_perk is a required argument for register_perk_basic_info!");
+  assert(isDefined(str_alias), "str_alias is a required argument for register_perk_basic_info!");
+  assert(isDefined(n_perk_cost), "n_perk_cost is a required argument for register_perk_basic_info!");
+  assert(isDefined(str_hint_string), "str_hint_string is a required argument for register_perk_basic_info!");
+  assert(isDefined(str_perk_bottle_weapon), "str_perk_bottle_weapon is a required argument for register_perk_basic_info!");
   _register_undefined_perk(str_perk);
   level._custom_perks[str_perk].alias = str_perk;
   level._custom_perks[str_perk].cost = n_perk_cost;
@@ -3324,67 +3335,67 @@ register_perk_basic_info(str_perk, str_alias, n_perk_cost, str_hint_string, str_
 }
 
 register_perk_machine(str_perk, func_perk_machine_setup, func_perk_machine_thread) {
-  assert(isdefined(str_perk), "str_perk is a required argument for register_perk_machine!");
-  assert(isdefined(func_perk_machine_setup), "func_perk_machine_setup is a required argument for register_perk_machine!");
-  assert(isdefined(func_perk_machine_thread), "func_perk_machine_thread is a required argument for register_perk_machine!");
+  assert(isDefined(str_perk), "str_perk is a required argument for register_perk_machine!");
+  assert(isDefined(func_perk_machine_setup), "func_perk_machine_setup is a required argument for register_perk_machine!");
+  assert(isDefined(func_perk_machine_thread), "func_perk_machine_thread is a required argument for register_perk_machine!");
   _register_undefined_perk(str_perk);
 
-  if(!isdefined(level._custom_perks[str_perk].perk_machine_set_kvps))
+  if(!isDefined(level._custom_perks[str_perk].perk_machine_set_kvps))
     level._custom_perks[str_perk].perk_machine_set_kvps = func_perk_machine_setup;
 
-  if(!isdefined(level._custom_perks[str_perk].perk_machine_thread))
+  if(!isDefined(level._custom_perks[str_perk].perk_machine_thread))
     level._custom_perks[str_perk].perk_machine_thread = func_perk_machine_thread;
 }
 
 register_perk_precache_func(str_perk, func_precache) {
-  assert(isdefined(str_perk), "str_perk is a required argument for register_perk_precache_func!");
-  assert(isdefined(func_precache), "func_precache is a required argument for register_perk_precache_func!");
+  assert(isDefined(str_perk), "str_perk is a required argument for register_perk_precache_func!");
+  assert(isDefined(func_precache), "func_precache is a required argument for register_perk_precache_func!");
   _register_undefined_perk(str_perk);
 
-  if(!isdefined(level._custom_perks[str_perk].precache_func))
+  if(!isDefined(level._custom_perks[str_perk].precache_func))
     level._custom_perks[str_perk].precache_func = func_precache;
 }
 
 register_perk_threads(str_perk, func_give_player_perk, func_take_player_perk) {
-  assert(isdefined(str_perk), "str_perk is a required argument for register_perk_threads!");
-  assert(isdefined(func_give_player_perk), "func_give_player_perk is a required argument for register_perk_threads!");
+  assert(isDefined(str_perk), "str_perk is a required argument for register_perk_threads!");
+  assert(isDefined(func_give_player_perk), "func_give_player_perk is a required argument for register_perk_threads!");
   _register_undefined_perk(str_perk);
 
-  if(!isdefined(level._custom_perks[str_perk].player_thread_give))
+  if(!isDefined(level._custom_perks[str_perk].player_thread_give))
     level._custom_perks[str_perk].player_thread_give = func_give_player_perk;
 
-  if(isdefined(func_take_player_perk)) {
-    if(!isdefined(level._custom_perks[str_perk].player_thread_take))
+  if(isDefined(func_take_player_perk)) {
+    if(!isDefined(level._custom_perks[str_perk].player_thread_take))
       level._custom_perks[str_perk].player_thread_take = func_take_player_perk;
   }
 }
 
 register_perk_clientfields(str_perk, func_clientfield_register, func_clientfield_set) {
-  assert(isdefined(str_perk), "str_perk is a required argument for register_perk_clientfields!");
-  assert(isdefined(func_clientfield_register), "func_clientfield_register is a required argument for register_perk_clientfields!");
-  assert(isdefined(func_clientfield_set), "func_clientfield_set is a required argument for register_perk_clientfields!");
+  assert(isDefined(str_perk), "str_perk is a required argument for register_perk_clientfields!");
+  assert(isDefined(func_clientfield_register), "func_clientfield_register is a required argument for register_perk_clientfields!");
+  assert(isDefined(func_clientfield_set), "func_clientfield_set is a required argument for register_perk_clientfields!");
   _register_undefined_perk(str_perk);
 
-  if(!isdefined(level._custom_perks[str_perk].clientfield_register))
+  if(!isDefined(level._custom_perks[str_perk].clientfield_register))
     level._custom_perks[str_perk].clientfield_register = func_clientfield_register;
 
-  if(!isdefined(level._custom_perks[str_perk].clientfield_set))
+  if(!isDefined(level._custom_perks[str_perk].clientfield_set))
     level._custom_perks[str_perk].clientfield_set = func_clientfield_set;
 }
 
 register_perk_host_migration_func(str_perk, func_host_migration) {
-  assert(isdefined(str_perk), "str_perk is a required argument for register_perk_host_migration_func!");
-  assert(isdefined(func_host_migration), "func_host_migration is a required argument for register_perk_host_migration_func!");
+  assert(isDefined(str_perk), "str_perk is a required argument for register_perk_host_migration_func!");
+  assert(isDefined(func_host_migration), "func_host_migration is a required argument for register_perk_host_migration_func!");
   _register_undefined_perk(str_perk);
 
-  if(!isdefined(level._custom_perks[str_perk].host_migration_func))
+  if(!isDefined(level._custom_perks[str_perk].host_migration_func))
     level._custom_perks[str_perk].host_migration_func = func_host_migration;
 }
 
 _register_undefined_perk(str_perk) {
-  if(!isdefined(level._custom_perks))
+  if(!isDefined(level._custom_perks))
     level._custom_perks = [];
 
-  if(!isdefined(level._custom_perks[str_perk]))
+  if(!isDefined(level._custom_perks[str_perk]))
     level._custom_perks[str_perk] = spawnstruct();
 }

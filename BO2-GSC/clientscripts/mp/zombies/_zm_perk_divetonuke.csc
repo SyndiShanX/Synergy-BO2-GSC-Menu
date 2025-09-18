@@ -1,7 +1,7 @@
-/************************************************************
+/*******************************************************************
  * Decompiled and Edited by SyndiShanX
  * Script: clientscripts\mp\zombies\_zm_perk_divetonuke.csc
-************************************************************/
+*******************************************************************/
 
 #include clientscripts\mp\zombies\_zm_perks;
 #include clientscripts\mp\_visionset_mgr;
@@ -12,7 +12,7 @@ enable_divetonuke_perk_for_level() {
 }
 
 init_divetonuke() {
-  if(isdefined(level.enable_magic) && level.enable_magic)
+  if(isDefined(level.enable_magic) && level.enable_magic)
     clientscripts\mp\_visionset_mgr::vsmgr_register_visionset_info("zm_perk_divetonuke", 9000, 5, "zombie_cosmodrome_divetonuke", "zombie_cosmodrome_divetonuke");
 
   level._effect["divetonuke_groundhit"] = loadfx("maps/zombie/fx_zmb_phdflopper_exp");

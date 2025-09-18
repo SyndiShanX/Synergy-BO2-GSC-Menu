@@ -1,7 +1,7 @@
-/********************************************************
+/***********************************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\zombies\_zm_perk_electric_cherry.gsc
-********************************************************/
+***********************************************************/
 
 #include maps\mp\_utility;
 #include common_scripts\utility;
@@ -20,7 +20,7 @@ enable_electric_cherry_perk_for_level() {
   maps\mp\zombies\_zm_perks::register_perk_machine("specialty_grenadepulldeath", ::electric_cherry_perk_machine_setup, ::electric_cherry_perk_machine_think);
   maps\mp\zombies\_zm_perks::register_perk_host_migration_func("specialty_grenadepulldeath", ::electric_cherry_host_migration_func);
 
-  if(isdefined(level.custom_electric_cherry_perk_threads) && level.custom_electric_cherry_perk_threads)
+  if(isDefined(level.custom_electric_cherry_perk_threads) && level.custom_electric_cherry_perk_threads)
     level thread[[level.custom_electric_cherry_perk_threads]]();
 }
 
@@ -61,25 +61,25 @@ electric_cherry_perk_machine_setup(use_trigger, perk_machine, bump_trigger, coll
   perk_machine.script_string = "electriccherry_perk";
   perk_machine.targetname = "vendingelectric_cherry";
 
-  if(isdefined(bump_trigger))
+  if(isDefined(bump_trigger))
     bump_trigger.script_string = "electriccherry_perk";
 }
 
 electric_cherry_perk_machine_think() {
   init_electric_cherry();
 
-  while (true) {
+  while(true) {
     machine = getentarray("vendingelectric_cherry", "targetname");
     machine_triggers = getentarray("vending_electriccherry", "target");
 
-    for (i = 0; i < machine.size; i++)
+    for(i = 0; i < machine.size; i++)
       machine[i] setmodel("p6_zm_vending_electric_cherry_off");
 
     level thread do_initial_power_off_callback(machine, "electriccherry");
     array_thread(machine_triggers, maps\mp\zombies\_zm_perks::set_power_on, 0);
     level waittill("electric_cherry_on");
 
-    for (i = 0; i < machine.size; i++) {
+    for(i = 0; i < machine.size; i++) {
       machine[i] setmodel("p6_zm_vending_electric_cherry_on");
       machine[i] vibrate(vectorscale((0, -1, 0), 100.0), 0.3, 0.4, 3);
       machine[i] playsound("zmb_perks_power_on");
@@ -98,7 +98,7 @@ electric_cherry_host_migration_func() {
   a_electric_cherry_perk_machines = getentarray("vending_electriccherry", "targetname");
 
   foreach(perk_machine in a_electric_cherry_perk_machines) {
-    if(isdefined(perk_machine.model) && perk_machine.model == "p6_zm_vending_electric_cherry_on") {
+    if(isDefined(perk_machine.model) && perk_machine.model == "p6_zm_vending_electric_cherry_on") {
       perk_machine perk_fx(undefined, 1);
       perk_machine thread perk_fx("electriccherry");
     }
@@ -108,7 +108,7 @@ electric_cherry_host_migration_func() {
 electric_cherry_laststand() {
   visionsetlaststand("zombie_last_stand", 1);
 
-  if(isdefined(self)) {
+  if(isDefined(self)) {
     playfx(level._effect["electric_cherry_explode"], self.origin);
     self playsound("zmb_cherry_explode");
     self notify("electric_cherry_start");
@@ -116,12 +116,12 @@ electric_cherry_laststand() {
     a_zombies = get_round_enemy_array();
     a_zombies = get_array_of_closest(self.origin, a_zombies, undefined, undefined, 500);
 
-    for (i = 0; i < a_zombies.size; i++) {
+    for(i = 0; i < a_zombies.size; i++) {
       if(isalive(self)) {
         if(a_zombies[i].health <= 1000) {
           a_zombies[i] thread electric_cherry_death_fx();
 
-          if(isdefined(self.cherry_kills))
+          if(isDefined(self.cherry_kills))
             self.cherry_kills++;
 
           self maps\mp\zombies\_zm_score::add_to_player_score(40);
@@ -150,7 +150,7 @@ electric_cherry_death_fx() {
   self playsound("zmb_elec_jib_zombie");
   network_safe_play_fx_on_tag("tesla_death_fx", 2, level._effect[fx], self, tag);
 
-  if(isdefined(self.tesla_head_gib_func) && !self.head_gibbed)
+  if(isDefined(self.tesla_head_gib_func) && !self.head_gibbed)
     [[self.tesla_head_gib_func]]();
 }
 
@@ -173,6 +173,7 @@ electric_cherry_stun() {
 
   if(self.health <= 0) {
     iprintln("trying to stun a dead zombie");
+
     return;
   }
 
@@ -182,7 +183,7 @@ electric_cherry_stun() {
   self.forcemovementscriptstate = 1;
   self.ignoreall = 1;
 
-  for (i = 0; i < 2; i++) {
+  for(i = 0; i < 2; i++) {
     self animscripted(self.origin, self.angles, "zm_afterlife_stun");
     self maps\mp\animscripts\shared::donotetracks("stunned");
   }
@@ -200,7 +201,7 @@ electric_cherry_reload_attack() {
   self.wait_on_reload = [];
   self.consecutive_electric_cherry_attacks = 0;
 
-  while (true) {
+  while(true) {
     self waittill("reload_start");
     str_current_weapon = self getcurrentweapon();
 
@@ -216,7 +217,7 @@ electric_cherry_reload_attack() {
     perk_dmg = linear_map(n_fraction, 1.0, 0.0, 1, 1045);
     self thread check_for_reload_complete(str_current_weapon);
 
-    if(isdefined(self)) {
+    if(isDefined(self)) {
       switch (self.consecutive_electric_cherry_attacks) {
         case 0:
         case 1:
@@ -237,7 +238,7 @@ electric_cherry_reload_attack() {
 
       self thread electric_cherry_cooldown_timer(str_current_weapon);
 
-      if(isdefined(n_zombie_limit) && n_zombie_limit == 0) {
+      if(isDefined(n_zombie_limit) && n_zombie_limit == 0) {
         continue;
       }
       self thread electric_cherry_reload_fx(n_fraction);
@@ -247,9 +248,9 @@ electric_cherry_reload_attack() {
       a_zombies = get_array_of_closest(self.origin, a_zombies, undefined, undefined, perk_radius);
       n_zombies_hit = 0;
 
-      for (i = 0; i < a_zombies.size; i++) {
+      for(i = 0; i < a_zombies.size; i++) {
         if(isalive(self)) {
-          if(isdefined(n_zombie_limit)) {
+          if(isDefined(n_zombie_limit)) {
             if(n_zombies_hit < n_zombie_limit)
               n_zombies_hit++;
             else
@@ -259,12 +260,12 @@ electric_cherry_reload_attack() {
           if(a_zombies[i].health <= perk_dmg) {
             a_zombies[i] thread electric_cherry_death_fx();
 
-            if(isdefined(self.cherry_kills))
+            if(isDefined(self.cherry_kills))
               self.cherry_kills++;
 
             self maps\mp\zombies\_zm_score::add_to_player_score(40);
           } else {
-            if(!isdefined(a_zombies[i].is_brutus))
+            if(!isDefined(a_zombies[i].is_brutus))
               a_zombies[i] thread electric_cherry_stun();
 
             a_zombies[i] thread electric_cherry_shock_fx();
@@ -301,7 +302,7 @@ check_for_reload_complete(weapon) {
   self endon("player_lost_weapon_" + weapon);
   self thread weapon_replaced_monitor(weapon);
 
-  while (true) {
+  while(true) {
     self waittill("reload");
     str_current_weapon = self getcurrentweapon();
 
@@ -318,7 +319,7 @@ weapon_replaced_monitor(weapon) {
   self endon("disconnect");
   self endon("weapon_reload_complete_" + weapon);
 
-  while (true) {
+  while(true) {
     self waittill("weapon_change");
     primaryweapons = self getweaponslistprimaries();
 

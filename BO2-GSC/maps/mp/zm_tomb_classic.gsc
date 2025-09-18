@@ -13,7 +13,7 @@
 #include maps\mp\zombies\_zm_magicbox;
 
 precache() {
-  if(isdefined(level.createfx_enabled) && level.createfx_enabled) {
+  if(isDefined(level.createfx_enabled) && level.createfx_enabled) {
     return;
   }
   maps\mp\zombies\_zm_craftables::init();

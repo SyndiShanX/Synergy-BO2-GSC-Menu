@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: clientscripts\mp\_ctf.csc
-***************************************/
+**************************************/
 
 init() {
   level._client_flag_callbacks["scriptmover"][6] = ::setctfaway;

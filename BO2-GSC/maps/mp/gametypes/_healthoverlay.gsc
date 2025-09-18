@@ -15,7 +15,7 @@ init() {
 }
 
 onplayerconnect() {
-  for (;;) {
+  for(;;) {
     level waittill("connecting", player);
     player thread onplayerspawned();
     player thread onplayerkilled();
@@ -28,7 +28,7 @@ onplayerconnect() {
 onjoinedteam() {
   self endon("disconnect");
 
-  for (;;) {
+  for(;;) {
     self waittill("joined_team");
     self notify("end_healthregen");
   }
@@ -37,7 +37,7 @@ onjoinedteam() {
 onjoinedspectators() {
   self endon("disconnect");
 
-  for (;;) {
+  for(;;) {
     self waittill("joined_spectators");
     self notify("end_healthregen");
   }
@@ -46,7 +46,7 @@ onjoinedspectators() {
 onplayerspawned() {
   self endon("disconnect");
 
-  for (;;) {
+  for(;;) {
     self waittill("spawned_player");
     self thread playerhealthregen();
   }
@@ -55,7 +55,7 @@ onplayerspawned() {
 onplayerkilled() {
   self endon("disconnect");
 
-  for (;;) {
+  for(;;) {
     self waittill("killed_player");
     self notify("end_healthregen");
   }
@@ -88,10 +88,10 @@ playerhealthregen() {
   hurttime = 0;
   newhealth = 0;
 
-  for (;;) {
+  for(;;) {
     wait 0.05;
 
-    if(isdefined(player.regenrate)) {
+    if(isDefined(player.regenrate)) {
       regenrate = player.regenrate;
       usetrueregen = 1;
     }
@@ -105,7 +105,7 @@ playerhealthregen() {
     if(player.health <= 0) {
       return;
     }
-    if(isdefined(player.laststand) && player.laststand) {
+    if(isDefined(player.laststand) && player.laststand) {
       continue;
     }
     wasveryhurt = veryhurt;
@@ -176,11 +176,11 @@ playerhealthregen() {
 }
 
 decayplayerdamages(decay) {
-  if(!isdefined(self.attackerdamage)) {
+  if(!isDefined(self.attackerdamage)) {
     return;
   }
-  for (i = 0; i < self.attackerdamage.size; i++) {
-    if(!isdefined(self.attackerdamage[i]) || !isdefined(self.attackerdamage[i].damage)) {
+  for(i = 0; i < self.attackerdamage.size; i++) {
+    if(!isDefined(self.attackerdamage[i]) || !isDefined(self.attackerdamage[i].damage)) {
       continue;
     }
     self.attackerdamage[i].damage = self.attackerdamage[i].damage - decay;
@@ -195,7 +195,7 @@ playerbreathingsound(healthcap) {
   wait 2;
   player = self;
 
-  for (;;) {
+  for(;;) {
     wait 0.2;
 
     if(player.health <= 0) {
@@ -219,7 +219,7 @@ playerheartbeatsound(healthcap) {
   wait 2;
   player = self;
 
-  for (;;) {
+  for(;;) {
     wait 0.2;
 
     if(player.health <= 0) {

@@ -23,14 +23,14 @@ main_start() {
   level.roof_trig.targetname = "bus_roof_watch";
   old_roof_trig delete();
 
-  if(isdefined(level.use_swipe_protection))
+  if(isDefined(level.use_swipe_protection))
     onplayerconnect_callback(::claymore_watch_swipes);
 
   powerdoors = getentarray("local_electric_door", "script_noteworthy");
 
   foreach(door in powerdoors) {
-    if(isdefined(door.door_hold_trigger) && door.door_hold_trigger == "zombie_door_hold_diner") {
-      if(isdefined(door.script_flag) && door.script_flag == "OnPriDoorYar")
+    if(isDefined(door.door_hold_trigger) && door.door_hold_trigger == "zombie_door_hold_diner") {
+      if(isDefined(door.script_flag) && door.script_flag == "OnPriDoorYar")
         door.script_flag = undefined;
     }
   }
@@ -216,9 +216,9 @@ power_station_exploit() {
 }
 
 equipment_safe_to_drop_ffotd(weapon) {
-  for (i = 0; i < level.equipment_dead_zone_pos.size; i++) {
+  for(i = 0; i < level.equipment_dead_zone_pos.size; i++) {
     if(distancesquared(level.equipment_dead_zone_pos[i], weapon.origin) < level.equipment_dead_zone_rad2[i]) {
-      if(!isdefined(level.equipment_dead_zone_type[i]) || !isdefined(weapon.model) || level.equipment_dead_zone_type[i] == weapon.model)
+      if(!isDefined(level.equipment_dead_zone_type[i]) || !isDefined(weapon.model) || level.equipment_dead_zone_type[i] == weapon.model)
         return 0;
     }
   }
@@ -231,7 +231,7 @@ claymore_watch_swipes() {
   self notify("claymore_watch_swipes");
   self endon("claymore_watch_swipes");
 
-  while (true) {
+  while(true) {
     self waittill("weapon_change", weapon);
 
     if(is_placeable_mine(weapon)) {
@@ -246,7 +246,7 @@ watch_melee_swipes(weapname) {
   self endon("death");
   self endon("disconnect");
 
-  while (true) {
+  while(true) {
     self waittill("melee_swipe", zombie);
     self.mine_damage++;
 
@@ -261,7 +261,7 @@ watch_melee_swipes(weapname) {
           self setweaponammoclip(weapname, ammo - 1);
           primaryweapons = self getweaponslistprimaries();
 
-          if(isdefined(primaryweapons[0]))
+          if(isDefined(primaryweapons[0]))
             self switchtoweapon(primaryweapons[0]);
         }
       } else

@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\zm_transit_dr.gsc
-***************************************/
+**************************************/
 
 #include common_scripts\utility;
 #include maps\mp\_utility;
@@ -83,11 +83,12 @@ transit_standard_intermission() {
   points = getstructarray("intermission", "targetname");
   point = undefined;
 
-  if(!isdefined(points) || points.size == 0) {
+  if(!isDefined(points) || points.size == 0) {
     points = getentarray("info_intermission", "classname");
 
     if(points.size < 1) {
       println("NO info_intermission POINTS IN MAP");
+
       return;
     }
   }
@@ -103,20 +104,20 @@ transit_standard_intermission() {
   self.game_over_bg.alpha = 1;
   org = undefined;
 
-  while (true) {
+  while(true) {
     foreach(struct in points) {
-      if(isdefined(struct.script_string) && struct.script_string == level.scr_zm_map_start_location)
+      if(isDefined(struct.script_string) && struct.script_string == level.scr_zm_map_start_location)
         point = struct;
     }
 
-    if(!isdefined(point))
+    if(!isDefined(point))
       point = points[0];
 
-    if(!isdefined(org))
+    if(!isDefined(org))
       self spawn(point.origin, point.angles);
 
-    if(isdefined(point.target)) {
-      if(!isdefined(org)) {
+    if(isDefined(point.target)) {
+      if(!isDefined(org)) {
         org = spawn("script_model", self.origin + vectorscale((0, 0, -1), 60.0));
         org setmodel("tag_origin");
       }
@@ -124,7 +125,7 @@ transit_standard_intermission() {
       org.origin = point.origin;
       org.angles = point.angles;
 
-      for (j = 0; j < get_players().size; j++) {
+      for(j = 0; j < get_players().size; j++) {
         player = get_players()[j];
         player camerasetposition(org);
         player camerasetlookat();
@@ -133,7 +134,7 @@ transit_standard_intermission() {
 
       speed = 20;
 
-      if(isdefined(point.speed))
+      if(isDefined(point.speed))
         speed = point.speed;
 
       target_point = getstruct(point.target, "targetname");
@@ -168,7 +169,7 @@ zturned_preinit() {
 createfx_callback() {
   ents = getentarray();
 
-  for (i = 0; i < ents.size; i++) {
+  for(i = 0; i < ents.size; i++) {
     if(ents[i].classname != "info_player_start")
       ents[i] delete();
   }
@@ -187,7 +188,7 @@ main() {
   level.zombiemode = 1;
   level._no_water_risers = 1;
 
-  if(!isdefined(level.zombie_surfing_kills)) {
+  if(!isDefined(level.zombie_surfing_kills)) {
     level.zombie_surfing_kills = 1;
     level.zombie_surfing_kill_count = 6;
   }
@@ -233,7 +234,7 @@ main() {
   level.legacy_cymbal_monkey = 1;
   maps\mp\zombies\_zm_weap_cymbal_monkey::init();
 
-  if(!isdefined(level.vsmgr_prio_overlay_zm_transit_burn))
+  if(!isDefined(level.vsmgr_prio_overlay_zm_transit_burn))
     level.vsmgr_prio_overlay_zm_transit_burn = 20;
 
   maps\mp\_visionset_mgr::vsmgr_register_info("overlay", "zm_transit_burn", 1, level.vsmgr_prio_overlay_zm_transit_burn, 15, 1, maps\mp\_visionset_mgr::vsmgr_duration_lerp_thread_per_player, 0);
@@ -248,8 +249,10 @@ main() {
   level thread maps\mp\zm_transit_dr_ffotd::main_end();
   flag_wait("start_zombie_round_logic");
   level notify("players_done_connecting");
+
   execdevgui("devgui_zombie_transit_dr");
   level.custom_devgui = ::zombie_transit_dr_devgui;
+
   level thread set_transit_wind();
   level.speed_change_round = 15;
   level.speed_change_max = 5;
@@ -261,11 +264,9 @@ setup_rex_starts() {
 }
 
 dummy() {
-
 }
 
 init_clientflags() {
-
 }
 
 set_player_in_fog(onoff) {
@@ -276,14 +277,14 @@ set_player_in_fog(onoff) {
 }
 
 transit_breadcrumb_store_func(store_crumb) {
-  if(isdefined(self.isonbus) && self.isonbus)
+  if(isDefined(self.isonbus) && self.isonbus)
     return 0;
 
   return store_crumb;
 }
 
 post_first_init() {
-  while (!isdefined(anim.notfirsttime))
+  while(!isDefined(anim.notfirsttime))
     wait 0.5;
 
   anim.meleerange = 36;
@@ -308,9 +309,9 @@ precache_team_characters() {
 precache_survival_barricade_assets() {
   survival_barricades = getstructarray("game_mode_object");
 
-  for (i = 0; i < survival_barricades.size; i++) {
-    if(isdefined(survival_barricades[i].script_string) && survival_barricades[i].script_string == "survival") {
-      if(isdefined(survival_barricades[i].script_parameters))
+  for(i = 0; i < survival_barricades.size; i++) {
+    if(isDefined(survival_barricades[i].script_string) && survival_barricades[i].script_string == "survival") {
+      if(isDefined(survival_barricades[i].script_parameters))
         precachemodel(survival_barricades[i].script_parameters);
     }
   }
@@ -318,6 +319,7 @@ precache_survival_barricade_assets() {
 
 initcharacterstartindex() {
   level.characterstartindex = 0;
+
   forcecharacter = getdvarint(#"_id_FEE4CB69");
 
   if(forcecharacter != 0)
@@ -328,7 +330,7 @@ give_team_characters() {
   self detachall();
   self set_player_is_female(0);
 
-  if(!isdefined(self.characterindex))
+  if(!isDefined(self.characterindex))
     self.characterindex = 1;
 
   self setmodel("c_zom_player_cdc_dlc1_fb");
@@ -432,7 +434,7 @@ transit_intermission() {
   self.game_over_bg setshader("black", 640, 480);
   self.game_over_bg.alpha = 1;
 
-  if(!isdefined(level.the_bus)) {
+  if(!isDefined(level.the_bus)) {
     self.game_over_bg fadeovertime(1);
     self.game_over_bg.alpha = 0;
     wait 5;
@@ -475,7 +477,7 @@ transit_intermission() {
 
     players = get_players();
 
-    for (j = 0; j < players.size; j++) {
+    for(j = 0; j < players.size; j++) {
       player = players[j];
       player camerasetposition(org);
       player camerasetlookat();
@@ -666,7 +668,6 @@ custom_add_weapons() {
 }
 
 include_game_modules() {
-
 }
 
 initial_round_wait_func() {
@@ -695,7 +696,7 @@ assign_lowest_unused_character_index() {
     return charindexarray[0];
   } else if(players.size == 2) {
     foreach(player in players) {
-      if(isdefined(player.characterindex)) {
+      if(isDefined(player.characterindex)) {
         if(player.characterindex == 2 || player.characterindex == 0) {
           if(randomint(100) > 50)
             return 1;
@@ -711,7 +712,7 @@ assign_lowest_unused_character_index() {
     }
   } else {
     foreach(player in players) {
-      if(isdefined(player.characterindex))
+      if(isDefined(player.characterindex))
         arrayremovevalue(charindexarray, player.characterindex, 0);
     }
 
@@ -748,12 +749,13 @@ zombie_transit_dr_devgui(cmd) {
     default:
       break;
   }
+
 }
 
 less_time() {
   level.time_to_add = 30000.0;
 
-  if(!isdefined(level.time_to_remove))
+  if(!isDefined(level.time_to_remove))
     level.time_to_remove = 60000;
   else
     level.time_to_remove = level.time_to_remove * 2;
@@ -767,7 +769,7 @@ less_time() {
 more_time() {
   level.time_to_remove = 30000.0;
 
-  if(!isdefined(level.time_to_add))
+  if(!isDefined(level.time_to_add))
     level.time_to_add = 60000;
   else
     level.time_to_add = level.time_to_add * 2;

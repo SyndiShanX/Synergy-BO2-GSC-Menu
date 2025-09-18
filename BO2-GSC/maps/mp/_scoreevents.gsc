@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\_scoreevents.gsc
-***************************************/
+**************************************/
 
 #include maps\mp\_utility;
 #include common_scripts\utility;
@@ -48,17 +48,17 @@ getxpeventcolumn(gametype) {
 getcolumnoffsetforgametype(gametype) {
   foundgamemode = 0;
 
-  if(!isdefined(level.scoreeventtableid))
+  if(!isDefined(level.scoreeventtableid))
     level.scoreeventtableid = getscoreeventtableid();
 
-  assert(isdefined(level.scoreeventtableid));
+  assert(isDefined(level.scoreeventtableid));
 
-  if(!isdefined(level.scoreeventtableid))
+  if(!isDefined(level.scoreeventtableid))
     return -1;
 
   gamemodecolumn = 11;
 
-  for (;;) {
+  for(;;) {
     column_header = tablelookupcolumnforrow(level.scoreeventtableid, 0, gamemodecolumn);
 
     if(column_header == "") {
@@ -82,7 +82,7 @@ getscoreeventtableid() {
   scoreinfotableloaded = 0;
   scoreinfotableid = tablelookupfindcoreasset("mp/scoreInfo.csv");
 
-  if(isdefined(scoreinfotableid))
+  if(isDefined(scoreinfotableid))
     scoreinfotableloaded = 1;
 
   assert(scoreinfotableloaded, "Score Event Table is not loaded: " + "mp/scoreInfo.csv");
@@ -90,14 +90,14 @@ getscoreeventtableid() {
 }
 
 isregisteredevent(type) {
-  if(isdefined(level.scoreinfo[type]))
+  if(isDefined(level.scoreinfo[type]))
     return true;
   else
     return false;
 }
 
 shouldaddrankxp(player) {
-  if(!isdefined(level.rankcap) || level.rankcap == 0)
+  if(!isDefined(level.rankcap) || level.rankcap == 0)
     return true;
 
   if(player.pers["plevel"] > 0 || player.pers["rank"] > level.rankcap)
@@ -112,6 +112,7 @@ processscoreevent(event, player, victim, weapon) {
 
   if(!isplayer(player)) {
     assertmsg("processScoreEvent called on non player entity: " + event);
+
     return scoregiven;
   }
 
@@ -120,7 +121,7 @@ processscoreevent(event, player, victim, weapon) {
   if(isregisteredevent(event)) {
     allowplayerscore = 0;
 
-    if(!isdefined(weapon) || maps\mp\killstreaks\_killstreaks::iskillstreakweapon(weapon) == 0)
+    if(!isDefined(weapon) || maps\mp\killstreaks\_killstreaks::iskillstreakweapon(weapon) == 0)
       allowplayerscore = 1;
     else
       allowplayerscore = maps\mp\gametypes\_rank::killstreakweaponsallowedscore(event);
@@ -139,7 +140,7 @@ processscoreevent(event, player, victim, weapon) {
 }
 
 registerscoreeventcallback(callback, func) {
-  if(!isdefined(level.scoreeventcallbacks[callback]))
+  if(!isDefined(level.scoreeventcallbacks[callback]))
     level.scoreeventcallbacks[callback] = [];
 
   level.scoreeventcallbacks[callback][level.scoreeventcallbacks[callback].size] = func;
@@ -157,7 +158,7 @@ scoreeventplayerkill(data, time) {
   wasonground = data.victimonground;
   meansofdeath = data.smeansofdeath;
 
-  if(isdefined(data.sweapon)) {
+  if(isDefined(data.sweapon)) {
     weapon = data.sweapon;
     weaponclass = getweaponclass(data.sweapon);
     killstreak = getkillstreakfromweapon(data.sweapon);
@@ -166,30 +167,30 @@ scoreeventplayerkill(data, time) {
   victim.anglesondeath = victim getplayerangles();
 
   if(meansofdeath == "MOD_GRENADE" || meansofdeath == "MOD_GRENADE_SPLASH" || meansofdeath == "MOD_EXPLOSIVE" || meansofdeath == "MOD_EXPLOSIVE_SPLASH" || meansofdeath == "MOD_PROJECTILE" || meansofdeath == "MOD_PROJECTILE_SPLASH") {
-    if(weapon == "none" && isdefined(data.victim.explosiveinfo["weapon"]))
+    if(weapon == "none" && isDefined(data.victim.explosiveinfo["weapon"]))
       weapon = data.victim.explosiveinfo["weapon"];
   }
 
   if(level.teambased) {
     attacker.lastkilltime = time;
 
-    if(isdefined(victim.lastkilltime) && victim.lastkilltime > time - 3000) {
-      if(isdefined(victim.lastkilledplayer) && victim.lastkilledplayer isenemyplayer(attacker) == 0 && attacker != victim.lastkilledplayer) {
+    if(isDefined(victim.lastkilltime) && victim.lastkilltime > time - 3000) {
+      if(isDefined(victim.lastkilledplayer) && victim.lastkilledplayer isenemyplayer(attacker) == 0 && attacker != victim.lastkilledplayer) {
         processscoreevent("kill_enemy_who_killed_teammate", attacker, victim, weapon);
         victim recordkillmodifier("avenger");
       }
     }
 
-    if(isdefined(victim.damagedplayers)) {
+    if(isDefined(victim.damagedplayers)) {
       keys = getarraykeys(victim.damagedplayers);
 
-      for (i = 0; i < keys.size; i++) {
+      for(i = 0; i < keys.size; i++) {
         key = keys[i];
 
         if(key == attacker.clientid) {
           continue;
         }
-        if(!isdefined(victim.damagedplayers[key].entity)) {
+        if(!isDefined(victim.damagedplayers[key].entity)) {
           continue;
         }
         if(attacker isenemyplayer(victim.damagedplayers[key].entity)) {
@@ -198,7 +199,7 @@ scoreeventplayerkill(data, time) {
         if(time - victim.damagedplayers[key].time < 1000) {
           processscoreevent("kill_enemy_injuring_teammate", attacker, victim, weapon);
 
-          if(isdefined(victim.damagedplayers[key].entity)) {
+          if(isDefined(victim.damagedplayers[key].entity)) {
             victim.damagedplayers[key].entity.lastrescuedby = attacker;
             victim.damagedplayers[key].entity.lastrescuedtime = time;
           }
@@ -215,7 +216,7 @@ scoreeventplayerkill(data, time) {
       attacker.tomahawks = attacker.pers["tomahawks"];
       processscoreevent("hatchet_kill", attacker, victim, weapon);
 
-      if(isdefined(data.victim.explosiveinfo["projectile_bounced"]) && data.victim.explosiveinfo["projectile_bounced"] == 1) {
+      if(isDefined(data.victim.explosiveinfo["projectile_bounced"]) && data.victim.explosiveinfo["projectile_bounced"] == 1) {
         level.globalbankshots++;
         processscoreevent("bounce_hatchet_kill", attacker, victim, weapon);
       }
@@ -237,7 +238,7 @@ scoreeventplayerkill(data, time) {
       break;
   }
 
-  if(isdefined(data.victimweapon)) {
+  if(isDefined(data.victimweapon)) {
     if(data.victimweapon == "minigun_mp")
       processscoreevent("killed_death_machine_enemy", attacker, victim, weapon);
     else if(data.victimweapon == "m32_mp")
@@ -250,7 +251,7 @@ scoreeventplayerkill(data, time) {
     victim recordkillmodifier("firstblood");
     processscoreevent("first_kill", attacker, victim, weapon);
   } else {
-    if(isdefined(attacker.lastkilledby)) {
+    if(isDefined(attacker.lastkilledby)) {
       if(attacker.lastkilledby == victim) {
         level.globalpaybacks++;
         processscoreevent("revenge_kill", attacker, victim, weapon);
@@ -266,16 +267,16 @@ scoreeventplayerkill(data, time) {
       victim recordkillmodifier("buzzkill");
     }
 
-    if(isdefined(victim.lastmansd) && victim.lastmansd == 1) {
+    if(isDefined(victim.lastmansd) && victim.lastmansd == 1) {
       processscoreevent("final_kill_elimination", attacker, victim, weapon);
 
-      if(isdefined(attacker.lastmansd) && attacker.lastmansd == 1)
+      if(isDefined(attacker.lastmansd) && attacker.lastmansd == 1)
         processscoreevent("elimination_and_last_player_alive", attacker, victim, weapon);
     }
   }
 
   if(is_weapon_valid(meansofdeath, weapon, weaponclass)) {
-    if(isdefined(victim.vattackerorigin))
+    if(isDefined(victim.vattackerorigin))
       attackerorigin = victim.vattackerorigin;
     else
       attackerorigin = attacker.origin;
@@ -306,7 +307,7 @@ scoreeventplayerkill(data, time) {
       if(attacker hasperk("specialty_bulletflinch"))
         attacker addplayerstat("perk_bulletflinch_kills", 1);
     }
-  } else if(isdefined(attacker.deathtime) && attacker.deathtime + 800 < time && !attacker isinvehicle()) {
+  } else if(isDefined(attacker.deathtime) && attacker.deathtime + 800 < time && !attacker isinvehicle()) {
     level.globalafterlifes++;
     processscoreevent("kill_enemy_after_death", attacker, victim, weapon);
     victim recordkillmodifier("posthumous");
@@ -318,11 +319,11 @@ scoreeventplayerkill(data, time) {
     victim recordkillmodifier("comeback");
   }
 
-  if(isdefined(victim.beingmicrowavedby) && weapon != "microwave_turret_mp") {
+  if(isDefined(victim.beingmicrowavedby) && weapon != "microwave_turret_mp") {
     if(victim.beingmicrowavedby != attacker && attacker isenemyplayer(victim.beingmicrowavedby) == 0) {
       scoregiven = processscoreevent("microwave_turret_assist", victim.beingmicrowavedby, victim, weapon);
 
-      if(isdefined(scoregiven) && isdefined(victim.beingmicrowavedby))
+      if(isDefined(scoregiven) && isDefined(victim.beingmicrowavedby))
         victim.beingmicrowavedby maps\mp\_challenges::earnedmicrowaveassistscore(scoregiven);
     } else
       attacker maps\mp\_challenges::killwhiledamagingwithhpm();
@@ -343,21 +344,21 @@ scoreeventplayerkill(data, time) {
       attacker.backstabs = attacker.pers["backstabs"];
     }
   } else {
-    if(isdefined(victim.firsttimedamaged) && victim.firsttimedamaged == time) {
+    if(isDefined(victim.firsttimedamaged) && victim.firsttimedamaged == time) {
       if(weaponclass == "weapon_sniper") {
         attacker thread updateoneshotmultikills(victim, weapon, victim.firsttimedamaged);
         attacker addweaponstat(weapon, "kill_enemy_one_bullet", 1);
       }
     }
 
-    if(isdefined(attacker.tookweaponfrom[weapon]) && isdefined(attacker.tookweaponfrom[weapon].previousowner)) {
+    if(isDefined(attacker.tookweaponfrom[weapon]) && isDefined(attacker.tookweaponfrom[weapon].previousowner)) {
       pickedupweapon = attacker.tookweaponfrom[weapon];
 
       if(pickedupweapon.previousowner == victim) {
         processscoreevent("kill_enemy_with_their_weapon", attacker, victim, weapon);
         attacker addweaponstat(weapon, "kill_enemy_with_their_weapon", 1);
 
-        if(isdefined(pickedupweapon.sweapon) && isdefined(pickedupweapon.smeansofdeath)) {
+        if(isDefined(pickedupweapon.sweapon) && isDefined(pickedupweapon.smeansofdeath)) {
           if(pickedupweapon.sweapon == "knife_held_mp" && pickedupweapon.smeansofdeath == "MOD_MELEE")
             attacker addweaponstat("knife_held_mp", "kill_enemy_with_their_weapon", 1);
         }
@@ -372,14 +373,14 @@ scoreeventplayerkill(data, time) {
 
   specificweaponkill(attacker, victim, weapon, killstreak);
 
-  if(!isdefined(killstreak) && isdefined(attacker.dtptime) && attacker.dtptime + 5000 > time) {
+  if(!isDefined(killstreak) && isDefined(attacker.dtptime) && attacker.dtptime + 5000 > time) {
     attacker.dtptime = 0;
 
     if(attacker getstance() == "prone")
       processscoreevent("kill_enemy_recent_dive_prone", attacker, self, weapon);
   }
 
-  if(isdefined(killstreak))
+  if(isDefined(killstreak))
     victim recordkillmodifier("killstreak");
 
   attacker.cur_death_streak = 0;
@@ -389,13 +390,13 @@ scoreeventplayerkill(data, time) {
 specificweaponkill(attacker, victim, weapon, killstreak) {
   switchweapon = weapon;
 
-  if(isdefined(killstreak))
+  if(isDefined(killstreak))
     switchweapon = killstreak;
 
   switch (switchweapon) {
     case "crossbow_mp":
     case "explosive_bolt_mp":
-      if(isdefined(victim.explosiveinfo["stuckToPlayer"]) && victim.explosiveinfo["stuckToPlayer"] == victim)
+      if(isDefined(victim.explosiveinfo["stuckToPlayer"]) && victim.explosiveinfo["stuckToPlayer"] == victim)
         event = "crossbow_kill";
       else
         return;
@@ -503,45 +504,45 @@ updatemultikills(weapon, weaponclass, killstreak) {
   self endon("updateRecentKills");
   baseweaponname = getreffromitemindex(getbaseweaponitemindex(weapon)) + "_mp";
 
-  if(!isdefined(self.recentkillcount))
+  if(!isDefined(self.recentkillcount))
     self.recentkillcount = 0;
 
-  if(!isdefined(self.recentkillcountweapon) || self.recentkillcountweapon != baseweaponname) {
+  if(!isDefined(self.recentkillcountweapon) || self.recentkillcountweapon != baseweaponname) {
     self.recentkillcountsameweapon = 0;
     self.recentkillcountweapon = baseweaponname;
   }
 
-  if(!isdefined(killstreak)) {
+  if(!isDefined(killstreak)) {
     self.recentkillcountsameweapon++;
     self.recentkillcount++;
   }
 
-  if(!isdefined(self.recent_lmg_smg_killcount))
+  if(!isDefined(self.recent_lmg_smg_killcount))
     self.recent_lmg_smg_killcount = 0;
 
-  if(!isdefined(self.recentremotemissilekillcount))
+  if(!isDefined(self.recentremotemissilekillcount))
     self.recentremotemissilekillcount = 0;
 
-  if(!isdefined(self.recentremotemissileattackerkillcount))
+  if(!isDefined(self.recentremotemissileattackerkillcount))
     self.recentremotemissileattackerkillcount = 0;
 
-  if(!isdefined(self.recentrcbombkillcount))
+  if(!isDefined(self.recentrcbombkillcount))
     self.recentrcbombkillcount = 0;
 
-  if(!isdefined(self.recentrcbombattackerkillcount))
+  if(!isDefined(self.recentrcbombattackerkillcount))
     self.recentrcbombattackerkillcount = 0;
 
-  if(!isdefined(self.recentmglkillcount))
+  if(!isDefined(self.recentmglkillcount))
     self.recentmglkillcount = 0;
 
-  if(isdefined(weaponclass)) {
+  if(isDefined(weaponclass)) {
     if(weaponclass == "weapon_lmg" || weaponclass == "weapon_smg") {
       if(self playerads() < 1.0)
         self.recent_lmg_smg_killcount++;
     }
   }
 
-  if(isdefined(killstreak)) {
+  if(isDefined(killstreak)) {
     switch (killstreak) {
       case "remote_missile_mp":
         self.recentremotemissilekillcount++;
@@ -599,7 +600,7 @@ updateoneshotmultikills(victim, weapon, firsttimedamaged) {
   self notify("updateoneshotmultikills" + firsttimedamaged);
   self endon("updateoneshotmultikills" + firsttimedamaged);
 
-  if(!isdefined(self.oneshotmultikills))
+  if(!isDefined(self.oneshotmultikills))
     self.oneshotmultikills = 0;
 
   self.oneshotmultikills++;
@@ -668,7 +669,7 @@ ongameend(data) {
   player = data.player;
   winner = data.winner;
 
-  if(isdefined(winner)) {
+  if(isDefined(winner)) {
     if(level.teambased) {
       if(winner != "tie" && player.team == winner) {
         processscoreevent("won_match", player);
@@ -678,7 +679,7 @@ ongameend(data) {
       placement = level.placement["all"];
       topthreeplayers = min(3, placement.size);
 
-      for (index = 0; index < topthreeplayers; index++) {
+      for(index = 0; index < topthreeplayers; index++) {
         if(level.placement["all"][index] == player) {
           processscoreevent("won_match", player);
           return;

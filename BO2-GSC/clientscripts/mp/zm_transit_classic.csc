@@ -30,7 +30,7 @@ main() {
 }
 
 sidequest_complete_watch() {
-  while (true) {
+  while(true) {
     event = level waittill_any_return("sqm", "sqmc", "sqr", "sqrc");
 
     if(event == "sqm" || event == "sqmc") {
@@ -51,11 +51,11 @@ sidequest_complete_fx(story, skiprunners) {
   electric_struct = getstruct("sq_common_tower_fx", "targetname");
   players = getlocalplayers();
 
-  if(isdefined(electric_struct))
+  if(isDefined(electric_struct))
     level thread sidequest_complete_fx_lightning(electric_struct);
 
-  if(isdefined(electric_structs) && !is_true(skiprunners)) {
-    while (true) {
+  if(isDefined(electric_structs) && !is_true(skiprunners)) {
+    while(true) {
       foreach(struct in electric_structs) {
         thread sidequest_complete_fx_runner(story, struct);
         wait(randomfloatrange(0.5, 1));
@@ -70,7 +70,7 @@ sidequest_complete_fx_lightning(electric_struct) {
   level notify("sqkl");
   level endon("sqkl");
 
-  while (true) {
+  while(true) {
     players = getlocalplayers();
 
     foreach(clientnum, player in players)
@@ -83,7 +83,7 @@ sidequest_complete_fx_lightning(electric_struct) {
 sidequest_complete_pyramid_watch() {
   electric_struct = getstruct("sq_common_tower_fx", "targetname");
 
-  while (true) {
+  while(true) {
     event = level waittill_any_return8("zsd", "zsf", "zsb", "zsbd", "zsbt", "zsh", "zsp", "zsc");
     story = level waittill_any_return("sq_max", "sq_rich");
 
@@ -101,7 +101,7 @@ sidequest_complete_fx_triangle_runner(story, event, end_struct) {
   level endon("sq_kmt");
   level endon("sq_krt");
 
-  while (true) {
+  while(true) {
     players = getlocalplayers();
     fxrunners = [];
 
@@ -122,12 +122,12 @@ sidequest_complete_fx_triangle_runner(story, event, end_struct) {
 }
 
 sidequest_complete_fx_runner_move_origins(origin1, origin2) {
-  if(isdefined(origin1)) {
+  if(isDefined(origin1)) {
     self moveto(origin1, 1.4);
     self waittill("movedone");
   }
 
-  if(isdefined(origin2)) {
+  if(isDefined(origin2)) {
     self moveto(origin2, 1.4);
     self waittill("movedone");
   }
@@ -150,13 +150,13 @@ sidequest_complete_fx_runner(story, struct) {
 }
 
 sidequest_complete_fx_runner_move(struct) {
-  while (isdefined(struct.target)) {
+  while(isDefined(struct.target)) {
     struct = getstruct(struct.target, "targetname");
     self moveto(struct.origin, 1.4);
     self waittill("movedone");
   }
 
-  if(isdefined(self))
+  if(isDefined(self))
     self delete();
 }
 
@@ -192,40 +192,40 @@ get_screecher_zone(str) {
 
   structs = getstructarray("screecher_escape", "targetname");
 
-  for (x = 0; x < structs.size; x++) {
-    if(isdefined(structs[x].script_noteworthy) && structs[x].script_noteworthy == key)
+  for(x = 0; x < structs.size; x++) {
+    if(isDefined(structs[x].script_noteworthy) && structs[x].script_noteworthy == key)
       return structs[x];
   }
 }
 
 waittill_any_return8(string1, string2, string3, string4, string5, string6, string7, string8) {
-  if((!isdefined(string1) || string1 != "death") && (!isdefined(string2) || string2 != "death") && (!isdefined(string3) || string3 != "death") && (!isdefined(string4) || string4 != "death") && (!isdefined(string5) || string5 != "death") && (!isdefined(string6) || string6 != "death") && (!isdefined(string7) || string7 != "death") && (!isdefined(string8) || string8 != "death"))
+  if((!isDefined(string1) || string1 != "death") && (!isDefined(string2) || string2 != "death") && (!isDefined(string3) || string3 != "death") && (!isDefined(string4) || string4 != "death") && (!isDefined(string5) || string5 != "death") && (!isDefined(string6) || string6 != "death") && (!isDefined(string7) || string7 != "death") && (!isDefined(string8) || string8 != "death"))
     self endon("death");
 
   ent = spawnstruct();
 
-  if(isdefined(string1))
+  if(isDefined(string1))
     self thread waittill_string(string1, ent);
 
-  if(isdefined(string2))
+  if(isDefined(string2))
     self thread waittill_string(string2, ent);
 
-  if(isdefined(string3))
+  if(isDefined(string3))
     self thread waittill_string(string3, ent);
 
-  if(isdefined(string4))
+  if(isDefined(string4))
     self thread waittill_string(string4, ent);
 
-  if(isdefined(string5))
+  if(isDefined(string5))
     self thread waittill_string(string5, ent);
 
-  if(isdefined(string6))
+  if(isDefined(string6))
     self thread waittill_string(string6, ent);
 
-  if(isdefined(string7))
+  if(isDefined(string7))
     self thread waittill_string(string7, ent);
 
-  if(isdefined(string8))
+  if(isDefined(string8))
     self thread waittill_string(string8, ent);
 
   ent waittill("returned", msg);

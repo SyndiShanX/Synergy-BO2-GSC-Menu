@@ -14,8 +14,8 @@ spawned(localclientnum) {
   self endon("entityshutdown");
   self waittill_dobj(localclientnum);
 
-  while (true) {
-    if(isdefined(self.stunned) && self.stunned) {
+  while(true) {
+    if(isDefined(self.stunned) && self.stunned) {
       wait 0.1;
       continue;
     }

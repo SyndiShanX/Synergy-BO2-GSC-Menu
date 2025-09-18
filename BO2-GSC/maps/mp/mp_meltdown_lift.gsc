@@ -15,14 +15,14 @@ init() {
   trigger = getent("lift_trigger", "targetname");
   platform = getent("lift_platform", "targetname");
 
-  if(!isdefined(trigger) || !isdefined(platform)) {
+  if(!isDefined(trigger) || !isDefined(platform)) {
     return;
   }
   trigger enablelinkto();
   trigger linkto(platform);
   part = getent("lift_part", "targetname");
 
-  if(isdefined(part))
+  if(isDefined(part))
     part linkto(platform);
 
   level thread lift_think(trigger, platform);
@@ -32,7 +32,7 @@ lift_think(trigger, platform) {
   level waittill("prematch_over");
   location = 0;
 
-  for (;;) {
+  for(;;) {
     trigger sethintstring(&"MP_LIFT_OPERATE");
     trigger waittill("trigger");
     trigger sethintstring(&"MP_LIFT_COOLDOWN");
@@ -60,7 +60,7 @@ lift_move_think(goal) {
   timer = 5;
   self moveto(goal, 5);
 
-  while (timer >= 0) {
+  while(timer >= 0) {
     self destroy_equipment();
     self destroy_tactical_insertions();
     self destroy_supply_crates();
@@ -80,13 +80,13 @@ lift_auto_lower_think() {
 destroy_equipment() {
   grenades = getentarray("grenade", "classname");
 
-  for (i = 0; i < grenades.size; i++) {
+  for(i = 0; i < grenades.size; i++) {
     item = grenades[i];
 
-    if(!isdefined(item.name)) {
+    if(!isDefined(item.name)) {
       continue;
     }
-    if(!isdefined(item.owner)) {
+    if(!isDefined(item.owner)) {
       continue;
     }
     if(!isweaponequipment(item.name)) {
@@ -97,7 +97,7 @@ destroy_equipment() {
     }
     watcher = item.owner getwatcherforweapon(item.name);
 
-    if(!isdefined(watcher)) {
+    if(!isDefined(watcher)) {
       continue;
     }
     watcher thread maps\mp\gametypes\_weaponobjects::waitanddetonate(item, 0.0, undefined);
@@ -107,10 +107,10 @@ destroy_equipment() {
 destroy_tactical_insertions() {
   players = get_players();
 
-  for (i = 0; i < players.size; i++) {
+  for(i = 0; i < players.size; i++) {
     player = players[i];
 
-    if(!isdefined(player.tacticalinsertion)) {
+    if(!isDefined(player.tacticalinsertion)) {
       continue;
     }
     if(player.tacticalinsertion istouching(self))
@@ -121,7 +121,7 @@ destroy_tactical_insertions() {
 destroy_supply_crates() {
   crates = getentarray("care_package", "script_noteworthy");
 
-  for (i = 0; i < crates.size; i++) {
+  for(i = 0; i < crates.size; i++) {
     crate = crates[i];
 
     if(crate istouching(self)) {
@@ -136,7 +136,7 @@ destroy_supply_crates() {
 destroy_corpses() {
   corpses = getcorpsearray();
 
-  for (i = 0; i < corpses.size; i++) {
+  for(i = 0; i < corpses.size; i++) {
     if(distance2dsquared(corpses[i].origin, self.origin) < 1048576)
       corpses[i] delete();
   }
@@ -147,7 +147,7 @@ destroy_stuck_weapons() {
   origin = self getpointinbounds(0.0, 0.0, -0.6);
   z_cutoff = origin[2];
 
-  for (i = 0; i < weapons.size; i++) {
+  for(i = 0; i < weapons.size; i++) {
     weapon = weapons[i];
 
     if(weapon istouching(self) && weapon.origin[2] > z_cutoff)
@@ -156,13 +156,13 @@ destroy_stuck_weapons() {
 }
 
 getwatcherforweapon(weapname) {
-  if(!isdefined(self))
+  if(!isDefined(self))
     return undefined;
 
   if(!isplayer(self))
     return undefined;
 
-  for (i = 0; i < self.weaponobjectwatcherarray.size; i++) {
+  for(i = 0; i < self.weaponobjectwatcherarray.size; i++) {
     if(self.weaponobjectwatcherarray[i].weapon != weapname) {
       continue;
     }

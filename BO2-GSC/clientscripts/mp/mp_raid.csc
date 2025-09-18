@@ -21,5 +21,6 @@ main() {
   setsaveddvar("compassmaxrange", "2100");
   setdvar("tu7_cg_deathCamAboveWater", "8");
   waitforclient(0);
+
   println("*** Client : mp_raid running...");
 }

@@ -11,13 +11,13 @@
 init_traverse() {
   point = getent(self.target, "targetname");
 
-  if(isdefined(point)) {
+  if(isDefined(point)) {
     self.traverse_height = point.origin[2];
     point delete();
   } else {
     point = getstruct(self.target, "targetname");
 
-    if(isdefined(point))
+    if(isDefined(point))
       self.traverse_height = point.origin[2];
   }
 }
@@ -29,7 +29,7 @@ teleportthread(verticaloffset) {
   reps = 5;
   offset = (0, 0, verticaloffset / reps);
 
-  for (i = 0; i < reps; i++) {
+  for(i = 0; i < reps; i++) {
     self teleport(self.origin + offset);
     wait 0.05;
   }
@@ -53,7 +53,7 @@ teleportthreadex(verticaloffset, delay, frames) {
 
   offset = (0, 0, amount);
 
-  for (i = 0; i < frames; i++) {
+  for(i = 0; i < frames; i++) {
     self teleport(self.origin + offset);
     wait 0.05;
   }
@@ -64,10 +64,10 @@ dog_wall_and_window_hop(traversename, height) {
   self traversemode("nogravity");
   self traversemode("noclip");
   startnode = self getnegotiationstartnode();
-  assert(isdefined(startnode));
+  assert(isDefined(startnode));
   self orientmode("face angle", startnode.angles[1]);
 
-  if(isdefined(startnode.traverse_height)) {
+  if(isDefined(startnode.traverse_height)) {
     realheight = startnode.traverse_height - startnode.origin[2];
     self thread teleportthread(realheight - height);
   } else if(height != 36.0)
@@ -84,14 +84,14 @@ dog_jump_down(height, frames, time) {
   self endon("killanimscript");
   self traversemode("noclip");
 
-  if(!isdefined(time))
+  if(!isDefined(time))
     time = 0.3;
 
   startnode = self getnegotiationstartnode();
-  assert(isdefined(startnode));
+  assert(isDefined(startnode));
   self orientmode("face angle", startnode.angles[1]);
 
-  if(isdefined(startnode.traverse_height)) {
+  if(isDefined(startnode.traverse_height)) {
     realheight = startnode.traverse_height - startnode.origin[2];
     self thread teleportthread(realheight - height);
   } else if(height != 40.0)
@@ -109,14 +109,14 @@ dog_jump_down_far(height, frames, time) {
   self endon("killanimscript");
   self traversemode("noclip");
 
-  if(!isdefined(time))
+  if(!isDefined(time))
     time = 0.3;
 
   startnode = self getnegotiationstartnode();
-  assert(isdefined(startnode));
+  assert(isDefined(startnode));
   self orientmode("face angle", startnode.angles[1]);
 
-  if(isdefined(startnode.traverse_height)) {
+  if(isDefined(startnode.traverse_height)) {
     realheight = startnode.traverse_height - startnode.origin[2];
     self thread teleportthread(realheight - height);
   } else if(height != 80.0)
@@ -134,10 +134,10 @@ dog_jump_up(height, frames) {
   self endon("killanimscript");
   self traversemode("noclip");
   startnode = self getnegotiationstartnode();
-  assert(isdefined(startnode));
+  assert(isDefined(startnode));
   self orientmode("face angle", startnode.angles[1]);
 
-  if(isdefined(startnode.traverse_height)) {
+  if(isDefined(startnode.traverse_height)) {
     realheight = startnode.traverse_height - startnode.origin[2];
     self thread teleportthread(realheight - height);
   } else if(height != 40.0)
@@ -157,10 +157,10 @@ dog_jump_up_high(height, frames) {
   self traversemode("nogravity");
   self traversemode("noclip");
   startnode = self getnegotiationstartnode();
-  assert(isdefined(startnode));
+  assert(isDefined(startnode));
   self orientmode("face angle", startnode.angles[1]);
 
-  if(isdefined(startnode.traverse_height)) {
+  if(isDefined(startnode.traverse_height)) {
     realheight = startnode.traverse_height - startnode.origin[2];
     self thread teleportthreadex(height - 80, 0.2, frames);
   } else if(height != 80.0)

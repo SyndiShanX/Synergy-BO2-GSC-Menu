@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\_flashgrenades.gsc
-***************************************/
+**************************************/
 
 #include maps\mp\_utility;
 
@@ -26,7 +26,7 @@ flashrumbleloop(duration) {
   self notify("flash_rumble_loop");
   goaltime = gettime() + duration * 1000;
 
-  while (gettime() < goaltime) {
+  while(gettime() < goaltime) {
     self playrumbleonentity("damage_heavy");
     wait 0.05;
   }
@@ -41,7 +41,7 @@ monitorflash_internal(amount_distance, amount_angle, attacker, direct_on_player)
   else if(amount_angle > 0.8)
     amount_angle = 1;
 
-  if(isdefined(attacker) && attacker == self)
+  if(isDefined(attacker) && attacker == self)
     amount_distance = amount_distance * 0.5;
 
   duration = amount_distance * amount_angle * 6;
@@ -56,13 +56,12 @@ monitorflash_internal(amount_distance, amount_angle, attacker, direct_on_player)
   else
     rumbleduration = 0.25;
 
-  assert(isdefined(self.team));
+  assert(isDefined(self.team));
 
-  if(level.teambased && isdefined(attacker) && isdefined(attacker.team) && attacker.team == self.team && attacker != self) {
+  if(level.teambased && isDefined(attacker) && isDefined(attacker.team) && attacker.team == self.team && attacker != self) {
     if(level.friendlyfire == 0)
       return;
     else if(level.friendlyfire == 1) {
-
     } else if(level.friendlyfire == 2) {
       duration = duration * 0.5;
       rumbleduration = rumbleduration * 0.5;
@@ -101,7 +100,7 @@ monitorflash() {
   self endon("disconnect");
   self.flashendtime = 0;
 
-  while (true) {
+  while(true) {
     self waittill("flashbang", amount_distance, amount_angle, attacker);
 
     if(!isalive(self)) {
@@ -115,11 +114,11 @@ monitorrcbombflash() {
   self endon("death");
   self.flashendtime = 0;
 
-  while (true) {
+  while(true) {
     self waittill("flashbang", amount_distance, amount_angle, attacker);
     driver = self getseatoccupant(0);
 
-    if(!isdefined(driver) || !isalive(driver)) {
+    if(!isDefined(driver) || !isalive(driver)) {
       continue;
     }
     driver monitorflash_internal(amount_distance, amount_angle, attacker, 0);
@@ -127,22 +126,22 @@ monitorrcbombflash() {
 }
 
 applyflash(duration, rumbleduration, attacker) {
-  if(!isdefined(self.flashduration) || duration > self.flashduration)
+  if(!isDefined(self.flashduration) || duration > self.flashduration)
     self.flashduration = duration;
 
-  if(!isdefined(self.flashrumbleduration) || rumbleduration > self.flashrumbleduration)
+  if(!isDefined(self.flashrumbleduration) || rumbleduration > self.flashrumbleduration)
     self.flashrumbleduration = rumbleduration;
 
   self thread playflashsound(duration);
   wait 0.05;
 
-  if(isdefined(self.flashduration)) {
+  if(isDefined(self.flashduration)) {
     self shellshock("flashbang", self.flashduration, 0);
     self.flashendtime = gettime() + self.flashduration * 1000;
     self.lastflashedby = attacker;
   }
 
-  if(isdefined(self.flashrumbleduration))
+  if(isDefined(self.flashrumbleduration))
     self thread flashrumbleloop(self.flashrumbleduration);
 
   self.flashduration = undefined;

@@ -1,7 +1,7 @@
-/************************************************************
+/*******************************************************************
  * Decompiled and Edited by SyndiShanX
  * Script: clientscripts\mp\zombies\_zm_weap_staff_fire.csc
-************************************************************/
+*******************************************************************/
 
 #include clientscripts\mp\_utility;
 #include clientscripts\mp\_fx;
@@ -28,17 +28,17 @@ zombie_fire_fx(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname,
   self endon("entityshutdown");
   rate = randomfloatrange(0.01, 0.015);
 
-  if(isdefined(self.torso_fire_fx)) {
+  if(isDefined(self.torso_fire_fx)) {
     stopfx(localclientnum, self.torso_fire_fx);
     self.torso_fire_fx = undefined;
   }
 
-  if(isdefined(self.head_fire_fx)) {
+  if(isDefined(self.head_fire_fx)) {
     stopfx(localclientnum, self.head_fire_fx);
     self.head_fire_fx = undefined;
   }
 
-  if(isdefined(self.sndent)) {
+  if(isDefined(self.sndent)) {
     self.sndent notify("sndDeleting");
     self.sndent delete();
     self.sndent = undefined;
@@ -60,19 +60,19 @@ zombie_fire_fx(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname,
     max_charamount = 1;
     char_amount = 0.6;
 
-    for (i = 0; i < 2; i++) {
-      for (f = 0.6; f <= 0.85; f = f + rate) {
+    for(i = 0; i < 2; i++) {
+      for(f = 0.6; f <= 0.85; f = f + rate) {
         serverwait(localclientnum, 0.05);
         self setshaderconstant(localclientnum, 2, f, 0, 0, 0);
       }
 
-      for (f = 0.85; f >= 0.6; f = f - rate) {
+      for(f = 0.85; f >= 0.6; f = f - rate) {
         serverwait(localclientnum, 0.05);
         self setshaderconstant(localclientnum, 2, f, 0, 0, 0);
       }
     }
 
-    for (f = 0.6; f <= 1.0; f = f + rate) {
+    for(f = 0.6; f <= 1.0; f = f + rate) {
       serverwait(localclientnum, 0.05);
       self setshaderconstant(localclientnum, 2, f, 0, 0, 0);
     }

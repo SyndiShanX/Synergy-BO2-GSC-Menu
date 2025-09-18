@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\gametypes\conf.gsc
-***************************************/
+**************************************/
 
 #include maps\mp\_utility;
 #include maps\mp\gametypes\_hud_util;
@@ -67,7 +67,7 @@ onprecachegametype() {
 onstartgametype() {
   setclientnamemode("auto_change");
 
-  if(!isdefined(game["switchedsides"]))
+  if(!isDefined(game["switchedsides"]))
     game["switchedsides"] = 0;
 
   if(game["switchedsides"]) {
@@ -124,7 +124,7 @@ onplayerkilled(einflictor, attacker, idamage, smeansofdeath, sweapon, vdir, shit
 }
 
 spawndogtags(victim, attacker) {
-  if(isdefined(level.dogtags[victim.entnum])) {
+  if(isDefined(level.dogtags[victim.entnum])) {
     playfx(level.conf_fx["vanish"], level.dogtags[victim.entnum].curorigin);
     level.dogtags[victim.entnum] notify("reset");
   } else {
@@ -182,7 +182,7 @@ showtoteam(gameobject, team) {
       self showtoplayer(player);
   }
 
-  for (;;) {
+  for(;;) {
     level waittill("joined_team");
     self hide();
 
@@ -206,7 +206,7 @@ showtoenemyteams(gameobject, friend_team) {
       self showtoplayer(player);
   }
 
-  for (;;) {
+  for(;;) {
     level waittill("joined_team");
     self hide();
 
@@ -239,7 +239,7 @@ onuse(player) {
       splash = & "SPLASHES_KILL_DENIED";
     }
 
-    if(isdefined(self.attacker) && self.attacker.team == self.attackerteam) {
+    if(isDefined(self.attacker) && self.attacker.team == self.attackerteam) {
       self.attacker luinotifyevent(&"player_callout", 2, & "MP_KILL_DENIED", player.entnum);
       self.attacker playlocalsound(game["dialog"]["kc_denied"]);
     }
@@ -256,8 +256,9 @@ onuse(player) {
     splash = & "SPLASHES_KILL_CONFIRMED";
     player addplayerstat("KILLSCONFIRMED", 1);
     player recordgameevent("capture");
-    assert(isdefined(player.lastkillconfirmedtime));
-    assert(isdefined(player.lastkillconfirmedcount));
+
+    assert(isDefined(player.lastkillconfirmedtime));
+    assert(isDefined(player.lastkillconfirmedcount));
 
     if(self.attacker != player)
       self.attacker thread onpickup("teammate_kill_confirmed", splash);
@@ -292,7 +293,7 @@ onpickup(event, splash) {
   level endon("game_ended");
   self endon("disconnect");
 
-  while (!isdefined(self.pers))
+  while(!isDefined(self.pers))
     wait 0.05;
 
   maps\mp\_scoreevents::processscoreevent(event, self);
@@ -319,7 +320,7 @@ bounce() {
   bottompos = self.curorigin;
   toppos = self.curorigin + vectorscale((0, 0, 1), 12.0);
 
-  while (true) {
+  while(true) {
     self.visuals[0] moveto(toppos, 0.5, 0.15, 0.15);
     self.visuals[0] rotateyaw(180, 0.5);
     self.visuals[1] moveto(toppos, 0.5, 0.15, 0.15);
@@ -353,7 +354,7 @@ tagteamupdater(tags) {
   level endon("game_ended");
   self endon("disconnect");
 
-  while (true) {
+  while(true) {
     self waittill("joined_team");
     tags.victimteam = self.team;
     tags resettags();
@@ -365,17 +366,17 @@ clearonvictimdisconnect(victim) {
   guid = victim.entnum;
   victim waittill("disconnect");
 
-  if(isdefined(level.dogtags[guid])) {
+  if(isDefined(level.dogtags[guid])) {
     level.dogtags[guid] maps\mp\gametypes\_gameobjects::allowuse("none");
     playfx(level.conf_fx["vanish"], level.dogtags[guid].curorigin);
     level.dogtags[guid] notify("reset");
     wait 0.05;
 
-    if(isdefined(level.dogtags[guid])) {
+    if(isDefined(level.dogtags[guid])) {
       objective_delete(level.dogtags[guid].objid);
       level.dogtags[guid].trigger delete();
 
-      for (i = 0; i < level.dogtags[guid].visuals.size; i++)
+      for(i = 0; i < level.dogtags[guid].visuals.size; i++)
         level.dogtags[guid].visuals[i] delete();
 
       level.dogtags[guid] notify("deleted");
@@ -395,7 +396,7 @@ onspawnplayerunified() {
   maps\mp\gametypes\_spawning::onspawnplayer_unified();
 
   if(level.rankedmatch || level.leaguematch) {
-    if(isdefined(self.tacticalinsertiontime) && self.tacticalinsertiontime + 100 > gettime()) {
+    if(isDefined(self.tacticalinsertiontime) && self.tacticalinsertiontime + 100 > gettime()) {
       mindist = level.antiboostdistance;
       mindistsqr = mindist * mindist;
       distsqr = distancesquared(self.origin, level.dogtags[self.entnum].curorigin);

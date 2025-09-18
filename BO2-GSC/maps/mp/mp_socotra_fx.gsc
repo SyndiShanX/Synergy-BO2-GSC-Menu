@@ -1,18 +1,16 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\mp_socotra_fx.gsc
-***************************************/
+**************************************/
 
 #include maps\mp\_utility;
 #include maps\mp\createfx\mp_socotra_fx;
 #include maps\mp\createart\mp_socotra_art;
 
 precache_util_fx() {
-
 }
 
 precache_scripted_fx() {
-
 }
 
 #using_animtree("fxanim_props");

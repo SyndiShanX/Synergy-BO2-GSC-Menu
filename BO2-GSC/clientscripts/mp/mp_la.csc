@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: clientscripts\mp\mp_la.csc
-***************************************/
+**************************************/
 
 #include clientscripts\mp\_utility;
 #include clientscripts\mp\_teamset_seals;
@@ -25,13 +25,14 @@ main() {
   setsaveddvar("compassmaxrange", "2100");
   setsaveddvar("sm_sunsamplesizenear", 0.39);
   waitforclient(0);
+
   println("*** Client : mp_la running...");
 }
 
 destructible_car_lights(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname) {
   player = getlocalplayer(localclientnum);
 
-  if(!isdefined(player)) {
+  if(!isDefined(player)) {
     return;
   }
   if(player getinkillcam(localclientnum)) {
@@ -40,7 +41,7 @@ destructible_car_lights(localclientnum, oldval, newval, bnewent, binitialsnap, f
   if(newval) {
     wait(randomfloatrange(0.1, 0.5));
 
-    if(isdefined(self.fx)) {
+    if(isDefined(self.fx)) {
       stopfx(localclientnum, self.fx);
       self.fx = undefined;
     }
@@ -49,7 +50,7 @@ destructible_car_lights(localclientnum, oldval, newval, bnewent, binitialsnap, f
       self.fx = playfxontag(localclientnum, level._effect["fx_light_police_car"], self, "tag_origin");
     else
       self.fx = playfxontag(localclientnum, level._effect["fx_mp_light_ambulance"], self, "tag_origin");
-  } else if(isdefined(self.fx)) {
+  } else if(isDefined(self.fx)) {
     stopfx(localclientnum, self.fx);
     self.fx = undefined;
   }

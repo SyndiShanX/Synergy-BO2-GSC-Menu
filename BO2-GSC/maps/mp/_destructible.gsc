@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\_destructible.gsc
-***************************************/
+**************************************/
 
 #include maps\mp\_utility;
 #include common_scripts\utility;
@@ -19,7 +19,7 @@ init() {
   precacheitem("destructible_car_mp");
   precacheitem("explodable_barrel_mp");
 
-  for (i = 0; i < destructibles.size; i++) {
+  for(i = 0; i < destructibles.size; i++) {
     if(getsubstr(destructibles[i].destructibledef, 0, 4) == "veh_") {
       destructibles[i] thread destructible_car_death_think();
       destructibles[i] thread destructible_car_grenade_stuck_think();
@@ -70,14 +70,14 @@ destructible_event_callback(destructible_event, attacker, weapon) {
     case "destructible_car_explosion":
       self destructible_car_explosion(attacker);
 
-      if(isdefined(weapon))
+      if(isDefined(weapon))
         self.destroyingweapon = weapon;
 
       break;
     case "destructible_car_fire":
       self thread destructible_car_fire_think(attacker);
 
-      if(isdefined(weapon))
+      if(isDefined(weapon))
         self.destroyingweapon = weapon;
 
       break;
@@ -97,7 +97,7 @@ destructible_event_callback(destructible_event, attacker, weapon) {
       break;
   }
 
-  if(isdefined(level.destructible_callbacks[destructible_event]))
+  if(isDefined(level.destructible_callbacks[destructible_event]))
     self thread[[level.destructible_callbacks[destructible_event]]](destructible_event, attacker);
 }
 
@@ -110,7 +110,7 @@ simple_explosion(attacker) {
   self radiusdamage(self.origin + offset, 256, 300, 75, attacker, "MOD_EXPLOSIVE", "explodable_barrel_mp");
   physicsexplosionsphere(self.origin, 255, 254, 0.3, 400, 25);
 
-  if(isdefined(attacker))
+  if(isDefined(attacker))
     self dodamage(self.health + 10000, self.origin + offset, attacker);
   else
     self dodamage(self.health + 10000, self.origin + offset);
@@ -122,7 +122,7 @@ simple_timed_explosion(destructible_event, attacker) {
   str = getsubstr(destructible_event, 23);
   tokens = strtok(str, "_");
 
-  for (i = 0; i < tokens.size; i++)
+  for(i = 0; i < tokens.size; i++)
     wait_times[wait_times.size] = int(tokens[i]);
 
   if(wait_times.size <= 0) {
@@ -137,7 +137,7 @@ simple_timed_explosion(destructible_event, attacker) {
 complex_explosion(attacker, max_radius) {
   offset = vectorscale((0, 0, 1), 5.0);
 
-  if(isdefined(attacker))
+  if(isDefined(attacker))
     self radiusdamage(self.origin + offset, max_radius, 300, 100, attacker);
   else
     self radiusdamage(self.origin + offset, max_radius, 300, 100);
@@ -146,7 +146,7 @@ complex_explosion(attacker, max_radius) {
   earthquake(0.5, 0.5, self.origin, max_radius);
   physicsexplosionsphere(self.origin + offset, max_radius, max_radius - 1, 0.3);
 
-  if(isdefined(attacker))
+  if(isDefined(attacker))
     self dodamage(20000, self.origin + offset, attacker);
   else
     self dodamage(20000, self.origin + offset);
@@ -156,15 +156,15 @@ destructible_car_explosion(attacker, physics_explosion) {
   if(self.car_dead) {
     return;
   }
-  if(!isdefined(physics_explosion))
+  if(!isDefined(physics_explosion))
     physics_explosion = 1;
 
   players = get_players();
 
-  for (i = 0; i < players.size; i++) {
+  for(i = 0; i < players.size; i++) {
     body = players[i].body;
 
-    if(!isdefined(body)) {
+    if(!isDefined(body)) {
       continue;
     }
     if(distancesquared(body.origin, self.origin) > 9216) {
@@ -180,7 +180,7 @@ destructible_car_explosion(attacker, physics_explosion) {
   self.car_dead = 1;
   self thread destructible_car_explosion_animate();
 
-  if(isdefined(attacker))
+  if(isDefined(attacker))
     self radiusdamage(self.origin, 256, 300, 75, attacker, "MOD_EXPLOSIVE", "destructible_car_mp");
   else
     self radiusdamage(self.origin, 256, 300, 75);
@@ -191,12 +191,12 @@ destructible_car_explosion(attacker, physics_explosion) {
   if(physics_explosion)
     physicsexplosionsphere(self.origin, 255, 254, 0.3, 400, 25);
 
-  if(isdefined(attacker))
+  if(isDefined(attacker))
     attacker thread maps\mp\_challenges::destroyed_car();
 
   level.globalcarsdestroyed++;
 
-  if(isdefined(attacker))
+  if(isDefined(attacker))
     self dodamage(self.health + 10000, self.origin + (0, 0, 1), attacker);
   else
     self dodamage(self.health + 10000, self.origin + (0, 0, 1));
@@ -208,10 +208,10 @@ destructible_tank_grenade_stuck_think() {
   self endon("destructible_base_piece_death");
   self endon("death");
 
-  for (;;) {
+  for(;;) {
     self waittill("grenade_stuck", missile);
 
-    if(!isdefined(missile) || !isdefined(missile.model)) {
+    if(!isDefined(missile) || !isDefined(missile.model)) {
       continue;
     }
     if(missile.model == "t5_weapon_crossbow_bolt" || missile.model == "t6_wpn_grenade_semtex_projectile" || missile.model == "t6_wpn_c4_world")
@@ -224,7 +224,7 @@ destructible_tank_grenade_stuck_explode(missile) {
   self endon("death");
   owner = getmissileowner(missile);
 
-  if(isdefined(owner) && missile.model == "t6_wpn_c4_world") {
+  if(isDefined(owner) && missile.model == "t6_wpn_c4_world") {
     owner endon("disconnect");
     owner endon("weapon_object_destroyed");
     missile endon("picked_up");
@@ -233,7 +233,7 @@ destructible_tank_grenade_stuck_explode(missile) {
 
   missile waittill("explode");
 
-  if(isdefined(owner))
+  if(isDefined(owner))
     self dodamage(self.health + 10000, self.origin + (0, 0, 1), owner);
   else
     self dodamage(self.health + 10000, self.origin + (0, 0, 1));
@@ -254,7 +254,7 @@ destructible_car_death_think() {
   self thread destructible_car_death_notify();
   self waittill("destructible_base_piece_death", attacker);
 
-  if(isdefined(self))
+  if(isDefined(self))
     self thread destructible_car_explosion(attacker, 0);
 }
 
@@ -263,10 +263,10 @@ destructible_car_grenade_stuck_think() {
   self endon("car_dead");
   self endon("death");
 
-  for (;;) {
+  for(;;) {
     self waittill("grenade_stuck", missile);
 
-    if(!isdefined(missile) || !isdefined(missile.model)) {
+    if(!isDefined(missile) || !isDefined(missile.model)) {
       continue;
     }
     if(missile.model == "t5_weapon_crossbow_bolt" || missile.model == "t6_wpn_grenade_semtex_projectile" || missile.model == "t6_wpn_c4_world")
@@ -280,7 +280,7 @@ destructible_car_grenade_stuck_explode(missile) {
   self endon("death");
   owner = getmissileowner(missile);
 
-  if(isdefined(owner) && missile.model == "t6_wpn_c4_world") {
+  if(isDefined(owner) && missile.model == "t6_wpn_c4_world") {
     owner endon("disconnect");
     owner endon("weapon_object_destroyed");
     missile endon("picked_up");
@@ -289,7 +289,7 @@ destructible_car_grenade_stuck_explode(missile) {
 
   missile waittill("explode");
 
-  if(isdefined(owner))
+  if(isDefined(owner))
     self dodamage(self.health + 10000, self.origin + (0, 0, 1), owner);
   else
     self dodamage(self.health + 10000, self.origin + (0, 0, 1));
@@ -318,7 +318,7 @@ destructible_car_explosion_animate() {
   wait 0.3;
   items = getdroppedweapons();
 
-  for (i = 0; i < items.size; i++) {
+  for(i = 0; i < items.size; i++) {
     if(distancesquared(end_origin, items[i].origin) < 16384) {
       if(items[i].origin[2] - (end_origin[2] + 32) > 0)
         items[i] delete();
@@ -361,7 +361,7 @@ destructible_barrel_death_think() {
   self endon("barrel_dead");
   self waittill("death", attacker);
 
-  if(isdefined(self))
+  if(isDefined(self))
     self thread destructible_barrel_explosion(attacker, 0);
 }
 
@@ -374,12 +374,12 @@ destructible_barrel_fire_think(attacker) {
 }
 
 destructible_barrel_explosion(attacker, physics_explosion) {
-  if(!isdefined(physics_explosion))
+  if(!isDefined(physics_explosion))
     physics_explosion = 1;
 
   self notify("barrel_dead");
 
-  if(isdefined(self.target)) {
+  if(isDefined(self.target)) {
     dest_clip = getent(self.target, "targetname");
     dest_clip delete();
   }

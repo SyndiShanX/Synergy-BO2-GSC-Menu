@@ -7,7 +7,7 @@
 #include maps\mp\gametypes\_deathicons;
 
 init() {
-  if(!isdefined(level.ragdoll_override))
+  if(!isDefined(level.ragdoll_override))
     level.ragdoll_override = ::ragdoll_override;
 
   if(!level.teambased) {
@@ -18,14 +18,13 @@ init() {
 }
 
 onplayerconnect() {
-  for (;;) {
+  for(;;) {
     level waittill("connecting", player);
     player.selfdeathicons = [];
   }
 }
 
 updatedeathiconsenabled() {
-
 }
 
 adddeathicon(entity, dyingplayer, team, timeout) {
@@ -37,7 +36,7 @@ adddeathicon(entity, dyingplayer, team, timeout) {
   dyingplayer endon("disconnect");
   wait 0.05;
   maps\mp\gametypes\_globallogic_utils::waittillslowprocessallowed();
-  assert(isdefined(level.teams[team]));
+  assert(isDefined(level.teams[team]));
 
   if(getdvar(#"_id_F83E8105") == "0") {
     return;
@@ -45,7 +44,7 @@ adddeathicon(entity, dyingplayer, team, timeout) {
   if(level.hardcoremode) {
     return;
   }
-  if(isdefined(self.lastdeathicon))
+  if(isDefined(self.lastdeathicon))
     self.lastdeathicon destroy();
 
   newdeathicon = newteamhudelem(team);
@@ -78,7 +77,7 @@ ragdoll_override(idamage, smeansofdeath, sweapon, shitloc, vdir, vattackerorigin
   if(smeansofdeath == "MOD_FALLING" && self isonground() == 1) {
     body startragdoll();
 
-    if(!isdefined(self.switching_teams))
+    if(!isDefined(self.switching_teams))
       thread maps\mp\gametypes\_deathicons::adddeathicon(body, self, self.team, 5.0);
 
     return true;

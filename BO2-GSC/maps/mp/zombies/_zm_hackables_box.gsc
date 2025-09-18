@@ -14,7 +14,7 @@
 box_hacks() {
   boxes = getstructarray("treasure_chest_use", "targetname");
 
-  for (i = 0; i < boxes.size; i++) {
+  for(i = 0; i < boxes.size; i++) {
     box = boxes[i];
     box.box_hacks["respin"] = ::init_box_respin;
     box.box_hacks["respin_respin"] = ::init_box_respin_respin;
@@ -29,9 +29,9 @@ box_hacks() {
 }
 
 custom_check_firesale_loc_valid_func() {
-  if(isdefined(self.unitrigger_stub))
+  if(isDefined(self.unitrigger_stub))
     box = self.unitrigger_stub.trigger_target;
-  else if(isdefined(self.stub))
+  else if(isDefined(self.stub))
     box = self.stub.trigger_target;
 
   if(box.last_hacked_round >= level.round_number)
@@ -43,7 +43,7 @@ custom_check_firesale_loc_valid_func() {
 custom_box_move_logic() {
   num_hacked_locs = 0;
 
-  for (i = 0; i < level.chests.size; i++) {
+  for(i = 0; i < level.chests.size; i++) {
     if(level.chests[i].last_hacked_round >= level.round_number)
       num_hacked_locs++;
   }
@@ -56,7 +56,7 @@ custom_box_move_logic() {
   found_loc = 0;
   original_spot = level.chest_index;
 
-  while (!found_loc) {
+  while(!found_loc) {
     level.chest_index++;
 
     if(original_spot == level.chest_index)
@@ -74,7 +74,7 @@ check_for_free_locations(chance) {
   stored_chance = chance;
   chance = -1;
 
-  for (i = 0; i < boxes.size; i++) {
+  for(i = 0; i < boxes.size; i++) {
     if(i == level.chest_index) {
       continue;
     }
@@ -107,7 +107,7 @@ box_respin_think(chest, player) {
 }
 
 respin_box_thread(hacker) {
-  if(isdefined(self.chest.zbarrier.weapon_model))
+  if(isDefined(self.chest.zbarrier.weapon_model))
     self.chest.zbarrier.weapon_model notify("kill_respin_think_thread");
 
   self.chest.no_fly_away = 1;
@@ -131,7 +131,7 @@ respin_box(hacker) {
 }
 
 hack_box_qualifier(player) {
-  if(player == self.chest.chest_user && isdefined(self.chest.weapon_out))
+  if(player == self.chest.chest_user && isDefined(self.chest.weapon_out))
     return true;
 
   return false;
@@ -159,13 +159,13 @@ box_respin_respin_think(chest, player) {
 respin_respin_box(hacker) {
   org = self.chest.zbarrier.origin;
 
-  if(isdefined(self.chest.zbarrier.weapon_model)) {
+  if(isDefined(self.chest.zbarrier.weapon_model)) {
     self.chest.zbarrier.weapon_model notify("kill_respin_respin_think_thread");
     self.chest.zbarrier.weapon_model notify("kill_weapon_movement");
     self.chest.zbarrier.weapon_model moveto(org + vectorscale((0, 0, 1), 40.0), 0.5);
   }
 
-  if(isdefined(self.chest.zbarrier.weapon_model_dw)) {
+  if(isDefined(self.chest.zbarrier.weapon_model_dw)) {
     self.chest.zbarrier.weapon_model_dw notify("kill_weapon_movement");
     self.chest.zbarrier.weapon_model_dw moveto(org + vectorscale((0, 0, 1), 40.0) - vectorscale((1, 1, 1), 3.0), 0.5);
   }
@@ -182,7 +182,7 @@ fake_weapon_powerup_thread(weapon1, weapon2) {
   weapon1 playloopsound("zmb_spawn_powerup_loop");
   self thread fake_weapon_powerup_timeout(weapon1, weapon2);
 
-  while (isdefined(weapon1)) {
+  while(isDefined(weapon1)) {
     waittime = randomfloatrange(2.5, 5);
     yaw = randomint(360);
 
@@ -194,7 +194,7 @@ fake_weapon_powerup_thread(weapon1, weapon2) {
     yaw = weapon1.angles[1] + yaw;
     weapon1 rotateto((-60 + randomint(120), yaw, -45 + randomint(90)), waittime, waittime * 0.5, waittime * 0.5);
 
-    if(isdefined(weapon2))
+    if(isDefined(weapon2))
       weapon2 rotateto((-60 + randomint(120), yaw, -45 + randomint(90)), waittime, waittime * 0.5, waittime * 0.5);
 
     wait(randomfloat(waittime - 0.1));
@@ -205,16 +205,16 @@ fake_weapon_powerup_timeout(weapon1, weapon2) {
   weapon1 endon("death");
   wait 15;
 
-  for (i = 0; i < 40; i++) {
+  for(i = 0; i < 40; i++) {
     if(i % 2) {
       weapon1 hide();
 
-      if(isdefined(weapon2))
+      if(isDefined(weapon2))
         weapon2 hide();
     } else {
       weapon1 show();
 
-      if(isdefined(weapon2))
+      if(isDefined(weapon2))
         weapon2 hide();
     }
 
@@ -233,17 +233,17 @@ fake_weapon_powerup_timeout(weapon1, weapon2) {
 
   self.chest notify("trigger", level);
 
-  if(isdefined(weapon1))
+  if(isDefined(weapon1))
     weapon1 delete();
 
-  if(isdefined(weapon2))
+  if(isDefined(weapon2))
     weapon2 delete();
 }
 
 init_summon_hacks() {
   chests = getstructarray("treasure_chest_use", "targetname");
 
-  for (i = 0; i < chests.size; i++) {
+  for(i = 0; i < chests.size; i++) {
     chest = chests[i];
     chest init_summon_box(chest.hidden);
   }
@@ -251,7 +251,7 @@ init_summon_hacks() {
 
 init_summon_box(create) {
   if(create) {
-    if(isdefined(self._summon_hack_struct)) {
+    if(isDefined(self._summon_hack_struct)) {
       maps\mp\zombies\_zm_equip_hacker::deregister_hackable_struct(self._summon_hack_struct);
       self._summon_hack_struct = undefined;
     }
@@ -266,7 +266,7 @@ init_summon_box(create) {
     struct.chest = self;
     self._summon_hack_struct = struct;
     maps\mp\zombies\_zm_equip_hacker::register_pooled_hackable_struct(struct, ::summon_box, ::summon_box_qualifier);
-  } else if(isdefined(self._summon_hack_struct)) {
+  } else if(isDefined(self._summon_hack_struct)) {
     maps\mp\zombies\_zm_equip_hacker::deregister_hackable_struct(self._summon_hack_struct);
     self._summon_hack_struct = undefined;
   }
@@ -293,7 +293,7 @@ summon_box_thread(hacker) {
 summon_box(hacker) {
   self thread summon_box_thread(hacker);
 
-  if(isdefined(hacker))
+  if(isDefined(hacker))
     hacker thread maps\mp\zombies\_zm_audio::create_and_play_dialog("general", "hack_box");
 }
 
@@ -301,7 +301,7 @@ summon_box_qualifier(player) {
   if(self.chest.last_hacked_round > level.round_number)
     return false;
 
-  if(isdefined(self.chest.zbarrier.chest_moving) && self.chest.zbarrier.chest_moving)
+  if(isDefined(self.chest.zbarrier.chest_moving) && self.chest.zbarrier.chest_moving)
     return false;
 
   return true;

@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\_global_fx.gsc
-***************************************/
+**************************************/
 
 #include common_scripts\utility;
 #include maps\mp\_utility;
@@ -22,24 +22,24 @@ main() {
 global_fx(targetname, fxname, fxfile, delay, soundalias) {
   ents = getstructarray(targetname, "targetname");
 
-  if(!isdefined(ents)) {
+  if(!isDefined(ents)) {
     return;
   }
   if(ents.size <= 0) {
     return;
   }
-  for (i = 0; i < ents.size; i++)
+  for(i = 0; i < ents.size; i++)
     ents[i] global_fx_create(fxname, fxfile, delay, soundalias);
 }
 
 global_fx_create(fxname, fxfile, delay, soundalias) {
-  if(!isdefined(level._effect))
+  if(!isDefined(level._effect))
     level._effect = [];
 
-  if(!isdefined(level._effect[fxname]))
+  if(!isDefined(level._effect[fxname]))
     level._effect[fxname] = loadfx(fxfile);
 
-  if(!isdefined(self.angles))
+  if(!isDefined(self.angles))
     self.angles = (0, 0, 0);
 
   ent = createoneshoteffect(fxname);
@@ -48,6 +48,6 @@ global_fx_create(fxname, fxfile, delay, soundalias) {
   ent.v["fxid"] = fxname;
   ent.v["delay"] = delay;
 
-  if(isdefined(soundalias))
+  if(isDefined(soundalias))
     ent.v["soundalias"] = soundalias;
 }

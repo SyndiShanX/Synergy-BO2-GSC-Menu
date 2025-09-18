@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: codescripts\struct.csc
-***************************************/
+**************************************/
 
 initstructs() {
   level.struct = [];
@@ -14,7 +14,7 @@ createstruct() {
 }
 
 findstruct(position) {
-  for (i = 0; i < level.struct.size; i++) {
+  for(i = 0; i < level.struct.size; i++) {
     if(distancesquared(level.struct[i].origin, position) < 1)
       return level.struct[i];
   }

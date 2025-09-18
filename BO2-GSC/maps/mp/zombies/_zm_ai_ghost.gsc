@@ -18,11 +18,6 @@
 #include maps\mp\zombies\_zm_weap_time_bomb;
 #include maps\mp\zombies\_zm_powerups;
 #include maps\mp\zombies\_zm_ai_basic;
-
-precache() {
-
-}
-
 #using_animtree("zm_buried_ghost");
 
 init_animtree() {
@@ -30,7 +25,7 @@ init_animtree() {
 }
 
 precache_fx() {
-  if(!isdefined(level.ghost_effects)) {
+  if(!isDefined(level.ghost_effects)) {
     level.ghost_effects = [];
     level.ghost_effects[1] = loadfx("maps/zombie_buried/fx_buried_ghost_death");
     level.ghost_effects[2] = loadfx("maps/zombie_buried/fx_buried_ghost_drain");
@@ -71,23 +66,25 @@ init() {
   level.zombie_ghost_round_states.round_count = 0;
   level thread ghost_round_presentation_think();
 
-  if(isdefined(level.ghost_round_think_override_func))
+  if(isDefined(level.ghost_round_think_override_func))
     level thread[[level.ghost_round_think_override_func]]();
   else
     level thread ghost_round_think();
 
   level thread player_in_ghost_zone_monitor();
 
-  if(isdefined(level.ghost_zone_spawning_think_override_func))
+  if(isDefined(level.ghost_zone_spawning_think_override_func))
     level thread[[level.ghost_zone_spawning_think_override_func]]();
   else
     level thread ghost_zone_spawning_think();
 
   level thread ghost_vox_think();
   init_time_bomb_ghost_rounds();
+
   level.force_no_ghost = 0;
   level.ghost_devgui_toggle_no_ghost = ::devgui_toggle_no_ghost;
   level.ghost_devgui_warp_to_mansion = ::devgui_warp_to_mansion;
+
   maps\mp\zombies\_zm_ai_ghost_ffotd::ghost_init_end();
 }
 
@@ -110,7 +107,7 @@ init_ghost_spawners() {
 init_ghost_script_move_path_data() {
   level.ghost_script_move_sin = [];
 
-  for (degree = 0; degree < 360; degree = degree + 15)
+  for(degree = 0; degree < 360; degree = degree + 15)
     level.ghost_script_move_sin[level.ghost_script_move_sin.size] = sin(degree);
 }
 
@@ -158,7 +155,7 @@ init_ghost_zone() {
   foreach(room in a_rooms) {
     str_targetname = room.targetname;
 
-    if(!isdefined(level.ghost_rooms[str_targetname])) {
+    if(!isDefined(level.ghost_rooms[str_targetname])) {
       level.ghost_rooms[str_targetname] = spawnstruct();
       level.ghost_rooms[str_targetname].ghost_spawn_locations = [];
       level.ghost_rooms[str_targetname].volumes = [];
@@ -170,18 +167,18 @@ init_ghost_zone() {
         level.ghost_rooms[str_targetname].to_maze = 1;
     }
 
-    assert(isdefined(room.target), "ghost zone with targetname '" + str_targetname + "' is missing spawner target! This is used to pair zones with spawners.");
+    assert(isDefined(room.target), "ghost zone with targetname '" + str_targetname + "' is missing spawner target! This is used to pair zones with spawners.");
     a_ghost_spawn_locations = getstructarray(room.target, "targetname");
     level.ghost_rooms[str_targetname].ghost_spawn_locations = arraycombine(a_ghost_spawn_locations, level.ghost_rooms[str_targetname].ghost_spawn_locations, 0, 0);
     level.ghost_rooms[str_targetname].volumes[level.ghost_rooms[str_targetname].volumes.size] = room;
 
-    if(isdefined(room.script_string))
+    if(isDefined(room.script_string))
       level.ghost_rooms[str_targetname].next_room_names = strtok(room.script_string, " ");
 
-    if(isdefined(room.script_parameters))
+    if(isDefined(room.script_parameters))
       level.ghost_rooms[str_targetname].previous_room_names = strtok(room.script_parameters, " ");
 
-    if(isdefined(room.script_flag))
+    if(isDefined(room.script_flag))
       level.ghost_rooms[str_targetname].flag = room.script_flag;
   }
 }
@@ -198,7 +195,7 @@ register_client_fields() {
 is_player_fully_claimed(player) {
   result = 0;
 
-  if(isdefined(player.ghost_count) && player.ghost_count >= level.zombie_ai_limit_ghost_per_player)
+  if(isDefined(player.ghost_count) && player.ghost_count >= level.zombie_ai_limit_ghost_per_player)
     result = 1;
 
   return result;
@@ -207,15 +204,16 @@ is_player_fully_claimed(player) {
 ghost_zone_spawning_think() {
   level endon("intermission");
 
-  if(isdefined(level.intermission) && level.intermission) {
+  if(isDefined(level.intermission) && level.intermission) {
     return;
   }
-  if(!isdefined(level.female_ghost_spawner)) {
+  if(!isDefined(level.female_ghost_spawner)) {
     assertmsg("No female ghost spawner in the map.Check to see if the zone is active and if it's pointing to spawners.");
+
     return;
   }
 
-  while (true) {
+  while(true) {
     if(level.zombie_ghost_count >= level.zombie_ai_limit_ghost) {
       wait 0.1;
       continue;
@@ -224,13 +222,13 @@ ghost_zone_spawning_think() {
     valid_player_count = 0;
     valid_players = [];
 
-    while (valid_player_count < 1) {
+    while(valid_player_count < 1) {
       players = getplayers();
       valid_player_count = 0;
 
       foreach(player in players) {
         if(is_player_valid(player) && !is_player_fully_claimed(player)) {
-          if(isdefined(player.is_in_ghost_zone) && player.is_in_ghost_zone || is_ghost_round_started() && (isdefined(level.zombie_ghost_round_states.any_player_in_ghost_zone) && level.zombie_ghost_round_states.any_player_in_ghost_zone)) {
+          if(isDefined(player.is_in_ghost_zone) && player.is_in_ghost_zone || is_ghost_round_started() && (isDefined(level.zombie_ghost_round_states.any_player_in_ghost_zone) && level.zombie_ghost_round_states.any_player_in_ghost_zone)) {
             valid_player_count++;
             valid_players[valid_players.size] = player;
           }
@@ -243,34 +241,39 @@ ghost_zone_spawning_think() {
     valid_players = array_randomize(valid_players);
     spawn_point = get_best_spawn_point(valid_players[0]);
 
-    if(!isdefined(spawn_point)) {
+    if(!isDefined(spawn_point)) {
       wait 0.1;
       continue;
     }
 
-    if(isdefined(level.force_no_ghost) && level.force_no_ghost) {
+    if(isDefined(level.force_no_ghost) && level.force_no_ghost) {
       wait 0.1;
       continue;
     }
+
     ghost_ai = undefined;
 
-    if(isdefined(level.female_ghost_spawner))
+    if(isDefined(level.female_ghost_spawner))
       ghost_ai = spawn_zombie(level.female_ghost_spawner, level.female_ghost_spawner.targetname, spawn_point);
     else {
       assertmsg("No female ghost spawner in the map.");
+
       return;
     }
 
-    if(isdefined(ghost_ai)) {
+    if(isDefined(ghost_ai)) {
       ghost_ai setclientfield("ghost_fx", 3);
       ghost_ai.spawn_point = spawn_point;
       ghost_ai.is_ghost = 1;
       ghost_ai.is_spawned_in_ghost_zone = 1;
       ghost_ai.find_target = 1;
       level.zombie_ghost_count++;
+
       ghost_print("ghost total " + level.zombie_ghost_count);
+
     } else {
       assertmsg("Female ghost: failed spawn");
+
       return;
     }
 
@@ -290,7 +293,7 @@ is_player_in_ghost_room(player, room) {
 is_player_in_ghost_rooms(player, room_names) {
   result = 0;
 
-  if(isdefined(room_names)) {
+  if(isDefined(room_names)) {
     foreach(room_name in room_names) {
       next_room = level.ghost_rooms[room_name];
 
@@ -311,14 +314,15 @@ player_in_ghost_zone_monitor() {
   if(level.intermission) {
     return;
   }
-  while (true) {
-    if(isdefined(level.zombie_ghost_round_states.any_player_in_ghost_zone) && level.zombie_ghost_round_states.any_player_in_ghost_zone) {
+  while(true) {
+    if(isDefined(level.zombie_ghost_round_states.any_player_in_ghost_zone) && level.zombie_ghost_round_states.any_player_in_ghost_zone) {
       players = getplayers();
 
       foreach(player in players) {
-        if(is_player_valid(player) && (isdefined(player.is_in_ghost_zone) && player.is_in_ghost_zone)) {
-          if(isdefined(player.current_ghost_room_name)) {
+        if(is_player_valid(player) && (isDefined(player.is_in_ghost_zone) && player.is_in_ghost_zone)) {
+          if(isDefined(player.current_ghost_room_name)) {
             current_room = level.ghost_rooms[player.current_ghost_room_name];
+
             foreach(ghost_location in current_room.ghost_spawn_locations)
             draw_debug_star(ghost_location.origin, (0, 0, 1), 2);
 
@@ -361,7 +365,7 @@ is_any_player_near_point(target, spawn_pos) {
 }
 
 is_in_start_area() {
-  if(isdefined(level.ghost_start_area) && self istouching(level.ghost_start_area))
+  if(isDefined(level.ghost_start_area) && self istouching(level.ghost_start_area))
     return true;
 
   return false;
@@ -370,8 +374,8 @@ is_in_start_area() {
 get_best_spawn_point(player) {
   spawn_point = undefined;
 
-  if(isdefined(player.is_in_ghost_zone) && player.is_in_ghost_zone) {
-    if(isdefined(player.current_ghost_room_name)) {
+  if(isDefined(player.is_in_ghost_zone) && player.is_in_ghost_zone) {
+    if(isDefined(player.current_ghost_room_name)) {
       min_distance_squared = 9600 * 9600;
       selected_locations = [];
       current_ghost_room_name = player.current_ghost_room_name;
@@ -380,7 +384,7 @@ get_best_spawn_point(player) {
         player_eye_pos = player geteyeapprox();
         line_of_sight = sighttracepassed(player_eye_pos, ghost_location.origin, 0, self);
 
-        if(!(isdefined(line_of_sight) && line_of_sight)) {
+        if(!(isDefined(line_of_sight) && line_of_sight)) {
           if(!self is_any_player_near_point(player, ghost_location.origin))
             selected_locations[selected_locations.size] = ghost_location;
         }
@@ -388,12 +392,14 @@ get_best_spawn_point(player) {
 
       if(selected_locations.size > 0) {
         selected_location = selected_locations[randomint(selected_locations.size)];
+
         draw_debug_line(player.origin, selected_location.origin, (0, 1, 0), 10, 0);
+
         return selected_location;
       }
     }
-  } else if(is_ghost_round_started() && (isdefined(level.zombie_ghost_round_states.any_player_in_ghost_zone) && level.zombie_ghost_round_states.any_player_in_ghost_zone)) {
-    if(isdefined(player.current_ghost_room_name) && player.current_ghost_room_name == level.ghost_entry_room_to_maze) {
+  } else if(is_ghost_round_started() && (isDefined(level.zombie_ghost_round_states.any_player_in_ghost_zone) && level.zombie_ghost_round_states.any_player_in_ghost_zone)) {
+    if(isDefined(player.current_ghost_room_name) && player.current_ghost_room_name == level.ghost_entry_room_to_maze) {
       random_index = randomint(level.ghost_back_standing_locations.size);
       return level.ghost_back_standing_locations[random_index];
     } else if(player is_in_start_area()) {
@@ -423,7 +429,7 @@ check_players_in_ghost_zone() {
 player_in_ghost_zone(player) {
   result = 0;
 
-  if(isdefined(level.is_player_in_ghost_zone))
+  if(isDefined(level.is_player_in_ghost_zone))
     result = [
       [level.is_player_in_ghost_zone]
     ](player);
@@ -436,15 +442,15 @@ ghost_vox_think() {
   level endon("end_game");
   level endon("intermission");
 
-  if(isdefined(level.intermission) && level.intermission) {
+  if(isDefined(level.intermission) && level.intermission) {
     return;
   }
-  while (true) {
+  while(true) {
     ghosts = get_current_ghosts();
 
     if(ghosts.size > 0) {
       foreach(ghost in ghosts) {
-        if(isdefined(ghost.favoriteenemy) && !(isdefined(ghost.favoriteenemy.ghost_talking) && ghost.favoriteenemy.ghost_talking))
+        if(isDefined(ghost.favoriteenemy) && !(isDefined(ghost.favoriteenemy.ghost_talking) && ghost.favoriteenemy.ghost_talking))
           ghost thread ghost_talk_to_target(ghost.favoriteenemy);
       }
     }
@@ -492,10 +498,10 @@ prespawn() {
   self setphysparams(15, 0, 72);
   self.cant_melee = 1;
 
-  if(isdefined(self.spawn_point)) {
+  if(isDefined(self.spawn_point)) {
     spot = self.spawn_point;
 
-    if(!isdefined(spot.angles))
+    if(!isDefined(spot.angles))
       spot.angles = (0, 0, 0);
 
     self forceteleport(spot.origin, spot.angles);
@@ -518,14 +524,14 @@ prespawn() {
   self.forcemovementscriptstate = 0;
   self maps\mp\zombies\_zm_spawner::zombie_setup_attack_properties();
 
-  if(isdefined(self.is_spawned_in_ghost_zone) && self.is_spawned_in_ghost_zone)
+  if(isDefined(self.is_spawned_in_ghost_zone) && self.is_spawned_in_ghost_zone)
     self.pathenemyfightdist = 0;
 
   self maps\mp\zombies\_zm_spawner::zombie_complete_emerging_into_playable_area();
   self setfreecameralockonallowed(0);
   self.startinglocation = self.origin;
 
-  if(isdefined(level.ghost_custom_think_logic))
+  if(isDefined(level.ghost_custom_think_logic))
     self[[level.ghost_custom_think_logic]]();
 
   self.bad_path_failsafe = maps\mp\zombies\_zm_ai_ghost_ffotd::ghost_bad_path_failsafe;
@@ -541,9 +547,9 @@ prespawn() {
 bookcase_entering_callback(bookcase_door) {
   self endon("death");
 
-  while (true) {
-    if(isdefined(bookcase_door._door_open) && bookcase_door._door_open) {
-      if(isdefined(bookcase_door.door_moving) && bookcase_door.door_moving) {
+  while(true) {
+    if(isDefined(bookcase_door._door_open) && bookcase_door._door_open) {
+      if(isDefined(bookcase_door.door_moving) && bookcase_door.door_moving) {
         self.need_wait = 1;
         wait 2.1;
         self.need_wait = 0;
@@ -600,7 +606,7 @@ prepare_to_die() {
 }
 
 ghost_reset_anim() {
-  if(!isdefined(self)) {
+  if(!isDefined(self)) {
     return;
   }
   animstate = self getanimstatefromasd();
@@ -615,7 +621,7 @@ ghost_reset_anim() {
 wait_ghost_ghost(time) {
   wait(time);
 
-  if(isdefined(self))
+  if(isDefined(self))
     self ghost();
 }
 
@@ -629,7 +635,7 @@ ghost_death_func() {
   self setclientfield("ghost_fx", 1);
   self thread prepare_to_die();
 
-  if(isdefined(self.extra_custom_death_logic))
+  if(isDefined(self.extra_custom_death_logic))
     self thread[[self.extra_custom_death_logic]]();
 
   qrate = self getclientfield("anim_rate");
@@ -637,11 +643,11 @@ ghost_death_func() {
   self thread wait_ghost_ghost(self getanimlengthfromasd("zm_death", 0));
   maps\mp\animscripts\zm_shared::donotetracks("death_anim");
 
-  if(isdefined(self.is_spawned_in_ghost_zone) && self.is_spawned_in_ghost_zone) {
+  if(isDefined(self.is_spawned_in_ghost_zone) && self.is_spawned_in_ghost_zone) {
     level.zombie_ghost_count--;
 
-    if(isdefined(self.favoriteenemy)) {
-      if(isdefined(self.favoriteenemy.ghost_count) && self.favoriteenemy.ghost_count > 0)
+    if(isDefined(self.favoriteenemy)) {
+      if(isDefined(self.favoriteenemy.ghost_count) && self.favoriteenemy.ghost_count > 0)
         self.favoriteenemy.ghost_count--;
     }
   }
@@ -651,12 +657,12 @@ ghost_death_func() {
   if(is_player_valid(self.attacker)) {
     give_player_rewards(self.attacker);
     player = self.attacker;
-  } else if(isdefined(self.attacker) && is_player_valid(self.attacker.owner)) {
+  } else if(isDefined(self.attacker) && is_player_valid(self.attacker.owner)) {
     give_player_rewards(self.attacker.owner);
     player = self.attacker.owner;
   }
 
-  if(isdefined(player)) {
+  if(isDefined(player)) {
     player maps\mp\zombies\_zm_stats::increment_client_stat("buried_ghost_killed", 0);
     player maps\mp\zombies\_zm_stats::increment_player_stat("buried_ghost_killed");
   }
@@ -674,17 +680,16 @@ subwoofer_fling_func(weapon, fling_vec) {
 }
 
 subwoofer_knockdown_func(weapon, gib) {
-
 }
 
 ghost_think() {
   self endon("death");
   level endon("intermission");
 
-  if(isdefined(level.ghost_round_presentation_ghost) && level.ghost_round_presentation_ghost == self) {
+  if(isDefined(level.ghost_round_presentation_ghost) && level.ghost_round_presentation_ghost == self) {
     return;
   }
-  if(isdefined(level.ghost_custom_think_func_logic)) {
+  if(isDefined(level.ghost_custom_think_func_logic)) {
     shouldwait = self[[level.ghost_custom_think_func_logic]]();
 
     if(shouldwait)
@@ -697,17 +702,17 @@ ghost_think() {
   self setclientfield("sndGhostAudio", 1);
   self init_thinking();
 
-  if(isdefined(self.need_script_move) && self.need_script_move)
+  if(isDefined(self.need_script_move) && self.need_script_move)
     self start_script_move();
-  else if(!(isdefined(self.is_spawned_in_ghost_zone) && self.is_spawned_in_ghost_zone) && !(isdefined(self.respawned_by_time_bomb) && self.respawned_by_time_bomb))
+  else if(!(isDefined(self.is_spawned_in_ghost_zone) && self.is_spawned_in_ghost_zone) && !(isDefined(self.respawned_by_time_bomb) && self.respawned_by_time_bomb))
     self start_spawn();
   else
     self start_chase();
 
-  if(isdefined(self.bad_path_failsafe))
+  if(isDefined(self.bad_path_failsafe))
     self thread[[self.bad_path_failsafe]]();
 
-  while (true) {
+  while(true) {
     switch (self.state) {
       case "script_move_update":
         self script_move_update();
@@ -748,7 +753,7 @@ find_flesh() {
   level endon("intermission");
   self endon("stop_find_flesh");
 
-  if(isdefined(level.intermission) && level.intermission) {
+  if(isDefined(level.intermission) && level.intermission) {
     return;
   }
   self.nododgemove = 1;
@@ -756,23 +761,23 @@ find_flesh() {
   self zombie_history("ghost find flesh -> start");
   self.goalradius = 32;
 
-  while (true) {
-    if(isdefined(self.is_spawned_in_ghost_zone) && self.is_spawned_in_ghost_zone) {
-      if(isdefined(self.find_target) && self.find_target) {
+  while(true) {
+    if(isDefined(self.is_spawned_in_ghost_zone) && self.is_spawned_in_ghost_zone) {
+      if(isDefined(self.find_target) && self.find_target) {
         self.favoriteenemy = get_closest_valid_player(self.origin);
         self.find_target = 0;
       }
     } else
       self.favoriteenemy = get_closest_valid_player(self.origin);
 
-    if(isdefined(self.favoriteenemy))
+    if(isDefined(self.favoriteenemy))
       self thread zombie_pathing();
-    else if(isdefined(self.is_spawned_in_ghost_zone) && self.is_spawned_in_ghost_zone)
+    else if(isDefined(self.is_spawned_in_ghost_zone) && self.is_spawned_in_ghost_zone)
       self.find_target = 1;
 
     self.zombie_path_timer = gettime() + randomfloatrange(1, 3) * 1000;
 
-    while (gettime() < self.zombie_path_timer)
+    while(gettime() < self.zombie_path_timer)
       wait 0.1;
 
     self notify("path_timer_done");
@@ -786,27 +791,27 @@ get_closest_valid_player(origin) {
   valid_player_found = 0;
   players = get_players();
 
-  while (!valid_player_found) {
+  while(!valid_player_found) {
     player = get_closest_player(origin, players);
 
-    if(!isdefined(player))
+    if(!isDefined(player))
       return undefined;
 
-    if(isdefined(self.is_spawned_in_ghost_zone) && self.is_spawned_in_ghost_zone) {
+    if(isDefined(self.is_spawned_in_ghost_zone) && self.is_spawned_in_ghost_zone) {
       player_claimed_fully = is_player_fully_claimed(player);
 
       if(players.size == 1 && player_claimed_fully)
         return undefined;
 
-      if(!is_player_valid(player, 1) || !is_ghost_round_started() && !(isdefined(player.is_in_ghost_zone) && player.is_in_ghost_zone) || player_claimed_fully) {
+      if(!is_player_valid(player, 1) || !is_ghost_round_started() && !(isDefined(player.is_in_ghost_zone) && player.is_in_ghost_zone) || player_claimed_fully) {
         arrayremovevalue(players, player);
         continue;
       }
 
-      if(!(isdefined(player.is_in_ghost_zone) && player.is_in_ghost_zone) && !player is_in_start_area())
+      if(!(isDefined(player.is_in_ghost_zone) && player.is_in_ghost_zone) && !player is_in_start_area())
         self.need_script_move = 1;
 
-      if(!isdefined(player.ghost_count))
+      if(!isDefined(player.ghost_count))
         player.ghost_count = 1;
       else
         player.ghost_count = player.ghost_count + 1;
@@ -823,7 +828,7 @@ get_closest_player(origin, players) {
   min_length_to_player = 9999999;
   player_to_return = undefined;
 
-  for (i = 0; i < players.size; i++) {
+  for(i = 0; i < players.size; i++) {
     player = players[i];
     length_to_player = get_path_length_to_enemy(player);
 
@@ -836,7 +841,7 @@ get_closest_player(origin, players) {
     }
   }
 
-  if(!isdefined(player_to_return))
+  if(!isDefined(player_to_return))
     player_to_return = getclosest(origin, players);
 
   return player_to_return;
@@ -863,7 +868,7 @@ start_script_move() {
   if(is_player_valid(player)) {
     start_location = undefined;
 
-    if(isdefined(player.current_ghost_room_name) && player.current_ghost_room_name == level.ghost_entry_room_to_maze)
+    if(isDefined(player.current_ghost_room_name) && player.current_ghost_room_name == level.ghost_entry_room_to_maze)
       start_location = level.ghost_back_flying_out_path_starts[0];
     else
       start_location = level.ghost_front_flying_out_path_starts[0];
@@ -878,19 +883,19 @@ get_best_flying_target_node(player, start_loc) {
   nearest_node = getnearestnode(player.origin);
   nodes = getnodesinradiussorted(player.origin, 540, 180, 60, "Path");
 
-  if(!isdefined(nearest_node) && nodes.size > 0)
+  if(!isDefined(nearest_node) && nodes.size > 0)
     nearest_node = nodes[0];
 
   selected_node = nearest_node;
   max_distance_squared = 0;
   start_pos = (player.origin[0], player.origin[1], player.origin[2] + 60);
 
-  for (i = nodes.size - 1; i >= 0; i--) {
+  for(i = nodes.size - 1; i >= 0; i--) {
     node = nodes[i];
     end_pos = (node.origin[0], node.origin[1], node.origin[2] + 60);
     line_of_sight = sighttracepassed(start_pos, end_pos, 0, player);
 
-    if(isdefined(line_of_sight) && line_of_sight) {
+    if(isDefined(line_of_sight) && line_of_sight) {
       draw_debug_star(node.origin, (0, 0, 1), 100);
 
       if(is_within_view_2d(node.origin, player.origin, player.angles, 0.86)) {
@@ -906,12 +911,12 @@ get_best_flying_target_node(player, start_loc) {
 }
 
 script_move_update() {
-  if(isdefined(self.is_traversing) && self.is_traversing) {
+  if(isDefined(self.is_traversing) && self.is_traversing) {
     return;
   }
   player = self.favoriteenemy;
 
-  if(is_player_valid(player) && isdefined(self.script_move_target_node)) {
+  if(is_player_valid(player) && isDefined(self.script_move_target_node)) {
     desired_angles = vectortoangles(vectornormalize(player.origin - self.origin));
     distance_squared = distancesquared(self.origin, self.script_move_target_node.origin);
 
@@ -939,7 +944,7 @@ script_move_update() {
     } else {
       distance_squared_to_player = distancesquared(self.origin, player.origin);
 
-      if(distance_squared_to_player < 540 && !(isdefined(self.script_mover.search_target_node_again) && self.script_mover.search_target_node_again)) {
+      if(distance_squared_to_player < 540 && !(isDefined(self.script_mover.search_target_node_again) && self.script_mover.search_target_node_again)) {
         self get_best_flying_target_node(player, self.script_move_target_node.origin);
         self.script_mover.search_target_node_again = 1;
       }
@@ -965,7 +970,7 @@ script_move_update() {
 }
 
 remove_script_mover() {
-  if(isdefined(self.script_mover)) {
+  if(isDefined(self.script_mover)) {
     self dontinterpolate();
     self unlink();
     self.script_mover delete();
@@ -980,7 +985,7 @@ start_chase() {
 }
 
 chase_update() {
-  if(isdefined(self.is_traversing) && self.is_traversing) {
+  if(isDefined(self.is_traversing) && self.is_traversing) {
     return;
   }
   player = self.favoriteenemy;
@@ -1005,7 +1010,7 @@ chase_update() {
     player_eye_pos = player geteyeapprox();
     line_of_sight = sighttracepassed(ghost_check_point, player_eye_pos, 0, self);
 
-    if(isdefined(line_of_sight) && line_of_sight && can_drain_points(self.origin, player.origin)) {
+    if(isDefined(line_of_sight) && line_of_sight && can_drain_points(self.origin, player.origin)) {
       self start_drain();
       return;
     }
@@ -1013,10 +1018,10 @@ chase_update() {
     distsquared = distancesquared(self.origin, player.origin);
 
     if(distsquared > 300 * 300) {
-      if(isdefined(self.is_spawned_in_ghost_zone) && self.is_spawned_in_ghost_zone && (isdefined(player.is_in_ghost_zone) && player.is_in_ghost_zone) && isdefined(player.current_ghost_room_name)) {
+      if(isDefined(self.is_spawned_in_ghost_zone) && self.is_spawned_in_ghost_zone && (isDefined(player.is_in_ghost_zone) && player.is_in_ghost_zone) && isDefined(player.current_ghost_room_name)) {
         current_room = level.ghost_rooms[player.current_ghost_room_name];
 
-        if(isdefined(current_room.flag) && current_room.flag == "no_cleanup" || self is_in_close_rooms(current_room) || self is_in_room(current_room) && !self is_following_room_path(player, current_room))
+        if(isDefined(current_room.flag) && current_room.flag == "no_cleanup" || self is_in_close_rooms(current_room) || self is_in_room(current_room) && !self is_following_room_path(player, current_room))
           set_chase_status("run");
         else
           self start_evaporate(1);
@@ -1043,7 +1048,7 @@ chase_update() {
 }
 
 need_wait() {
-  return isdefined(self.need_wait) && self.need_wait;
+  return isDefined(self.need_wait) && self.need_wait;
 }
 
 start_wait() {
@@ -1053,7 +1058,7 @@ start_wait() {
 }
 
 wait_update() {
-  if(isdefined(self.is_traversing) && self.is_traversing) {
+  if(isDefined(self.is_traversing) && self.is_traversing) {
     return;
   }
   player = self.favoriteenemy;
@@ -1063,7 +1068,7 @@ wait_update() {
     player_eye_pos = player geteyeapprox();
     line_of_sight = sighttracepassed(ghost_check_point, player_eye_pos, 0, self);
 
-    if(isdefined(line_of_sight) && line_of_sight && can_drain_points(self.origin, player.origin)) {
+    if(isDefined(line_of_sight) && line_of_sight && can_drain_points(self.origin, player.origin)) {
       self start_drain();
       return;
     }
@@ -1085,11 +1090,11 @@ start_evaporate(need_deletion) {
   self setclientfield("ghost_fx", 5);
   wait 0.1;
 
-  if(isdefined(need_deletion) && need_deletion) {
+  if(isDefined(need_deletion) && need_deletion) {
     level.zombie_ghost_count--;
 
-    if(isdefined(self.favoriteenemy)) {
-      if(isdefined(self.favoriteenemy.ghost_count) && self.favoriteenemy.ghost_count > 0)
+    if(isDefined(self.favoriteenemy)) {
+      if(isDefined(self.favoriteenemy.ghost_count) && self.favoriteenemy.ghost_count > 0)
         self.favoriteenemy.ghost_count--;
     }
 
@@ -1102,13 +1107,13 @@ start_evaporate(need_deletion) {
 }
 
 should_be_deleted_during_evaporate_update(player) {
-  if(!(isdefined(self.is_spawned_in_ghost_zone) && self.is_spawned_in_ghost_zone))
+  if(!(isDefined(self.is_spawned_in_ghost_zone) && self.is_spawned_in_ghost_zone))
     return false;
 
-  if(!isdefined(player))
+  if(!isDefined(player))
     return true;
 
-  if(isdefined(player.sessionstate) && (player.sessionstate == "spectator" || player.sessionstate == "intermission"))
+  if(isDefined(player.sessionstate) && (player.sessionstate == "spectator" || player.sessionstate == "intermission"))
     return true;
 
   return false;
@@ -1203,7 +1208,7 @@ is_in_close_rooms(room) {
 }
 
 is_following_room_path(player, room) {
-  if(isdefined(room.volumes[0].script_angles)) {
+  if(isDefined(room.volumes[0].script_angles)) {
     dot = get_dot_production_2d(player.origin, self.origin, room.volumes[0].script_angles);
 
     if(dot > 0)
@@ -1214,7 +1219,7 @@ is_following_room_path(player, room) {
 }
 
 can_drain_points(self_pos, target_pos) {
-  if(isdefined(self.force_killable) && self.force_killable)
+  if(isDefined(self.force_killable) && self.force_killable)
     return false;
 
   dist = distancesquared(self_pos, target_pos);
@@ -1241,7 +1246,7 @@ start_drain() {
 }
 
 drain_update() {
-  if(isdefined(self.is_traversing) && self.is_traversing) {
+  if(isDefined(self.is_traversing) && self.is_traversing) {
     return;
   }
   player = self.favoriteenemy;
@@ -1253,7 +1258,7 @@ drain_update() {
 
       self orientmode("face enemy");
 
-      if(!(isdefined(self.is_draining) && self.is_draining))
+      if(!(isDefined(self.is_draining) && self.is_draining))
         self thread drain_player(player);
     } else
       self start_chase();
@@ -1305,7 +1310,7 @@ drain_player(player) {
 should_runaway(player) {
   result = 0;
 
-  if(!is_ghost_round_started() && (isdefined(self.is_spawned_in_ghost_zone) && self.is_spawned_in_ghost_zone) && !(isdefined(player.is_in_ghost_zone) && player.is_in_ghost_zone)) {
+  if(!is_ghost_round_started() && (isDefined(self.is_spawned_in_ghost_zone) && self.is_spawned_in_ghost_zone) && !(isDefined(player.is_in_ghost_zone) && player.is_in_ghost_zone)) {
     path_lenth = self getpathlength();
 
     if(path_lenth == 0)
@@ -1333,12 +1338,12 @@ does_reach_runaway_goal() {
 }
 
 runaway_update() {
-  if(isdefined(self.is_traversing) && self.is_traversing) {
+  if(isDefined(self.is_traversing) && self.is_traversing) {
     return;
   }
   player = self.favoriteenemy;
 
-  if(is_player_valid(player) && (is_ghost_round_started() || isdefined(player.is_in_ghost_zone) && player.is_in_ghost_zone)) {
+  if(is_player_valid(player) && (is_ghost_round_started() || isDefined(player.is_in_ghost_zone) && player.is_in_ghost_zone)) {
     self.state = "chase_update";
     return;
   }
@@ -1351,19 +1356,21 @@ runaway_update() {
   if(self does_reach_runaway_goal()) {
     should_delete = 1;
 
-    if(is_ghost_round_started() || !(isdefined(self.is_spawned_in_ghost_zone) && self.is_spawned_in_ghost_zone))
+    if(is_ghost_round_started() || !(isDefined(self.is_spawned_in_ghost_zone) && self.is_spawned_in_ghost_zone))
       should_delete = 0;
 
     self start_evaporate(should_delete);
   } else {
     self setgoalpos(self.startinglocation);
+
     draw_debug_star(self.startinglocation, (0, 0, 1), 1);
     draw_debug_line(self.origin, self.startinglocation, (0, 1, 0), 1, 0);
+
   }
 }
 
 paralyzer_callback(player, upgraded) {
-  if(isdefined(self.ignore_slowgun_anim_rates) && self.ignore_slowgun_anim_rates) {
+  if(isDefined(self.ignore_slowgun_anim_rates) && self.ignore_slowgun_anim_rates) {
     return;
   }
   if(upgraded)
@@ -1383,8 +1390,8 @@ ghost_print(str) {
   if(getdvarint(#"_id_151B6F17")) {
     iprintln("ghost: " + str + "\\n");
 
-    if(isdefined(self)) {
-      if(isdefined(self.debug_msg))
+    if(isDefined(self)) {
+      if(isDefined(self.debug_msg))
         self.debug_msg[self.debug_msg.size] = str;
       else {
         self.debug_msg = [];
@@ -1392,15 +1399,16 @@ ghost_print(str) {
       }
     }
   }
+
 }
 
 ghost_round_think() {
   level endon("intermission");
 
-  if(isdefined(level.intermission) && level.intermission) {
+  if(isDefined(level.intermission) && level.intermission) {
     return;
   }
-  while (true) {
+  while(true) {
     level.zombie_ghost_round_states.any_player_in_ghost_zone = check_players_in_ghost_zone();
 
     if(can_start_ghost_round()) {
@@ -1411,7 +1419,7 @@ ghost_round_think() {
         continue;
       }
 
-      while (true) {
+      while(true) {
         if(can_end_ghost_round()) {
           wait 0.5;
           end_ghost_round();
@@ -1420,10 +1428,10 @@ ghost_round_think() {
 
         level.zombie_ghost_round_states.any_player_in_ghost_zone = check_players_in_ghost_zone();
 
-        if(isdefined(level.ghost_zone_teleport_logic))
+        if(isDefined(level.ghost_zone_teleport_logic))
           [[level.ghost_zone_teleport_logic]]();
 
-        if(isdefined(level.ghost_zone_fountain_teleport_logic))
+        if(isDefined(level.ghost_zone_fountain_teleport_logic))
           [[level.ghost_zone_fountain_teleport_logic]]();
 
         wait 0.1;
@@ -1436,39 +1444,40 @@ ghost_round_think() {
 }
 
 ghost_round_start_conditions_met() {
-  b_conditions_met = isdefined(level.zombie_ghost_round_states.any_player_in_ghost_zone) && level.zombie_ghost_round_states.any_player_in_ghost_zone && !is_ghost_round_started();
+  b_conditions_met = isDefined(level.zombie_ghost_round_states.any_player_in_ghost_zone) && level.zombie_ghost_round_states.any_player_in_ghost_zone && !is_ghost_round_started();
 
-  if(isdefined(level.force_ghost_round_start) && level.force_ghost_round_start || is_ghost_round_started())
+  if(isDefined(level.force_ghost_round_start) && level.force_ghost_round_start || is_ghost_round_started())
     b_conditions_met = 1;
 
   return b_conditions_met;
 }
 
 can_start_ghost_round() {
-  if(isdefined(level.force_no_ghost) && level.force_no_ghost)
+  if(isDefined(level.force_no_ghost) && level.force_no_ghost)
     return 0;
+
   result = 0;
 
-  if(isdefined(level.zombie_ghost_round_states)) {
-    if(!(isdefined(level.zombie_ghost_round_states.is_first_ghost_round_finished) && level.zombie_ghost_round_states.is_first_ghost_round_finished) || level.round_number >= level.zombie_ghost_round_states.next_ghost_round_number)
+  if(isDefined(level.zombie_ghost_round_states)) {
+    if(!(isDefined(level.zombie_ghost_round_states.is_first_ghost_round_finished) && level.zombie_ghost_round_states.is_first_ghost_round_finished) || level.round_number >= level.zombie_ghost_round_states.next_ghost_round_number)
       result = 1;
   }
 
-  if(isdefined(level.force_ghost_round_start) && level.force_ghost_round_start)
+  if(isDefined(level.force_ghost_round_start) && level.force_ghost_round_start)
     result = 1;
 
   return result;
 }
 
 set_ghost_round_number() {
-  if(isdefined(level.zombie_ghost_round_states)) {
+  if(isDefined(level.zombie_ghost_round_states)) {
     level.zombie_ghost_round_states.current_ghost_round_number = level.round_number;
     level.zombie_ghost_round_states.next_ghost_round_number = level.round_number + randomintrange(4, 6);
   }
 }
 
 is_ghost_round_started() {
-  if(isdefined(level.zombie_ghost_round_states))
+  if(isDefined(level.zombie_ghost_round_states))
     return level.zombie_ghost_round_states.is_started;
 
   return 0;
@@ -1515,7 +1524,7 @@ increase_ghost_health() {
 }
 
 enable_ghost_zone_door_ai_clips() {
-  if(isdefined(level.ghost_zone_door_clips) && level.ghost_zone_door_clips.size > 0) {
+  if(isDefined(level.ghost_zone_door_clips) && level.ghost_zone_door_clips.size > 0) {
     foreach(door_clip in level.ghost_zone_door_clips) {
       door_clip solid();
       door_clip disconnectpaths();
@@ -1524,7 +1533,7 @@ enable_ghost_zone_door_ai_clips() {
 }
 
 disable_ghost_zone_door_ai_clips() {
-  if(isdefined(level.ghost_zone_door_clips) && level.ghost_zone_door_clips.size > 0) {
+  if(isDefined(level.ghost_zone_door_clips) && level.ghost_zone_door_clips.size > 0) {
     foreach(door_clip in level.ghost_zone_door_clips) {
       door_clip notsolid();
       door_clip connectpaths();
@@ -1535,20 +1544,20 @@ disable_ghost_zone_door_ai_clips() {
 clear_all_active_zombies() {
   zombies = get_round_enemy_array();
 
-  if(isdefined(zombies)) {
+  if(isDefined(zombies)) {
     level.zombie_ghost_round_states.round_zombie_total = level.zombie_total + zombies.size;
 
     foreach(zombie in zombies) {
-      if(!(isdefined(zombie.is_ghost) && zombie.is_ghost)) {
+      if(!(isDefined(zombie.is_ghost) && zombie.is_ghost)) {
         spawn_point = spawnstruct();
         spawn_point.origin = zombie.origin;
         spawn_point.angles = zombie.angles;
 
-        if(!(isdefined(zombie.completed_emerging_into_playable_area) && zombie.completed_emerging_into_playable_area)) {
-          no_barrier_target = isdefined(zombie.spawn_point) && isdefined(zombie.spawn_point.script_string) && zombie.spawn_point.script_string == "find_flesh";
+        if(!(isDefined(zombie.completed_emerging_into_playable_area) && zombie.completed_emerging_into_playable_area)) {
+          no_barrier_target = isDefined(zombie.spawn_point) && isDefined(zombie.spawn_point.script_string) && zombie.spawn_point.script_string == "find_flesh";
 
           if(no_barrier_target) {
-            if(isdefined(zombie.spawn_point.script_noteworthy) && zombie.spawn_point.script_noteworthy == "faller_location") {
+            if(isDefined(zombie.spawn_point.script_noteworthy) && zombie.spawn_point.script_noteworthy == "faller_location") {
               ground_pos = groundpos_ignore_water_new(zombie.spawn_point.origin);
               spawn_point.origin = ground_pos;
             }
@@ -1556,7 +1565,7 @@ clear_all_active_zombies() {
             origin = zombie.origin;
             desired_origin = zombie get_desired_origin();
 
-            if(isdefined(desired_origin))
+            if(isDefined(desired_origin))
               origin = desired_origin;
 
             nodes = get_array_of_closest(origin, level.exterior_goals, undefined, 1);
@@ -1566,7 +1575,7 @@ clear_all_active_zombies() {
               spawn_point.angles = nodes[0].neg_end.angles;
             }
           }
-        } else if(isdefined(level.sloth) && isdefined(level.sloth.crawler) && zombie == level.sloth.crawler) {
+        } else if(isDefined(level.sloth) && isDefined(level.sloth.crawler) && zombie == level.sloth.crawler) {
           spawn_point.origin = level.sloth.origin;
           spawn_point.angles = level.sloth.angles;
         }
@@ -1583,7 +1592,7 @@ clear_all_active_zombies() {
 }
 
 reset_ghost_round_states() {
-  if(!isdefined(level.zombie_ghost_round_states.round_zombie_total))
+  if(!isDefined(level.zombie_ghost_round_states.round_zombie_total))
     level.zombie_ghost_round_states.round_zombie_total = 0;
 
   level.zombie_ghost_round_states.is_started = 0;
@@ -1605,10 +1614,10 @@ should_restore_zombie_total() {
 }
 
 can_end_ghost_round() {
-  if(isdefined(level.force_ghost_round_end) && level.force_ghost_round_end)
+  if(isDefined(level.force_ghost_round_end) && level.force_ghost_round_end)
     return true;
 
-  if(!(isdefined(level.zombie_ghost_round_states.any_player_in_ghost_zone) && level.zombie_ghost_round_states.any_player_in_ghost_zone) && get_current_ghost_count() <= 0)
+  if(!(isDefined(level.zombie_ghost_round_states.any_player_in_ghost_zone) && level.zombie_ghost_round_states.any_player_in_ghost_zone) && get_current_ghost_count() <= 0)
     return true;
 
   return false;
@@ -1622,7 +1631,7 @@ end_ghost_round() {
     power_up_origin = trace["position"];
     powerup = level thread maps\mp\zombies\_zm_powerups::specific_powerup_drop("free_perk", power_up_origin);
 
-    if(isdefined(powerup))
+    if(isDefined(powerup))
       powerup.ghost_powerup = 1;
 
     level.ghost_round_last_ghost_origin_last = level.ghost_round_last_ghost_origin;
@@ -1633,7 +1642,7 @@ end_ghost_round() {
   enable_ghost_zone_door_ai_clips();
   level notify("ghost_round_end");
 
-  if(isdefined(level.force_ghost_round_end) && level.force_ghost_round_end) {
+  if(isDefined(level.force_ghost_round_end) && level.force_ghost_round_end) {
     level.force_ghost_round_end = undefined;
     return;
   }
@@ -1647,7 +1656,7 @@ should_last_ghost_drop_powerup() {
   if(flag("time_bomb_restore_active"))
     return false;
 
-  if(!isdefined(level.ghost_round_last_ghost_origin))
+  if(!isDefined(level.ghost_round_last_ghost_origin))
     return false;
 
   return true;
@@ -1679,7 +1688,7 @@ sndghostroundready() {
   level endon("sndGhostRoundReady");
   mansion = (2830, 555, 436);
 
-  while (true) {
+  while(true) {
     level waittill("between_round_over");
 
     if(level.zombie_ghost_round_states.next_ghost_round_number == level.round_number) {
@@ -1714,7 +1723,7 @@ check_sending_away_zombie_followers() {
     if(is_player_valid(player)) {
       valid_player_count++;
 
-      if(isdefined(player.is_in_ghost_zone) && player.is_in_ghost_zone) {
+      if(isDefined(player.is_in_ghost_zone) && player.is_in_ghost_zone) {
         valid_player_in_ghost_zone_count++;
         continue;
       }
@@ -1748,7 +1757,7 @@ send_away_zombie_follower(player) {
   endpos = self.origin + vectorscale(awaydir, 600);
   locs = array_randomize(level.enemy_dog_locations);
 
-  for (i = 0; i < locs.size; i++) {
+  for(i = 0; i < locs.size; i++) {
     dist_zombie = distancesquared(locs[i].origin, endpos);
     dist_player = distancesquared(locs[i].origin, player.origin);
 
@@ -1761,7 +1770,7 @@ send_away_zombie_follower(player) {
   self notify("stop_find_flesh");
   self notify("zombie_acquire_enemy");
 
-  if(isdefined(locs[dest]))
+  if(isDefined(locs[dest]))
     self setgoalpos(locs[dest].origin);
 
   wait 5;
@@ -1776,25 +1785,27 @@ outside_ghost_zone_spawning_think() {
   }
   level endon("ghost_round_end");
 
-  if(!isdefined(level.female_ghost_spawner)) {
+  if(!isDefined(level.female_ghost_spawner)) {
     assertmsg("No female ghost spawner in the map.");
+
     return;
   }
 
-  if(isdefined(level.zombie_ghost_round_states.active_zombie_locations)) {
-    for (i = 0; i < level.zombie_ghost_round_states.active_zombie_locations.size; i++) {
+  if(isDefined(level.zombie_ghost_round_states.active_zombie_locations)) {
+    for(i = 0; i < level.zombie_ghost_round_states.active_zombie_locations.size; i++) {
       if(i >= 20) {
         return;
       }
       spawn_point = level.zombie_ghost_round_states.active_zombie_locations[i];
       ghost_ai = spawn_zombie(level.female_ghost_spawner, level.female_ghost_spawner.targetname, spawn_point);
 
-      if(isdefined(ghost_ai)) {
+      if(isDefined(ghost_ai)) {
         ghost_ai setclientfield("ghost_fx", 3);
         ghost_ai.spawn_point = spawn_point;
         ghost_ai.is_ghost = 1;
       } else {
         assertmsg("female ghost outside ghost zone: failed spawn");
+
         return;
       }
 
@@ -1809,7 +1820,7 @@ get_current_ghost_count() {
   ais = getaiarray(level.zombie_team);
 
   foreach(ai in ais) {
-    if(isdefined(ai.is_ghost) && ai.is_ghost)
+    if(isDefined(ai.is_ghost) && ai.is_ghost)
       ghost_count++;
   }
 
@@ -1821,7 +1832,7 @@ get_current_ghosts() {
   ais = getaiarray(level.zombie_team);
 
   foreach(ai in ais) {
-    if(isdefined(ai.is_ghost) && ai.is_ghost)
+    if(isDefined(ai.is_ghost) && ai.is_ghost)
       ghosts[ghosts.size] = ai;
   }
 
@@ -1829,19 +1840,19 @@ get_current_ghosts() {
 }
 
 set_player_moving_speed_scale(player, move_speed_scale) {
-  if(isdefined(player))
+  if(isDefined(player))
     player setmovespeedscale(move_speed_scale);
 }
 
 player_moving_speed_scale_think() {
   level endon("intermission");
 
-  if(isdefined(level.intermission) && level.intermission) {
+  if(isDefined(level.intermission) && level.intermission) {
     return;
   }
   level endon("ghost_round_end");
 
-  while (true) {
+  while(true) {
     players = get_players();
 
     foreach(player in players) {
@@ -1853,18 +1864,18 @@ player_moving_speed_scale_think() {
         continue;
       }
 
-      if(isdefined(player.ghost_next_drain_time_left))
+      if(isDefined(player.ghost_next_drain_time_left))
         player.ghost_next_drain_time_left = player.ghost_next_drain_time_left - 0.1;
 
       player_slow_down = 0;
       ais = getaiarray(level.zombie_team);
 
       foreach(ai in ais) {
-        if(isdefined(ai.is_ghost) && ai.is_ghost && can_drain_points(ai.origin, player.origin)) {
+        if(isDefined(ai.is_ghost) && ai.is_ghost && can_drain_points(ai.origin, player.origin)) {
           player_slow_down = 1;
           set_player_moving_speed_scale(player, 0.5);
 
-          if((!isdefined(player.ghost_next_drain_time_left) || player.ghost_next_drain_time_left < 0) && isdefined(ai.favoriteenemy) && player != ai.favoriteenemy) {
+          if((!isDefined(player.ghost_next_drain_time_left) || player.ghost_next_drain_time_left < 0) && isDefined(ai.favoriteenemy) && player != ai.favoriteenemy) {
             give_player_rewards(player);
             points_to_drain = 2000;
 
@@ -1921,15 +1932,15 @@ give_player_rewards(player) {
 }
 
 set_player_current_ghost_zone(player, ghost_zone_name) {
-  if(isdefined(player))
+  if(isDefined(player))
     player.current_ghost_room_name = ghost_zone_name;
 }
 
 can_start_ghost_round_presentation() {
-  if(isdefined(level.force_no_ghost) && level.force_no_ghost)
+  if(isDefined(level.force_no_ghost) && level.force_no_ghost)
     return false;
 
-  if(isdefined(level.zombie_ghost_round_states.is_first_ghost_round_finished) && level.zombie_ghost_round_states.is_first_ghost_round_finished) {
+  if(isDefined(level.zombie_ghost_round_states.is_first_ghost_round_finished) && level.zombie_ghost_round_states.is_first_ghost_round_finished) {
     if(level.round_number < level.zombie_ghost_round_states.current_ghost_round_number + 4)
       return false;
   }
@@ -1944,17 +1955,17 @@ can_start_ghost_round_presentation() {
 }
 
 can_start_ghost_round_presentation_stage_1() {
-  if(isdefined(level.zombie_ghost_round_states.presentation_stage_1_started) && level.zombie_ghost_round_states.presentation_stage_1_started)
+  if(isDefined(level.zombie_ghost_round_states.presentation_stage_1_started) && level.zombie_ghost_round_states.presentation_stage_1_started)
     return false;
 
   return true;
 }
 
 can_start_ghost_round_presentation_stage_2() {
-  if(isdefined(level.zombie_ghost_round_states.presentation_stage_2_started) && level.zombie_ghost_round_states.presentation_stage_2_started)
+  if(isDefined(level.zombie_ghost_round_states.presentation_stage_2_started) && level.zombie_ghost_round_states.presentation_stage_2_started)
     return false;
 
-  if(isdefined(level.zombie_ghost_round_states.is_first_ghost_round_finished) && level.zombie_ghost_round_states.is_first_ghost_round_finished) {
+  if(isDefined(level.zombie_ghost_round_states.is_first_ghost_round_finished) && level.zombie_ghost_round_states.is_first_ghost_round_finished) {
     if(level.round_number < level.zombie_ghost_round_states.current_ghost_round_number + 4 + 1)
       return false;
   }
@@ -1963,10 +1974,10 @@ can_start_ghost_round_presentation_stage_2() {
 }
 
 can_start_ghost_round_presentation_stage_3() {
-  if(isdefined(level.zombie_ghost_round_states.presentation_stage_3_started) && level.zombie_ghost_round_states.presentation_stage_3_started)
+  if(isDefined(level.zombie_ghost_round_states.presentation_stage_3_started) && level.zombie_ghost_round_states.presentation_stage_3_started)
     return false;
 
-  if(isdefined(level.zombie_ghost_round_states.is_first_ghost_round_finished) && level.zombie_ghost_round_states.is_first_ghost_round_finished) {
+  if(isDefined(level.zombie_ghost_round_states.is_first_ghost_round_finished) && level.zombie_ghost_round_states.is_first_ghost_round_finished) {
     if(level.round_number < level.zombie_ghost_round_states.current_ghost_round_number + 4 + 2)
       return false;
   }
@@ -1975,9 +1986,8 @@ can_start_ghost_round_presentation_stage_3() {
 }
 
 get_next_spot_during_ghost_round_presentation() {
-  if(isdefined(level.current_ghost_window_index)) {
-    for (standing_location_index = randomint(level.ghost_front_standing_locations.size); standing_location_index == level.current_ghost_window_index; standing_location_index = randomint(level.ghost_front_standing_locations.size)) {
-
+  if(isDefined(level.current_ghost_window_index)) {
+    for(standing_location_index = randomint(level.ghost_front_standing_locations.size); standing_location_index == level.current_ghost_window_index; standing_location_index = randomint(level.ghost_front_standing_locations.size)) {
     }
 
     level.current_ghost_window_index = standing_location_index;
@@ -1993,12 +2003,13 @@ spawn_ghost_round_presentation_ghost() {
   ghost.angles = spawn_point.angles;
   ghost setmodel("c_zom_zombie_buried_ghost_woman_fb");
 
-  if(isdefined(ghost)) {
+  if(isDefined(ghost)) {
     ghost.spawn_point = spawn_point;
     ghost.for_ghost_round_presentation = 1;
     level.ghost_round_presentation_ghost = ghost;
   } else {
     assertmsg("ghost round presentation ghost: failed spawn");
+
     return;
   }
 
@@ -2014,21 +2025,21 @@ spawn_ghost_round_presentation_ghost() {
 ghost_round_presentation_think() {
   level endon("intermission");
 
-  if(isdefined(level.intermission) && level.intermission) {
+  if(isDefined(level.intermission) && level.intermission) {
     return;
   }
-  if(!isdefined(level.sndmansionent))
+  if(!isDefined(level.sndmansionent))
     level.sndmansionent = spawn("script_origin", (2830, 555, 436));
 
   flag_wait("start_zombie_round_logic");
 
-  while (true) {
+  while(true) {
     if(can_start_ghost_round_presentation()) {
       if(can_start_ghost_round_presentation_stage_1()) {
         level.zombie_ghost_round_states.presentation_stage_1_started = 1;
         spawn_ghost_round_presentation_ghost();
 
-        if(isdefined(level.ghost_round_presentation_ghost))
+        if(isDefined(level.ghost_round_presentation_ghost))
           level.ghost_round_presentation_ghost thread ghost_switch_windows();
       }
 
@@ -2042,7 +2053,7 @@ ghost_round_presentation_think() {
         level.zombie_ghost_round_states.presentation_stage_3_started = 1;
         level.sndmansionent playloopsound("zmb_ghost_round_lp_loud", 3);
 
-        if(isdefined(level.ghost_round_presentation_ghost))
+        if(isDefined(level.ghost_round_presentation_ghost))
           level.ghost_round_presentation_ghost thread ghost_round_presentation_sound();
       }
     }
@@ -2055,7 +2066,7 @@ ghost_switch_windows() {
   level endon("intermission");
   self endon("death");
 
-  while (true) {
+  while(true) {
     next_spot = get_next_spot_during_ghost_round_presentation();
     self setclientfield("ghost_fx", 5);
     self setclientfield("sndGhostAudio", 0);
@@ -2075,7 +2086,7 @@ ghost_round_presentation_sound() {
   level endon("intermission");
   self endon("death");
 
-  while (true) {
+  while(true) {
     players = getplayers();
 
     foreach(player in players) {
@@ -2091,10 +2102,10 @@ ghost_round_presentation_sound() {
 }
 
 ghost_round_presentation_reset() {
-  if(isdefined(level.sndmansionent))
+  if(isDefined(level.sndmansionent))
     level.sndmansionent stoploopsound(3);
 
-  if(isdefined(level.ghost_round_presentation_ghost)) {
+  if(isDefined(level.ghost_round_presentation_ghost)) {
     level.ghost_round_presentation_ghost.skip_death_notetracks = 1;
     level.ghost_round_presentation_ghost.nodeathragdoll = 1;
     level.ghost_round_presentation_ghost setclientfield("ghost_fx", 5);
@@ -2111,7 +2122,7 @@ ghost_round_presentation_reset() {
 behave_after_fountain_transport(player) {
   wait 1;
 
-  if(isdefined(player)) {
+  if(isDefined(player)) {
     set_player_current_ghost_zone(player, undefined);
     level.zombie_ghost_round_states.is_teleporting = 1;
     ais = getaiarray(level.zombie_team);
@@ -2119,7 +2130,7 @@ behave_after_fountain_transport(player) {
     ais_need_teleported = [];
 
     foreach(ai in ais) {
-      if(isdefined(ai.is_ghost) && ai.is_ghost && isdefined(ai.favoriteenemy) && ai.favoriteenemy == player)
+      if(isDefined(ai.is_ghost) && ai.is_ghost && isDefined(ai.favoriteenemy) && ai.favoriteenemy == player)
         ais_need_teleported[ais_need_teleported.size] = ai;
     }
 
@@ -2149,7 +2160,7 @@ init_time_bomb_ghost_rounds() {
 }
 
 is_ghost() {
-  return !(isdefined(self.is_ghost) && self.is_ghost);
+  return !(isDefined(self.is_ghost) && self.is_ghost);
 }
 
 is_ghost_round() {
@@ -2194,8 +2205,8 @@ time_bomb_respawns_ghosts(save_struct) {
 respawn_ghosts_outside_mansion(save_struct) {
   a_spawns_outside_mansion = [];
 
-  for (i = 0; i < save_struct.enemies.size; i++) {
-    if(!(isdefined(save_struct.enemies[i].is_spawned_in_ghost_zone) && save_struct.enemies[i].is_spawned_in_ghost_zone))
+  for(i = 0; i < save_struct.enemies.size; i++) {
+    if(!(isDefined(save_struct.enemies[i].is_spawned_in_ghost_zone) && save_struct.enemies[i].is_spawned_in_ghost_zone))
       a_spawns_outside_mansion[a_spawns_outside_mansion.size] = save_struct.enemies[i];
   }
 
@@ -2208,8 +2219,8 @@ time_bomb_custom_get_enemy_func() {
   a_valid_enemies = [];
   a_enemies = getaispeciesarray(level.zombie_team, "all");
 
-  for (i = 0; i < a_enemies.size; i++) {
-    if(isdefined(a_enemies[i].ignore_enemy_count) && a_enemies[i].ignore_enemy_count && !(isdefined(a_enemies[i].is_ghost) && a_enemies[i].is_ghost) || isdefined(level.ghost_round_presentation_ghost) && level.ghost_round_presentation_ghost == a_enemies[i]) {
+  for(i = 0; i < a_enemies.size; i++) {
+    if(isDefined(a_enemies[i].ignore_enemy_count) && a_enemies[i].ignore_enemy_count && !(isDefined(a_enemies[i].is_ghost) && a_enemies[i].is_ghost) || isDefined(level.ghost_round_presentation_ghost) && level.ghost_round_presentation_ghost == a_enemies[i]) {
       continue;
     }
     a_valid_enemies[a_valid_enemies.size] = a_enemies[i];
@@ -2241,24 +2252,24 @@ time_bomb_global_data_restore_ghosts() {
 
 time_bomb_ghost_respawn_think() {
   if(flag("time_bomb_round_killed") && !flag("time_bomb_enemies_restored")) {
-    if(isdefined(level.timebomb_override_struct))
+    if(isDefined(level.timebomb_override_struct))
       save_struct = level.timebomb_override_struct;
     else
       save_struct = level.time_bomb_save_data;
 
-    if(!isdefined(save_struct.respawn_counter))
+    if(!isDefined(save_struct.respawn_counter))
       save_struct.respawn_counter = 0;
 
     n_index = save_struct.respawn_counter;
     save_struct.respawn_counter++;
 
-    if(save_struct.enemies.size > 0 && isdefined(save_struct.enemies) && n_index < save_struct.enemies.size) {
-      while (isdefined(save_struct.enemies[n_index]) && (isdefined(save_struct.enemies[n_index].is_spawned_in_ghost_zone) && save_struct.enemies[n_index].is_spawned_in_ghost_zone)) {
+    if(save_struct.enemies.size > 0 && isDefined(save_struct.enemies) && n_index < save_struct.enemies.size) {
+      while(isDefined(save_struct.enemies[n_index]) && (isDefined(save_struct.enemies[n_index].is_spawned_in_ghost_zone) && save_struct.enemies[n_index].is_spawned_in_ghost_zone)) {
         save_struct.respawn_counter++;
         n_index = save_struct.respawn_counter;
       }
 
-      if(isdefined(save_struct.enemies[n_index]))
+      if(isDefined(save_struct.enemies[n_index]))
         self _restore_ghost_data(save_struct, n_index);
     }
 
@@ -2276,10 +2287,10 @@ restore_ghost_failsafe() {
   self endon("death");
   wait(randomfloatrange(2.0, 3.0));
 
-  if(!isdefined(self.state)) {
+  if(!isDefined(self.state)) {
     self.respawned_by_time_bomb = 1;
     self thread ghost_think();
-  } else if(isdefined(level.ghost_round_presentation_ghost) && level.ghost_round_presentation_ghost == self) {
+  } else if(isDefined(level.ghost_round_presentation_ghost) && level.ghost_round_presentation_ghost == self) {
     ghost_round_presentation_reset();
     wait_network_frame();
     self thread ghost_think();
@@ -2298,7 +2309,7 @@ _restore_ghost_data(save_struct, n_index) {
   self.is_spawned_in_ghost_zone = s_data.is_spawned_in_ghost_zone;
   self.find_target = s_data.find_target;
 
-  if(isdefined(s_data.favoriteenemy))
+  if(isDefined(s_data.favoriteenemy))
     self.favoriteenemy = s_data.favoriteenemy;
 
   self.ignore_timebomb_slowdown = 1;
@@ -2308,8 +2319,8 @@ _restore_ghost_data(save_struct, n_index) {
 _respawn_ghost_failsafe() {
   n_counter = 0;
 
-  while (!flag("time_bomb_enemies_restored") && n_counter < 20) {
-    if(get_current_actor_count() >= level.zombie_ai_limit || isdefined(level.time_bomb_save_data.total_respawns) && level.time_bomb_save_data.total_respawns == 0)
+  while(!flag("time_bomb_enemies_restored") && n_counter < 20) {
+    if(get_current_actor_count() >= level.zombie_ai_limit || isDefined(level.time_bomb_save_data.total_respawns) && level.time_bomb_save_data.total_respawns == 0)
       flag_set("time_bomb_enemies_restored");
 
     n_counter++;
@@ -2330,34 +2341,37 @@ devgui_toggle_no_ghost() {
 }
 
 draw_debug_line(from, to, color, time, depth_test) {
-  if(isdefined(level.ghost_debug) && level.ghost_debug) {
-    if(!isdefined(time))
+  if(isDefined(level.ghost_debug) && level.ghost_debug) {
+    if(!isDefined(time))
       time = 1000;
 
     line(from, to, color, 1, depth_test, time);
   }
+
 }
 
 draw_debug_star(origin, color, time) {
-  if(isdefined(level.ghost_debug) && level.ghost_debug) {
-    if(!isdefined(time))
+  if(isDefined(level.ghost_debug) && level.ghost_debug) {
+    if(!isDefined(time))
       time = 1000;
 
-    if(!isdefined(color))
+    if(!isDefined(color))
       color = (1, 1, 1);
 
     debugstar(origin, time, color);
   }
+
 }
 
 draw_debug_box(origin, mins, maxs, yaw, color, time) {
-  if(isdefined(level.ghost_debug) && level.ghost_debug) {
-    if(!isdefined(time))
+  if(isDefined(level.ghost_debug) && level.ghost_debug) {
+    if(!isDefined(time))
       time = 1000;
 
-    if(!isdefined(color))
+    if(!isDefined(color))
       color = (1, 1, 1);
 
     box(origin, mins, maxs, yaw, color, 1, 0, 1);
   }
+
 }

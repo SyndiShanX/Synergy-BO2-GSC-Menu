@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\gametypes\dem.gsc
-***************************************/
+**************************************/
 
 #include common_scripts\utility;
 #include maps\mp\_utility;
@@ -113,7 +113,7 @@ onprecachegametype() {
 dem_getteamkillpenalty(einflictor, attacker, smeansofdeath, sweapon) {
   teamkill_penalty = maps\mp\gametypes\_globallogic_defaults::default_getteamkillpenalty(einflictor, attacker, smeansofdeath, sweapon);
 
-  if(isdefined(self.isdefusing) && self.isdefusing || isdefined(self.isplanting) && self.isplanting)
+  if(isDefined(self.isdefusing) && self.isdefusing || isDefined(self.isplanting) && self.isplanting)
     teamkill_penalty = teamkill_penalty * level.teamkillpenaltymultiplier;
 
   return teamkill_penalty;
@@ -122,14 +122,14 @@ dem_getteamkillpenalty(einflictor, attacker, smeansofdeath, sweapon) {
 dem_getteamkillscore(einflictor, attacker, smeansofdeath, sweapon) {
   teamkill_score = maps\mp\gametypes\_rank::getscoreinfovalue("team_kill");
 
-  if(isdefined(self.isdefusing) && self.isdefusing || isdefined(self.isplanting) && self.isplanting)
+  if(isDefined(self.isdefusing) && self.isdefusing || isDefined(self.isplanting) && self.isplanting)
     teamkill_score = teamkill_score * level.teamkillscoremultiplier;
 
   return int(teamkill_score);
 }
 
 onroundswitch() {
-  if(!isdefined(game["switchedsides"]))
+  if(!isDefined(game["switchedsides"]))
     game["switchedsides"] = 0;
 
   if(game["teamScores"]["allies"] == level.scorelimit - 1 && game["teamScores"]["axis"] == level.scorelimit - 1) {
@@ -151,11 +151,11 @@ getbetterteam() {
   deaths["allies"] = 0;
   deaths["axis"] = 0;
 
-  for (i = 0; i < level.players.size; i++) {
+  for(i = 0; i < level.players.size; i++) {
     player = level.players[i];
     team = player.pers["team"];
 
-    if(isdefined(team) && (team == "allies" || team == "axis")) {
+    if(isDefined(team) && (team == "allies" || team == "axis")) {
       kills[team] = kills[team] + player.kills;
       deaths[team] = deaths[team] + player.deaths;
     }
@@ -192,7 +192,7 @@ onstartgametype() {
   level.usingextratime = 0;
   level.spawnsystem.unifiedsideswitching = 0;
 
-  if(!isdefined(game["switchedsides"]))
+  if(!isDefined(game["switchedsides"]))
     game["switchedsides"] = 0;
 
   if(game["switchedsides"]) {
@@ -209,7 +209,7 @@ onstartgametype() {
   precachestring(game["strings"]["bomb_defused"]);
   level._effect["bombexplosion"] = loadfx("maps/mp_maps/fx_mp_exp_bomb");
 
-  if(isdefined(game["overtime_round"])) {
+  if(isDefined(game["overtime_round"])) {
     setobjectivetext(game["attackers"], & "OBJECTIVES_DEM_ATTACKER");
     setobjectivetext(game["defenders"], & "OBJECTIVES_DEM_ATTACKER");
 
@@ -258,7 +258,7 @@ onstartgametype() {
   maps\mp\gametypes\_spawnlogic::dropspawnpoints("mp_dem_spawn_defender_a");
   maps\mp\gametypes\_spawnlogic::dropspawnpoints("mp_dem_spawn_defender_b");
 
-  if(!isdefined(game["overtime_round"])) {
+  if(!isDefined(game["overtime_round"])) {
     maps\mp\gametypes\_spawnlogic::placespawnpoints("mp_dem_spawn_defender_start");
     maps\mp\gametypes\_spawnlogic::placespawnpoints("mp_dem_spawn_attacker_start");
   } else {
@@ -269,7 +269,7 @@ onstartgametype() {
   maps\mp\gametypes\_spawnlogic::addspawnpoints(game["attackers"], "mp_dem_spawn_attacker");
   maps\mp\gametypes\_spawnlogic::addspawnpoints(game["defenders"], "mp_dem_spawn_defender");
 
-  if(!isdefined(game["overtime_round"])) {
+  if(!isDefined(game["overtime_round"])) {
     maps\mp\gametypes\_spawnlogic::addspawnpoints(game["defenders"], "mp_dem_spawn_defender_a");
     maps\mp\gametypes\_spawnlogic::addspawnpoints(game["defenders"], "mp_dem_spawn_defender_b");
   }
@@ -281,7 +281,7 @@ onstartgametype() {
   setdemointermissionpoint(spawnpoint.origin, spawnpoint.angles);
   level.spawn_start = [];
 
-  if(isdefined(game["overtime_round"])) {
+  if(isDefined(game["overtime_round"])) {
     level.spawn_start["axis"] = maps\mp\gametypes\_spawnlogic::getspawnpointarray("mp_dem_spawn_attackerOT_start");
     level.spawn_start["allies"] = maps\mp\gametypes\_spawnlogic::getspawnpointarray("mp_dem_spawn_defenderOT_start");
   } else {
@@ -306,18 +306,18 @@ onspawnplayer(predictedspawn) {
     self.isdefusing = 0;
     self.isbombcarrier = 0;
 
-    if(isdefined(self.carryicon)) {
+    if(isDefined(self.carryicon)) {
       self.carryicon destroyelem();
       self.carryicon = undefined;
     }
   }
 
-  if(!isdefined(game["overtime_round"])) {
+  if(!isDefined(game["overtime_round"])) {
     if(self.pers["team"] == game["attackers"])
       spawnpointname = "mp_dem_spawn_attacker_start";
     else
       spawnpointname = "mp_dem_spawn_defender_start";
-  } else if(isdefined(game["overtime_round"])) {
+  } else if(isDefined(game["overtime_round"])) {
     if(self.pers["team"] == game["attackers"])
       spawnpointname = "mp_dem_spawn_attackerOT_start";
     else
@@ -342,8 +342,8 @@ onplayerkilled(einflictor, attacker, idamage, smeansofdeath, sweapon, vdir, shit
   thread checkallowspectating();
   bombzone = undefined;
 
-  for (index = 0; index < level.bombzones.size; index++) {
-    if(!isdefined(level.bombzones[index].bombexploded) || !level.bombzones[index].bombexploded) {
+  for(index = 0; index < level.bombzones.size; index++) {
+    if(!isDefined(level.bombzones[index].bombexploded) || !level.bombzones[index].bombexploded) {
       dist = distance2d(self.origin, level.bombzones[index].curorigin);
 
       if(dist < level.defaultoffenseradius) {
@@ -360,9 +360,9 @@ onplayerkilled(einflictor, attacker, idamage, smeansofdeath, sweapon, vdir, shit
     }
   }
 
-  if(isdefined(bombzone) && isplayer(attacker) && attacker.pers["team"] != self.pers["team"]) {
+  if(isDefined(bombzone) && isplayer(attacker) && attacker.pers["team"] != self.pers["team"]) {
     if(bombzone maps\mp\gametypes\_gameobjects::getownerteam() != attacker.team) {
-      if(!isdefined(attacker.dem_offends))
+      if(!isDefined(attacker.dem_offends))
         attacker.dem_offends = 0;
 
       attacker.dem_offends++;
@@ -374,15 +374,16 @@ onplayerkilled(einflictor, attacker, idamage, smeansofdeath, sweapon, vdir, shit
         maps\mp\_scoreevents::processscoreevent("killed_defender", attacker, self, sweapon);
       } else {
         attacker iprintlnbold("GAMETYPE DEBUG: NOT GIVING YOU OFFENSIVE CREDIT AS BOOSTING PREVENTION");
+
       }
     } else {
-      if(!isdefined(attacker.dem_defends))
+      if(!isDefined(attacker.dem_defends))
         attacker.dem_defends = 0;
 
       attacker.dem_defends++;
 
       if(level.playerdefensivemax >= attacker.dem_defends) {
-        if(isdefined(attacker.pers["defends"])) {
+        if(isDefined(attacker.pers["defends"])) {
           attacker.pers["defends"]++;
           attacker.defends = attacker.pers["defends"];
         }
@@ -393,6 +394,7 @@ onplayerkilled(einflictor, attacker, idamage, smeansofdeath, sweapon, vdir, shit
         maps\mp\_scoreevents::processscoreevent("killed_attacker", attacker, self, sweapon);
       } else {
         attacker iprintlnbold("GAMETYPE DEBUG: NOT GIVING YOU DEFENSIVE CREDIT AS BOOSTING PREVENTION");
+
       }
     }
   }
@@ -425,7 +427,7 @@ checkallowspectating() {
 }
 
 dem_endgame(winningteam, endreasontext) {
-  if(isdefined(winningteam) && winningteam != "tie")
+  if(isDefined(winningteam) && winningteam != "tie")
     maps\mp\gametypes\_globallogic_score::giveteamscoreforobjective(winningteam, 1);
 
   thread maps\mp\gametypes\_globallogic::endgame(winningteam, endreasontext);
@@ -457,13 +459,13 @@ ononeleftevent(team) {
 }
 
 ontimelimit() {
-  if(isdefined(game["overtime_round"]))
+  if(isDefined(game["overtime_round"]))
     dem_endgame("tie", game["strings"]["time_limit_reached"]);
   else if(level.teambased) {
     bombzonesleft = 0;
 
-    for (index = 0; index < level.bombzones.size; index++) {
-      if(!isdefined(level.bombzones[index].bombexploded) || !level.bombzones[index].bombexploded)
+    for(index = 0; index < level.bombzones.size; index++) {
+      if(!isDefined(level.bombzones[index].bombexploded) || !level.bombzones[index].bombexploded)
         bombzonesleft++;
     }
 
@@ -476,19 +478,19 @@ ontimelimit() {
 }
 
 warnlastplayer(team) {
-  if(!isdefined(level.warnedlastplayer))
+  if(!isDefined(level.warnedlastplayer))
     level.warnedlastplayer = [];
 
-  if(isdefined(level.warnedlastplayer[team])) {
+  if(isDefined(level.warnedlastplayer[team])) {
     return;
   }
   level.warnedlastplayer[team] = 1;
   players = level.players;
 
-  for (i = 0; i < players.size; i++) {
+  for(i = 0; i < players.size; i++) {
     player = players[i];
 
-    if(isdefined(player.pers["team"]) && player.pers["team"] == team && isdefined(player.pers["class"])) {
+    if(isDefined(player.pers["team"]) && player.pers["team"] == team && isDefined(player.pers["class"])) {
       if(player.sessionstate == "playing" && !player.afk) {
         break;
       }
@@ -507,7 +509,7 @@ givelastattackerwarning() {
   fullhealthtime = 0;
   interval = 0.05;
 
-  while (true) {
+  while(true) {
     if(self.health != self.maxhealth)
       fullhealthtime = 0;
     else
@@ -538,7 +540,7 @@ updategametypedvars() {
 }
 
 resetbombzone() {
-  if(isdefined(game["overtime_round"])) {
+  if(isDefined(game["overtime_round"])) {
     self maps\mp\gametypes\_gameobjects::setownerteam("neutral");
     self maps\mp\gametypes\_gameobjects::allowuse("any");
   } else
@@ -577,14 +579,14 @@ bombs() {
   level.bombexploded = 0;
   sdbomb = getent("sd_bomb", "targetname");
 
-  if(isdefined(sdbomb))
+  if(isDefined(sdbomb))
     sdbomb delete();
 
   precachemodel("t5_weapon_briefcase_bomb_world");
   level.bombzones = [];
   bombzones = getentarray(level.dembombzonename, "targetname");
 
-  for (index = 0; index < bombzones.size; index++) {
+  for(index = 0; index < bombzones.size; index++) {
     trigger = bombzones[index];
     scriptlabel = trigger.script_label;
     visuals = getentarray(bombzones[index].target, "targetname");
@@ -593,7 +595,7 @@ bombs() {
     bombsiteteamowner = game["defenders"];
     bombsiteallowuse = "enemy";
 
-    if(isdefined(game["overtime_round"])) {
+    if(isDefined(game["overtime_round"])) {
       if(scriptlabel != "_overtime") {
         trigger delete();
         defusetrig delete();
@@ -641,8 +643,8 @@ bombs() {
     bombzone.useweapon = "briefcase_bomb_mp";
     bombzone.visuals[0].killcament = spawn("script_model", bombzone.visuals[0].origin + vectorscale((0, 0, 1), 128.0));
 
-    for (i = 0; i < visuals.size; i++) {
-      if(isdefined(visuals[i].script_exploder)) {
+    for(i = 0; i < visuals.size; i++) {
+      if(isDefined(visuals[i].script_exploder)) {
         bombzone.exploderindex = visuals[i].script_exploder;
         break;
       }
@@ -650,7 +652,7 @@ bombs() {
 
     level.bombzones[level.bombzones.size] = bombzone;
     bombzone.bombdefusetrig = defusetrig;
-    assert(isdefined(bombzone.bombdefusetrig));
+    assert(isDefined(bombzone.bombdefusetrig));
     bombzone.bombdefusetrig.origin = bombzone.bombdefusetrig.origin + vectorscale((0, 0, -1), 10000.0);
     bombzone.bombdefusetrig.label = scriptlabel;
     dem_enemy_base_influencer_score = level.spawnsystem.dem_enemy_base_influencer_score;
@@ -660,10 +662,10 @@ bombs() {
     bombzone.spawninfluencer = addsphereinfluencer(level.spawnsystem.einfluencer_type_game_mode, trigger.origin, dem_enemy_base_influencer_radius, dem_enemy_base_influencer_score, team_mask, "dem_enemy_base,r,s", maps\mp\gametypes\_spawning::get_score_curve_index(dem_enemy_base_influencer_score_curve));
   }
 
-  for (index = 0; index < level.bombzones.size; index++) {
+  for(index = 0; index < level.bombzones.size; index++) {
     array = [];
 
-    for (otherindex = 0; otherindex < level.bombzones.size; otherindex++) {
+    for(otherindex = 0; otherindex < level.bombzones.size; otherindex++) {
       if(otherindex != index)
         array[array.size] = level.bombzones[otherindex];
     }
@@ -687,13 +689,13 @@ onbeginuse(player) {
     bestdistance = 9000000;
     closestbomb = undefined;
 
-    if(isdefined(level.ddbombmodel)) {
+    if(isDefined(level.ddbombmodel)) {
       keys = getarraykeys(level.ddbombmodel);
 
-      for (bomblabel = 0; bomblabel < keys.size; bomblabel++) {
+      for(bomblabel = 0; bomblabel < keys.size; bomblabel++) {
         bomb = level.ddbombmodel[keys[bomblabel]];
 
-        if(!isdefined(bomb)) {
+        if(!isDefined(bomb)) {
           continue;
         }
         dist = distancesquared(player.origin, bomb.origin);
@@ -704,7 +706,7 @@ onbeginuse(player) {
         }
       }
 
-      assert(isdefined(closestbomb));
+      assert(isDefined(closestbomb));
       player.defusing = closestbomb;
       closestbomb hide();
     }
@@ -717,7 +719,7 @@ onbeginuse(player) {
 }
 
 onenduse(team, player, result) {
-  if(!isdefined(player)) {
+  if(!isDefined(player)) {
     return;
   }
   if(!level.bombaplanted && !level.bombbplanted) {
@@ -730,7 +732,7 @@ onenduse(team, player, result) {
   player notify("event_ended");
 
   if(self maps\mp\gametypes\_gameobjects::isfriendlyteam(player.pers["team"])) {
-    if(isdefined(player.defusing) && !result)
+    if(isDefined(player.defusing) && !result)
       player.defusing show();
   }
 }
@@ -754,7 +756,7 @@ onuseobject(player) {
     thread maps\mp\gametypes\_globallogic_audio::set_music_on_team("DEM_WE_PLANT", team, 0, 0, 5);
     thread maps\mp\gametypes\_globallogic_audio::set_music_on_team("DEM_THEY_PLANT", enemyteam, 0, 0, 5);
 
-    if(isdefined(player.pers["plants"])) {
+    if(isDefined(player.pers["plants"])) {
       player.pers["plants"]++;
       player.plants = player.pers["plants"];
     }
@@ -766,6 +768,7 @@ onuseobject(player) {
       player recordgameevent("plant");
     } else {
       player iprintlnbold("GAMETYPE DEBUG: NOT GIVING YOU PLANT CREDIT AS BOOSTING PREVENTION");
+
     }
 
     level thread maps\mp\_popups::displayteammessagetoall(&"MP_EXPLOSIVES_PLANTED_BY", player);
@@ -778,7 +781,7 @@ onuseobject(player) {
     self resetbombzone();
     bbprint("mpobjective", "gametime %d objtype %s label %s team %s", gettime(), "dem_bombdefused", self.label, team);
 
-    if(isdefined(player.pers["defuses"])) {
+    if(isDefined(player.pers["defuses"])) {
       player.pers["defuses"]++;
       player.defuses = player.pers["defuses"];
     }
@@ -790,6 +793,7 @@ onuseobject(player) {
       player recordgameevent("defuse");
     } else {
       player iprintlnbold("GAMETYPE DEBUG: NOT GIVING YOU DEFUSE CREDIT AS BOOSTING PREVENTION");
+
     }
 
     level thread maps\mp\_popups::displayteammessagetoall(&"MP_EXPLOSIVES_DEFUSED_BY", player);
@@ -801,7 +805,7 @@ onuseobject(player) {
 
 ondrop(player) {
   if(!level.bombplanted) {
-    if(isdefined(player))
+    if(isDefined(player))
       player logstring("bomb dropped");
     else
       logstring("bomb dropped");
@@ -826,7 +830,6 @@ onpickup(player) {
 }
 
 onreset() {
-
 }
 
 bombreset(label, reason) {
@@ -853,10 +856,10 @@ dropbombmodel(player, site) {
   forward = vectornormalize(forward - vectorscale(trace["normal"], vectordot(forward, trace["normal"])));
   dropangles = vectortoangles(forward);
 
-  if(isdefined(trace["surfacetype"]) && trace["surfacetype"] == "water") {
+  if(isDefined(trace["surfacetype"]) && trace["surfacetype"] == "water") {
     phystrace = playerphysicstrace(player.origin + vectorscale((0, 0, 1), 20.0), player.origin - vectorscale((0, 0, 1), 2000.0));
 
-    if(isdefined(phystrace))
+    if(isDefined(phystrace))
       trace["position"] = phystrace;
   }
 
@@ -887,7 +890,7 @@ bombplanted(destroyedobj, player) {
   destroyedobj maps\mp\gametypes\_gameobjects::allowuse("none");
   destroyedobj maps\mp\gametypes\_gameobjects::setvisibleteam("none");
 
-  if(isdefined(game["overtime_round"]))
+  if(isDefined(game["overtime_round"]))
     destroyedobj maps\mp\gametypes\_gameobjects::setownerteam(getotherteam(player.team));
 
   destroyedobj setupfordefusing();
@@ -905,7 +908,7 @@ bombplanted(destroyedobj, player) {
   explosionorigin = destroyedobj.curorigin;
   level.ddbombmodel[destroyedobj.label] delete();
 
-  if(isdefined(player)) {
+  if(isDefined(player)) {
     destroyedobj.visuals[0] radiusdamage(explosionorigin, 512, 200, 20, player, "MOD_EXPLOSIVE", "briefcase_bomb_mp");
     player addplayerstatwithgametype("DESTRUCTIONS", 1);
     level thread maps\mp\_popups::displayteammessagetoall(&"MP_EXPLOSIVES_BLOWUP_BY", player);
@@ -916,9 +919,9 @@ bombplanted(destroyedobj, player) {
 
   currenttime = gettime();
 
-  if(isdefined(level.lastbombexplodetime) && level.lastbombexplodebyteam == player.team) {
+  if(isDefined(level.lastbombexplodetime) && level.lastbombexplodebyteam == player.team) {
     if(level.lastbombexplodetime + 10000 > currenttime) {
-      for (i = 0; i < level.players.size; i++) {
+      for(i = 0; i < level.players.size; i++) {
         if(level.players[i].team == player.team)
           level.players[i] maps\mp\_challenges::bothbombsdetonatewithintime();
       }
@@ -932,13 +935,13 @@ bombplanted(destroyedobj, player) {
   triggerfx(explosioneffect);
   thread playsoundinspace("mpl_sd_exp_suitcase_bomb_main", explosionorigin);
 
-  if(isdefined(destroyedobj.exploderindex))
+  if(isDefined(destroyedobj.exploderindex))
     exploder(destroyedobj.exploderindex);
 
   bombzonesleft = 0;
 
-  for (index = 0; index < level.bombzones.size; index++) {
-    if(!isdefined(level.bombzones[index].bombexploded) || !level.bombzones[index].bombexploded)
+  for(index = 0; index < level.bombzones.size; index++) {
+    if(!isDefined(level.bombzones[index].bombexploded) || !level.bombzones[index].bombexploded)
       bombzonesleft++;
   }
 
@@ -981,7 +984,7 @@ bombplanted(destroyedobj, player) {
 gettimelimit() {
   timelimit = maps\mp\gametypes\_globallogic_defaults::default_gettimelimit();
 
-  if(isdefined(game["overtime_round"]))
+  if(isDefined(game["overtime_round"]))
     timelimit = level.overtimetimelimit;
 
   if(level.usingextratime)
@@ -991,7 +994,7 @@ gettimelimit() {
 }
 
 shouldplayovertimeround() {
-  if(isdefined(game["overtime_round"]))
+  if(isDefined(game["overtime_round"]))
     return false;
 
   if(game["teamScores"]["allies"] == level.scorelimit - 1 && game["teamScores"]["axis"] == level.scorelimit - 1)
@@ -1008,10 +1011,10 @@ waitlongdurationwithbombtimeupdate(whichbomb, duration) {
   starttime = gettime();
   endtime = gettime() + duration * 1000;
 
-  while (gettime() < endtime) {
+  while(gettime() < endtime) {
     maps\mp\gametypes\_hostmigration::waittillhostmigrationstarts((endtime - gettime()) / 1000);
 
-    while (isdefined(level.hostmigrationtimer)) {
+    while(isDefined(level.hostmigrationtimer)) {
       endtime = endtime + 250;
       updatebombtimers(whichbomb, endtime);
       wait 0.25;
@@ -1021,7 +1024,7 @@ waitlongdurationwithbombtimeupdate(whichbomb, duration) {
   if(gettime() != endtime)
     println("SCRIPT WARNING: gettime() = " + gettime() + " NOT EQUAL TO endtime = " + endtime);
 
-  while (isdefined(level.hostmigrationtimer)) {
+  while(isDefined(level.hostmigrationtimer)) {
     endtime = endtime + 250;
     updatebombtimers(whichbomb, endtime);
     wait 0.25;
@@ -1055,7 +1058,7 @@ bombdefused() {
 play_one_left_underscore(team, enemyteam) {
   wait 3;
 
-  if(!isdefined(team) || !isdefined(enemyteam)) {
+  if(!isDefined(team) || !isDefined(enemyteam)) {
     return;
   }
   thread maps\mp\gametypes\_globallogic_audio::set_music_on_team("DEM_ONE_LEFT_UNDERSCORE", team, 0, 0);
@@ -1063,7 +1066,7 @@ play_one_left_underscore(team, enemyteam) {
 }
 
 updateeventsperminute() {
-  if(!isdefined(self.eventsperminute)) {
+  if(!isDefined(self.eventsperminute)) {
     self.numbombevents = 0;
     self.eventsperminute = 0;
   }
@@ -1071,7 +1074,7 @@ updateeventsperminute() {
   self.numbombevents++;
   minutespassed = maps\mp\gametypes\_globallogic_utils::gettimepassed() / 60000;
 
-  if(isplayer(self) && isdefined(self.timeplayed["total"]))
+  if(isplayer(self) && isDefined(self.timeplayed["total"]))
     minutespassed = self.timeplayed["total"] / 60;
 
   self.eventsperminute = self.numbombevents / minutespassed;

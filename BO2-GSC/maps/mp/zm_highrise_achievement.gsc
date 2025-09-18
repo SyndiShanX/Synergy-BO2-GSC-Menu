@@ -40,7 +40,9 @@ onplayerconnect() {
 achievement_highrise_sidequest() {
   level endon("end_game");
   level waittill("highrise_sidequest_achieved");
+
   iprintlnbold("ZM_DLC1_HIGHRISE_SIDEQUEST achieved for the team");
+
   level giveachievement_wrapper("ZM_DLC1_HIGHRISE_SIDEQUEST", 1);
 }
 
@@ -50,10 +52,11 @@ achievement_vertigoner() {
   self.num_zombies_flung = 0;
   max_zombies_flung = 10;
 
-  while (self.num_zombies_flung < max_zombies_flung) {
+  while(self.num_zombies_flung < max_zombies_flung) {
     self waittill("zombie_flung");
     wait 0.1;
   }
+
   self giveachievement_wrapper("ZM_DLC1_VERTIGONER");
 }
 
@@ -63,10 +66,11 @@ achievement_slippery_when_undead() {
   self.num_sliquifier_kills = 0;
   max_kills_with_one_shot = 5;
 
-  while (self.num_sliquifier_kills < max_kills_with_one_shot) {
+  while(self.num_sliquifier_kills < max_kills_with_one_shot) {
     self waittill("sliquifier_kill");
     wait 0.01;
   }
+
   self giveachievement_wrapper("ZM_DLC1_SLIPPERY_WHEN_UNDEAD");
 }
 
@@ -78,7 +82,7 @@ achievement_facing_the_dragon() {
   is_touching_distance = 350;
   round_number_max = 2;
 
-  while (true) {
+  while(true) {
     if(level.round_number >= round_number_max) {
       return;
     }
@@ -96,6 +100,7 @@ achievement_facing_the_dragon() {
 
     wait 0.01;
   }
+
   self giveachievement_wrapper("ZM_DLC1_FACING_THE_DRAGON");
 }
 
@@ -111,12 +116,13 @@ achievement_mad_without_power() {
   level endon("end_game");
   round_number_max = 10;
 
-  while (level.round_number < round_number_max) {
+  while(level.round_number < round_number_max) {
     level waittill("start_of_round");
 
     if(flag("power_on"))
       return;
   }
+
   self giveachievement_wrapper("ZM_DLC1_MAD_WITHOUT_POWER", 1);
 }
 
@@ -126,25 +132,26 @@ achievement_shafted() {
   level.perk_bought_func = ::player_buys_perk_machine;
   max_unique_perk_machines = 6;
 
-  while (true) {
+  while(true) {
     self waittill_any("player_buys_perk", "pap_used");
 
-    if(isdefined(self.pap_used) && self.pap_used == 1) {
-      if(isdefined(self.perk_machines_bought) && self.perk_machines_bought.size >= max_unique_perk_machines) {
+    if(isDefined(self.pap_used) && self.pap_used == 1) {
+      if(isDefined(self.perk_machines_bought) && self.perk_machines_bought.size >= max_unique_perk_machines) {
         break;
       }
     }
   }
+
   self giveachievement_wrapper("ZM_DLC1_SHAFTED");
 }
 
 player_buys_perk_machine(perk) {
-  if(!isdefined(self.perk_machines_bought))
+  if(!isDefined(self.perk_machines_bought))
     self.perk_machines_bought = [];
 
   found = 0;
 
-  for (i = 0; i < self.perk_machines_bought.size; i++) {
+  for(i = 0; i < self.perk_machines_bought.size; i++) {
     if(perk == self.perk_machines_bought[i]) {
       found = 1;
       break;

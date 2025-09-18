@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\mp_takeoff.gsc
-***************************************/
+**************************************/
 
 #include maps\mp\_utility;
 #include maps\mp\_events;
@@ -47,10 +47,11 @@ main() {
   level thread dog_jump_think();
   level.disableoutrovisionset = 1;
   level.mptakeoffrocket = getent("takeoff_rocket", "targetname");
-  assert(isdefined(level.mptakeoffrocket), "Unable to find entity with targetname: 'takeoff_rocket'");
+  assert(isDefined(level.mptakeoffrocket), "Unable to find entity with targetname: 'takeoff_rocket'");
   level.endgamefunction = ::takeoff_end_game;
   level.preendgamefunction = ::takeoff_pre_end_game;
   level thread setuprocketcamera();
+
   execdevgui("devgui_mp_takeoff");
   level thread watchdevnotify();
   level thread devgui_endgame();
@@ -61,7 +62,7 @@ dog_jump_think() {
   trigger = spawn("trigger_box", origin, getaitriggerflags(), 64, 32, 64);
   trigger setexcludeteamfortrigger("none");
 
-  for (;;) {
+  for(;;) {
     trigger waittill("trigger", entity);
 
     if(isai(entity)) {
@@ -79,9 +80,9 @@ setuprocketcamera() {
 
 getrocketcamera() {
   camerastruct = getstruct("endgame_first_camera", "targetname");
-  assert(isdefined(camerastruct), "Unable to find entity with targetname: 'endgame_first_camera'");
+  assert(isDefined(camerastruct), "Unable to find entity with targetname: 'endgame_first_camera'");
 
-  if(!isdefined(level.rocketcamera)) {
+  if(!isDefined(level.rocketcamera)) {
     level.rocketcamera = spawn("script_model", camerastruct.origin);
     level.rocketcamera setmodel("tag_origin");
   } else
@@ -100,7 +101,7 @@ watchdevnotify() {
   startvalue = 0;
   setdvarint("scr_takeoff_rocket", startvalue);
 
-  for (;;) {
+  for(;;) {
     takeoff_rocket = getdvarint(#"scr_takeoff_rocket");
 
     if(takeoff_rocket != startvalue) {
@@ -110,16 +111,17 @@ watchdevnotify() {
 
     wait 0.2;
   }
+
 }
 
 devgui_endgame() {
   rocket = level.mptakeoffrocket;
-  assert(isdefined(rocket), "Unable to find entity with targetname: 'takeoff_rocket'");
+  assert(isDefined(rocket), "Unable to find entity with targetname: 'takeoff_rocket'");
   rocketorigin = rocket.origin;
   rocketangles = rocket.angles;
   rocketmodel = rocket.model;
 
-  for (;;) {
+  for(;;) {
     level waittill("dev_takeoff_rocket");
     visionsetnaked("blackout", 0.1);
     thread takeoff_pre_end_game();
@@ -131,7 +133,7 @@ devgui_endgame() {
     wait 1.0;
     visionsetnaked("mp_takeoff", 0.1);
 
-    for (i = 0; i < level.players.size; i++) {
+    for(i = 0; i < level.players.size; i++) {
       player = level.players[i];
       player cameraactivate(0);
     }
@@ -143,6 +145,7 @@ devgui_endgame() {
     rocket setmodel(rocketmodel);
     level.mptakeoffrocket = rocket;
   }
+
 }
 
 water_trigger_init() {
@@ -163,7 +166,7 @@ water_trigger_init() {
 }
 
 player_splash_think() {
-  for (;;) {
+  for(;;) {
     self waittill("trigger", entity);
 
     if(isplayer(entity) && isalive(entity))
@@ -182,7 +185,7 @@ player_water_fx(player, endon_condition) {
 }
 
 water_trigger_think() {
-  for (;;) {
+  for(;;) {
     self waittill("trigger", entity);
 
     if(isplayer(entity)) {
@@ -218,27 +221,28 @@ isinwater() {
 }
 
 takeoff_pre_end_game(timetillendgame, debug) {
-  if(!isdefined(debug)) {
+  if(!isDefined(debug)) {
     level waittill("play_final_killcam");
     wait 10.0;
   }
 
   rocket = level.mptakeoffrocket;
-  assert(isdefined(rocket), "Unable to find entity with targetname: 'takeoff_rocket'");
+  assert(isDefined(rocket), "Unable to find entity with targetname: 'takeoff_rocket'");
   rocket rocket_thrusters_initialize();
 }
 
 takeoff_end_game() {
   level endon("debug_end_takeoff");
+
   level.rocket_camera = 0;
   rocket = level.mptakeoffrocket;
   rocket playsound("evt_shuttle_launch");
-  assert(isdefined(rocket), "Unable to find entity with targetname: 'takeoff_rocket'");
+  assert(isDefined(rocket), "Unable to find entity with targetname: 'takeoff_rocket'");
   rocket rocket_thrusters_initialize();
   cameraone = getrocketcamera();
   cameraone thread vibrateaftertime(getdvarfloatdefault("mp_takeoff_shakewait", 0.5));
 
-  for (i = 0; i < level.players.size; i++) {
+  for(i = 0; i < level.players.size; i++) {
     player = level.players[i];
     player camerasetposition(cameraone);
     player camerasetlookat();
@@ -253,7 +257,7 @@ takeoff_end_game() {
 }
 
 rocket_thrusters_initialize() {
-  if(!isdefined(self.thrustersinited)) {
+  if(!isDefined(self.thrustersinited)) {
     self.thrustersinited = 1;
     exploder(1001);
     playfxontag(level._effect["fx_mp_tak_shuttle_thruster_lg"], self, "tag_fx");
@@ -276,14 +280,16 @@ rocket_move() {
 
 vibrateaftertime(waittime) {
   self endon("death");
+
   level endon("debug_end_takeoff");
+
   wait(waittime);
   pitchvibrateamplitude = getdvarfloatdefault("mp_takeoff_start", 0.1);
   vibrateamplitude = getdvarfloatdefault("mp_takeoff_a_start", 0.1);
   vibratetime = 0.05;
   originalangles = self.angles;
 
-  for (;;) {
+  for(;;) {
     angles0 = (originalangles[0] - pitchvibrateamplitude, originalangles[1], originalangles[2] - vibrateamplitude);
     angles1 = (originalangles[0] + pitchvibrateamplitude, originalangles[1], originalangles[2] + vibrateamplitude);
     self rotateto(angles0, vibratetime);

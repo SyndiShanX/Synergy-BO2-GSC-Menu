@@ -158,7 +158,7 @@ whoswhofilter(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, 
 }
 
 activatewwaudio() {
-  if(!isdefined(level.sndwwent))
+  if(!isDefined(level.sndwwent))
     level.sndwwent = spawn(0, (0, 0, 0), "script_origin");
 
   playsound(0, "evt_ww_activate", (0, 0, 0));
@@ -167,7 +167,7 @@ activatewwaudio() {
 }
 
 deactivatewwaudio() {
-  if(isdefined(level.sndwwent)) {
+  if(isDefined(level.sndwwent)) {
     level.sndwwent delete();
     level.sndwwent = undefined;
   }

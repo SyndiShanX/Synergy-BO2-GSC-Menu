@@ -38,7 +38,7 @@ init() {
     brush linkto(gate);
     gate.kill_trigger = getclosest(gate.origin, triggers);
 
-    if(isdefined(gate.kill_trigger)) {
+    if(isDefined(gate.kill_trigger)) {
       gate.kill_trigger enablelinkto();
       gate.kill_trigger linkto(gate);
     }
@@ -48,7 +48,7 @@ init() {
   endgates = getentarray("train_gate_rail_end", "targetname");
   entrygate = getclosest(start.origin, endgates);
 
-  for (i = 0; i < endgates.size; i++) {
+  for(i = 0; i < endgates.size; i++) {
     if(endgates[i] == entrygate) {
       continue;
     }
@@ -72,7 +72,7 @@ init() {
     traintrigger linkto(cars[0]);
   }
 
-  for (i = 1; i < 20; i++) {
+  for(i = 1; i < 20; i++) {
     cars[i] = spawn("script_model", start.origin);
     cars[i] setmodel("p6_bullet_train_car_phys");
     cars[i] ghost();
@@ -105,7 +105,7 @@ showaftertime(time) {
 train_think(gates, entrygate, exitgate, cars, start, killcam) {
   level endon("game_ended");
 
-  for (;;) {
+  for(;;) {
     level waittill("train_start");
     entrygate gate_move(-172);
     traintiming = getdvarfloatdefault("scr_express_trainTiming", 4.0);
@@ -127,7 +127,7 @@ train_think(gates, entrygate, exitgate, cars, start, killcam) {
     cars[0] attachpath(start);
     cars[0].killcament = undefined;
 
-    if(isdefined(cars[0].trainkilltrigger))
+    if(isDefined(cars[0].trainkilltrigger))
       cars[0] thread train_move_think(cars[0].trainkilltrigger);
 
     cars[0] startpath();
@@ -141,7 +141,7 @@ train_think(gates, entrygate, exitgate, cars, start, killcam) {
     cars[0].killcament = killcam;
     next = "_b";
 
-    for (i = 1; i < cars.size; i++) {
+    for(i = 1; i < cars.size; i++) {
       if(i == 1)
         wait 0.4;
       else
@@ -198,13 +198,13 @@ waitthenmove(time, distance) {
 record_positions() {
   self endon("reached_end_node");
 
-  if(isdefined(level.train_positions)) {
+  if(isDefined(level.train_positions)) {
     return;
   }
   level.train_positions = [];
   level.train_angles = [];
 
-  for (;;) {
+  for(;;) {
     level.train_positions[level.train_positions.size] = self.origin;
     level.train_angles[level.train_angles.size] = self.angles;
     wait 0.05;
@@ -217,7 +217,7 @@ watch_player_touch() {
   self endon("death");
   self.disablefinalkillcam = 1;
 
-  for (;;) {
+  for(;;) {
     self waittill("touch", entity);
 
     if(isplayer(entity))
@@ -236,7 +236,7 @@ watch_end() {
 car_move() {
   self setclientfield("train_moving", 1);
 
-  for (i = 0; i < level.train_positions.size; i++) {
+  for(i = 0; i < level.train_positions.size; i++) {
     self.origin = level.train_positions[i];
     self.angles = level.train_angles[i];
     wait 0.05;
@@ -257,10 +257,10 @@ gate_rotate(yaw) {
 }
 
 gate_move(z_dist) {
-  if(isdefined(self.kill_trigger))
-    self thread gate_move_think(isdefined(z_dist));
+  if(isDefined(self.kill_trigger))
+    self thread gate_move_think(isDefined(z_dist));
 
-  if(!isdefined(z_dist))
+  if(!isDefined(z_dist))
     self moveto(self.og_origin, 5);
   else {
     self.og_origin = self.origin;
@@ -272,13 +272,13 @@ train_move_think(kill_trigger) {
   self endon("movedone");
   self endon("reached_end_node");
 
-  for (;;) {
+  for(;;) {
     wait 0.05;
     pixbeginevent("train_move_think");
     entities = getdamageableentarray(self.origin, 200);
 
     foreach(entity in entities) {
-      if(isdefined(entity.targetname) && entity.targetname == "train") {
+      if(isDefined(entity.targetname) && entity.targetname == "train") {
         continue;
       }
       if(isplayer(entity)) {
@@ -287,7 +287,7 @@ train_move_think(kill_trigger) {
       if(!entity istouching(kill_trigger)) {
         continue;
       }
-      if(isdefined(entity.model) && entity.model == "t6_wpn_tac_insert_world") {
+      if(isDefined(entity.model) && entity.model == "t6_wpn_tac_insert_world") {
         entity maps\mp\_tacticalinsertion::destroy_tactical_insertion();
         continue;
       }
@@ -295,7 +295,7 @@ train_move_think(kill_trigger) {
       if(!isalive(entity)) {
         continue;
       }
-      if(isdefined(entity.targetname)) {
+      if(isDefined(entity.targetname)) {
         if(entity.targetname == "talon") {
           entity notify("death");
           continue;
@@ -308,17 +308,17 @@ train_move_think(kill_trigger) {
         }
       }
 
-      if(isdefined(entity.helitype) && entity.helitype == "qrdrone") {
+      if(isDefined(entity.helitype) && entity.helitype == "qrdrone") {
         watcher = entity.owner maps\mp\gametypes\_weaponobjects::getweaponobjectwatcher("qrdrone");
         watcher thread maps\mp\gametypes\_weaponobjects::waitanddetonate(entity, 0.0, undefined);
         continue;
       }
 
       if(entity.classname == "grenade") {
-        if(!isdefined(entity.name)) {
+        if(!isDefined(entity.name)) {
           continue;
         }
-        if(!isdefined(entity.owner)) {
+        if(!isDefined(entity.owner)) {
           continue;
         }
         if(entity.name == "proximity_grenade_mp") {
@@ -332,7 +332,7 @@ train_move_think(kill_trigger) {
         }
         watcher = entity.owner getwatcherforweapon(entity.name);
 
-        if(!isdefined(watcher)) {
+        if(!isDefined(watcher)) {
           continue;
         }
         watcher thread maps\mp\gametypes\_weaponobjects::waitanddetonate(entity, 0.0, undefined, "script_mover_mp");
@@ -340,10 +340,10 @@ train_move_think(kill_trigger) {
       }
 
       if(entity.classname == "auto_turret") {
-        if(isdefined(entity.carried) && entity.carried == 1) {
+        if(isDefined(entity.carried) && entity.carried == 1) {
           continue;
         }
-        if(!isdefined(entity.damagedtodeath) || !entity.damagedtodeath)
+        if(!isDefined(entity.damagedtodeath) || !entity.damagedtodeath)
           entity domaxdamage(self.origin + (0, 0, 1), self, self, 0, "MOD_CRUSH");
 
         continue;
@@ -373,10 +373,10 @@ gate_move_think(ignoreplayers) {
   self.disablefinalkillcam = 1;
   corpse_delay = 0;
 
-  if(isdefined(self.waittime))
+  if(isDefined(self.waittime))
     wait(self.waittime);
 
-  for (;;) {
+  for(;;) {
     wait 0.4;
     pixbeginevent("gate_move_think");
     entities = getdamageableentarray(self.origin, 100);
@@ -388,7 +388,7 @@ gate_move_think(ignoreplayers) {
       if(!entity istouching(self.kill_trigger)) {
         continue;
       }
-      if(isdefined(entity.model) && entity.model == "t6_wpn_tac_insert_world") {
+      if(isDefined(entity.model) && entity.model == "t6_wpn_tac_insert_world") {
         entity maps\mp\_tacticalinsertion::destroy_tactical_insertion();
         continue;
       }
@@ -396,7 +396,7 @@ gate_move_think(ignoreplayers) {
       if(!isalive(entity)) {
         continue;
       }
-      if(isdefined(entity.targetname)) {
+      if(isDefined(entity.targetname)) {
         if(entity.targetname == "talon") {
           entity notify("death");
           continue;
@@ -409,17 +409,17 @@ gate_move_think(ignoreplayers) {
         }
       }
 
-      if(isdefined(entity.helitype) && entity.helitype == "qrdrone") {
+      if(isDefined(entity.helitype) && entity.helitype == "qrdrone") {
         watcher = entity.owner maps\mp\gametypes\_weaponobjects::getweaponobjectwatcher("qrdrone");
         watcher thread maps\mp\gametypes\_weaponobjects::waitanddetonate(entity, 0.0, undefined);
         continue;
       }
 
       if(entity.classname == "grenade") {
-        if(!isdefined(entity.name)) {
+        if(!isDefined(entity.name)) {
           continue;
         }
-        if(!isdefined(entity.owner)) {
+        if(!isDefined(entity.owner)) {
           continue;
         }
         if(entity.name == "proximity_grenade_mp") {
@@ -433,7 +433,7 @@ gate_move_think(ignoreplayers) {
         }
         watcher = entity.owner getwatcherforweapon(entity.name);
 
-        if(!isdefined(watcher)) {
+        if(!isDefined(watcher)) {
           continue;
         }
         watcher thread maps\mp\gametypes\_weaponobjects::waitanddetonate(entity, 0.0, undefined, "script_mover_mp");
@@ -441,10 +441,10 @@ gate_move_think(ignoreplayers) {
       }
 
       if(entity.classname == "auto_turret") {
-        if(isdefined(entity.carried) && entity.carried == 1) {
+        if(isDefined(entity.carried) && entity.carried == 1) {
           continue;
         }
-        if(!isdefined(entity.damagedtodeath) || !entity.damagedtodeath)
+        if(!isDefined(entity.damagedtodeath) || !entity.damagedtodeath)
           entity domaxdamage(self.origin + (0, 0, 1), self, self, 0, "MOD_CRUSH");
 
         continue;
@@ -473,13 +473,13 @@ gate_move_think(ignoreplayers) {
 }
 
 getwatcherforweapon(weapname) {
-  if(!isdefined(self))
+  if(!isDefined(self))
     return undefined;
 
   if(!isplayer(self))
     return undefined;
 
-  for (i = 0; i < self.weaponobjectwatcherarray.size; i++) {
+  for(i = 0; i < self.weaponobjectwatcherarray.size; i++) {
     if(self.weaponobjectwatcherarray[i].weapon != weapname) {
       continue;
     }
@@ -507,7 +507,7 @@ destroy_supply_crates() {
 destroy_corpses() {
   corpses = getcorpsearray();
 
-  for (i = 0; i < corpses.size; i++) {
+  for(i = 0; i < corpses.size; i++) {
     if(distancesquared(corpses[i].origin, self.origin) < 10000)
       corpses[i] delete();
   }

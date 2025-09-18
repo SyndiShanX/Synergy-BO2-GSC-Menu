@@ -39,7 +39,7 @@ air_puzzle_1_init() {
 }
 
 air_puzzle_1_cleanup() {
-  for (i = 1; i <= 3; i++) {
+  for(i = 1; i <= 3; i++) {
     n_move = (4 - i) * 20.0;
     e_ring = getent("ceiling_ring_0" + i, "targetname");
     e_ring rotateyaw(360, 1.5, 0.5, 0.0);
@@ -81,8 +81,10 @@ ceiling_ring_update_position() {
 
 ceiling_ring_rotate() {
   self.position = (self.position + 1) % 4;
+
   if(self.position == self.script_int)
     iprintlnbold("Ring is in place.");
+
   self ceiling_ring_update_position();
   solved = check_puzzle_solved();
 
@@ -103,7 +105,7 @@ ceiling_ring_run() {
   ceiling_ring_randomize();
   n_rotations = 0;
 
-  while (true) {
+  while(true) {
     self waittill("damage", damage, attacker, direction_vec, point, mod, tagname, modelname, partname, weaponname);
 
     if(weaponname == "staff_air_zm") {
@@ -134,7 +136,7 @@ air_puzzle_2_run() {
   foreach(s_smoke_pos in a_smoke_pos)
   s_smoke_pos thread air_puzzle_smoke();
 
-  while (true) {
+  while(true) {
     level waittill("air_puzzle_smoke_solved");
     all_smoke_solved = 1;
 
@@ -186,7 +188,7 @@ air_puzzle_run_smoke_direction() {
   self.detector_brush setcandamage(1);
   direction_failures = 0;
 
-  while (true) {
+  while(true) {
     self.detector_brush waittill("damage", damage, attacker, direction_vec, point, mod, tagname, modelname, partname, weaponname);
 
     if(weaponname == "staff_air_zm") {

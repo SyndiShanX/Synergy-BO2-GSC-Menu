@@ -1,7 +1,7 @@
-/***********************************************************
+/*****************************************************************
  * Decompiled and Edited by SyndiShanX
  * Script: aitype\clientscripts\zm_tomb_basic_crusader.csc
-***********************************************************/
+*****************************************************************/
 
 #include character\clientscripts\c_zom_tomb_crusader_1a;
 #include character\clientscripts\c_zom_tomb_crusader_1a_nohat;

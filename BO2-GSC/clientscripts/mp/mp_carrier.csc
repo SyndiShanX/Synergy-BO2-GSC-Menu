@@ -23,7 +23,9 @@ main() {
   setsaveddvar("sm_sunsamplesizenear", 0.39);
   setsaveddvar("sm_sunshadowsmall", 1);
   waitforclient(0);
+
   println("*** Client : mp_carrier running...");
+
   thread vista_ships_init(0);
 }
 
@@ -37,7 +39,7 @@ vista_ships_init(clientnum) {
   if(level.isdemoplaying) {
     return;
   }
-  for (boatcount = 0; boatcount < farboats.size; boatcount++)
+  for(boatcount = 0; boatcount < farboats.size; boatcount++)
     farboats[boatcount] thread floatmyboat(clientnum, 0, 1);
 }
 
@@ -53,7 +55,7 @@ floatmyboat(clientnum, startleft, randomize) {
   time = getdvarfloatdefault("cscr_boatswaytime", level.boatswaytime);
   slowdowntime = getdvarfloatdefault("cscr_boatswayslowdowntime", level.boatswayslowdowntime);
 
-  for (;;) {
+  for(;;) {
     roll = getdvarfloatdefault("cscr_boatroll", level.boatroll) * rollsign;
     time = getdvarfloatdefault("cscr_boatswaytime", level.boatswaytime);
     slowdowntime = getdvarfloatdefault("cscr_boatswayslowdowntime", level.boatswayslowdowntime);

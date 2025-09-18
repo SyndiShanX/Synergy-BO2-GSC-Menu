@@ -13,13 +13,13 @@ init() {
   level._client_flag_callbacks["scriptmover"][2] = ::spawned;
   latlongstruct = getstruct("lat_long", "targetname");
 
-  if(isdefined(latlongstruct)) {
+  if(isDefined(latlongstruct)) {
     mapx = latlongstruct.origin[0];
     mapy = latlongstruct.origin[1];
     lat = latlongstruct.script_vector[0];
     long = latlongstruct.script_vector[1];
   } else {
-    if(isdefined(level.worldmapx) && isdefined(level.worldmapy)) {
+    if(isDefined(level.worldmapx) && isDefined(level.worldmapy)) {
       mapx = level.worldmapx;
       mapy = level.worldmapy;
     } else {
@@ -27,7 +27,7 @@ init() {
       mapy = 0.0;
     }
 
-    if(isdefined(level.worldlat) && isdefined(level.worldlong)) {
+    if(isDefined(level.worldlat) && isDefined(level.worldlong)) {
       lat = level.worldlat;
       long = level.worldlong;
     } else {
@@ -78,8 +78,8 @@ watchtacinsertshutdown(localclientnum, fxhandle) {
 }
 
 stopflareloopwatcher(looporigin) {
-  while (true) {
-    if(!isdefined(self.tacticalinsertionfx)) {
+  while(true) {
+    if(!isDefined(self.tacticalinsertionfx)) {
       stoploopat("fly_tinsert_beep", looporigin);
       break;
     }
@@ -92,10 +92,10 @@ checkforplayerswitch(localclientnum) {
   self endon("entityshutdown");
   self endon("teamBased_fx_reinitialized");
 
-  while (true) {
+  while(true) {
     level waittill("player_switch");
 
-    if(isdefined(self.tacticalinsertionfx)) {
+    if(isDefined(self.tacticalinsertionfx)) {
       stopfx(localclientnum, self.tacticalinsertionfx);
       self.tacticalinsertionfx = undefined;
     }

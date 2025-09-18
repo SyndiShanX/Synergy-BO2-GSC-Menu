@@ -1,7 +1,7 @@
-/************************************************************
+/*******************************************************************
  * Decompiled and Edited by SyndiShanX
  * Script: aitype\clientscripts\zm_nuked_basic_01_beyes.csc
-************************************************************/
+*******************************************************************/
 
 #include character\clientscripts\c_zom_dlc0_zombie_hazmat_1_beyes;
 #include character\clientscripts\c_zom_dlc0_zombie_hazmat_2_beyes;

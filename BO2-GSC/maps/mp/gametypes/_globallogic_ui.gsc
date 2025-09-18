@@ -71,50 +71,50 @@ hideloadoutonkill() {
 }
 
 freegameplayhudelems() {
-  if(isdefined(self.perkicon)) {
-    for (numspecialties = 0; numspecialties < level.maxspecialties; numspecialties++) {
-      if(isdefined(self.perkicon[numspecialties])) {
+  if(isDefined(self.perkicon)) {
+    for(numspecialties = 0; numspecialties < level.maxspecialties; numspecialties++) {
+      if(isDefined(self.perkicon[numspecialties])) {
         self.perkicon[numspecialties] destroyelem();
         self.perkname[numspecialties] destroyelem();
       }
     }
   }
 
-  if(isdefined(self.perkhudelem))
+  if(isDefined(self.perkhudelem))
     self.perkhudelem destroyelem();
 
-  if(isdefined(self.killstreakicon)) {
-    if(isdefined(self.killstreakicon[0]))
+  if(isDefined(self.killstreakicon)) {
+    if(isDefined(self.killstreakicon[0]))
       self.killstreakicon[0] destroyelem();
 
-    if(isdefined(self.killstreakicon[1]))
+    if(isDefined(self.killstreakicon[1]))
       self.killstreakicon[1] destroyelem();
 
-    if(isdefined(self.killstreakicon[2]))
+    if(isDefined(self.killstreakicon[2]))
       self.killstreakicon[2] destroyelem();
 
-    if(isdefined(self.killstreakicon[3]))
+    if(isDefined(self.killstreakicon[3]))
       self.killstreakicon[3] destroyelem();
 
-    if(isdefined(self.killstreakicon[4]))
+    if(isDefined(self.killstreakicon[4]))
       self.killstreakicon[4] destroyelem();
   }
 
   self notify("perks_hidden");
 
-  if(isdefined(self.lowermessage))
+  if(isDefined(self.lowermessage))
     self.lowermessage destroyelem();
 
-  if(isdefined(self.lowertimer))
+  if(isDefined(self.lowertimer))
     self.lowertimer destroyelem();
 
-  if(isdefined(self.proxbar))
+  if(isDefined(self.proxbar))
     self.proxbar destroyelem();
 
-  if(isdefined(self.proxbartext))
+  if(isDefined(self.proxbartext))
     self.proxbartext destroyelem();
 
-  if(isdefined(self.carryicon))
+  if(isDefined(self.carryicon))
     self.carryicon destroyelem();
 
   maps\mp\killstreaks\_killstreaks::destroykillstreaktimers();
@@ -124,7 +124,7 @@ teamplayercountsequal(playercounts) {
   count = undefined;
 
   foreach(team in level.teams) {
-    if(!isdefined(count)) {
+    if(!isDefined(count)) {
       count = playercounts[team];
       continue;
     }
@@ -155,7 +155,7 @@ menuautoassign(comingfrommenu) {
   assignment = teamkeys[randomint(teamkeys.size)];
   self closemenus();
 
-  if(isdefined(level.forceallallies) && level.forceallallies)
+  if(isDefined(level.forceallallies) && level.forceallallies)
     assignment = "allies";
   else if(level.teambased) {
     if(getdvarint(#"party_autoteams") == 1) {
@@ -175,14 +175,14 @@ menuautoassign(comingfrommenu) {
             assignment = teamkeys[2];
             break;
           case 4:
-            if(!isdefined(level.forceautoassign) || !level.forceautoassign) {
+            if(!isDefined(level.forceautoassign) || !level.forceautoassign) {
               self setclientscriptmainmenu(game["menu_class"]);
               return;
             }
           default:
             assignment = "";
 
-            if(isdefined(level.teams[team]))
+            if(isDefined(level.teams[team]))
               assignment = team;
             else if(team == "spectator" && !level.forceautoassign) {
               self setclientscriptmainmenu(game["menu_class"]);
@@ -197,9 +197,9 @@ menuautoassign(comingfrommenu) {
         assignment = "allies";
       else if(maps\mp\bots\_bot::is_bot_comp_stomp()) {
         host = gethostplayerforbots();
-        assert(isdefined(host));
+        assert(isDefined(host));
 
-        if(!isdefined(host.team) || host.team == "spectator")
+        if(!isDefined(host.team) || host.team == "spectator")
           host.team = random(teamkeys);
 
         if(!self is_bot())
@@ -230,7 +230,7 @@ menuautoassign(comingfrommenu) {
     if(level.allow_teamchange != "1" || !self.hasspawned && !comingfrommenu) {
       team = getassignedteam(self);
 
-      if(isdefined(level.teams[team]))
+      if(isDefined(level.teams[team]))
         assignment = team;
       else if(team == "spectator" && !level.forceautoassign) {
         self setclientscriptmainmenu(game["menu_class"]);
@@ -281,7 +281,7 @@ menuautoassign(comingfrommenu) {
   }
 
   if(ispregamegamestarted()) {
-    if(self is_bot() && isdefined(self.pers["class"])) {
+    if(self is_bot() && isDefined(self.pers["class"])) {
       pclass = self.pers["class"];
       self closemenu();
       self closeingamemenu();
@@ -299,7 +299,7 @@ teamscoresequal() {
   score = undefined;
 
   foreach(team in level.teams) {
-    if(!isdefined(score)) {
+    if(!isDefined(score)) {
       score = getteamscore(team);
       continue;
     }
@@ -335,8 +335,8 @@ pickteamfromscores(teams) {
 }
 
 getsplitscreenteam() {
-  for (index = 0; index < level.players.size; index++) {
-    if(!isdefined(level.players[index])) {
+  for(index = 0; index < level.players.size; index++) {
+    if(!isDefined(level.players[index])) {
       continue;
     }
     if(level.players[index] == self) {
@@ -372,7 +372,7 @@ closemenus() {
 }
 
 beginclasschoice(forcenewchoice) {
-  assert(isdefined(level.teams[self.pers["team"]]));
+  assert(isDefined(level.teams[self.pers["team"]]));
   team = self.pers["team"];
 
   if(level.disableclassselection == 1 || getdvarint(#"migration_soak") == 1) {
@@ -396,7 +396,7 @@ beginclasschoice(forcenewchoice) {
 }
 
 showmainmenuforteam() {
-  assert(isdefined(level.teams[self.pers["team"]]));
+  assert(isDefined(level.teams[self.pers["team"]]));
   team = self.pers["team"];
 
   if(level.wagermatch)
@@ -408,11 +408,11 @@ showmainmenuforteam() {
 menuteam(team) {
   self closemenus();
 
-  if(!level.console && level.allow_teamchange == "0" && (isdefined(self.hasdonecombat) && self.hasdonecombat)) {
+  if(!level.console && level.allow_teamchange == "0" && (isDefined(self.hasdonecombat) && self.hasdonecombat)) {
     return;
   }
   if(self.pers["team"] != team) {
-    if(level.ingraceperiod && (!isdefined(self.hasdonecombat) || !self.hasdonecombat))
+    if(level.ingraceperiod && (!isDefined(self.hasdonecombat) || !self.hasdonecombat))
       self.hasspawned = 0;
 
     if(self.sessionstate == "playing") {
@@ -484,18 +484,18 @@ menuspectator() {
 menuclass(response) {
   self closemenus();
 
-  if(!isdefined(self.pers["team"]) || !isdefined(level.teams[self.pers["team"]])) {
+  if(!isDefined(self.pers["team"]) || !isDefined(level.teams[self.pers["team"]])) {
     return;
   }
   class = self maps\mp\gametypes\_class::getclasschoice(response);
 
-  if(isdefined(self.pers["class"]) && self.pers["class"] == class) {
+  if(isDefined(self.pers["class"]) && self.pers["class"] == class) {
     return;
   }
   self.pers["changed_class"] = 1;
   self notify("changed_class");
 
-  if(isdefined(self.curclass) && self.curclass == class)
+  if(isDefined(self.curclass) && self.curclass == class)
     self.pers["changed_class"] = 0;
 
   if(ispregame())
@@ -509,7 +509,7 @@ menuclass(response) {
     if(game["state"] == "postgame") {
       return;
     }
-    supplystationclasschange = isdefined(self.usingsupplystation) && self.usingsupplystation;
+    supplystationclasschange = isDefined(self.usingsupplystation) && self.usingsupplystation;
     self.usingsupplystation = 0;
 
     if(level.ingraceperiod && !self.hasdonecombat || supplystationclasschange) {
@@ -542,7 +542,7 @@ menuclass(response) {
     if(game["state"] == "playing") {
       timepassed = undefined;
 
-      if(isdefined(self.respawntimerstarttime))
+      if(isDefined(self.respawntimerstarttime))
         timepassed = (gettime() - self.respawntimerstarttime) / 1000;
 
       self thread[[level.spawnclient]](timepassed);

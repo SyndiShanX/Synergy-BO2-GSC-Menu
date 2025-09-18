@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\mp_studio_amb.gsc
-***************************************/
+**************************************/
 
 main() {
   destructibles = getentarray("destructible", "targetname");
@@ -17,7 +17,7 @@ main() {
 cart_fire_think() {
   self endon("car_dead");
 
-  for (;;) {
+  for(;;) {
     self waittill("broken", event);
 
     if(event == "destructible_car_fire") {

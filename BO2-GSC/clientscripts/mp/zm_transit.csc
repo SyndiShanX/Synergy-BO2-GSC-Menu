@@ -79,11 +79,11 @@ main() {
   zombe_gametype_premain();
   claymores = getstructarray("claymore_purchase", "targetname");
 
-  if(isdefined(claymores)) {
+  if(isDefined(claymores)) {
     foreach(struct in claymores) {
       weapon_model = getstruct(struct.target, "targetname");
 
-      if(isdefined(weapon_model))
+      if(isDefined(weapon_model))
         weapon_model.script_vector = vectorscale((0, -1, 0), 90.0);
     }
   }
@@ -92,14 +92,16 @@ main() {
   waitforclient(0);
   level thread clientscripts\mp\zm_transit_bus::main();
   level._power_on = 0;
+
   println("*** Client : zm_transit running...");
+
   clientscripts\mp\_teamset_cdc::level_init();
   level thread init_fog_vol_to_visionset();
   level thread set_fog_on_bus();
   level thread power_controlled_lights();
 
   if(level.scr_zm_ui_gametype == "zclassic") {
-    if(isdefined(level.createfxexploders))
+    if(isDefined(level.createfxexploders))
       clientscripts\mp\_fx::activate_exploder(1966);
 
     setup_morsecode();
@@ -132,8 +134,8 @@ rumble_and_shake_the_player(localclientnum, fieldname) {
   self endon("entityshutdown");
   self endon("stop_power_rumble");
 
-  for (counter = 0; !counter || self getclientfieldtoplayer(fieldname); counter++) {
-    if(!self islocalplayer() || isspectating(localclientnum, 0) || isdefined(level.localplayers[localclientnum]) && self getentitynumber() != level.localplayers[localclientnum] getentitynumber()) {
+  for(counter = 0; !counter || self getclientfieldtoplayer(fieldname); counter++) {
+    if(!self islocalplayer() || isspectating(localclientnum, 0) || isDefined(level.localplayers[localclientnum]) && self getentitynumber() != level.localplayers[localclientnum] getentitynumber()) {
       return;
     }
     self playrumbleonentity(localclientnum, "grenade_rumble");
@@ -146,7 +148,7 @@ rumble_and_shake_the_player(localclientnum, fieldname) {
 
     end_time = gettime() + time * 1000;
 
-    while (gettime() < end_time) {
+    while(gettime() < end_time) {
       wait 0.1;
 
       if(randomint(100) > 25)
@@ -173,12 +175,12 @@ lerp_infog_alpha(up) {
   self endon("entityshutdown");
 
   if(up) {
-    for (i = 0; i < 21; i++) {
+    for(i = 0; i < 21; i++) {
       self setalphafadeforname(i * 0.05);
       wait 0.05;
     }
   } else {
-    for (i = 20; i > -1; i--) {
+    for(i = 20; i > -1; i--) {
       self setalphafadeforname(i * 0.05);
       wait 0.05;
     }
@@ -201,11 +203,9 @@ register_client_fields() {
 }
 
 register_client_flags() {
-
 }
 
 register_clientflag_callbacks() {
-
 }
 
 start_zombie_stuff() {
@@ -329,12 +329,12 @@ include_equipment_for_level() {
 rotate_wind_turbine() {
   turbine = getentarray(0, "depot_turbine_rotor", "targetname");
 
-  if(isdefined(turbine))
+  if(isDefined(turbine))
     array_thread(turbine, ::spin_transit_turbines);
 }
 
 spin_transit_turbines() {
-  while (true) {
+  while(true) {
     self rotatepitch(360, 15);
     self waittill("rotatedone");
   }
@@ -367,53 +367,58 @@ init_fog_vol_to_visionset() {
 set_fog_on_bus() {
   self endon("entityshutdown");
 
-  while (true) {
+  while(true) {
     level waittill("OBS", who);
     setworldfogactivebank(who, 5);
+
     println("Now using fog bank 3 for local client " + who);
+
     level waittill("LBS", who);
     setworldfogactivebank(who, 1);
+
     println("Now using fog bank 1 for local client " + who);
+
   }
 }
 
 transit_vision_change(ent_player) {
   ent_player endon("entityshutdown");
 
-  while (true) {
+  while(true) {
     self waittill("trigger", who);
 
-    if(!isdefined(who) || !who islocalplayer()) {
+    if(!isDefined(who) || !who islocalplayer()) {
       continue;
     }
     local_clientnum = who getlocalclientnumber();
     visionset = "zm_transit_base";
 
-    if(isdefined(self.script_string))
+    if(isDefined(self.script_string))
       visionset = self.script_string;
 
-    if(isdefined(who._previous_vision) && visionset == who._previous_vision) {
+    if(isDefined(who._previous_vision) && visionset == who._previous_vision) {
       continue;
     }
-    if(isdefined(self.script_float))
+    if(isDefined(self.script_float))
       trans_time = self.script_float;
     else
       trans_time = 2;
 
-    if(!isdefined(who._previous_vision))
+    if(!isDefined(who._previous_vision))
       who._previous_vision = visionset;
     else
       who clientscripts\mp\zombies\_zm::zombie_vision_set_remove(who._previous_vision, trans_time, local_clientnum);
 
-    if(isdefined(self.script_string))
+    if(isDefined(self.script_string))
       println("*** Client : Changing vision set " + self.script_string);
+
     who clientscripts\mp\zombies\_zm::zombie_vision_set_apply(visionset, 1, trans_time, local_clientnum);
     who._previous_vision = visionset;
   }
 }
 
 power_controlled_lights() {
-  if(isdefined(level.createfx_enabled) && level.createfx_enabled == 1) {
+  if(isDefined(level.createfx_enabled) && level.createfx_enabled == 1) {
     return;
   }
   wait 0.2;
@@ -461,7 +466,7 @@ power_controlled_lights() {
   if(getdvar(#"ui_gametype") == "zclassic")
     level thread sq_tower_sparks_init();
 
-  while (true) {
+  while(true) {
     if(!level getclientfield("zombie_power_on")) {
       level.power_on = 0;
       fog_vol_to_visionset_set_suffix("_off");
@@ -469,10 +474,10 @@ power_controlled_lights() {
       level notify("power_controlled_light");
       players = getlocalplayers();
 
-      for (i = 0; i < players.size; i++) {
+      for(i = 0; i < players.size; i++) {
         players[i] waittill_dobj(i);
 
-        if(!isdefined(players[i] getentitynumber()) || !isdefined(level.localplayers[i]) || !isdefined(level.localplayers[i] getentitynumber())) {
+        if(!isDefined(players[i] getentitynumber()) || !isDefined(level.localplayers[i]) || !isDefined(level.localplayers[i] getentitynumber())) {
           continue;
         }
         if(!players[i] islocalplayer() || isspectating(i, 0) || players[i] getentitynumber() != level.localplayers[i] getentitynumber()) {
@@ -495,10 +500,10 @@ power_controlled_lights() {
     level notify("power_controlled_light");
     players = getlocalplayers();
 
-    for (i = 0; i < players.size; i++) {
+    for(i = 0; i < players.size; i++) {
       players[i] waittill_dobj(i);
 
-      if(!isdefined(players[i] getentitynumber()) || !isdefined(level.localplayers[i]) || !isdefined(level.localplayers[i] getentitynumber())) {
+      if(!isDefined(players[i] getentitynumber()) || !isDefined(level.localplayers[i]) || !isDefined(level.localplayers[i] getentitynumber())) {
         continue;
       }
       if(!players[i] islocalplayer() || isspectating(i, 0) || players[i] getentitynumber() != level.localplayers[i] getentitynumber()) {
@@ -508,21 +513,21 @@ power_controlled_lights() {
       setworldfogactivebank(i, level.current_fog);
       vision_trigs = getentarray(i, "vision_trig", "targetname");
 
-      if(isdefined(vision_trigs)) {
+      if(isDefined(vision_trigs)) {
         foreach(trig in vision_trigs) {
-          if(isdefined(trig.script_string) && trig.script_string == "zm_transit_depot_int_off")
+          if(isDefined(trig.script_string) && trig.script_string == "zm_transit_depot_int_off")
             trig.script_string = "zm_transit_depot_int_on";
 
-          if(isdefined(trig.script_string) && trig.script_string == "zm_transit_diner_int_off")
+          if(isDefined(trig.script_string) && trig.script_string == "zm_transit_diner_int_off")
             trig.script_string = "zm_transit_diner_int_on";
 
-          if(isdefined(trig.script_string) && trig.script_string == "zm_transit_town_int_off")
+          if(isDefined(trig.script_string) && trig.script_string == "zm_transit_town_int_off")
             trig.script_string = "zm_transit_town_int_on";
 
-          if(isdefined(trig.script_string) && trig.script_string == "zm_transit_power_int_off")
+          if(isDefined(trig.script_string) && trig.script_string == "zm_transit_power_int_off")
             trig.script_string = "zm_transit_power_int_on";
 
-          if(isdefined(trig.script_string) && trig.script_string == "zm_transit_tunnel_off")
+          if(isDefined(trig.script_string) && trig.script_string == "zm_transit_tunnel_off")
             trig.script_string = "zm_transit_tunnel_on";
         }
       }
@@ -533,7 +538,7 @@ power_controlled_lights() {
 }
 
 sq_tower_sparks_init() {
-  while (!isdefined(level.sq_tower_complete)) {
+  while(!isDefined(level.sq_tower_complete)) {
     clientscripts\mp\_fx::deactivate_exploder(416);
     level waittill_any("power_on", "pwr");
     clientscripts\mp\_fx::activate_exploder(416);
@@ -559,10 +564,10 @@ turbine_door_sparks(wire) {
   self endon("death");
   self endon("entityshutdown");
 
-  while (level.power_on) {
+  while(level.power_on) {
     players = getlocalplayers();
 
-    for (i = 0; i < players.size; i++) {
+    for(i = 0; i < players.size; i++) {
       pos = ropegetposition(wire, 1.0);
       playfx(i, level._effect["fx_zmb_tranzit_spark_blue_lg_os"], pos);
     }
@@ -575,12 +580,13 @@ register_screecher_lights() {
   level.safety_lights = getstructarray("screecher_escape", "targetname");
   level.safety_lights_callbacks = [];
 
-  for (i = 0; i < level.safety_lights.size; i++) {
+  for(i = 0; i < level.safety_lights.size; i++) {
     safety = level.safety_lights[i];
     name = safety.script_noteworthy;
 
-    if(!isdefined(name)) {
+    if(!isDefined(name)) {
       println("ERROR Unnamed screecher light detected");
+
       name = "light_" + i;
     }
 
@@ -593,13 +599,14 @@ register_screecher_lights() {
 safety_light_callback(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump) {
   safety = level.safety_lights_callbacks[fieldname];
 
-  if(isdefined(safety)) {
+  if(isDefined(safety)) {
     if(is_true(newval))
       safety notify("power_on");
     else
       safety notify("power_off");
   } else {
     println("ERROR: Callback on unknown screecher light " + fieldname);
+
   }
 }
 
@@ -613,8 +620,9 @@ find_safety_light(name) {
     }
   }
 
-  if(!isdefined(light))
+  if(!isDefined(light))
     println("ERROR: Could not find screecher light with script noteworthy " + name);
+
   return light;
 }
 
@@ -643,15 +651,15 @@ power_controlled_or_turbine(on, off, on_sq, off_sq, name) {
   wait 1;
   lightstruct = find_safety_light(name);
 
-  while (true) {
-    if(isdefined(level.light_ric_sq)) {
+  while(true) {
+    if(isDefined(level.light_ric_sq)) {
       clientscripts\mp\_fx::deactivate_exploder(on);
       clientscripts\mp\_fx::deactivate_exploder(on_sq);
       clientscripts\mp\_fx::deactivate_exploder(off_sq);
       clientscripts\mp\_fx::activate_exploder(off);
     }
 
-    if(isdefined(level.light_max_sq)) {
+    if(isDefined(level.light_max_sq)) {
       clientscripts\mp\_fx::deactivate_exploder(on);
       clientscripts\mp\_fx::deactivate_exploder(off);
       clientscripts\mp\_fx::deactivate_exploder(on_sq);
@@ -666,21 +674,21 @@ power_controlled_or_turbine(on, off, on_sq, off_sq, name) {
     lightstruct thread sq_maxis_lights_on(on, off, on_sq, off_sq);
     lightstruct notify("sound_stopped");
 
-    if(isdefined(lightstruct))
+    if(isDefined(lightstruct))
       lightstruct waittill("power_on");
     else
       level waittill_any("power_on", "pwr");
 
     level notify("SafeLightOn");
 
-    if(isdefined(level.light_ric_sq)) {
+    if(isDefined(level.light_ric_sq)) {
       clientscripts\mp\_fx::deactivate_exploder(off);
       clientscripts\mp\_fx::deactivate_exploder(on);
       clientscripts\mp\_fx::deactivate_exploder(off_sq);
       clientscripts\mp\_fx::activate_exploder(on_sq);
     }
 
-    if(isdefined(level.light_max_sq)) {
+    if(isDefined(level.light_max_sq)) {
       clientscripts\mp\_fx::deactivate_exploder(off);
       clientscripts\mp\_fx::deactivate_exploder(on_sq);
       clientscripts\mp\_fx::deactivate_exploder(off_sq);
@@ -694,7 +702,7 @@ power_controlled_or_turbine(on, off, on_sq, off_sq, name) {
 
     lightstruct thread sq_screecher_light_on(on, off, on_sq, off_sq);
 
-    if(isdefined(lightstruct))
+    if(isDefined(lightstruct))
       lightstruct waittill("power_off");
     else
       level waittill("pwo");
@@ -710,11 +718,11 @@ sq_maxis_lights_on(on, off, on_sq, off_sq) {
   level endon("power_on");
   sq_max_on = undefined;
 
-  while (!isdefined(level.light_max_sq))
+  while(!isDefined(level.light_max_sq))
     wait 1;
 
-  while (isdefined(level.light_max_sq)) {
-    if(!isdefined(sq_max_on)) {
+  while(isDefined(level.light_max_sq)) {
+    if(!isDefined(sq_max_on)) {
       sq_max_on = 1;
       clientscripts\mp\_fx::deactivate_exploder(off);
       clientscripts\mp\_fx::deactivate_exploder(on);
@@ -732,13 +740,13 @@ sq_screecher_light_on(on, off, on_sq, off_sq) {
   level endon("pwo");
   sq_ric_on = undefined;
 
-  while (!isdefined(level.light_ric_sq))
+  while(!isDefined(level.light_ric_sq))
     wait 1;
 
   self loop_fx_sound(0, "zmb_safety_light_sidequest", self.origin, "sound_stopped");
 
-  while (isdefined(level.light_ric_sq)) {
-    if(!isdefined(sq_ric_on)) {
+  while(isDefined(level.light_ric_sq)) {
+    if(!isDefined(sq_ric_on)) {
       sq_ric_on = 1;
       clientscripts\mp\_fx::deactivate_exploder(off);
       clientscripts\mp\_fx::deactivate_exploder(on);

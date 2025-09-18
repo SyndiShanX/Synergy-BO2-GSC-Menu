@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\mp_socotra.gsc
-***************************************/
+**************************************/
 
 #include maps\mp\_utility;
 #include maps\mp\mp_socotra_fx;
@@ -79,7 +79,7 @@ rts_remove() {
   rtsfloors = getentarray("overwatch_floor", "targetname");
 
   foreach(rtsfloor in rtsfloors) {
-    if(isdefined(rtsfloor))
+    if(isDefined(rtsfloor))
       rtsfloor delete();
   }
 }

@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\mp_express.gsc
-***************************************/
+**************************************/
 
 #include maps\mp\_utility;
 #include common_scripts\utility;
@@ -50,7 +50,7 @@ levelspawndvars(reset_dvars) {
 devgui_express() {
   setdvar("devgui_notify", "");
 
-  for (;;) {
+  for(;;) {
     wait 0.5;
     devgui_string = getdvar(#"devgui_notify");
 
@@ -67,4 +67,5 @@ devgui_express() {
     if(getdvar(#"devgui_notify") != "")
       setdvar("devgui_notify", "");
   }
+
 }

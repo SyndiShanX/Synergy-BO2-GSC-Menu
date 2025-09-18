@@ -11,7 +11,7 @@ init() {
 }
 
 onplayerconnect() {
-  for (;;) {
+  for(;;) {
     level waittill("connecting", player);
     player.hud_damagefeedback = newdamageindicatorhudelem(player);
     player.hud_damagefeedback.horzalign = "center";
@@ -29,8 +29,8 @@ updatedamagefeedback(mod, inflictor, perkfeedback) {
   if(!isplayer(self) || sessionmodeiszombiesgame()) {
     return;
   }
-  if(isdefined(mod) && mod != "MOD_CRUSH" && mod != "MOD_GRENADE_SPLASH" && mod != "MOD_HIT_BY_OBJECT") {
-    if(isdefined(inflictor) && isdefined(inflictor.soundmod)) {
+  if(isDefined(mod) && mod != "MOD_CRUSH" && mod != "MOD_GRENADE_SPLASH" && mod != "MOD_HIT_BY_OBJECT") {
+    if(isDefined(inflictor) && isDefined(inflictor.soundmod)) {
       switch (inflictor.soundmod) {
         case "player":
           self thread playhitsound(mod, "mpl_hit_alert");
@@ -58,7 +58,7 @@ updatedamagefeedback(mod, inflictor, perkfeedback) {
       self thread playhitsound(mod, "mpl_hit_alert_low");
   }
 
-  if(isdefined(perkfeedback)) {
+  if(isDefined(perkfeedback)) {
     switch (perkfeedback) {
       case "flakjacket":
         self.hud_damagefeedback setshader("damage_feedback_flak", 24, 48);
@@ -90,7 +90,7 @@ updatespecialdamagefeedback(hitent) {
   if(!isplayer(self)) {
     return;
   }
-  if(!isdefined(hitent)) {
+  if(!isDefined(hitent)) {
     return;
   }
   if(!isplayer(hitent)) {
@@ -98,7 +98,7 @@ updatespecialdamagefeedback(hitent) {
   }
   wait 0.05;
 
-  if(!isdefined(self.directionalhitarray)) {
+  if(!isDefined(self.directionalhitarray)) {
     self.directionalhitarray = [];
     hitentnum = hitent getentitynumber();
     self.directionalhitarray[hitentnum] = 1;
@@ -116,8 +116,8 @@ sendhitspecialeventatframeend(hitent) {
   value = 1;
   entbitarray0 = 0;
 
-  for (i = 0; i < 32; i++) {
-    if(isdefined(self.directionalhitarray[i]) && self.directionalhitarray[i] != 0) {
+  for(i = 0; i < 32; i++) {
+    if(isDefined(self.directionalhitarray[i]) && self.directionalhitarray[i] != 0) {
       entbitarray0 = entbitarray0 + value;
       enemyshit++;
     }
@@ -127,8 +127,8 @@ sendhitspecialeventatframeend(hitent) {
 
   entbitarray1 = 0;
 
-  for (i = 33; i < 64; i++) {
-    if(isdefined(self.directionalhitarray[i]) && self.directionalhitarray[i] != 0) {
+  for(i = 33; i < 64; i++) {
+    if(isDefined(self.directionalhitarray[i]) && self.directionalhitarray[i] != 0) {
       entbitarray1 = entbitarray1 + value;
       enemyshit++;
     }

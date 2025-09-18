@@ -1,7 +1,7 @@
-/**************************************************************
+/***********************************************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\animscripts\traverse\zm_mantle_over_40.gsc
-**************************************************************/
+***********************************************************************/
 
 #include maps\mp\animscripts\traverse\shared;
 #include maps\mp\animscripts\traverse\zm_shared;
@@ -29,10 +29,11 @@ main() {
         traversealias = "barrier_sprint";
         break;
       default:
-        if(isdefined(level.zm_mantle_over_40_move_speed_override))
+        if(isDefined(level.zm_mantle_over_40_move_speed_override))
           traversealias = self[[level.zm_mantle_over_40_move_speed_override]]();
         else {
           assertmsg("Zombie '" + self.classname + "' move speed of '" + self.zombie_move_speed + "' is not supported for mantle_over_40.");
+
         }
     }
   } else {

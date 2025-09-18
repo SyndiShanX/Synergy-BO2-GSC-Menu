@@ -1,7 +1,7 @@
-/******************************************************
+/*******************************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\zombies\_zm_hackables_wallbuys.gsc
-******************************************************/
+*******************************************************/
 
 #include common_scripts\utility;
 #include maps\mp\_utility;
@@ -11,7 +11,7 @@
 hack_wallbuys() {
   weapon_spawns = getstructarray("weapon_upgrade", "targetname");
 
-  for (i = 0; i < weapon_spawns.size; i++) {
+  for(i = 0; i < weapon_spawns.size; i++) {
     if(weapontype(weapon_spawns[i].zombie_weapon_upgrade) == "grenade") {
       continue;
     }

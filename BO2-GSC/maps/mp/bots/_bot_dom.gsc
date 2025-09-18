@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\bots\_bot_dom.gsc
-***************************************/
+**************************************/
 
 #include maps\mp\gametypes\dom;
 #include common_scripts\utility;
@@ -32,13 +32,13 @@ bot_dom_think() {
 
   flag = dom_get_weighted_flag("neutral");
 
-  if(!isdefined(flag))
+  if(!isDefined(flag))
     flag = dom_get_best_flag(self.team);
 
   if(dom_has_two_flags(self.team))
     flag = dom_get_best_flag(self.team);
 
-  if(!isdefined(flag)) {
+  if(!isDefined(flag)) {
     return;
   }
   if(!bot_has_flag_goal(flag) && !self bot_goal_is_enemy_flag())
@@ -70,7 +70,7 @@ bot_is_capturing_flag() {
 bot_has_flag_goal(flag) {
   origin = self getgoal("dom_flag");
 
-  if(isdefined(origin)) {
+  if(isDefined(origin)) {
     if(distancesquared(flag.origin, origin) < flag.radius * flag.radius)
       return true;
   }
@@ -81,7 +81,7 @@ bot_has_flag_goal(flag) {
 bot_has_no_goal() {
   origin = self getgoal("dom_flag");
 
-  if(isdefined(origin))
+  if(isDefined(origin))
     return false;
 
   return true;
@@ -90,7 +90,7 @@ bot_has_no_goal() {
 bot_goal_is_enemy_flag() {
   origin = self getgoal("dom_flag");
 
-  if(isdefined(origin)) {
+  if(isDefined(origin)) {
     foreach(flag in level.flags) {
       if(distancesquared(flag.origin, origin) < flag.radius * flag.radius) {
         if(flag getflagteam() != self.team || dom_is_flag_contested(flag))
@@ -122,17 +122,17 @@ bot_flag_grenade(flag) {
 bot_get_look_at(flag) {
   enemy = self maps\mp\bots\_bot::bot_get_closest_enemy(self.origin, 0);
 
-  if(isdefined(enemy)) {
+  if(isDefined(enemy)) {
     node = getvisiblenode(self.origin, enemy.origin);
 
-    if(isdefined(node) && distancesquared(self.origin, node.origin) > 16384)
+    if(isDefined(node) && distancesquared(self.origin, node.origin) > 16384)
       return node.origin;
   }
 
   spawn = random(level.spawn_all);
   node = getvisiblenode(self.origin, spawn.origin);
 
-  if(isdefined(node) && distancesquared(self.origin, node.origin) > 16384)
+  if(isDefined(node) && distancesquared(self.origin, node.origin) > 16384)
     return node.origin;
 
   return flag.origin;
@@ -205,7 +205,7 @@ bot_capture_flag(flag) {
 }
 
 dom_is_game_start() {
-  assert(isdefined(level.flags));
+  assert(isDefined(level.flags));
 
   foreach(flag in level.flags) {
     if(flag getflagteam() != "neutral")
@@ -221,12 +221,12 @@ dom_get_closest_flag() {
 }
 
 dom_get_weighted_flag(owner) {
-  assert(isdefined(level.flags));
+  assert(isDefined(level.flags));
   best = undefined;
   distsq = 9999999;
 
   foreach(flag in level.flags) {
-    if(isdefined(owner) && flag getflagteam() != owner) {
+    if(isDefined(owner) && flag getflagteam() != owner) {
       continue;
     }
     d = distancesquared(self.origin, flag.origin);
@@ -241,7 +241,7 @@ dom_get_weighted_flag(owner) {
 }
 
 dom_get_weighted_enemy_flag(team) {
-  assert(isdefined(level.flags));
+  assert(isDefined(level.flags));
   best = undefined;
   distsq = 9999999;
 
@@ -262,7 +262,7 @@ dom_get_weighted_enemy_flag(team) {
 
 dom_is_flag_contested(flag) {
   enemy = self maps\mp\bots\_bot::bot_get_closest_enemy(flag.origin, 0);
-  return isdefined(enemy) && distancesquared(enemy.origin, flag.origin) < 147456;
+  return isDefined(enemy) && distancesquared(enemy.origin, flag.origin) < 147456;
 }
 
 dom_has_two_flags(team) {
@@ -280,7 +280,7 @@ dom_has_two_flags(team) {
 }
 
 dom_get_weighted_contested_flag(team) {
-  assert(isdefined(level.flags));
+  assert(isDefined(level.flags));
   best = undefined;
   distsq = 9999999;
 
@@ -300,13 +300,13 @@ dom_get_weighted_contested_flag(team) {
 }
 
 dom_get_random_flag(owner) {
-  assert(isdefined(level.flags));
+  assert(isDefined(level.flags));
   flagindex = randomintrange(0, level.flags.size);
 
-  if(!isdefined(owner))
+  if(!isDefined(owner))
     return level.flags[flagindex];
 
-  for (i = 0; i < level.flags.size; i++) {
+  for(i = 0; i < level.flags.size; i++) {
     if(level.flags[flagindex] getflagteam() == owner)
       return level.flags[flagindex];
 
@@ -320,10 +320,10 @@ dom_get_best_flag(team) {
   flag1 = dom_get_weighted_enemy_flag(team);
   flag2 = dom_get_weighted_contested_flag(team);
 
-  if(!isdefined(flag1))
+  if(!isDefined(flag1))
     return flag2;
 
-  if(!isdefined(flag2))
+  if(!isDefined(flag2))
     return flag1;
 
   offchance = randomint(100) > 80;
@@ -348,20 +348,20 @@ bot_tactical_insertion(flag) {
   dist = self getlookaheaddist();
   dir = self getlookaheaddir();
 
-  if(!isdefined(dist) || !isdefined(dir))
+  if(!isDefined(dist) || !isDefined(dir))
     return 0;
 
   node = bot_nearest_node(flag.origin);
   mine = bot_nearest_node(self.origin);
 
-  if(isdefined(mine) && !nodesvisible(mine, node)) {
+  if(isDefined(mine) && !nodesvisible(mine, node)) {
     origin = self.origin + vectorscale(dir, dist);
     next = bot_nearest_node(origin);
 
     if(next isdangerous(self.team))
       return 0;
 
-    if(isdefined(next) && nodesvisible(next, node))
+    if(isDefined(next) && nodesvisible(next, node))
       return bot_combat_tactical_insertion(self.origin);
   }
 

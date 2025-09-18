@@ -7,7 +7,7 @@
 #include maps\mp\zombies\_zm_utility;
 
 server_choke_init(id, max) {
-  if(!isdefined(level.zombie_server_choke_ids_max)) {
+  if(!isDefined(level.zombie_server_choke_ids_max)) {
     level.zombie_server_choke_ids_max = [];
     level.zombie_server_choke_ids_count = [];
   }
@@ -18,7 +18,7 @@ server_choke_init(id, max) {
 }
 
 server_choke_thread(id) {
-  while (true) {
+  while(true) {
     wait 0.05;
     level.zombie_server_choke_ids_count[id] = 0;
   }
@@ -29,24 +29,24 @@ server_choke_safe(id) {
 }
 
 server_choke_action(id, choke_action, arg1, arg2, arg3) {
-  assert(isdefined(level.zombie_server_choke_ids_max[id]), "server Choke: " + id + " undefined");
+  assert(isDefined(level.zombie_server_choke_ids_max[id]), "server Choke: " + id + " undefined");
 
-  while (!server_choke_safe(id))
+  while(!server_choke_safe(id))
     wait 0.05;
 
   level.zombie_server_choke_ids_count[id]++;
 
-  if(!isdefined(arg1))
+  if(!isDefined(arg1))
     return [
       [choke_action]
     ]();
 
-  if(!isdefined(arg2))
+  if(!isDefined(arg2))
     return [
       [choke_action]
     ](arg1);
 
-  if(!isdefined(arg3))
+  if(!isDefined(arg3))
     return [
       [choke_action]
     ](arg1, arg2);
@@ -55,14 +55,14 @@ server_choke_action(id, choke_action, arg1, arg2, arg3) {
 }
 
 server_entity_valid(entity) {
-  if(!isdefined(entity))
+  if(!isDefined(entity))
     return false;
 
   return true;
 }
 
 server_safe_init(id, max) {
-  if(!isdefined(level.zombie_server_choke_ids_max) || !isdefined(level.zombie_server_choke_ids_max[id]))
+  if(!isDefined(level.zombie_server_choke_ids_max) || !isDefined(level.zombie_server_choke_ids_max[id]))
     server_choke_init(id, max);
 
   assert(max == level.zombie_server_choke_ids_max[id]);

@@ -7,7 +7,7 @@
 #include common_scripts\utility;
 
 init() {
-  for (;;) {
+  for(;;) {
     level waittill("connecting", player);
     player thread onplayerspawned();
   }
@@ -16,7 +16,7 @@ init() {
 onplayerspawned() {
   self endon("disconnect");
 
-  for (;;) {
+  for(;;) {
     self waittill("spawned_player");
     self thread init_serverfaceanim();
   }
@@ -25,7 +25,7 @@ onplayerspawned() {
 init_serverfaceanim() {
   self.do_face_anims = 1;
 
-  if(!isdefined(level.face_event_handler)) {
+  if(!isDefined(level.face_event_handler)) {
     level.face_event_handler = spawnstruct();
     level.face_event_handler.events = [];
     level.face_event_handler.events["death"] = "face_death";
@@ -42,11 +42,11 @@ init_serverfaceanim() {
 }
 
 wait_for_face_event() {
-  while (true) {
+  while(true) {
     level waittill("face", face_notify, ent);
 
-    if(isdefined(ent) && isdefined(ent.do_face_anims) && ent.do_face_anims) {
-      if(isdefined(level.face_event_handler.events[face_notify]))
+    if(isDefined(ent) && isDefined(ent.do_face_anims) && ent.do_face_anims) {
+      if(isDefined(level.face_event_handler.events[face_notify]))
         ent sendfaceevent(level.face_event_handler.events[face_notify]);
     }
   }

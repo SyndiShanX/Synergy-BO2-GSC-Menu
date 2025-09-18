@@ -41,7 +41,7 @@ score_cf_increment_info(name) {
   info = level.score_cf_info[name];
   player_ent_index = self getentitynumber();
 
-  if(!isdefined(info.players[player_ent_index]))
+  if(!isDefined(info.players[player_ent_index]))
     info.players[player_ent_index] = 0;
 
   info.players[player_ent_index]++;
@@ -58,15 +58,15 @@ score_cf_monitor() {
   }
   info_keys = getarraykeys(level.score_cf_info);
 
-  while (true) {
+  while(true) {
     wait_network_frame();
     players = get_players();
 
-    for (player_index = 0; player_index < players.size; player_index++) {
+    for(player_index = 0; player_index < players.size; player_index++) {
       player = players[player_index];
       player_ent_index = player getentitynumber();
 
-      for (info_index = 0; info_index < info_keys.size; info_index++) {
+      for(info_index = 0; info_index < info_keys.size; info_index++) {
         info = level.score_cf_info[info_keys[info_index]];
         info.players[player_ent_index] = 0;
         player setclientfield(info.cf_field, 0);
@@ -158,7 +158,7 @@ player_add_points(event, mod, hit_location, is_dog, zombie_team, damage_weapon) 
   player_points = multiplier * round_up_score(player_points, 5);
   team_points = multiplier * round_up_score(team_points, 5);
 
-  if(isdefined(self.point_split_receiver) && (event == "death" || event == "ballistic_knife_death")) {
+  if(isDefined(self.point_split_receiver) && (event == "death" || event == "ballistic_knife_death")) {
     split_player_points = player_points - round_up_score(player_points * self.point_split_keep_percent, 10);
     self.point_split_receiver add_to_player_score(split_player_points);
     player_points = player_points - split_player_points;
@@ -170,15 +170,15 @@ player_add_points(event, mod, hit_location, is_dog, zombie_team, damage_weapon) 
   self add_to_player_score(player_points);
   self.pers["score"] = self.score;
 
-  if(isdefined(level._game_module_point_adjustment))
+  if(isDefined(level._game_module_point_adjustment))
     level[[level._game_module_point_adjustment]](self, zombie_team, player_points);
 }
 
 get_points_multiplier(player) {
   multiplier = level.zombie_vars[player.team]["zombie_point_scalar"];
 
-  if(isdefined(level.current_game_module) && level.current_game_module == 2) {
-    if(isdefined(level._race_team_double_points) && level._race_team_double_points == player._race_team)
+  if(isDefined(level.current_game_module) && level.current_game_module == 2) {
+    if(isDefined(level._race_team_double_points) && level._race_team_double_points == player._race_team)
       return multiplier;
     else
       return 1;
@@ -230,7 +230,7 @@ player_add_points_kill_bonus(mod, hit_location) {
 
   score = 0;
 
-  if(isdefined(hit_location)) {
+  if(isDefined(hit_location)) {
     switch (hit_location) {
       case "head":
       case "helmet":
@@ -290,10 +290,10 @@ player_reduce_points(event, mod, hit_location) {
 }
 
 add_to_player_score(points, add_to_total) {
-  if(!isdefined(add_to_total))
+  if(!isDefined(add_to_total))
     add_to_total = 1;
 
-  if(!isdefined(points) || level.intermission) {
+  if(!isDefined(points) || level.intermission) {
     return;
   }
   self.score = self.score + points;
@@ -306,7 +306,7 @@ add_to_player_score(points, add_to_total) {
 }
 
 minus_to_player_score(points, ignore_double_points_upgrade) {
-  if(!isdefined(points) || level.intermission) {
+  if(!isDefined(points) || level.intermission) {
     return;
   }
   if(!is_true(ignore_double_points_upgrade)) {
@@ -320,17 +320,15 @@ minus_to_player_score(points, ignore_double_points_upgrade) {
 }
 
 add_to_team_score(points) {
-
 }
 
 minus_to_team_score(points) {
-
 }
 
 player_died_penalty() {
   players = get_players(self.team);
 
-  for (i = 0; i < players.size; i++) {
+  for(i = 0; i < players.size; i++) {
     if(players[i] != self && !players[i].is_zombie)
       players[i] player_reduce_points("no_revive_penalty");
   }
@@ -338,5 +336,6 @@ player_died_penalty() {
 
 player_downed_penalty() {
   println("ZM >> LAST STAND - player_downed_penalty ");
+
   self player_reduce_points("downed");
 }

@@ -1,7 +1,7 @@
-/******************************************************
+/*******************************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\animscripts\traverse\ladder_up.gsc
-******************************************************/
+*******************************************************/
 
 #include maps\mp\animscripts\traverse\shared;
 

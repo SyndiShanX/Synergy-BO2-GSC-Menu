@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\zombies\_load.gsc
-***************************************/
+**************************************/
 
 #include common_scripts\utility;
 #include maps\mp\_utility;
@@ -22,18 +22,18 @@
 #include maps\mp\gametypes_zm\_spawnlogic;
 
 main(bscriptgened, bcsvgened, bsgenabled) {
-  if(!isdefined(level.script_gen_dump_reasons))
+  if(!isDefined(level.script_gen_dump_reasons))
     level.script_gen_dump_reasons = [];
 
-  if(!isdefined(bsgenabled))
+  if(!isDefined(bsgenabled))
     level.script_gen_dump_reasons[level.script_gen_dump_reasons.size] = "First run";
 
-  if(!isdefined(bcsvgened))
+  if(!isDefined(bcsvgened))
     bcsvgened = 0;
 
   level.bcsvgened = bcsvgened;
 
-  if(!isdefined(bscriptgened))
+  if(!isDefined(bscriptgened))
     bscriptgened = 0;
   else
     bscriptgened = 1;
@@ -45,30 +45,30 @@ main(bscriptgened, bcsvgened, bsgenabled) {
   level._client_exploders = [];
   level._client_exploder_ids = [];
 
-  if(!isdefined(level.flag)) {
+  if(!isDefined(level.flag)) {
     level.flag = [];
     level.flags_lock = [];
   }
 
-  if(!isdefined(level.timeofday))
+  if(!isDefined(level.timeofday))
     level.timeofday = "day";
 
   flag_init("scriptgen_done");
   level.script_gen_dump_reasons = [];
 
-  if(!isdefined(level.script_gen_dump)) {
+  if(!isDefined(level.script_gen_dump)) {
     level.script_gen_dump = [];
     level.script_gen_dump_reasons[0] = "First run";
   }
 
-  if(!isdefined(level.script_gen_dump2))
+  if(!isDefined(level.script_gen_dump2))
     level.script_gen_dump2 = [];
 
-  if(isdefined(level.createfxent) && isdefined(level.script))
+  if(isDefined(level.createfxent) && isDefined(level.script))
     script_gen_dump_addline("maps\\mp\\createfx\\" + level.script + "_fx::main();", level.script + "_fx");
 
-  if(isdefined(level.script_gen_dump_preload)) {
-    for (i = 0; i < level.script_gen_dump_preload.size; i++)
+  if(isDefined(level.script_gen_dump_preload)) {
+    for(i = 0; i < level.script_gen_dump_preload.size; i++)
       script_gen_dump_addline(level.script_gen_dump_preload[i].string, level.script_gen_dump_preload[i].signature);
   }
 
@@ -111,8 +111,10 @@ main(bscriptgened, bcsvgened, bsgenabled) {
   setupexploders();
   parse_structs();
   thread footsteps();
+
   level thread level_notify_listener();
   level thread client_notify_listener();
+
   thread maps\mp\_createfx::fx_init();
 
   if(level.createfx_enabled) {
@@ -128,7 +130,7 @@ main(bscriptgened, bcsvgened, bsgenabled) {
   thread maps\mp\_global_fx::main();
   maps\mp\_demo::init();
 
-  for (p = 0; p < 6; p++) {
+  for(p = 0; p < 6; p++) {
     switch (p) {
       case 0:
         triggertype = "trigger_multiple";
@@ -153,18 +155,18 @@ main(bscriptgened, bcsvgened, bsgenabled) {
 
     triggers = getentarray(triggertype, "classname");
 
-    for (i = 0; i < triggers.size; i++) {
-      if(isdefined(triggers[i].script_prefab_exploder))
+    for(i = 0; i < triggers.size; i++) {
+      if(isDefined(triggers[i].script_prefab_exploder))
         triggers[i].script_exploder = triggers[i].script_prefab_exploder;
 
-      if(isdefined(triggers[i].script_exploder))
+      if(isDefined(triggers[i].script_exploder))
         level thread maps\mp\zombies\_load::exploder_load(triggers[i]);
     }
   }
 }
 
 level_notify_listener() {
-  while (true) {
+  while(true) {
     val = getdvar(#"level_notify");
 
     if(val != "") {
@@ -177,7 +179,7 @@ level_notify_listener() {
 }
 
 client_notify_listener() {
-  while (true) {
+  while(true) {
     val = getdvar(#"client_notify");
 
     if(val != "") {
@@ -213,8 +215,8 @@ footsteps() {
 }
 
 parse_structs() {
-  for (i = 0; i < level.struct.size; i++) {
-    if(isdefined(level.struct[i].targetname)) {
+  for(i = 0; i < level.struct.size; i++) {
+    if(isDefined(level.struct[i].targetname)) {
       if(level.struct[i].targetname == "flak_fire_fx") {
         level._effect["flak20_fire_fx"] = loadfx("weapon/tracer/fx_tracer_flak_single_noExp");
         level._effect["flak38_fire_fx"] = loadfx("weapon/tracer/fx_tracer_quad_20mm_Flak38_noExp");
@@ -235,8 +237,8 @@ exploder_load(trigger) {
   level endon("killexplodertridgers" + trigger.script_exploder);
   trigger waittill("trigger");
 
-  if(isdefined(trigger.script_chance) && randomfloat(1) > trigger.script_chance) {
-    if(isdefined(trigger.script_delay))
+  if(isDefined(trigger.script_chance) && randomfloat(1) > trigger.script_chance) {
+    if(isDefined(trigger.script_delay))
       wait(trigger.script_delay);
     else
       wait 4;
@@ -253,26 +255,26 @@ setupexploders() {
   ents = getentarray("script_brushmodel", "classname");
   smodels = getentarray("script_model", "classname");
 
-  for (i = 0; i < smodels.size; i++)
+  for(i = 0; i < smodels.size; i++)
     ents[ents.size] = smodels[i];
 
-  for (i = 0; i < ents.size; i++) {
-    if(isdefined(ents[i].script_prefab_exploder))
+  for(i = 0; i < ents.size; i++) {
+    if(isDefined(ents[i].script_prefab_exploder))
       ents[i].script_exploder = ents[i].script_prefab_exploder;
 
-    if(isdefined(ents[i].script_exploder)) {
-      if(ents[i].model == "fx" && (!isdefined(ents[i].targetname) || ents[i].targetname != "exploderchunk")) {
+    if(isDefined(ents[i].script_exploder)) {
+      if(ents[i].model == "fx" && (!isDefined(ents[i].targetname) || ents[i].targetname != "exploderchunk")) {
         ents[i] hide();
         continue;
       }
 
-      if(isdefined(ents[i].targetname) && ents[i].targetname == "exploder") {
+      if(isDefined(ents[i].targetname) && ents[i].targetname == "exploder") {
         ents[i] hide();
         ents[i] notsolid();
         continue;
       }
 
-      if(isdefined(ents[i].targetname) && ents[i].targetname == "exploderchunk") {
+      if(isDefined(ents[i].targetname) && ents[i].targetname == "exploderchunk") {
         ents[i] hide();
         ents[i] notsolid();
       }
@@ -282,35 +284,35 @@ setupexploders() {
   script_exploders = [];
   potentialexploders = getentarray("script_brushmodel", "classname");
 
-  for (i = 0; i < potentialexploders.size; i++) {
-    if(isdefined(potentialexploders[i].script_prefab_exploder))
+  for(i = 0; i < potentialexploders.size; i++) {
+    if(isDefined(potentialexploders[i].script_prefab_exploder))
       potentialexploders[i].script_exploder = potentialexploders[i].script_prefab_exploder;
 
-    if(isdefined(potentialexploders[i].script_exploder))
+    if(isDefined(potentialexploders[i].script_exploder))
       script_exploders[script_exploders.size] = potentialexploders[i];
   }
 
   potentialexploders = getentarray("script_model", "classname");
 
-  for (i = 0; i < potentialexploders.size; i++) {
-    if(isdefined(potentialexploders[i].script_prefab_exploder))
+  for(i = 0; i < potentialexploders.size; i++) {
+    if(isDefined(potentialexploders[i].script_prefab_exploder))
       potentialexploders[i].script_exploder = potentialexploders[i].script_prefab_exploder;
 
-    if(isdefined(potentialexploders[i].script_exploder))
+    if(isDefined(potentialexploders[i].script_exploder))
       script_exploders[script_exploders.size] = potentialexploders[i];
   }
 
   potentialexploders = getentarray("item_health", "classname");
 
-  for (i = 0; i < potentialexploders.size; i++) {
-    if(isdefined(potentialexploders[i].script_prefab_exploder))
+  for(i = 0; i < potentialexploders.size; i++) {
+    if(isDefined(potentialexploders[i].script_prefab_exploder))
       potentialexploders[i].script_exploder = potentialexploders[i].script_prefab_exploder;
 
-    if(isdefined(potentialexploders[i].script_exploder))
+    if(isDefined(potentialexploders[i].script_exploder))
       script_exploders[script_exploders.size] = potentialexploders[i];
   }
 
-  if(!isdefined(level.createfxent))
+  if(!isDefined(level.createfxent))
     level.createfxent = [];
 
   acceptabletargetnames = [];
@@ -318,7 +320,7 @@ setupexploders() {
   acceptabletargetnames["exploderchunk"] = 1;
   acceptabletargetnames["exploder"] = 1;
 
-  for (i = 0; i < script_exploders.size; i++) {
+  for(i = 0; i < script_exploders.size; i++) {
     exploder = script_exploders[i];
     ent = createexploder(exploder.script_fxid);
     ent.v = [];
@@ -340,28 +342,28 @@ setupexploders() {
     ent.v["ender"] = exploder.script_ender;
     ent.v["type"] = "exploder";
 
-    if(!isdefined(exploder.script_fxid))
+    if(!isDefined(exploder.script_fxid))
       ent.v["fxid"] = "No FX";
     else
       ent.v["fxid"] = exploder.script_fxid;
 
     ent.v["exploder"] = exploder.script_exploder;
-    assert(isdefined(exploder.script_exploder), "Exploder at origin " + exploder.origin + " has no script_exploder");
+    assert(isDefined(exploder.script_exploder), "Exploder at origin " + exploder.origin + " has no script_exploder");
 
-    if(!isdefined(ent.v["delay"]))
+    if(!isDefined(ent.v["delay"]))
       ent.v["delay"] = 0;
 
-    if(isdefined(exploder.target)) {
+    if(isDefined(exploder.target)) {
       org = getent(ent.v["target"], "targetname").origin;
       ent.v["angles"] = vectortoangles(org - ent.v["origin"]);
     }
 
-    if(exploder.classname == "script_brushmodel" || isdefined(exploder.model)) {
+    if(exploder.classname == "script_brushmodel" || isDefined(exploder.model)) {
       ent.model = exploder;
       ent.model.disconnect_paths = exploder.script_disconnectpaths;
     }
 
-    if(isdefined(exploder.targetname) && isdefined(acceptabletargetnames[exploder.targetname]))
+    if(isDefined(exploder.targetname) && isDefined(acceptabletargetnames[exploder.targetname]))
       ent.v["exploder_type"] = exploder.targetname;
     else
       ent.v["exploder_type"] = "normal";
@@ -371,7 +373,7 @@ setupexploders() {
 
   level.createfxexploders = [];
 
-  for (i = 0; i < level.createfxent.size; i++) {
+  for(i = 0; i < level.createfxent.size; i++) {
     ent = level.createfxent[i];
 
     if(ent.v["type"] != "exploder") {
@@ -379,7 +381,7 @@ setupexploders() {
     }
     ent.v["exploder_id"] = getexploderid(ent);
 
-    if(!isdefined(level.createfxexploders[ent.v["exploder"]]))
+    if(!isDefined(level.createfxexploders[ent.v["exploder"]]))
       level.createfxexploders[ent.v["exploder"]] = [];
 
     level.createfxexploders[ent.v["exploder"]][level.createfxexploders[ent.v["exploder"]].size] = ent;
@@ -389,7 +391,7 @@ setupexploders() {
 setup_traversals() {
   potential_traverse_nodes = getallnodes();
 
-  for (i = 0; i < potential_traverse_nodes.size; i++) {
+  for(i = 0; i < potential_traverse_nodes.size; i++) {
     node = potential_traverse_nodes[i];
 
     if(node.type == "Begin")
@@ -398,11 +400,13 @@ setup_traversals() {
 }
 
 calculate_map_center() {
-  if(!isdefined(level.mapcenter)) {
+  if(!isDefined(level.mapcenter)) {
     level.nodesmins = (0, 0, 0);
     level.nodesmaxs = (0, 0, 0);
     level.mapcenter = maps\mp\gametypes_zm\_spawnlogic::findboxcenter(level.nodesmins, level.nodesmaxs);
+
     println("map center: ", level.mapcenter);
+
     setmapcenter(level.mapcenter);
   }
 }
@@ -411,7 +415,7 @@ start_intro_screen_zm() {
   if(level.createfx_enabled) {
     return;
   }
-  if(!isdefined(level.introscreen)) {
+  if(!isDefined(level.introscreen)) {
     level.introscreen = newhudelem();
     level.introscreen.x = 0;
     level.introscreen.y = 0;
@@ -427,7 +431,7 @@ start_intro_screen_zm() {
   level.introscreen.alpha = 1;
   players = get_players();
 
-  for (i = 0; i < players.size; i++)
+  for(i = 0; i < players.size; i++)
     players[i] freezecontrols(1);
 
   wait 1;

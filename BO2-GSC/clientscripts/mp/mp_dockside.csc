@@ -28,7 +28,9 @@ main() {
   setsaveddvar("r_waterwaveangle", "129.49 80.8233 44.9883 107.143");
   setsaveddvar("r_waterwavephase", "0 0 0 0");
   waitforclient(0);
+
   println("*** Client : mp_dockside running...");
+
   remove_dyn_ents();
 }
 

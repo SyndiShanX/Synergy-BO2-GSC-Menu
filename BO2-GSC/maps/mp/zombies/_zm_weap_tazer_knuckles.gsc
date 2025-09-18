@@ -1,7 +1,7 @@
-/*******************************************************
+/*********************************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\zombies\_zm_weap_tazer_knuckles.gsc
-*******************************************************/
+*********************************************************/
 
 #include common_scripts\utility;
 #include maps\mp\_utility;
@@ -16,7 +16,7 @@ init() {
   registerclientfield("toplayer", "tazer_flourish", 1, 1, "int");
   register_melee_weapon_for_level("tazer_knuckles_zm");
 
-  if(isdefined(level.tazer_cost))
+  if(isDefined(level.tazer_cost))
     cost = level.tazer_cost;
   else
     cost = 6000;
@@ -38,22 +38,22 @@ init() {
 }
 
 watch_bodily_functions() {
-  if(isdefined(self.isscreecher) && self.isscreecher || isdefined(self.is_avogadro) && self.is_avogadro) {
+  if(isDefined(self.isscreecher) && self.isscreecher || isDefined(self.is_avogadro) && self.is_avogadro) {
     return;
   }
-  while (isdefined(self) && isalive(self)) {
+  while(isDefined(self) && isalive(self)) {
     self waittill("damage", amount, attacker, direction_vec, point, type);
 
-    if(!isdefined(self)) {
+    if(!isDefined(self)) {
       return;
     }
-    if(!isdefined(attacker) || !isplayer(attacker)) {
+    if(!isDefined(attacker) || !isplayer(attacker)) {
       continue;
     }
     if(type != "MOD_MELEE") {
       continue;
     }
-    if(!attacker hasweapon("tazer_knuckles_zm") || isdefined(self.hasriotshieldequipped) && self.hasriotshieldequipped) {
+    if(!attacker hasweapon("tazer_knuckles_zm") || isDefined(self.hasriotshieldequipped) && self.hasriotshieldequipped) {
       continue;
     }
     ch = randomint(100);
@@ -77,7 +77,7 @@ onplayerconnect() {
 onplayerspawned() {
   self endon("disconnect");
 
-  for (;;) {
+  for(;;) {
     self waittill("spawned_player");
     self thread watchtazerknucklemelee();
   }
@@ -86,7 +86,7 @@ onplayerspawned() {
 watchtazerknucklemelee() {
   self endon("disconnect");
 
-  for (;;) {
+  for(;;) {
     self waittill("weapon_melee", weapon);
 
     if(weapon == "tazer_knuckles_zm")
@@ -95,7 +95,6 @@ watchtazerknucklemelee() {
 }
 
 tazerknuckle_melee() {
-
 }
 
 tazer_flourish_fx() {

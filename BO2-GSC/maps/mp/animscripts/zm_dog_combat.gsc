@@ -13,17 +13,18 @@ main() {
   debug_anim_print("dog_combat::main() ");
   self endon("killanimscript");
   self setaimanimweights(0, 0);
+
   if(!debug_allow_combat()) {
     combatidle();
     return;
   }
 
-  if(isdefined(level.hostmigrationtimer)) {
+  if(isDefined(level.hostmigrationtimer)) {
     combatidle();
     return;
   }
 
-  assert(isdefined(self.enemy));
+  assert(isDefined(self.enemy));
 
   if(!isalive(self.enemy)) {
     combatidle();
@@ -45,11 +46,11 @@ combatidle() {
 }
 
 shouldwaitincombatidle() {
-  if(isdefined(level.hostmigrationtimer))
+  if(isDefined(level.hostmigrationtimer))
     return true;
 
-  assert(isdefined(self.enemy) && isalive(self.enemy));
-  return isdefined(self.enemy.dogattackallowtime) && gettime() < self.enemy.dogattackallowtime;
+  assert(isDefined(self.enemy) && isalive(self.enemy));
+  return isDefined(self.enemy.dogattackallowtime) && gettime() < self.enemy.dogattackallowtime;
 }
 
 setnextdogattackallowtime(time) {
@@ -72,14 +73,14 @@ meleebiteattackplayer(player) {
 meleebiteattackplayer2(player) {
   attackrangebuffer = 30;
 
-  for (;;) {
+  for(;;) {
     if(!isalive(self.enemy)) {
       break;
     }
 
     meleerange = self.meleeattackdist + attackrangebuffer;
 
-    if(isdefined(player.syncedmeleetarget) && player.syncedmeleetarget != self) {
+    if(isDefined(player.syncedmeleetarget) && player.syncedmeleetarget != self) {
       if(checkendcombat(meleerange)) {
         break;
       } else {
@@ -96,8 +97,10 @@ meleebiteattackplayer2(player) {
     self set_orient_mode("face enemy");
     self animmode("gravity");
     self.safetochangescript = 0;
+
     if(getdvarint(#"_id_7B06BF0D"))
       iprintln("dog " + self getentnum() + " attack player " + gettime());
+
     player setnextdogattackallowtime(200);
 
     if(dog_cant_kill_in_one_hit(player)) {
@@ -147,7 +150,7 @@ domeleeafterwait(time) {
   wait(time);
   hitent = self melee();
 
-  if(isdefined(hitent)) {
+  if(isDefined(hitent)) {
     if(isplayer(hitent))
       hitent shellshock("dog_bite", 1);
   }
@@ -161,24 +164,24 @@ handlemeleebiteattacknotetracks2(note, player) {
 handlemeleebiteattacknotetracks(note, player) {
   switch (note) {
     case "dog_melee":
-      if(!isdefined(level.dogmeleebiteattacktime)) {
+      if(!isDefined(level.dogmeleebiteattacktime)) {
         level.dogmeleebiteattacktime = gettime() - level.dogmeleebiteattacktimestart;
         level.dogmeleebiteattacktime = level.dogmeleebiteattacktime + 50;
       }
 
       hitent = self melee(anglestoforward(self.angles));
 
-      if(isdefined(hitent)) {
+      if(isDefined(hitent)) {
         if(isplayer(hitent))
           hitent shellshock("dog_bite", 1);
-      } else if(isdefined(level.dog_melee_miss))
+      } else if(isDefined(level.dog_melee_miss))
         self[[level.dog_melee_miss]](player);
 
       break;
     case "stop_tracking":
       melee_time = 200;
 
-      if(!isdefined(level.dogmeleebiteattacktime))
+      if(!isDefined(level.dogmeleebiteattacktime))
         level.dogmeleebiteattacktimestart = gettime();
       else
         melee_time = level.dogmeleebiteattacktime;
@@ -191,14 +194,14 @@ handlemeleebiteattacknotetracks(note, player) {
 handlemeleefinishattacknotetracks(note, player) {
   switch (note) {
     case "dog_melee":
-      if(!isdefined(level.dogmeleefinishattacktime)) {
+      if(!isDefined(level.dogmeleefinishattacktime)) {
         level.dogmeleefinishattacktime = gettime() - level.dogmeleefinishattacktimestart;
         level.dogmeleefinishattacktime = level.dogmeleefinishattacktime + 50;
       }
 
       hitent = self melee(anglestoforward(self.angles));
 
-      if(isdefined(hitent) && isalive(player)) {
+      if(isDefined(hitent) && isalive(player)) {
         if(hitent == player) {
           break;
         }
@@ -224,7 +227,7 @@ handlemeleefinishattacknotetracks(note, player) {
     case "stop_tracking":
       melee_time = 200;
 
-      if(!isdefined(level.dogmeleefinishattacktime))
+      if(!isDefined(level.dogmeleefinishattacktime))
         level.dogmeleefinishattacktimestart = gettime();
       else
         melee_time = level.dogmeleefinishattacktime;
@@ -251,7 +254,7 @@ orienttoplayerdeadreckoning(player, time_till_bite) {
 }
 
 checkendcombat(meleerange) {
-  if(!isdefined(self.enemy))
+  if(!isDefined(self.enemy))
     return false;
 
   disttotargetsq = distancesquared(self.origin, self.enemy.origin);
@@ -290,7 +293,7 @@ attackteleportthread(offset) {
   reps = 5;
   increment = (offset[0] / reps, offset[1] / reps, offset[2] / reps);
 
-  for (i = 0; i < reps; i++) {
+  for(i = 0; i < reps; i++) {
     self teleport(self.origin + increment);
     wait 0.05;
   }
@@ -313,7 +316,7 @@ clear_player_attacked_by_dog_on_death(player) {
 dog_cant_kill_in_one_hit(player) {
   return true;
 
-  if(isdefined(player.dogs_dont_instant_kill)) {
+  if(isDefined(player.dogs_dont_instant_kill)) {
     assert(player.dogs_dont_instant_kill, "Dont set player.dogs_dont_instant_kill to false, set to undefined");
     return true;
   }
@@ -331,15 +334,15 @@ dog_melee_death(player) {
   press_time = anim.dog_presstime;
   self waittill("dog_early_notetrack");
 
-  while (player player_attacked())
+  while(player player_attacked())
     wait 0.05;
 
-  for (;;) {
+  for(;;) {
     if(!pressed) {
       if(player player_attacked()) {
         pressed = 1;
 
-        if(isdefined(self.melee_able_timer) && isalive(player)) {
+        if(isDefined(self.melee_able_timer) && isalive(player)) {
           if(gettime() - self.melee_able_timer <= press_time) {
             player.player_view.custom_dog_save = "neck_snap";
             self notify("melee_stop");
@@ -376,7 +379,7 @@ dog_melee_death(player) {
 }
 
 attackmiss() {
-  if(isdefined(self.enemy)) {
+  if(isDefined(self.enemy)) {
     forward = anglestoforward(self.angles);
     dirtoenemy = self.enemy.origin - (self.origin + vectorscale(forward, 50));
 

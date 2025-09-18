@@ -10,7 +10,7 @@
 #include maps\mp\zombies\_zm_zonemgr;
 
 onplayerconnect_sq_wth() {
-  if(!isdefined(level.wth_lookat_point))
+  if(!isDefined(level.wth_lookat_point))
     level.wth_lookat_point = getstruct("struct_gg_look", "targetname");
 
   self thread track_player_eyes();
@@ -21,10 +21,10 @@ track_player_eyes() {
   self endon("disconnect");
   b_saw_the_wth = 0;
 
-  while (!b_saw_the_wth) {
+  while(!b_saw_the_wth) {
     n_time = 0;
 
-    while (self adsbuttonpressed() && n_time < 25) {
+    while(self adsbuttonpressed() && n_time < 25) {
       n_time++;
       wait 0.05;
     }
@@ -41,7 +41,7 @@ track_player_eyes() {
       self.wth_elem.hidewheninmenu = 1;
       j_time = 0;
 
-      while (self adsbuttonpressed() && j_time < 5) {
+      while(self adsbuttonpressed() && j_time < 5) {
         j_time++;
         wait 0.05;
       }
@@ -68,8 +68,8 @@ sq_is_weapon_sniper(str_weapon) {
 play_scary_lightning() {
   self endon("disconnect");
 
-  while (true) {
-    while (!self maps\mp\zombies\_zm_zonemgr::is_player_in_zone("zone_golden_gate_bridge") || !(isdefined(self.b_lightning) && self.b_lightning) || flag("plane_zapped"))
+  while(true) {
+    while(!self maps\mp\zombies\_zm_zonemgr::is_player_in_zone("zone_golden_gate_bridge") || !(isDefined(self.b_lightning) && self.b_lightning) || flag("plane_zapped"))
       wait 0.25;
 
     if(randomint(100000) == 1337) {

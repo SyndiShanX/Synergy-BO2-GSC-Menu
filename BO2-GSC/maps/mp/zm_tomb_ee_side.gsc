@@ -36,7 +36,7 @@ init() {
   a_triggers = getentarray("audio_bump_trigger", "targetname");
 
   foreach(trigger in a_triggers) {
-    if(isdefined(trigger.script_sound) && trigger.script_sound == "zmb_perks_bump_bottle")
+    if(isDefined(trigger.script_sound) && trigger.script_sound == "zmb_perks_bump_bottle")
       trigger thread check_for_change();
   }
 
@@ -65,7 +65,7 @@ quadrotor_medallions() {
   t_weapon_swap.hint_string = & "ZM_TOMB_X2PU";
   t_weapon_swap.hint_parm1 = getweapondisplayname("mg08_upgraded_zm");
 
-  for (b_retrieved = 0; !b_retrieved; b_retrieved = swap_mg(e_player))
+  for(b_retrieved = 0; !b_retrieved; b_retrieved = swap_mg(e_player))
     t_weapon_swap waittill("trigger", e_player);
 
   t_weapon_swap tomb_unitrigger_delete();
@@ -75,15 +75,15 @@ quadrotor_medallions() {
 quadrotor_medallions_vo() {
   n_vo_counter = 0;
 
-  while (n_vo_counter < 4) {
+  while(n_vo_counter < 4) {
     level waittill("quadrotor_medallion_found", v_quadrotor);
     v_quadrotor playsound("zmb_medallion_pickup");
 
-    if(isdefined(v_quadrotor)) {
+    if(isDefined(v_quadrotor)) {
       maxissay("vox_maxi_drone_pickups_" + n_vo_counter, v_quadrotor);
       n_vo_counter++;
 
-      if(isdefined(v_quadrotor) && n_vo_counter == 4)
+      if(isDefined(v_quadrotor) && n_vo_counter == 4)
         maxissay("vox_maxi_drone_pickups_" + n_vo_counter, v_quadrotor);
     }
   }
@@ -99,7 +99,7 @@ swap_mg(e_player) {
     else {
       a_weapons = e_player getweaponslistprimaries();
 
-      if(isdefined(a_weapons) && a_weapons.size >= get_player_weapon_limit(e_player))
+      if(isDefined(a_weapons) && a_weapons.size >= get_player_weapon_limit(e_player))
         e_player takeweapon(str_current_weapon);
 
       e_player giveweapon(str_reward_weapon, 0, e_player maps\mp\zombies\_zm_weapons::get_pack_a_punch_weapon_options(str_reward_weapon));
@@ -118,7 +118,7 @@ wall_hole_poster() {
   m_poster.health = 1000;
   m_poster.maxhealth = m_poster.health;
 
-  while (true) {
+  while(true) {
     m_poster waittill("damage");
 
     if(m_poster.health <= 0)
@@ -133,7 +133,7 @@ wagon_fire_challenge() {
   flag_wait("start_zombie_round_logic");
   wagon_fire_start();
 
-  while (true) {
+  while(true) {
     flag_wait("ee_wagon_timer_start");
     flag_wait_or_timeout("ee_wagon_challenge_complete", 30);
 
@@ -145,7 +145,7 @@ wagon_fire_challenge() {
       level waittill("end_of_round");
       waittillframeend;
 
-      while (level.weather_rain > 0) {
+      while(level.weather_rain > 0) {
         level waittill("end_of_round");
         waittillframeend;
       }
@@ -171,7 +171,7 @@ wagon_fire_trigger_watch() {
   self notify("watch_reset");
   self endon("watch_reset");
 
-  while (true) {
+  while(true) {
     self waittill("damage", damage, attacker, direction, point, type, tagname, modelname, partname, weaponname);
 
     if(isplayer(attacker) && (attacker getcurrentweapon() == "staff_water_zm" || attacker getcurrentweapon() == "staff_water_upgraded_zm")) {
@@ -193,7 +193,7 @@ wagon_fire_trigger_watch() {
 }
 
 check_for_change() {
-  while (true) {
+  while(true) {
     self waittill("trigger", e_player);
 
     if(e_player getstance() == "prone") {
@@ -209,16 +209,16 @@ check_for_change() {
 onplayerconnect_ee_jump_scare() {
   self endon("disconnect");
 
-  if(!isdefined(level.jump_scare_lookat_point))
+  if(!isDefined(level.jump_scare_lookat_point))
     level.jump_scare_lookat_point = getstruct("struct_gg_look", "targetname");
 
-  if(!isdefined(level.b_saw_jump_scare))
+  if(!isDefined(level.b_saw_jump_scare))
     level.b_saw_jump_scare = 0;
 
-  while (!level.b_saw_jump_scare) {
+  while(!level.b_saw_jump_scare) {
     n_time = 0;
 
-    while (self adsbuttonpressed() && n_time < 25) {
+    while(self adsbuttonpressed() && n_time < 25) {
       n_time++;
       wait 0.05;
     }
@@ -234,7 +234,7 @@ onplayerconnect_ee_jump_scare() {
       self.wth_elem.hidewheninmenu = 1;
       j_time = 0;
 
-      while (self adsbuttonpressed() && j_time < 5) {
+      while(self adsbuttonpressed() && j_time < 5) {
         j_time++;
         wait 0.05;
       }
@@ -266,7 +266,7 @@ onplayerconnect_ee_oneinchpunch() {
 sq_one_inch_punch_disconnect_watch() {
   self waittill("disconnect");
 
-  if(isdefined(self.sq_one_inch_punch_tablet))
+  if(isDefined(self.sq_one_inch_punch_tablet))
     self.sq_one_inch_punch_tablet delete();
 
   spawn_tablet_model(self.sq_one_inch_punch_tablet_num, "bunker", "muddy");
@@ -281,7 +281,7 @@ sq_one_inch_punch_death_watch() {
     self.sq_one_inch_punch_stage = 0;
     self.sq_one_inch_punch_kills = 0;
 
-    if(isdefined(self.sq_one_inch_punch_tablet))
+    if(isDefined(self.sq_one_inch_punch_tablet))
       self.sq_one_inch_punch_tablet delete();
 
     spawn_tablet_model(self.sq_one_inch_punch_tablet_num, "bunker", "muddy");
@@ -295,7 +295,7 @@ sq_one_inch_punch() {
   level.n_tablets_remaining = 4;
   a_tablets = [];
 
-  for (n_player_id = 0; n_player_id < level.n_tablets_remaining; n_player_id++)
+  for(n_player_id = 0; n_player_id < level.n_tablets_remaining; n_player_id++)
     a_tablets[n_player_id] = spawn_tablet_model(n_player_id + 1, "bunker", "muddy");
 
   t_bunker = getent("trigger_oneinchpunch_bunker_table", "targetname");
@@ -307,7 +307,7 @@ sq_one_inch_punch() {
 }
 
 bunker_trigger_thread() {
-  while (true) {
+  while(true) {
     self waittill("trigger", player);
 
     if(player.sq_one_inch_punch_stage == 0) {
@@ -320,7 +320,9 @@ bunker_trigger_thread() {
       m_tablet = getent("tablet_bunker_" + level.n_tablets_remaining, "targetname");
       m_tablet delete();
       level.n_tablets_remaining--;
+
       iprintln("1 - take the tablet to the church");
+
     }
 
     if(player.sq_one_inch_punch_stage == 4) {
@@ -328,30 +330,34 @@ bunker_trigger_thread() {
       player.sq_one_inch_punch_stage++;
       player setclientfieldtoplayer("player_tablet_state", 0);
       player playsound("zmb_squest_oiptablet_place_table");
+
       iprintln("5 - charge the tablet in the bunker");
-    } else if(player.sq_one_inch_punch_stage == 6 && (isdefined(player.beacon_ready) && player.beacon_ready)) {
+
+    } else if(player.sq_one_inch_punch_stage == 6 && (isDefined(player.beacon_ready) && player.beacon_ready)) {
       player setclientfieldtoplayer("ee_beacon_reward", 0);
       player maps\mp\zombies\_zm_weapons::weapon_give("beacon_zm");
       player thread richtofenrespondvoplay("get_beacon");
 
-      if(isdefined(level.zombie_include_weapons["beacon_zm"]) && !level.zombie_include_weapons["beacon_zm"]) {
+      if(isDefined(level.zombie_include_weapons["beacon_zm"]) && !level.zombie_include_weapons["beacon_zm"]) {
         level.zombie_include_weapons["beacon_zm"] = 1;
         level.zombie_weapons["beacon_zm"].is_in_box = 1;
       }
 
       player playsound("zmb_squest_oiptablet_get_reward");
       player.sq_one_inch_punch_stage++;
+
       iprintln("7 - tablet is activated; bestow rewards");
+
     }
   }
 }
 
 birdbath_trigger_thread() {
-  while (true) {
+  while(true) {
     self waittill("trigger", player);
 
     if(player.sq_one_inch_punch_stage == 1) {
-      if(isdefined(player.sq_one_inch_punch_reclean)) {
+      if(isDefined(player.sq_one_inch_punch_reclean)) {
         player.sq_one_inch_punch_reclean = undefined;
         player.sq_one_inch_punch_stage++;
         player.sq_one_inch_punch_tablet = spawn_tablet_model(player.sq_one_inch_punch_tablet_num, "church", "clean");
@@ -362,19 +368,23 @@ birdbath_trigger_thread() {
       player playsound("zmb_squest_oiptablet_bathe");
       player setclientfieldtoplayer("player_tablet_state", 0);
       player.sq_one_inch_punch_stage++;
+
       iprintln("2 - charge the tablet in the church");
+
     }
 
     if(player.sq_one_inch_punch_stage == 3) {
       player setclientfieldtoplayer("player_tablet_state", 1);
       player.sq_one_inch_punch_stage++;
 
-      if(isdefined(player.sq_one_inch_punch_tablet))
+      if(isDefined(player.sq_one_inch_punch_tablet))
         player.sq_one_inch_punch_tablet delete();
 
       player playsound("zmb_squest_oiptablet_pickup_clean");
       player thread tablet_cleanliness_thread();
+
       iprintln("4 - take the tablet to the tank bunker");
+
     }
   }
 }
@@ -382,14 +392,16 @@ birdbath_trigger_thread() {
 tablet_cleanliness_thread() {
   self endon("death_or_disconnect");
 
-  while (self.sq_one_inch_punch_stage == 4) {
+  while(self.sq_one_inch_punch_stage == 4) {
     if(self.is_player_slowed) {
       self setclientfieldtoplayer("player_tablet_state", 2);
       self playsoundtoplayer("zmb_squest_oiptablet_dirtied", self);
       self.sq_one_inch_punch_stage = 1;
       self.sq_one_inch_punch_reclean = 1;
       level thread tablet_cleanliness_chastise(self);
+
       iprintln("1 - take the tablet to the church");
+
     }
 
     wait 1;
@@ -397,10 +409,10 @@ tablet_cleanliness_thread() {
 }
 
 tablet_cleanliness_chastise(e_player, b_cleaned) {
-  if(!isdefined(b_cleaned))
+  if(!isDefined(b_cleaned))
     b_cleaned = 0;
 
-  if(!isdefined(e_player) || isdefined(level.sam_talking) && level.sam_talking || flag("story_vo_playing")) {
+  if(!isDefined(e_player) || isDefined(level.sam_talking) && level.sam_talking || flag("story_vo_playing")) {
     return;
   }
   flag_set("story_vo_playing");
@@ -411,7 +423,7 @@ tablet_cleanliness_chastise(e_player, b_cleaned) {
   if(b_cleaned)
     str_line = "vox_sam_generic_chastise_8";
 
-  if(isdefined(e_player))
+  if(isDefined(e_player))
     e_player playsoundtoplayer(str_line, e_player);
 
   n_duration = soundgetplaybacktime(str_line);
@@ -419,33 +431,36 @@ tablet_cleanliness_chastise(e_player, b_cleaned) {
   level.sam_talking = 0;
   flag_clear("story_vo_playing");
 
-  if(isdefined(e_player))
+  if(isDefined(e_player))
     e_player set_player_dontspeak(0);
 }
 
 bunker_volume_death_check() {
   self waittill("death");
 
-  if(!isdefined(self)) {
+  if(!isDefined(self)) {
     return;
   }
   volume_name = "oneinchpunch_bunker_volume";
   volume = getent(volume_name, "targetname");
-  assert(isdefined(volume), volume_name + " does not exist");
+  assert(isDefined(volume), volume_name + " does not exist");
   attacker = self.attacker;
 
-  if(isdefined(attacker) && isplayer(attacker)) {
+  if(isDefined(attacker) && isplayer(attacker)) {
     if(attacker.sq_one_inch_punch_stage == 5 && (self.damagemod == "MOD_MELEE" || self.damageweapon == "tomb_shield_zm")) {
       if(self istouching(volume)) {
         self setclientfield("ee_zombie_tablet_fx", 1);
         attacker.sq_one_inch_punch_kills++;
+
         iprintln("kill count: " + attacker.sq_one_inch_punch_kills);
 
         if(attacker.sq_one_inch_punch_kills >= 20) {
           attacker thread bunker_spawn_reward();
           attacker.sq_one_inch_punch_stage++;
           level thread maps\mp\zombies\_zm_audio::sndmusicstingerevent("side_sting_3");
+
           iprintln("6 - activate the tablet in the bunker");
+
         }
       }
     }
@@ -463,19 +478,20 @@ bunker_spawn_reward() {
 church_volume_death_check() {
   self waittill("death");
 
-  if(!isdefined(self)) {
+  if(!isDefined(self)) {
     return;
   }
   volume_name = "oneinchpunch_church_volume";
   volume = getent(volume_name, "targetname");
-  assert(isdefined(volume), volume_name + " does not exist");
+  assert(isDefined(volume), volume_name + " does not exist");
   attacker = self.attacker;
 
-  if(isdefined(attacker) && isplayer(attacker)) {
+  if(isDefined(attacker) && isplayer(attacker)) {
     if(attacker.sq_one_inch_punch_stage == 2 && (self.damagemod == "MOD_MELEE" || self.damageweapon == "tomb_shield_zm")) {
       if(self istouching(volume)) {
         self setclientfield("ee_zombie_tablet_fx", 1);
         attacker.sq_one_inch_punch_kills++;
+
         iprintln("kill count: " + attacker.sq_one_inch_punch_kills);
 
         if(attacker.sq_one_inch_punch_kills >= 20) {
@@ -484,7 +500,9 @@ church_volume_death_check() {
           attacker.sq_one_inch_punch_tablet delete();
           attacker.sq_one_inch_punch_tablet = spawn_tablet_model(attacker.sq_one_inch_punch_tablet_num, "church", "clean");
           level thread maps\mp\zombies\_zm_audio::sndmusicstingerevent("side_sting_6");
+
           iprintln("3 - tablet is charged, pick up the tablet from the birdbath");
+
         }
       }
     }
@@ -526,7 +544,9 @@ radio_ee_song() {
     m_radio setmodel("p6_zm_tm_radio_01");
     m_radio attach("p6_zm_tm_radio_01_panel2_blood", "tag_j_cover");
     maps\mp\zombies\_zm_unitrigger::register_static_unitrigger(unitrigger_stub, ::radio_ee_think);
+
     unitrigger_stub thread radio_ee_debug();
+
     wait_network_frame();
   }
 }
@@ -534,19 +554,20 @@ radio_ee_song() {
 radio_ee_debug() {
   self endon("stop_display");
 
-  while (true) {
+  while(true) {
     print3d(self.origin, "R", vectorscale((1, 0, 1), 255.0), 1);
     wait 0.05;
   }
+
 }
 
 radio_ee_think() {
   self endon("kill_trigger");
 
-  while (true) {
+  while(true) {
     self waittill("trigger", player);
 
-    if(is_player_valid(player) && !(isdefined(level.music_override) && level.music_override)) {
+    if(is_player_valid(player) && !(isDefined(level.music_override) && level.music_override)) {
       level.found_ee_radio_count++;
 
       if(level.found_ee_radio_count == 3) {
@@ -556,6 +577,7 @@ radio_ee_think() {
       }
 
       self.stub notify("stop_display");
+
       maps\mp\zombies\_zm_unitrigger::unregister_unitrigger(self.stub);
       return;
     }

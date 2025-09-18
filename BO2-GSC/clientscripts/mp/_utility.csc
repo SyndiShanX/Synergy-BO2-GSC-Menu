@@ -11,18 +11,20 @@ error(message) {
 }
 
 getstruct(name, type) {
-  if(!isdefined(level.struct_class_names))
+  if(!isDefined(level.struct_class_names))
     return undefined;
 
   array = level.struct_class_names[type][name];
 
-  if(!isdefined(array)) {
+  if(!isDefined(array)) {
     println("**** Getstruct returns undefined on " + name + " : " + " type.");
+
     return undefined;
   }
 
   if(array.size > 1) {
     assertmsg("getstruct used for more than one struct of type " + type + " called " + name + ".");
+
     return undefined;
   }
 
@@ -30,10 +32,10 @@ getstruct(name, type) {
 }
 
 getstructarray(name, type) {
-  assert(isdefined(level.struct_class_names), "Tried to getstruct before the structs were init");
+  assert(isDefined(level.struct_class_names), "Tried to getstruct before the structs were init");
   array = level.struct_class_names[type][name];
 
-  if(!isdefined(array))
+  if(!isDefined(array))
     return [];
   else
     return array;
@@ -48,14 +50,14 @@ vector_compare(vec1, vec2) {
 }
 
 array_func(entities, func, arg1, arg2, arg3, arg4, arg5) {
-  if(!isdefined(entities)) {
+  if(!isDefined(entities)) {
     return;
   }
   if(isarray(entities)) {
     if(entities.size) {
       keys = getarraykeys(entities);
 
-      for (i = 0; i < keys.size; i++)
+      for(i = 0; i < keys.size; i++)
         single_func(entities[keys[i]], func, arg1, arg2, arg3, arg4, arg5);
     }
   } else
@@ -63,29 +65,29 @@ array_func(entities, func, arg1, arg2, arg3, arg4, arg5) {
 }
 
 single_func(entity, func, arg1, arg2, arg3, arg4, arg5) {
-  if(isdefined(arg5))
+  if(isDefined(arg5))
     entity[[func]](arg1, arg2, arg3, arg4, arg5);
-  else if(isdefined(arg4))
+  else if(isDefined(arg4))
     entity[[func]](arg1, arg2, arg3, arg4);
-  else if(isdefined(arg3))
+  else if(isDefined(arg3))
     entity[[func]](arg1, arg2, arg3);
-  else if(isdefined(arg2))
+  else if(isDefined(arg2))
     entity[[func]](arg1, arg2);
-  else if(isdefined(arg1))
+  else if(isDefined(arg1))
     entity[[func]](arg1);
   else
     entity[[func]]();
 }
 
 array_thread(entities, func, arg1, arg2, arg3, arg4, arg5) {
-  if(!isdefined(entities)) {
+  if(!isDefined(entities)) {
     return;
   }
   if(isarray(entities)) {
     if(entities.size) {
       keys = getarraykeys(entities);
 
-      for (i = 0; i < keys.size; i++)
+      for(i = 0; i < keys.size; i++)
         single_thread(entities[keys[i]], func, arg1, arg2, arg3, arg4, arg5);
     }
   } else
@@ -93,31 +95,33 @@ array_thread(entities, func, arg1, arg2, arg3, arg4, arg5) {
 }
 
 single_thread(entity, func, arg1, arg2, arg3, arg4, arg5) {
-  if(isdefined(arg5))
+  if(isDefined(arg5))
     entity thread[[func]](arg1, arg2, arg3, arg4, arg5);
-  else if(isdefined(arg4))
+  else if(isDefined(arg4))
     entity thread[[func]](arg1, arg2, arg3, arg4);
-  else if(isdefined(arg3))
+  else if(isDefined(arg3))
     entity thread[[func]](arg1, arg2, arg3);
-  else if(isdefined(arg2))
+  else if(isDefined(arg2))
     entity thread[[func]](arg1, arg2);
-  else if(isdefined(arg1))
+  else if(isDefined(arg1))
     entity thread[[func]](arg1);
   else
     entity thread[[func]]();
 }
 
 registersystem(ssysname, cbfunc) {
-  if(!isdefined(level._systemstates))
+  if(!isDefined(level._systemstates))
     level._systemstates = [];
 
   if(level._systemstates.size >= 32) {
     error("Max num client systems exceeded.");
+
     return;
   }
 
-  if(isdefined(level._systemstates[ssysname])) {
+  if(isDefined(level._systemstates[ssysname])) {
     error("Attempt to re-register client system : " + ssysname);
+
     return;
   } else {
     level._systemstates[ssysname] = spawnstruct();
@@ -133,7 +137,7 @@ loop_sound_delete(ender, entid) {
 loop_fx_sound(clientnum, alias, origin, ender) {
   entid = spawnfakeent(clientnum);
 
-  if(isdefined(ender)) {
+  if(isDefined(ender)) {
     thread loop_sound_delete(ender, entid);
     self endon(ender);
   }
@@ -145,19 +149,19 @@ loop_fx_sound(clientnum, alias, origin, ender) {
 waitforallclients() {
   localclient = 0;
 
-  if(!isdefined(level.localplayers)) {
-    while (!isdefined(level.localplayers))
+  if(!isDefined(level.localplayers)) {
+    while(!isDefined(level.localplayers))
       wait 0.01;
   }
 
-  while (localclient < level.localplayers.size) {
+  while(localclient < level.localplayers.size) {
     waitforclient(localclient);
     localclient++;
   }
 }
 
 waitforclient(client) {
-  while (!clienthassnapshot(client))
+  while(!clienthassnapshot(client))
     wait 0.01;
 }
 
@@ -171,32 +175,32 @@ waittill_string(msg, ent) {
 }
 
 waittill_dobj(localclientnum) {
-  while (isdefined(self) && !self hasdobj(localclientnum))
+  while(isDefined(self) && !self hasdobj(localclientnum))
     wait 0.01;
 }
 
 waittill_any_return(string1, string2, string3, string4, string5, string6) {
-  if((!isdefined(string1) || string1 != "death") && (!isdefined(string2) || string2 != "death") && (!isdefined(string3) || string3 != "death") && (!isdefined(string4) || string4 != "death") && (!isdefined(string5) || string5 != "death") && (!isdefined(string6) || string6 != "death"))
+  if((!isDefined(string1) || string1 != "death") && (!isDefined(string2) || string2 != "death") && (!isDefined(string3) || string3 != "death") && (!isDefined(string4) || string4 != "death") && (!isDefined(string5) || string5 != "death") && (!isDefined(string6) || string6 != "death"))
     self endon("death");
 
   ent = spawnstruct();
 
-  if(isdefined(string1))
+  if(isDefined(string1))
     self thread waittill_string(string1, ent);
 
-  if(isdefined(string2))
+  if(isDefined(string2))
     self thread waittill_string(string2, ent);
 
-  if(isdefined(string3))
+  if(isDefined(string3))
     self thread waittill_string(string3, ent);
 
-  if(isdefined(string4))
+  if(isDefined(string4))
     self thread waittill_string(string4, ent);
 
-  if(isdefined(string5))
+  if(isDefined(string5))
     self thread waittill_string(string5, ent);
 
-  if(isdefined(string6))
+  if(isDefined(string6))
     self thread waittill_string(string6, ent);
 
   ent waittill("returned", msg);
@@ -205,18 +209,18 @@ waittill_any_return(string1, string2, string3, string4, string5, string6) {
 }
 
 waittill_any(string1, string2, string3, string4, string5) {
-  assert(isdefined(string1));
+  assert(isDefined(string1));
 
-  if(isdefined(string2))
+  if(isDefined(string2))
     self endon(string2);
 
-  if(isdefined(string3))
+  if(isDefined(string3))
     self endon(string3);
 
-  if(isdefined(string4))
+  if(isDefined(string4))
     self endon(string4);
 
-  if(isdefined(string5))
+  if(isDefined(string5))
     self endon(string5);
 
   self waittill(string1);
@@ -232,145 +236,145 @@ within_fov(start_origin, start_angles, end_origin, fov) {
 array(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z) {
   array = [];
 
-  if(isdefined(a))
+  if(isDefined(a))
     array[0] = a;
   else
     return array;
 
-  if(isdefined(b))
+  if(isDefined(b))
     array[1] = b;
   else
     return array;
 
-  if(isdefined(c))
+  if(isDefined(c))
     array[2] = c;
   else
     return array;
 
-  if(isdefined(d))
+  if(isDefined(d))
     array[3] = d;
   else
     return array;
 
-  if(isdefined(e))
+  if(isDefined(e))
     array[4] = e;
   else
     return array;
 
-  if(isdefined(f))
+  if(isDefined(f))
     array[5] = f;
   else
     return array;
 
-  if(isdefined(g))
+  if(isDefined(g))
     array[6] = g;
   else
     return array;
 
-  if(isdefined(h))
+  if(isDefined(h))
     array[7] = h;
   else
     return array;
 
-  if(isdefined(i))
+  if(isDefined(i))
     array[8] = i;
   else
     return array;
 
-  if(isdefined(j))
+  if(isDefined(j))
     array[9] = j;
   else
     return array;
 
-  if(isdefined(k))
+  if(isDefined(k))
     array[10] = k;
   else
     return array;
 
-  if(isdefined(l))
+  if(isDefined(l))
     array[11] = l;
   else
     return array;
 
-  if(isdefined(m))
+  if(isDefined(m))
     array[12] = m;
   else
     return array;
 
-  if(isdefined(n))
+  if(isDefined(n))
     array[13] = n;
   else
     return array;
 
-  if(isdefined(o))
+  if(isDefined(o))
     array[14] = o;
   else
     return array;
 
-  if(isdefined(p))
+  if(isDefined(p))
     array[15] = p;
   else
     return array;
 
-  if(isdefined(q))
+  if(isDefined(q))
     array[16] = q;
   else
     return array;
 
-  if(isdefined(r))
+  if(isDefined(r))
     array[17] = r;
   else
     return array;
 
-  if(isdefined(s))
+  if(isDefined(s))
     array[18] = s;
   else
     return array;
 
-  if(isdefined(t))
+  if(isDefined(t))
     array[19] = t;
   else
     return array;
 
-  if(isdefined(u))
+  if(isDefined(u))
     array[20] = u;
   else
     return array;
 
-  if(isdefined(v))
+  if(isDefined(v))
     array[21] = v;
   else
     return array;
 
-  if(isdefined(w))
+  if(isDefined(w))
     array[22] = w;
   else
     return array;
 
-  if(isdefined(x))
+  if(isDefined(x))
     array[23] = x;
   else
     return array;
 
-  if(isdefined(y))
+  if(isDefined(y))
     array[24] = y;
   else
     return array;
 
-  if(isdefined(z))
+  if(isDefined(z))
     array[25] = z;
 
   return array;
 }
 
 add_to_array(array, ent, allow_dupes) {
-  if(!isdefined(ent))
+  if(!isDefined(ent))
     return array;
 
-  if(!isdefined(allow_dupes))
+  if(!isDefined(allow_dupes))
     allow_dupes = 1;
 
-  if(!isdefined(array))
+  if(!isDefined(array))
     array[0] = ent;
   else if(allow_dupes || !isinarray(array, ent))
     array[array.size] = ent;
@@ -379,12 +383,12 @@ add_to_array(array, ent, allow_dupes) {
 }
 
 array_delete(array) {
-  for (i = 0; i < array.size; i++)
+  for(i = 0; i < array.size; i++)
     array[i] delete();
 }
 
 array_randomize(array) {
-  for (i = 0; i < array.size; i++) {
+  for(i = 0; i < array.size; i++) {
     j = randomint(array.size);
     temp = array[i];
     array[i] = array[j];
@@ -397,7 +401,7 @@ array_randomize(array) {
 array_reverse(array) {
   array2 = [];
 
-  for (i = array.size - 1; i >= 0; i--)
+  for(i = array.size - 1; i >= 0; i--)
     array2[array2.size] = array[i];
 
   return array2;
@@ -406,14 +410,14 @@ array_reverse(array) {
 array_exclude(array, arrayexclude) {
   newarray = arraycopy(array);
 
-  for (i = 0; i < arrayexclude.size; i++)
+  for(i = 0; i < arrayexclude.size; i++)
     arrayremovevalue(newarray, arrayexclude[i]);
 
   return newarray;
 }
 
 array_notify(ents, notifier) {
-  for (i = 0; i < ents.size; i++)
+  for(i = 0; i < ents.size; i++)
     ents[i] notify(notifier);
 }
 
@@ -421,17 +425,17 @@ array_wait(array, msg, timeout) {
   keys = getarraykeys(array);
   structs = [];
 
-  for (i = 0; i < keys.size; i++) {
+  for(i = 0; i < keys.size; i++) {
     key = keys[i];
     structs[key] = spawnstruct();
     structs[key]._array_wait = 1;
     structs[key] thread array_waitlogic1(array[key], msg, timeout);
   }
 
-  for (i = 0; i < keys.size; i++) {
+  for(i = 0; i < keys.size; i++) {
     key = keys[i];
 
-    if(isdefined(array[key]) && structs[key]._array_wait)
+    if(isDefined(array[key]) && structs[key]._array_wait)
       structs[key] waittill("_array_wait");
   }
 }
@@ -446,14 +450,14 @@ array_waitlogic2(ent, msg, timeout) {
   ent endon(msg);
   ent endon("death");
 
-  if(isdefined(timeout))
+  if(isDefined(timeout))
     wait(timeout);
   else
     ent waittill(msg);
 }
 
 array_check_for_dupes(array, single) {
-  for (i = 0; i < array.size; i++) {
+  for(i = 0; i < array.size; i++) {
     if(array[i] == single)
       return false;
   }
@@ -475,27 +479,27 @@ random(array) {
 }
 
 add_trigger_to_ent(ent, trig) {
-  if(!isdefined(ent._triggers))
+  if(!isDefined(ent._triggers))
     ent._triggers = [];
 
   ent._triggers[trig getentitynumber()] = 1;
 }
 
 remove_trigger_from_ent(ent, trig) {
-  if(!isdefined(ent._triggers)) {
+  if(!isDefined(ent._triggers)) {
     return;
   }
-  if(!isdefined(ent._triggers[trig getentitynumber()])) {
+  if(!isDefined(ent._triggers[trig getentitynumber()])) {
     return;
   }
   ent._triggers[trig getentitynumber()] = 0;
 }
 
 ent_already_in_trigger(trig) {
-  if(!isdefined(self._triggers))
+  if(!isDefined(self._triggers))
     return false;
 
-  if(!isdefined(self._triggers[trig getentitynumber()]))
+  if(!isDefined(self._triggers[trig getentitynumber()]))
     return false;
 
   if(!self._triggers[trig getentitynumber()])
@@ -512,16 +516,16 @@ trigger_thread(ent, on_enter_payload, on_exit_payload) {
   }
   add_trigger_to_ent(ent, self);
 
-  if(isdefined(on_enter_payload))
+  if(isDefined(on_enter_payload))
     [[on_enter_payload]](ent);
 
-  while (isdefined(ent) && ent istouching(self))
+  while(isDefined(ent) && ent istouching(self))
     wait 0.01;
 
-  if(isdefined(ent) && isdefined(on_exit_payload))
+  if(isDefined(ent) && isDefined(on_exit_payload))
     [[on_exit_payload]](ent);
 
-  if(isdefined(ent))
+  if(isDefined(ent))
     remove_trigger_from_ent(ent, self);
 }
 
@@ -531,32 +535,32 @@ local_player_trigger_thread_always_exit(ent, on_enter_payload, on_exit_payload) 
   }
   add_trigger_to_ent(ent, self);
 
-  if(isdefined(on_enter_payload))
+  if(isDefined(on_enter_payload))
     [[on_enter_payload]](ent);
 
-  while (isdefined(ent) && ent istouching(self) && ent issplitscreenhost())
+  while(isDefined(ent) && ent istouching(self) && ent issplitscreenhost())
     wait 0.01;
 
-  if(isdefined(on_exit_payload))
+  if(isDefined(on_exit_payload))
     [[on_exit_payload]](ent);
 
-  if(isdefined(ent))
+  if(isDefined(ent))
     remove_trigger_from_ent(ent, self);
 }
 
 friendnotfoe(localclientindex) {
   player = getlocalplayer(localclientindex);
 
-  if(isdefined(player) && player getinkillcam(localclientindex))
+  if(isDefined(player) && player getinkillcam(localclientindex))
     player = getnonpredictedlocalplayer(localclientindex);
 
-  if(isdefined(player) && isdefined(player.team)) {
+  if(isDefined(player) && isDefined(player.team)) {
     team = player.team;
 
     if(team == "free") {
       owner = self getowner(localclientindex);
 
-      if(isdefined(owner) && owner == player)
+      if(isDefined(owner) && owner == player)
         return true;
     } else if(self.team == team)
       return true;
@@ -569,18 +573,18 @@ watchforplayerrespawnforteambasedfx(localclientnum, entity, startfxfunc, fxhandl
   entity endon("entityshutdown");
   entity endon("teamBased_fx_reinitialized");
 
-  for (;;) {
+  for(;;) {
     level waittill("respawn", clientnum);
 
     if(clientnum != localclientnum) {
       continue;
     }
-    if(isdefined(fxhandle))
+    if(isDefined(fxhandle))
       stopfx(localclientnum, fxhandle);
 
     waittillframeend;
 
-    if(isdefined(optarg1))
+    if(isDefined(optarg1))
       entity thread[[startfxfunc]](localclientnum, optarg1);
     else
       entity thread[[startfxfunc]](localclientnum);
@@ -590,7 +594,7 @@ watchforplayerrespawnforteambasedfx(localclientnum, entity, startfxfunc, fxhandl
 }
 
 waittillsnapprocessed(localclientindex) {
-  for (;;) {
+  for(;;) {
     level waittill("snap_processed", snapshotlocalclientnum);
 
     if(localclientindex != snapshotlocalclientnum) {
@@ -609,16 +613,16 @@ local_player_entity_thread(localclientnum, entity, func, arg1, arg2, arg3, arg4)
 local_players_entity_thread(entity, func, arg1, arg2, arg3, arg4) {
   players = level.localplayers;
 
-  for (i = 0; i < players.size; i++)
+  for(i = 0; i < players.size; i++)
     players[i] thread local_player_entity_thread(i, entity, func, arg1, arg2, arg3, arg4);
 }
 
 is_true(check) {
-  return isdefined(check) && check;
+  return isDefined(check) && check;
 }
 
 is_false(check) {
-  return isdefined(check) && !check;
+  return isDefined(check) && !check;
 }
 
 getdvarfloatdefault(dvarname, defaultvalue) {
@@ -642,26 +646,28 @@ getdvarintdefault(dvarname, defaultvalue) {
 debug_line(from, to, color, time) {
   level.debug_line = getdvarintdefault("scr_debug_line", 0);
 
-  if(isdefined(level.debug_line) && level.debug_line == 1.0) {
-    if(!isdefined(time))
+  if(isDefined(level.debug_line) && level.debug_line == 1.0) {
+    if(!isDefined(time))
       time = 1000;
 
     line(from, to, color, 1, 1, time);
   }
+
 }
 
 debug_star(origin, color, time) {
   level.debug_star = getdvarintdefault("scr_debug_star", 0);
 
-  if(isdefined(level.debug_star) && level.debug_star == 1.0) {
-    if(!isdefined(time))
+  if(isDefined(level.debug_star) && level.debug_star == 1.0) {
+    if(!isDefined(time))
       time = 1000;
 
-    if(!isdefined(color))
+    if(!isDefined(color))
       color = (1, 1, 1);
 
     debugstar(origin, time, color);
   }
+
 }
 
 initutility() {
@@ -671,7 +677,7 @@ initutility() {
   level.releasedobjectives = [];
   maxlocalclients = getmaxlocalclients();
 
-  for (localclientnum = 0; localclientnum < maxlocalclients; localclientnum++) {
+  for(localclientnum = 0; localclientnum < maxlocalclients; localclientnum++) {
     level.releasedobjectives[localclientnum] = [];
     level.numgametypereservedobjectives[localclientnum] = 0;
   }
@@ -681,18 +687,18 @@ initutility() {
 }
 
 servertime() {
-  for (;;) {
+  for(;;) {
     level.servertime = getservertime(0);
     wait 0.01;
   }
 }
 
 serverwait(localclientnum, seconds, waitbetweenchecks, level_endon) {
-  if(isdefined(level_endon))
+  if(isDefined(level_endon))
     level endon(level_endon);
 
   if(level.isdemoplaying && seconds != 0) {
-    if(!isdefined(waitbetweenchecks))
+    if(!isDefined(waitbetweenchecks))
       waitbetweenchecks = 0.2;
 
     waitcompletedsuccessfully = 0;
@@ -700,7 +706,7 @@ serverwait(localclientnum, seconds, waitbetweenchecks, level_endon) {
     lasttime = starttime;
     endtime = starttime + seconds * 1000;
 
-    while (level.servertime < endtime && level.servertime >= lasttime) {
+    while(level.servertime < endtime && level.servertime >= lasttime) {
       lasttime = level.servertime;
       wait(waitbetweenchecks);
     }
@@ -726,12 +732,12 @@ isplayerviewlinkedtoentity(localclientnum) {
 }
 
 getexploderid(ent) {
-  if(!isdefined(level._exploder_ids)) {
+  if(!isDefined(level._exploder_ids)) {
     level._exploder_ids = [];
     level._exploder_id = 1;
   }
 
-  if(!isdefined(level._exploder_ids[ent.v["exploder"]])) {
+  if(!isDefined(level._exploder_ids[ent.v["exploder"]])) {
     level._exploder_ids[ent.v["exploder"]] = level._exploder_id;
     level._exploder_id++;
   }
@@ -834,7 +840,7 @@ getnextobjid(localclientnum) {
 releaseobjid(localclientnum, objid) {
   assert(objid < level.numgametypereservedobjectives[localclientnum]);
 
-  for (i = 0; i < level.releasedobjectives[localclientnum].size; i++) {
+  for(i = 0; i < level.releasedobjectives[localclientnum].size; i++) {
     if(objid == level.releasedobjectives[localclientnum][i] && objid == 31) {
       return;
     }
@@ -888,7 +894,7 @@ lerpdvar(str_dvar, n_val, n_lerp_time, b_saved_dvar) {
 
     setdvar(str_dvar, n_curr_val);
   }
-  while (n_time_delta < n_lerp_time);
+  while(n_time_delta < n_lerp_time);
 }
 
 newservertimer() {
@@ -926,5 +932,5 @@ serverlerpdvar(localclientnum, str_dvar, n_val, n_lerp_time, b_saved_dvar) {
 
     setdvar(str_dvar, n_curr_val);
   }
-  while (n_time_delta < n_lerp_time);
+  while(n_time_delta < n_lerp_time);
 }

@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\zm_buried.gsc
-***************************************/
+**************************************/
 
 #include common_scripts\utility;
 #include maps\mp\_utility;
@@ -79,14 +79,14 @@ zcleansed_preinit() {
   trig_removal = getentarray("zombie_door", "targetname");
 
   foreach(trig in trig_removal) {
-    if(isdefined(trig.script_parameters) && trig.script_parameters == "grief_remove")
+    if(isDefined(trig.script_parameters) && trig.script_parameters == "grief_remove")
       trig delete();
 
-    if(isdefined(trig.script_parameters) && trig.script_parameters == "zcleansed_remove") {
+    if(isDefined(trig.script_parameters) && trig.script_parameters == "zcleansed_remove") {
       parts = getentarray(trig.target, "targetname");
 
-      if(isdefined(parts)) {
-        for (i = 0; i < parts.size; i++)
+      if(isDefined(parts)) {
+        for(i = 0; i < parts.size; i++)
           parts[i] delete();
       }
 
@@ -109,7 +109,7 @@ zgrief_init() {
   trig_removal = getentarray("zombie_door", "targetname");
 
   foreach(trig in trig_removal) {
-    if(isdefined(trig.script_parameters) && trig.script_parameters == "grief_remove")
+    if(isDefined(trig.script_parameters) && trig.script_parameters == "grief_remove")
       trig delete();
   }
 }
@@ -122,7 +122,7 @@ encounter_init() {
 createfx_callback() {
   ents = getentarray();
 
-  for (i = 0; i < ents.size; i++) {
+  for(i = 0; i < ents.size; i++) {
     if(ents[i].classname != "info_player_start")
       ents[i] delete();
   }
@@ -326,7 +326,7 @@ main() {
   init_zones[21] = "zone_mansion_lawn";
   level thread maps\mp\zombies\_zm_zonemgr::manage_zones(init_zones);
 
-  if(isdefined(level.optimise_for_splitscreen) && level.optimise_for_splitscreen) {
+  if(isDefined(level.optimise_for_splitscreen) && level.optimise_for_splitscreen) {
     if(is_classic())
       level.zombie_ai_limit = 20;
 
@@ -365,6 +365,7 @@ main() {
 
   execdevgui("devgui_zombie_buried");
   level.custom_devgui = ::zombie_buried_devgui;
+
   level thread maps\mp\zm_buried_ffotd::main_end();
 }
 
@@ -403,7 +404,7 @@ init_persistent_abilities() {
 }
 
 pers_treasure_chest_get_weapons_array_buried() {
-  if(!isdefined(level.pers_box_weapons)) {
+  if(!isDefined(level.pers_box_weapons)) {
     level.pers_box_weapons = [];
     level.pers_box_weapons[level.pers_box_weapons.size] = "cymbal_monkey_zm";
     level.pers_box_weapons[level.pers_box_weapons.size] = "ray_gun_zm";
@@ -437,7 +438,7 @@ buried_special_weapon_magicbox_check(weapon) {
   if(weapon == "time_bomb_zm") {
     players = get_players();
 
-    for (i = 0; i < players.size; i++) {
+    for(i = 0; i < players.size; i++) {
       if(is_player_valid(players[i], undefined, 1) && players[i] is_player_tactical_grenade(weapon))
         return false;
     }
@@ -457,90 +458,90 @@ zombie_buried_devgui(cmd) {
       level notify("maxis_street");
       break;
     case "ghost_toggle_force_killable":
-      if(!isdefined(level.ghost_force_killable))
+      if(!isDefined(level.ghost_force_killable))
         level.ghost_force_killable = 1;
       else
         level.ghost_force_killable = !level.ghost_force_killable;
 
       break;
     case "ghost_toggle_debug":
-      if(!isdefined(level.ghost_debug))
+      if(!isDefined(level.ghost_debug))
         level.ghost_debug = 1;
       else
         level.ghost_debug = !level.ghost_debug;
 
       break;
     case "ghost_warp_to_mansion":
-      if(isdefined(level.ghost_devgui_warp_to_mansion))
+      if(isDefined(level.ghost_devgui_warp_to_mansion))
         [[level.ghost_devgui_warp_to_mansion]]();
 
       break;
     case "ghost_toggle_no_ghost":
-      if(isdefined(level.ghost_devgui_toggle_no_ghost))
+      if(isDefined(level.ghost_devgui_toggle_no_ghost))
         [[level.ghost_devgui_toggle_no_ghost]]();
 
       break;
     case "spawn_vulture_stink":
-      if(isdefined(level.vulture_devgui_spawn_stink))
+      if(isDefined(level.vulture_devgui_spawn_stink))
         [[level.vulture_devgui_spawn_stink]]();
 
       break;
     case "sloth_double_wide":
-      if(isdefined(level.sloth_devgui_double_wide))
+      if(isDefined(level.sloth_devgui_double_wide))
         [[level.sloth_devgui_double_wide]]();
 
       break;
     case "sloth_destroy_barricade":
-      if(isdefined(level.sloth_devgui_barricade))
+      if(isDefined(level.sloth_devgui_barricade))
         [[level.sloth_devgui_barricade]]();
 
       break;
     case "sloth_toggle_doors":
-      if(!isdefined(level.sloth_debug_doors))
+      if(!isDefined(level.sloth_debug_doors))
         level.sloth_debug_doors = 1;
       else
         level.sloth_debug_doors = !level.sloth_debug_doors;
 
       break;
     case "sloth_toggle_buildables":
-      if(!isdefined(level.sloth_debug_buildables))
+      if(!isDefined(level.sloth_debug_buildables))
         level.sloth_debug_buildables = 1;
       else
         level.sloth_debug_buildables = !level.sloth_debug_buildables;
 
       break;
     case "sloth_move_lamp":
-      if(isdefined(level.sloth_devgui_move_lamp))
+      if(isDefined(level.sloth_devgui_move_lamp))
         [[level.sloth_devgui_move_lamp]]();
 
       break;
     case "sloth_make_crawler":
-      if(isdefined(level.sloth_devgui_make_crawler))
+      if(isDefined(level.sloth_devgui_make_crawler))
         [[level.sloth_devgui_make_crawler]]();
 
       break;
     case "sloth_teleport":
-      if(isdefined(level.sloth_devgui_teleport))
+      if(isDefined(level.sloth_devgui_teleport))
         [[level.sloth_devgui_teleport]]();
 
       break;
     case "sloth_drink_booze":
-      if(isdefined(level.sloth_devgui_booze))
+      if(isDefined(level.sloth_devgui_booze))
         [[level.sloth_devgui_booze]]();
 
       break;
     case "sloth_eat_candy":
-      if(isdefined(level.sloth_devgui_candy))
+      if(isDefined(level.sloth_devgui_candy))
         [[level.sloth_devgui_candy]]();
 
       break;
     case "sloth_context":
-      if(isdefined(level.sloth_devgui_context))
+      if(isDefined(level.sloth_devgui_context))
         [[level.sloth_devgui_context]]();
 
       break;
     case "sloth_warp_to_jail":
-      if(isdefined(level.sloth_devgui_warp_to_jail))
+      if(isDefined(level.sloth_devgui_warp_to_jail))
         [[level.sloth_devgui_warp_to_jail]]();
 
       break;
@@ -554,14 +555,14 @@ zombie_buried_devgui(cmd) {
     case "cell_open":
       level notify("cell_open");
 
-      if(isdefined(level.jail_open_door))
+      if(isDefined(level.jail_open_door))
         [[level.jail_open_door]]();
 
       break;
     case "cell_close":
       level notify("cell_close");
 
-      if(isdefined(level.jail_close_door))
+      if(isDefined(level.jail_close_door))
         [[level.jail_close_door]]();
 
       break;
@@ -569,7 +570,7 @@ zombie_buried_devgui(cmd) {
       thread pick_up("keys_zm");
       break;
     case "pick_up_candy":
-      if(!(isdefined(level.jail_barricade_down) && level.jail_barricade_down)) {
+      if(!(isDefined(level.jail_barricade_down) && level.jail_barricade_down)) {
         level notify("jail_barricade_down");
         wait 0.05;
       }
@@ -629,34 +630,36 @@ zombie_buried_devgui(cmd) {
     default:
       break;
   }
+
 }
 
 pick_up(thing) {
   players = get_players();
 
   foreach(player in players) {
-    if(isdefined(player player_get_buildable_piece(1)) && player player_get_buildable_piece(1).buildablename == thing) {
+    if(isDefined(player player_get_buildable_piece(1)) && player player_get_buildable_piece(1).buildablename == thing) {
       continue;
     }
     candidate_list = [];
 
     foreach(zone in level.zones) {
-      if(isdefined(zone.unitrigger_stubs))
+      if(isDefined(zone.unitrigger_stubs))
         candidate_list = arraycombine(candidate_list, zone.unitrigger_stubs, 1, 0);
     }
 
     foreach(stub in candidate_list) {
-      if(isdefined(stub.piece) && stub.piece.buildablename == thing) {
+      if(isDefined(stub.piece) && stub.piece.buildablename == thing) {
         player thread maps\mp\zombies\_zm_buildables::player_take_piece(stub.piece);
         break;
       }
     }
 
-    if(isdefined(player player_get_buildable_piece(1)) && player player_get_buildable_piece(1).buildablename == thing) {
+    if(isDefined(player player_get_buildable_piece(1)) && player player_get_buildable_piece(1).buildablename == thing) {
       continue;
     }
     level notify("player_purchase_" + thing, player);
   }
+
 }
 
 givecustomloadout(takeallweapons, alreadyspawned) {
@@ -675,7 +678,7 @@ give_team_characters() {
   self detachall();
   self set_player_is_female(0);
 
-  if(!isdefined(self.characterindex)) {
+  if(!isDefined(self.characterindex)) {
     self.characterindex = 1;
 
     if(self.team == "axis")
@@ -722,18 +725,19 @@ precache_personality_characters() {
 }
 
 give_personality_characters() {
-  if(isdefined(level.hotjoin_player_setup) && [
+  if(isDefined(level.hotjoin_player_setup) && [
       [level.hotjoin_player_setup]
     ]("c_zom_farmgirl_viewhands")) {
     return;
   }
   self detachall();
 
-  if(!isdefined(self.characterindex))
+  if(!isDefined(self.characterindex))
     self.characterindex = assign_lowest_unused_character_index();
 
   self.favorite_wall_weapons_list = [];
   self.talks_in_danger = 0;
+
   if(getdvar(#"_id_40772CF1") != "")
     self.characterindex = getdvarint(#"_id_40772CF1");
 
@@ -859,7 +863,7 @@ assign_lowest_unused_character_index() {
     return charindexarray[0];
   } else if(players.size == 2) {
     foreach(player in players) {
-      if(isdefined(player.characterindex)) {
+      if(isDefined(player.characterindex)) {
         if(player.characterindex == 2 || player.characterindex == 0) {
           if(randomint(100) > 50)
             return 1;
@@ -875,7 +879,7 @@ assign_lowest_unused_character_index() {
     }
   } else {
     foreach(player in players) {
-      if(isdefined(player.characterindex))
+      if(isDefined(player.characterindex))
         arrayremovevalue(charindexarray, player.characterindex, 0);
     }
 
@@ -887,7 +891,7 @@ assign_lowest_unused_character_index() {
 }
 
 zm_player_fake_death_cleanup() {
-  if(isdefined(self._fall_down_anchor)) {
+  if(isDefined(self._fall_down_anchor)) {
     self._fall_down_anchor delete();
     self._fall_down_anchor = undefined;
   }
@@ -901,7 +905,7 @@ zm_player_fake_death(vdir) {
   self enableinvulnerability();
   self takeallweapons();
 
-  if(isdefined(self.insta_killed) && self.insta_killed) {
+  if(isDefined(self.insta_killed) && self.insta_killed) {
     self maps\mp\zombies\_zm::player_fake_death();
     self allowprone(1);
     self allowcrouch(0);
@@ -924,7 +928,7 @@ fall_down(vdir, stance) {
   angles = self getplayerangles();
   angles = (angles[0], angles[1], angles[2] + randomfloatrange(-5, 5));
 
-  if(isdefined(vdir) && length(vdir) > 0) {
+  if(isDefined(vdir) && length(vdir) > 0) {
     xyspeedmag = 40 + randomint(12) + randomint(12);
     xyspeed = xyspeedmag * vectornormalize((vdir[0], vdir[1], 0));
   }
@@ -996,7 +1000,7 @@ offhand_weapon_overrride() {
 offhand_weapon_give_override(str_weapon) {
   self endon("death");
 
-  if(is_tactical_grenade(str_weapon) && isdefined(self get_player_tactical_grenade()) && !self is_player_tactical_grenade(str_weapon)) {
+  if(is_tactical_grenade(str_weapon) && isDefined(self get_player_tactical_grenade()) && !self is_player_tactical_grenade(str_weapon)) {
     self setweaponammoclip(self get_player_tactical_grenade(), 0);
     self takeweapon(self get_player_tactical_grenade());
   }
@@ -1221,7 +1225,6 @@ setup_rex_starts() {
 }
 
 dummy() {
-
 }
 
 buried_zone_init() {
@@ -1283,7 +1286,7 @@ init_turned_zones() {
 init_fountain_zone() {
   flag_wait("fountain_transport_active");
 
-  if(!isdefined(level.snd_ent)) {
+  if(!isDefined(level.snd_ent)) {
     level.snd_ent = spawn("script_origin", (4918, 575, 11));
     level.snd_ent playloopsound("amb_water_vortex", 1);
   }
@@ -1295,16 +1298,16 @@ init_fountain_zone() {
 }
 
 buried_ghost_zone_teleport_logic() {
-  if(isdefined(level.zombie_ghost_round_states.is_teleporting) && level.zombie_ghost_round_states.is_teleporting) {
+  if(isDefined(level.zombie_ghost_round_states.is_teleporting) && level.zombie_ghost_round_states.is_teleporting) {
     return;
   }
-  if(!isdefined(level.ghost_drop_down_locations) || level.ghost_drop_down_locations.size < 1) {
+  if(!isDefined(level.ghost_drop_down_locations) || level.ghost_drop_down_locations.size < 1) {
     return;
   }
-  if(!isdefined(level.zones["zone_start"]) || isdefined(level.zones["zone_start"].is_occupied) && level.zones["zone_start"].is_occupied) {
+  if(!isDefined(level.zones["zone_start"]) || isDefined(level.zones["zone_start"].is_occupied) && level.zones["zone_start"].is_occupied) {
     return;
   }
-  if(!isdefined(level.zones["zone_start_lower"]) || isdefined(level.zones["zone_start_lower"].is_occupied) && level.zones["zone_start_lower"].is_occupied) {
+  if(!isDefined(level.zones["zone_start_lower"]) || isDefined(level.zones["zone_start_lower"].is_occupied) && level.zones["zone_start_lower"].is_occupied) {
     return;
   }
   teleport_location_index = 0;
@@ -1324,10 +1327,10 @@ buried_ghost_zone_teleport_logic() {
 }
 
 ghost_zone_fountain_teleport_logic() {
-  if(isdefined(level.zombie_ghost_round_states.is_teleporting) && level.zombie_ghost_round_states.is_teleporting) {
+  if(isDefined(level.zombie_ghost_round_states.is_teleporting) && level.zombie_ghost_round_states.is_teleporting) {
     return;
   }
-  if(!isdefined(level.ghost_zone_start_lower_locations) || level.ghost_zone_start_lower_locations.size < 1) {
+  if(!isDefined(level.ghost_zone_start_lower_locations) || level.ghost_zone_start_lower_locations.size < 1) {
     return;
   }
   if(!level.zones["zone_start_lower"].is_occupied) {
@@ -1338,7 +1341,7 @@ ghost_zone_fountain_teleport_logic() {
 
   foreach(axis in axises) {
     if(is_true(axis.is_ghost) && !axis maps\mp\zombies\_zm_ai_ghost::is_in_start_area()) {
-      if(isdefined(axis.favoriteenemy) && axis.favoriteenemy maps\mp\zombies\_zm_ai_ghost::is_in_start_area()) {
+      if(isDefined(axis.favoriteenemy) && axis.favoriteenemy maps\mp\zombies\_zm_ai_ghost::is_in_start_area()) {
         if(teleport_location_index == level.ghost_zone_start_lower_locations.size)
           teleport_location_index = 0;
 
@@ -1472,7 +1475,7 @@ init_level_specific_audio() {
 buried_add_player_dialogue(speaker, category, type, alias, response, chance) {
   level.vox zmbvoxadd(speaker, category, type, alias, response);
 
-  if(isdefined(chance))
+  if(isDefined(chance))
     add_vox_response_chance(type, chance);
 }
 
@@ -1484,8 +1487,8 @@ buried_audio_custom_response_line(player, index, category, type) {
     if(a_players.size > 0) {
       a_closest = get_array_of_closest(player.origin, a_players);
 
-      for (i = 0; i < a_closest.size; i++) {
-        if(!(isdefined(a_closest[i].dontspeak) && a_closest[i].dontspeak)) {
+      for(i = 0; i < a_closest.size; i++) {
+        if(!(isDefined(a_closest[i].dontspeak) && a_closest[i].dontspeak)) {
           if(isalive(a_closest[i])) {
             n_dist = distance2dsquared(player.origin, a_closest[i].origin);
 
@@ -1526,7 +1529,7 @@ buried_audio_get_mod_type_override(impact, mod, weapon, zombie, instakill, dist,
   far_dist = 75625;
   a_str_mod = [];
 
-  if(isdefined(zombie.damageweapon) && zombie.damageweapon == "cymbal_monkey_zm")
+  if(isDefined(zombie.damageweapon) && zombie.damageweapon == "cymbal_monkey_zm")
     a_str_mod[a_str_mod.size] = "monkey";
 
   if(weapon == "slowgun_zm" || weapon == "slowgun_upgraded_zm")
@@ -1538,7 +1541,7 @@ buried_audio_get_mod_type_override(impact, mod, weapon, zombie, instakill, dist,
   if(is_headshot(weapon, impact, mod) && dist >= far_dist)
     a_str_mod[a_str_mod.size] = "headshot";
 
-  if(is_explosive_damage(mod) && weapon != "ray_gun_zm" && weapon != "ray_gun_upgraded_zm" && weapon != "raygun_mark2_zm" && weapon != "raygun_mark2_upgraded_zm" && !(isdefined(zombie.is_on_fire) && zombie.is_on_fire)) {
+  if(is_explosive_damage(mod) && weapon != "ray_gun_zm" && weapon != "ray_gun_upgraded_zm" && weapon != "raygun_mark2_zm" && weapon != "raygun_mark2_upgraded_zm" && !(isDefined(zombie.is_on_fire) && zombie.is_on_fire)) {
     if(!isinarray(a_str_mod, "monkey")) {
       if(!instakill)
         a_str_mod[a_str_mod.size] = "explosive";
@@ -1587,7 +1590,7 @@ buried_audio_get_mod_type_override(impact, mod, weapon, zombie, instakill, dist,
   else if(a_str_mod.size == 1)
     str_mod_final = a_str_mod[0];
   else {
-    for (i = 0; i < a_str_mod.size; i++) {
+    for(i = 0; i < a_str_mod.size; i++) {
       if(cointoss())
         str_mod_final = a_str_mod[i];
     }
@@ -1601,10 +1604,10 @@ buried_audio_get_mod_type_override(impact, mod, weapon, zombie, instakill, dist,
 buried_custom_zombie_gibbed_vo() {
   self endon("death");
 
-  if(isdefined(self.a.gib_ref) && isalive(self)) {
+  if(isDefined(self.a.gib_ref) && isalive(self)) {
     if(self.a.gib_ref == "no_legs" || self.a.gib_ref == "right_leg" || self.a.gib_ref == "left_leg") {
-      if(isdefined(self.attacker) && isplayer(self.attacker)) {
-        if(isdefined(self.attacker.crawler_created_vo_cooldown) && self.attacker.crawler_created_vo_cooldown) {
+      if(isDefined(self.attacker) && isplayer(self.attacker)) {
+        if(isDefined(self.attacker.crawler_created_vo_cooldown) && self.attacker.crawler_created_vo_cooldown) {
           return;
         }
         rand = randomintrange(0, 100);
@@ -1614,9 +1617,9 @@ buried_custom_zombie_gibbed_vo() {
           self.attacker thread crawler_created_vo_cooldown();
         }
       }
-    } else if(isdefined(self.a.gib_ref) && (self.a.gib_ref == "right_arm" || self.a.gib_ref == "left_arm")) {
+    } else if(isDefined(self.a.gib_ref) && (self.a.gib_ref == "right_arm" || self.a.gib_ref == "left_arm")) {
       if(self.has_legs && isalive(self)) {
-        if(isdefined(self.attacker) && isplayer(self.attacker)) {
+        if(isDefined(self.attacker) && isplayer(self.attacker)) {
           rand = randomintrange(0, 100);
 
           if(rand < 7)
@@ -1638,7 +1641,7 @@ buried_audio_custom_weapon_check(weapon, magic_box) {
   self endon("death");
   self endon("disconnect");
 
-  if(isdefined(magic_box) && magic_box) {
+  if(isDefined(magic_box) && magic_box) {
     type = self maps\mp\zombies\_zm_weapons::weapon_type_check(weapon);
     return type;
   }
@@ -1655,7 +1658,7 @@ buried_audio_custom_weapon_check(weapon, magic_box) {
   } else if(weapon == "raygun_mark2_zm") {
     self thread maps\mp\zombies\_zm_audio::create_and_play_dialog("general", "build_take_raygun");
     return "crappy";
-  } else if(isdefined(self.favorite_wall_weapons_list)) {
+  } else if(isDefined(self.favorite_wall_weapons_list)) {
     foreach(fav_weapon in self.favorite_wall_weapons_list) {
       if(weapon == fav_weapon) {
         self thread maps\mp\zombies\_zm_audio::create_and_play_dialog("general", "favorite_wall_buy");
@@ -1671,10 +1674,10 @@ buried_audio_custom_weapon_check(weapon, magic_box) {
 buried_custom_zombie_oh_shit_vox() {
   self endon("death_or_disconnect");
 
-  while (true) {
+  while(true) {
     wait 1;
 
-    if(isdefined(self.oh_shit_vo_cooldown) && self.oh_shit_vo_cooldown) {
+    if(isDefined(self.oh_shit_vo_cooldown) && self.oh_shit_vo_cooldown) {
       continue;
     }
     players = get_players();
@@ -1690,15 +1693,15 @@ buried_custom_zombie_oh_shit_vox() {
     n_chance = 30;
     close_zombs = 0;
 
-    for (i = 0; i < zombs.size; i++) {
-      if(isdefined(zombs[i].favoriteenemy) && zombs[i].favoriteenemy == self || !isdefined(zombs[i].favoriteenemy)) {
+    for(i = 0; i < zombs.size; i++) {
+      if(isDefined(zombs[i].favoriteenemy) && zombs[i].favoriteenemy == self || !isDefined(zombs[i].favoriteenemy)) {
         if(distancesquared(zombs[i].origin, self.origin) < n_distance_sq)
           close_zombs++;
       }
     }
 
     if(close_zombs >= n_zombies) {
-      if(randomint(100) < n_chance && !(isdefined(self.isonbus) && self.isonbus)) {
+      if(randomint(100) < n_chance && !(isDefined(self.isonbus) && self.isonbus)) {
         self maps\mp\zombies\_zm_audio::create_and_play_dialog("general", "oh_shit");
         self thread global_oh_shit_cooldown_timer(n_cooldown_time);
       }
@@ -1731,11 +1734,11 @@ buried_player_track_ammo_count() {
   ammolowcount = 0;
   ammooutcount = 0;
 
-  while (true) {
+  while(true) {
     wait 0.5;
     weap = self getcurrentweapon();
 
-    if(!isdefined(weap) || weap == "none" || !can_track_ammo(weap)) {
+    if(!isDefined(weap) || weap == "none" || !can_track_ammo(weap)) {
       continue;
     }
     if(self getammocount(weap) > 5 || self maps\mp\zombies\_zm_laststand::player_is_in_laststand()) {
@@ -1763,7 +1766,7 @@ buried_player_track_ammo_count() {
           }
         }
 
-        if(!(isdefined(self.ammo_switch_vo_played) && self.ammo_switch_vo_played)) {
+        if(!(isDefined(self.ammo_switch_vo_played) && self.ammo_switch_vo_played)) {
           self maps\mp\zombies\_zm_audio::create_and_play_dialog("general", "ammo_out");
           ammooutcount++;
         }
@@ -1784,7 +1787,7 @@ zm_buried_buildable_pickedup_vo() {
 }
 
 ghost_steal_vo_watcher() {
-  while (true) {
+  while(true) {
     level waittill("ghost_drained_player", player);
     chance = get_response_chance("ghost_theft");
 
@@ -1794,7 +1797,7 @@ ghost_steal_vo_watcher() {
 }
 
 ghost_damage_vo_watcher() {
-  while (true) {
+  while(true) {
     level waittill("ghost_damaged_player", player);
     chance = get_response_chance("ghost_damage");
 
@@ -1807,7 +1810,7 @@ buried_custom_buildable_need_part_vo() {
   self endon("death");
   self endon("disconnect");
 
-  if(!(isdefined(self.build_need_part_vo_cooldown) && self.build_need_part_vo_cooldown)) {
+  if(!(isDefined(self.build_need_part_vo_cooldown) && self.build_need_part_vo_cooldown)) {
     self thread maps\mp\zombies\_zm_audio::create_and_play_dialog("general", "build_need_part");
     self thread buildable_need_part_vo_cooldown();
   }
@@ -1824,7 +1827,7 @@ buried_custom_buildable_wrong_part_vo() {
   self endon("death");
   self endon("disconnect");
 
-  if(!(isdefined(self.build_wrong_part_vo_cooldown) && self.build_wrong_part_vo_cooldown)) {
+  if(!(isDefined(self.build_wrong_part_vo_cooldown) && self.build_wrong_part_vo_cooldown)) {
     self thread maps\mp\zombies\_zm_audio::create_and_play_dialog("general", "build_wrong_part");
     self thread buildable_wrong_part_vo_cooldown();
   }
@@ -1848,7 +1851,7 @@ buried_custom_bank_withdrawl_vo() {
 sloth_first_encounter_vo() {
   trigger = getent("sloth_first_encounter_trigger", "targetname");
 
-  while (true) {
+  while(true) {
     trigger waittill("trigger", ent);
 
     if(isplayer(ent)) {
@@ -1864,8 +1867,8 @@ sloth_first_encounter_vo() {
 }
 
 sloth_crawler_vo() {
-  while (true) {
-    if(!isdefined(level.sloth)) {
+  while(true) {
+    if(!isDefined(level.sloth)) {
       wait 1.0;
       continue;
     }
@@ -1880,26 +1883,26 @@ sloth_crawler_vo() {
       continue;
     }
 
-    if(isdefined(level.sloth.carrying_crawler) && level.sloth.carrying_crawler) {
+    if(isDefined(level.sloth.carrying_crawler) && level.sloth.carrying_crawler) {
       wait 1.0;
       continue;
     }
 
-    if(isdefined(level.time_bomb_detonation_vo) && level.time_bomb_detonation_vo) {
+    if(isDefined(level.time_bomb_detonation_vo) && level.time_bomb_detonation_vo) {
       wait 1.0;
       continue;
     }
 
     zombies = get_round_enemy_array();
 
-    for (i = 0; i < zombies.size; i++) {
+    for(i = 0; i < zombies.size; i++) {
       zombie = zombies[i];
 
-      if(isdefined(zombie) && !(isdefined(zombie.has_legs) && zombie.has_legs)) {
+      if(isDefined(zombie) && !(isDefined(zombie.has_legs) && zombie.has_legs)) {
         a_players = getplayers();
 
         foreach(player in a_players) {
-          if(is_player_valid(player) && !(isdefined(player.isspeaking) && player.isspeaking)) {
+          if(is_player_valid(player) && !(isDefined(player.isspeaking) && player.isspeaking)) {
             if(player is_player_looking_at(zombie.origin, 0.25)) {
               if(distancesquared(player.origin, level.sloth.origin) < 9000000) {
                 player thread maps\mp\zombies\_zm_audio::create_and_play_dialog("general", "sloth_crawler");
@@ -1920,11 +1923,11 @@ collapsing_catwalk_init() {
   trig = getent("start_platform_trig", "targetname");
   platform = getent("start_platform", "targetname");
 
-  while (true) {
+  while(true) {
     trig waittill("trigger", who);
 
     if(isplayer(who)) {
-      if(!(isdefined(who.on_platform) && who.on_platform)) {
+      if(!(isDefined(who.on_platform) && who.on_platform)) {
         trig thread collapsing_platform_watcher(who, platform);
         return;
       }
@@ -1936,28 +1939,28 @@ collapsing_platform_watcher(who, platform) {
   who.on_platform = 1;
   timed_collapse = 0;
 
-  if(isdefined(platform))
+  if(isDefined(platform))
     platform playsound("zmb_catwalk_shake");
 
   jump_blocker_clip = getent("start_platform_delayed_clip", "targetname");
   earthquake(0.3, 3, who.origin, 128);
   level waittill_notify_or_timeout("lsat_purchased", 2);
 
-  if(isdefined(who)) {
+  if(isDefined(who)) {
     who notify("platform_collapse");
     who.on_platform = 0;
   }
 
-  if(isdefined(platform)) {
+  if(isDefined(platform)) {
     exploder(410);
     platform notsolid();
     level setclientfield("cw_fall", 1);
     platform playsound("zmb_catwalk_fall");
 
-    if(isdefined(platform.pieces))
+    if(isDefined(platform.pieces))
       array_thread(platform.pieces, ::self_delete);
 
-    if(isdefined(platform))
+    if(isDefined(platform))
       platform delete();
   }
 
@@ -1965,10 +1968,10 @@ collapsing_platform_watcher(who, platform) {
   level notify("catwalk_collapsed");
   level.catwalk_collapsed = 1;
 
-  if(isdefined(jump_blocker_clip))
+  if(isDefined(jump_blocker_clip))
     jump_blocker_clip delete();
 
-  if(isdefined(self))
+  if(isDefined(self))
     self delete();
 }
 
@@ -1978,7 +1981,7 @@ achievement_watcher_lsat_upgrade() {
 
   do
     self waittill("pap_taken");
-  while (!self maps\mp\zombies\_zm_weapons::has_weapon_or_attachments("lsat_upgraded_zm"));
+  while(!self maps\mp\zombies\_zm_weapons::has_weapon_or_attachments("lsat_upgraded_zm"));
 
   self notify("player_upgraded_lsat_from_wall");
 }
@@ -1986,7 +1989,7 @@ achievement_watcher_lsat_upgrade() {
 player_give_lsat() {
   level notify("lsat_purchased");
 
-  if(!(isdefined(level.catwalk_collapsed) && level.catwalk_collapsed)) {
+  if(!(isDefined(level.catwalk_collapsed) && level.catwalk_collapsed)) {
     self maps\mp\zombies\_zm_stats::increment_client_stat("buried_lsat_purchased", 0);
     self maps\mp\zombies\_zm_stats::increment_player_stat("buried_lsat_purchased");
     level.lsat_purchased = 1;
@@ -2008,7 +2011,7 @@ bell_watch_ring() {
   self endon("delete");
   self setcandamage(1);
 
-  while (true) {
+  while(true) {
     self waittill("damage", amount, attacker, direction, point, mod, tagname, modelname, partname, weaponname);
     bell_ring(attacker, self);
   }
@@ -2024,7 +2027,7 @@ player_force_from_prone() {
   level endon("intermission");
   level endon("end_game");
 
-  while (true) {
+  while(true) {
     self waittill("trigger", who);
 
     if(isplayer(who) && who getstance() == "prone")
@@ -2037,7 +2040,7 @@ player_force_from_prone() {
 check_valid_poi(valid) {
   excludes = getentarray("cymbal_monkey_exclude", "targetname");
 
-  if(isdefined(excludes)) {
+  if(isDefined(excludes)) {
     foreach(volume in excludes) {
       if(self istouching(volume))
         return 0;
@@ -2065,7 +2068,7 @@ tear_into_facing(start_org, start_ang) {
   self endon("death");
   facing_dist = 256;
 
-  while (true) {
+  while(true) {
     dist = distancesquared(self.origin, start_org);
 
     if(dist < facing_dist) {
@@ -2079,12 +2082,11 @@ tear_into_facing(start_org, start_ang) {
 }
 
 tear_into_wait() {
-
 }
 
 melee_miss_func() {
-  if(isdefined(self.enemy)) {
-    if(isdefined(level.sloth)) {
+  if(isDefined(self.enemy)) {
+    if(isDefined(level.sloth)) {
       sloth_dist_sq = distancesquared(self.enemy.origin, level.sloth.origin);
 
       if(sloth_dist_sq < 225) {
@@ -2099,18 +2101,17 @@ melee_miss_func() {
 }
 
 equipment_planted(weapon, equipname, groundfrom) {
-
 }
 
 equipment_safe_to_drop(weapon) {
-  if(isdefined(weapon.model) && issubstr(weapon.model, "chopper")) {
+  if(isDefined(weapon.model) && issubstr(weapon.model, "chopper")) {
     if(maps\mp\zombies\_zm_equip_headchopper::check_headchopper_in_bad_area(weapon.origin))
       return false;
   }
 
   valid_location = check_point_in_enabled_zone(weapon.origin, undefined, undefined);
 
-  if(!(isdefined(valid_location) && valid_location)) {
+  if(!(isDefined(valid_location) && valid_location)) {
     if(weapon in_playable_area())
       return true;
 
@@ -2121,19 +2122,19 @@ equipment_safe_to_drop(weapon) {
 }
 
 ignore_equipment(zombie) {
-  if(!(isdefined(zombie.completed_emerging_into_playable_area) && zombie.completed_emerging_into_playable_area))
+  if(!(isDefined(zombie.completed_emerging_into_playable_area) && zombie.completed_emerging_into_playable_area))
     return true;
 
-  if(isdefined(zombie.is_ghost) && zombie.is_ghost)
+  if(isDefined(zombie.is_ghost) && zombie.is_ghost)
     return true;
 
-  if(isdefined(zombie.is_sloth) && zombie.is_sloth)
+  if(isDefined(zombie.is_sloth) && zombie.is_sloth)
     return true;
 
-  if(isdefined(self.equipname) && self.equipname == "equip_headchopper_zm") {
-    if(isdefined(self.headchopper_kills) && self.headchopper_kills < 10)
+  if(isDefined(self.equipname) && self.equipname == "equip_headchopper_zm") {
+    if(isDefined(self.headchopper_kills) && self.headchopper_kills < 10)
       return true;
-    else if(isdefined(zombie.headchopper_last_damage_time)) {
+    else if(isDefined(zombie.headchopper_last_damage_time)) {
       currenttime = gettime();
 
       if(currenttime - zombie.headchopper_last_damage_time <= 2500)
@@ -2147,7 +2148,7 @@ ignore_equipment(zombie) {
 buried_paralyzer_check() {
   curr_zone = self get_current_zone();
 
-  if(isdefined(curr_zone)) {
+  if(isDefined(curr_zone)) {
     if(curr_zone == "zone_mansion")
       return false;
 

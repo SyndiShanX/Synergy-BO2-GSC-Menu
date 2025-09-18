@@ -13,24 +13,24 @@
 zombie_tracking_init() {
   level.zombie_respawned_health = [];
 
-  if(!isdefined(level.zombie_tracking_dist))
+  if(!isDefined(level.zombie_tracking_dist))
     level.zombie_tracking_dist = 1600;
 
-  if(!isdefined(level.zombie_tracking_high))
+  if(!isDefined(level.zombie_tracking_high))
     level.zombie_tracking_high = 600;
 
-  if(!isdefined(level.zombie_tracking_wait))
+  if(!isDefined(level.zombie_tracking_wait))
     level.zombie_tracking_wait = 0.4;
 
-  while (true) {
+  while(true) {
     zombies = get_round_enemy_array();
 
-    if(!isdefined(zombies) || isdefined(level.ignore_distance_tracking) && level.ignore_distance_tracking) {
+    if(!isDefined(zombies) || isDefined(level.ignore_distance_tracking) && level.ignore_distance_tracking) {
       wait(level.zombie_tracking_wait);
       continue;
     } else {
-      for (i = 0; i < zombies.size; i++) {
-        if(isdefined(zombies[i]) && !(isdefined(zombies[i].ignore_distance_tracking) && zombies[i].ignore_distance_tracking) && (isdefined(zombies[i].ignoreall) && !zombies[i].ignoreall))
+      for(i = 0; i < zombies.size; i++) {
+        if(isDefined(zombies[i]) && !(isDefined(zombies[i].ignore_distance_tracking) && zombies[i].ignore_distance_tracking) && (isDefined(zombies[i].ignoreall) && !zombies[i].ignoreall))
           zombies[i] thread delete_zombie_noone_looking(level.zombie_tracking_dist, level.zombie_tracking_high);
       }
     }
@@ -46,20 +46,20 @@ delete_zombie_noone_looking(how_close, how_high) {
     self.inview = 0;
     self.player_close = 0;
   } else {
-    if(!isdefined(how_close))
+    if(!isDefined(how_close))
       how_close = 1000;
 
-    if(!isdefined(how_high))
+    if(!isDefined(how_high))
       how_high = 500;
 
-    if(!(isdefined(self.has_legs) && self.has_legs))
+    if(!(isDefined(self.has_legs) && self.has_legs))
       how_close = how_close * 1.5;
 
     distance_squared_check = how_close * how_close;
     height_squared_check = how_high * how_high;
     too_far_dist = distance_squared_check * 3;
 
-    if(isdefined(level.zombie_tracking_too_far_dist))
+    if(isDefined(level.zombie_tracking_too_far_dist))
       too_far_dist = level.zombie_tracking_too_far_dist * level.zombie_tracking_too_far_dist;
 
     self.inview = 0;
@@ -70,7 +70,7 @@ delete_zombie_noone_looking(how_close, how_high) {
       if(player.sessionstate == "spectator") {
         continue;
       }
-      if(isdefined(player.laststand) && player.laststand && (isdefined(self.favoriteenemy) && self.favoriteenemy == player)) {
+      if(isDefined(player.laststand) && player.laststand && (isDefined(self.favoriteenemy) && self.favoriteenemy == player)) {
         if(!self can_zombie_see_any_player()) {
           self.favoriteenemy = undefined;
           self.zombie_path_bad = 1;
@@ -78,8 +78,8 @@ delete_zombie_noone_looking(how_close, how_high) {
         }
       }
 
-      if(isdefined(level.only_track_targeted_players)) {
-        if(!isdefined(self.favoriteenemy) || self.favoriteenemy != player)
+      if(isDefined(level.only_track_targeted_players)) {
+        if(!isDefined(self.favoriteenemy) || self.favoriteenemy != player)
           continue;
       }
 
@@ -97,16 +97,16 @@ delete_zombie_noone_looking(how_close, how_high) {
   wait 0.1;
 
   if(self.inview == 0 && self.player_close == 0) {
-    if(!isdefined(self.animname) || isdefined(self.animname) && self.animname != "zombie") {
+    if(!isDefined(self.animname) || isDefined(self.animname) && self.animname != "zombie") {
       return;
     }
-    if(isdefined(self.electrified) && self.electrified == 1) {
+    if(isDefined(self.electrified) && self.electrified == 1) {
       return;
     }
     zombies = getaiarray("axis");
 
     if(zombies.size + level.zombie_total > 24 || zombies.size + level.zombie_total <= 24 && self.health >= self.maxhealth) {
-      if(!(isdefined(self.exclude_distance_cleanup_adding_to_total) && self.exclude_distance_cleanup_adding_to_total) && !(isdefined(self.isscreecher) && self.isscreecher)) {
+      if(!(isDefined(self.exclude_distance_cleanup_adding_to_total) && self.exclude_distance_cleanup_adding_to_total) && !(isDefined(self.isscreecher) && self.isscreecher)) {
         level.zombie_total++;
 
         if(self.health < level.zombie_health)
@@ -117,7 +117,7 @@ delete_zombie_noone_looking(how_close, how_high) {
     self maps\mp\zombies\_zm_spawner::reset_attack_spot();
     self notify("zombie_delete");
 
-    if(isdefined(self.anchor))
+    if(isDefined(self.anchor))
       self.anchor delete();
 
     self delete();
@@ -181,7 +181,7 @@ can_be_deleted_from_area(zone_names) {
   self_in_zone = 0;
 
   foreach(zone_name in zone_names) {
-    if(isdefined(level.zones[zone_name]) && (isdefined(level.zones[zone_name].is_occupied) && level.zones[zone_name].is_occupied))
+    if(isDefined(level.zones[zone_name]) && (isDefined(level.zones[zone_name].is_occupied) && level.zones[zone_name].is_occupied))
       return false;
 
     if(!self_in_zone && self maps\mp\zombies\_zm_zonemgr::entity_in_zone(zone_name))
@@ -198,14 +198,14 @@ escaped_zombies_cleanup_init() {
   self endon("death");
   self.zombie_path_bad = 0;
 
-  while (true) {
+  while(true) {
     if(!self.zombie_path_bad)
       self waittill("bad_path");
 
     found_player = undefined;
     players = get_players();
 
-    for (i = 0; i < players.size; i++) {
+    for(i = 0; i < players.size; i++) {
       if(is_player_valid(players[i]) && !is_true(players[i].is_in_ghost_zone) && self maymovetopoint(players[i].origin, 1)) {
         self.favoriteenemy = players[i];
         found_player = 1;
@@ -216,7 +216,7 @@ escaped_zombies_cleanup_init() {
     n_delete_distance = 800;
     n_delete_height = 300;
 
-    if(!isdefined(found_player) && (isdefined(self.completed_emerging_into_playable_area) && self.completed_emerging_into_playable_area)) {
+    if(!isDefined(found_player) && (isDefined(self.completed_emerging_into_playable_area) && self.completed_emerging_into_playable_area)) {
       self thread delete_zombie_noone_looking(n_delete_distance, n_delete_height);
       self.zombie_path_bad = 1;
       self escaped_zombies_cleanup();
@@ -232,7 +232,7 @@ escaped_zombies_cleanup() {
   self notify("stop_find_flesh");
   self notify("zombie_acquire_enemy");
 
-  if(isdefined(s_escape)) {
+  if(isDefined(s_escape)) {
     self setgoalpos(s_escape.origin);
     self thread check_player_available();
     self waittill_any("goal", "reaquire_player");
@@ -249,7 +249,7 @@ get_escape_position() {
   self endon("death");
   str_zone = get_current_zone();
 
-  if(isdefined(str_zone)) {
+  if(isDefined(str_zone)) {
     a_zones = get_adjacencies_to_zone(str_zone);
     a_dog_locations = get_dog_locations_in_zones(a_zones);
     s_farthest = self get_farthest_dog_location(a_dog_locations);
@@ -264,7 +264,7 @@ check_player_available() {
   self endon("death");
   self endon("goal");
 
-  while (self.zombie_path_bad) {
+  while(self.zombie_path_bad) {
     if(self can_zombie_see_any_player()) {
       self notify("reaquire_player");
       return;
@@ -279,7 +279,7 @@ check_player_available() {
 can_zombie_path_to_any_player() {
   a_players = get_players();
 
-  for (i = 0; i < a_players.size; i++) {
+  for(i = 0; i < a_players.size; i++) {
     if(!is_player_valid(a_players[i])) {
       continue;
     }
@@ -296,7 +296,7 @@ can_zombie_path_to_any_player() {
 can_zombie_see_any_player() {
   a_players = get_players();
 
-  for (i = 0; i < a_players.size; i++) {
+  for(i = 0; i < a_players.size; i++) {
     if(!is_player_valid(a_players[i])) {
       continue;
     }
@@ -317,7 +317,7 @@ get_adjacencies_to_zone(str_zone) {
   a_adjacencies[0] = str_zone;
   a_adjacent_zones = getarraykeys(level.zones[str_zone].adjacent_zones);
 
-  for (i = 0; i < a_adjacent_zones.size; i++) {
+  for(i = 0; i < a_adjacent_zones.size; i++) {
     if(level.zones[str_zone].adjacent_zones[a_adjacent_zones[i]].is_connected)
       a_adjacencies[a_adjacencies.size] = a_adjacent_zones[i];
   }
@@ -338,7 +338,7 @@ get_farthest_dog_location(a_dog_locations) {
   n_farthest_index = 0;
   n_distance_farthest = 0;
 
-  for (i = 0; i < a_dog_locations.size; i++) {
+  for(i = 0; i < a_dog_locations.size; i++) {
     n_distance_sq = distancesquared(self.origin, a_dog_locations[i].origin);
 
     if(n_distance_sq > n_distance_farthest) {

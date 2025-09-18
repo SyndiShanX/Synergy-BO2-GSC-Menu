@@ -1,7 +1,7 @@
-/******************************************************
+/*******************************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\gametypes\_globallogic_vehicle.gsc
-******************************************************/
+*******************************************************/
 
 #include maps\mp\_utility;
 #include maps\mp\gametypes\_class;
@@ -20,24 +20,24 @@ callback_vehicledamage(einflictor, eattacker, idamage, idflags, smeansofdeath, s
   if(game["state"] == "postgame") {
     return;
   }
-  if(isdefined(eattacker) && isplayer(eattacker) && isdefined(eattacker.candocombat) && !eattacker.candocombat) {
+  if(isDefined(eattacker) && isplayer(eattacker) && isDefined(eattacker.candocombat) && !eattacker.candocombat) {
     return;
   }
-  if(!isdefined(vdir))
+  if(!isDefined(vdir))
     idflags = idflags | level.idflags_no_knockback;
 
   friendly = 0;
 
-  if(isdefined(self.maxhealth) && self.health == self.maxhealth || !isdefined(self.attackers)) {
+  if(isDefined(self.maxhealth) && self.health == self.maxhealth || !isDefined(self.attackers)) {
     self.attackers = [];
     self.attackerdata = [];
     self.attackerdamage = [];
   }
 
-  if(sweapon == "none" && isdefined(einflictor)) {
-    if(isdefined(einflictor.targetname) && einflictor.targetname == "explodable_barrel")
+  if(sweapon == "none" && isDefined(einflictor)) {
+    if(isDefined(einflictor.targetname) && einflictor.targetname == "explodable_barrel")
       sweapon = "explodable_barrel_mp";
-    else if(isdefined(einflictor.destructible_type) && issubstr(einflictor.destructible_type, "vehicle_"))
+    else if(isDefined(einflictor.destructible_type) && issubstr(einflictor.destructible_type, "vehicle_"))
       sweapon = "destructible_car_mp";
   }
 
@@ -46,7 +46,6 @@ callback_vehicledamage(einflictor, eattacker, idamage, idflags, smeansofdeath, s
       return;
     }
     if(smeansofdeath == "MOD_PISTOL_BULLET" || smeansofdeath == "MOD_RIFLE_BULLET") {
-
     } else if(smeansofdeath == "MOD_PROJECTILE" || smeansofdeath == "MOD_GRENADE") {
       idamage = idamage * getvehicleprojectilescalar(sweapon);
       idamage = int(idamage);
@@ -69,7 +68,7 @@ callback_vehicledamage(einflictor, eattacker, idamage, idflags, smeansofdeath, s
 
     prevhealthratio = self.health / self.maxhealth;
 
-    if(isdefined(self.owner) && isplayer(self.owner))
+    if(isDefined(self.owner) && isplayer(self.owner))
       team = self.owner.pers["team"];
     else
       team = self maps\mp\_vehicles::vehicle_get_occupant_team();
@@ -110,38 +109,37 @@ callback_vehicledamage(einflictor, eattacker, idamage, idflags, smeansofdeath, s
       }
 
       friendly = 1;
-    } else if(!level.hardcoremode && isdefined(self.owner) && isdefined(eattacker.owner) && self.owner == eattacker.owner)
+    } else if(!level.hardcoremode && isDefined(self.owner) && isDefined(eattacker.owner) && self.owner == eattacker.owner)
       return;
     else {
-      if(!level.teambased && isdefined(self.targetname) && self.targetname == "rcbomb") {
-
-      } else if(isdefined(self.owner) && isdefined(eattacker) && self.owner == eattacker) {
+      if(!level.teambased && isDefined(self.targetname) && self.targetname == "rcbomb") {
+      } else if(isDefined(self.owner) && isDefined(eattacker) && self.owner == eattacker) {
         return;
       }
       if(idamage < 1)
         idamage = 1;
 
-      if(isdefined(eattacker) && isplayer(eattacker) && isdefined(sweapon))
+      if(isDefined(eattacker) && isplayer(eattacker) && isDefined(sweapon))
         eattacker thread maps\mp\gametypes\_weapons::checkhit(sweapon);
 
-      if(issubstr(smeansofdeath, "MOD_GRENADE") && isdefined(einflictor.iscooked))
+      if(issubstr(smeansofdeath, "MOD_GRENADE") && isDefined(einflictor.iscooked))
         self.wascooked = gettime();
       else
         self.wascooked = undefined;
 
       attacker_seat = undefined;
 
-      if(isdefined(eattacker))
+      if(isDefined(eattacker))
         attacker_seat = self getoccupantseat(eattacker);
 
-      self.lastdamagewasfromenemy = isdefined(eattacker) && !isdefined(attacker_seat);
+      self.lastdamagewasfromenemy = isDefined(eattacker) && !isDefined(attacker_seat);
       self finishvehicledamage(einflictor, eattacker, idamage, idflags, smeansofdeath, sweapon, vpoint, vdir, shitloc, psoffsettime, damagefromunderneath, modelindex, partname, 0);
 
       if(level.gametype == "hack" && sweapon != "emp_grenade_mp")
         idamage = 0;
     }
 
-    if(isdefined(eattacker) && eattacker != self) {
+    if(isDefined(eattacker) && eattacker != self) {
       if(maps\mp\gametypes\_globallogic_player::dodamagefeedback(sweapon, einflictor)) {
         if(idamage > 0)
           eattacker thread maps\mp\gametypes\_damagefeedback::updatedamagefeedback(smeansofdeath, einflictor);
@@ -183,7 +181,7 @@ callback_vehicleradiusdamage(einflictor, eattacker, idamage, finnerdamage, foute
   if(game["state"] == "postgame") {
     return;
   }
-  if(isdefined(eattacker) && isplayer(eattacker) && isdefined(eattacker.candocombat) && !eattacker.candocombat) {
+  if(isDefined(eattacker) && isplayer(eattacker) && isDefined(eattacker.candocombat) && !eattacker.candocombat) {
     return;
   }
   friendly = 0;
@@ -243,7 +241,7 @@ callback_vehicleradiusdamage(einflictor, eattacker, idamage, finnerdamage, foute
       }
 
       friendly = 1;
-    } else if(!level.hardcoremode && isdefined(self.owner) && isdefined(eattacker.owner) && self.owner == eattacker.owner)
+    } else if(!level.hardcoremode && isDefined(self.owner) && isDefined(eattacker.owner) && self.owner == eattacker.owner)
       return;
     else {
       if(idamage < 1)
@@ -257,7 +255,7 @@ callback_vehicleradiusdamage(einflictor, eattacker, idamage, finnerdamage, foute
 vehiclecrush() {
   self endon("disconnect");
 
-  if(isdefined(level._effect) && isdefined(level._effect["tanksquish"]))
+  if(isDefined(level._effect) && isDefined(level._effect["tanksquish"]))
     playfx(level._effect["tanksquish"], self.origin + vectorscale((0, 0, 1), 30.0));
 
   self playsound("chr_crunch");
@@ -315,7 +313,7 @@ getvehiclebulletdamage(sweapon) {
 }
 
 allowfriendlyfiredamage(einflictor, eattacker, smeansofdeath, sweapon) {
-  if(isdefined(self.allowfriendlyfiredamageoverride))
+  if(isDefined(self.allowfriendlyfiredamageoverride))
     return [
       [self.allowfriendlyfiredamageoverride]
     ](einflictor, eattacker, smeansofdeath, sweapon);

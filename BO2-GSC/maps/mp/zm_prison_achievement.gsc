@@ -57,7 +57,7 @@ achievement_full_lockdown() {
   level.lockdown_track["craft_kit"] = 0;
   b_unlock = 0;
 
-  while (b_unlock == 0) {
+  while(b_unlock == 0) {
     level waittill("brutus_locked_object");
     b_unlock = 1;
 
@@ -80,7 +80,7 @@ achievement_trapped_in_time() {
   level.trapped_track["tower_upgrade"] = 0;
   b_unlock = 0;
 
-  while (b_unlock == 0) {
+  while(b_unlock == 0) {
     level waittill_either("trap_activated", "tower_trap_upgraded");
 
     if(level.round_number >= 10) {
@@ -123,7 +123,7 @@ achievement_making_the_rounds() {
   level endon("end_game");
   self endon("disconnect");
 
-  for (n_completed_trips = 0; n_completed_trips < 3; n_completed_trips++)
+  for(n_completed_trips = 0; n_completed_trips < 3; n_completed_trips++)
     self waittill("player_completed_cycle");
 
   self giveachievement_wrapper("ZM_DLC2_MAKING_THE_ROUNDS");
@@ -140,7 +140,7 @@ achievement_a_burst_of_flavor() {
   level endon("end_game");
   self endon("disconnect");
 
-  while (true) {
+  while(true) {
     self waittill("electric_cherry_start");
     self.cherry_kills = 0;
     self waittill("electric_cherry_end");
@@ -164,7 +164,7 @@ achievement_gg_bridge() {
   level endon("end_game");
   self endon("disconnect");
 
-  while (true) {
+  while(true) {
     level waittill("end_of_round");
 
     if(self maps\mp\zombies\_zm_zonemgr::is_player_in_zone("zone_golden_gate_bridge") && level.round_number >= 15) {

@@ -51,7 +51,7 @@ play_light_fx(localclientnum) {
   self stop_light_fx(localclientnum);
   self start_light_fx(localclientnum);
 
-  for (;;) {
+  for(;;) {
     level waittill_any("snap_processed", "demo_jump", "demo_player_switch");
 
     if(isdemoplaying() && getdvar(#"ui_gametype") == "hack" && codegetclientfield(self, "ai_tank_hack_spawned") <= 0) {
@@ -61,7 +61,7 @@ play_light_fx(localclientnum) {
 
     player = getlocalplayer(localclientnum);
 
-    if(!isdefined(player)) {
+    if(!isDefined(player)) {
       self stop_light_fx(localclientnum);
       continue;
     } else if(isinvehicle(localclientnum, self))
@@ -71,7 +71,7 @@ play_light_fx(localclientnum) {
     else if(self.friend != self friendnotfoe(localclientnum))
       self stop_light_fx(localclientnum);
 
-    if(!isinvehicle(localclientnum, self) && !isdefined(self.fx))
+    if(!isinvehicle(localclientnum, self) && !isDefined(self.fx))
       self start_light_fx(localclientnum);
   }
 }
@@ -94,7 +94,7 @@ tank_stun(localclientnum, set) {
 death(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump) {
   player = getlocalplayer(localclientnum);
 
-  if(!isdefined(player)) {
+  if(!isDefined(player)) {
     return;
   }
   if(player getinkillcam(localclientnum)) {
@@ -124,7 +124,7 @@ start_light_fx(localclientnum) {
 }
 
 stop_light_fx(localclientnum) {
-  if(isdefined(self.fx)) {
+  if(isDefined(self.fx)) {
     stopfx(localclientnum, self.fx);
     self.fx = undefined;
   }
@@ -136,7 +136,7 @@ start_stun_fx(localclientnum) {
 }
 
 stop_stun_fx(localclientnum) {
-  if(isdefined(self.stun_fx)) {
+  if(isDefined(self.stun_fx)) {
     stopfx(localclientnum, self.stun_fx);
     self.stun_fx = undefined;
   }
@@ -147,7 +147,7 @@ play_driving_fx(localclientnum) {
   self endon("entityshutdown");
   self endon("driving_fx");
 
-  for (;;) {
+  for(;;) {
     if(self getspeed() >= 40) {
       forward = anglestoforward(self.angles);
       up = anglestoup(self.angles);
@@ -167,14 +167,14 @@ play_driving_rumble(localclientnum) {
   self endon("death");
   self endon("driving_rumble");
 
-  for (;;) {
+  for(;;) {
     if(isinvehicle(localclientnum, self)) {
       speed = self getspeed();
 
       if(speed >= 40 || speed <= -40) {
         player = getlocalplayer(localclientnum);
 
-        if(isdefined(player))
+        if(isDefined(player))
           player earthquake(0.1, 0.1, self.origin, 200);
       }
     }
@@ -186,7 +186,7 @@ play_driving_rumble(localclientnum) {
 rebooting(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump) {
   player = getlocalplayer(localclientnum);
 
-  if(!isdefined(player)) {
+  if(!isDefined(player)) {
     return;
   }
   if(player getinkillcam(localclientnum)) {

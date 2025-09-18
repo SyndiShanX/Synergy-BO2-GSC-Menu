@@ -66,7 +66,7 @@ main() {
   precache_fxanim_props();
   disablefx = getdvarint(#"_id_C9B177D6");
 
-  if(!isdefined(disablefx) || disablefx <= 0)
+  if(!isDefined(disablefx) || disablefx <= 0)
     precache_scripted_fx();
 }
 
@@ -99,7 +99,7 @@ precache_fxanim_props() {
 }
 
 fxanim_init(localclientnum) {
-  for (;;) {
+  for(;;) {
     level waittill("snap_processed", snapshotlocalclientnum);
 
     if(localclientnum != snapshotlocalclientnum) {
@@ -111,7 +111,7 @@ fxanim_init(localclientnum) {
       if(model.model == "fxanim_mp_drone_factory_link_mod")
         model drone_link(localclientnum);
 
-      if(isdefined(model.script_animation)) {
+      if(isDefined(model.script_animation)) {
         if(issubstr(model.script_animation, "drone_factory_welder")) {
           model thread drone_animate_fx(localclientnum);
           continue;
@@ -127,7 +127,7 @@ fxanim_init(localclientnum) {
 
 drone_animation(localclientnum) {
   self waittill_dobj(localclientnum);
-  assert(isdefined(level.drone_anims[self.script_animation]));
+  assert(isDefined(level.drone_anims[self.script_animation]));
   self useanimtree(#animtree);
 
   if(getgametypesetting("allowMapScripting"))
@@ -158,7 +158,7 @@ drone_animate_fx(localclientnum) {
   else
     self animflaggedscripted("fx", level.drone_anims[self.script_animation + "_off"], 1.0, 0.0, 1.0);
 
-  for (;;) {
+  for(;;) {
     self waittill("fx", note);
 
     switch (note) {

@@ -35,7 +35,7 @@ init() {
   maps\mp\_visionset_mgr::vsmgr_register_info("visionset", "zm_afterlife", 9000, 120, 1, 1);
   maps\mp\_visionset_mgr::vsmgr_register_info("overlay", "zm_afterlife_filter", 9000, 120, 1, 1);
 
-  if(isdefined(level.afterlife_player_damage_override))
+  if(isDefined(level.afterlife_player_damage_override))
     maps\mp\zombies\_zm::register_player_damage_callback(level.afterlife_player_damage_override);
   else
     maps\mp\zombies\_zm::register_player_damage_callback(::afterlife_player_damage_callback);
@@ -84,14 +84,14 @@ afterlife_gameover_cleanup() {
     player clientnotify("end_game");
     player notify("end_game");
 
-    if(isdefined(player.client_hint))
+    if(isDefined(player.client_hint))
       player.client_hint destroy();
   }
 
   wait 5;
 
   foreach(player in getplayers()) {
-    if(isdefined(level.optimise_for_splitscreen) && !level.optimise_for_splitscreen)
+    if(isDefined(level.optimise_for_splitscreen) && !level.optimise_for_splitscreen)
       maps\mp\_visionset_mgr::vsmgr_deactivate("overlay", "zm_afterlife_filter", player);
   }
 }
@@ -121,12 +121,12 @@ afterlife_start_zombie_logic() {
   wait 0.5;
   b_everyone_alive = 0;
 
-  while (isdefined(b_everyone_alive) && !b_everyone_alive) {
+  while(isDefined(b_everyone_alive) && !b_everyone_alive) {
     b_everyone_alive = 1;
     a_players = getplayers();
 
     foreach(player in a_players) {
-      if(isdefined(player.afterlife) && player.afterlife) {
+      if(isDefined(player.afterlife) && player.afterlife) {
         b_everyone_alive = 0;
         wait 0.05;
         break;
@@ -136,7 +136,7 @@ afterlife_start_zombie_logic() {
 
   wait 0.5;
 
-  while (level.intermission)
+  while(level.intermission)
     wait 0.05;
 
   flag_set("afterlife_start_over");
@@ -145,27 +145,27 @@ afterlife_start_zombie_logic() {
 }
 
 is_player_valid_afterlife(player) {
-  if(isdefined(player.afterlife) && player.afterlife)
+  if(isDefined(player.afterlife) && player.afterlife)
     return false;
 
   return true;
 }
 
 can_revive_override(revivee) {
-  if(isdefined(self.afterlife) && self.afterlife)
+  if(isDefined(self.afterlife) && self.afterlife)
     return false;
 
   return true;
 }
 
 player_out_of_playable_area() {
-  if(isdefined(self.afterlife) && self.afterlife)
+  if(isDefined(self.afterlife) && self.afterlife)
     return false;
 
-  if(isdefined(self.on_a_plane) && self.on_a_plane)
+  if(isDefined(self.on_a_plane) && self.on_a_plane)
     return false;
 
-  if(isdefined(level.gondola_kill_brush_override) && level.gondola_kill_brush_override) {
+  if(isDefined(level.gondola_kill_brush_override) && level.gondola_kill_brush_override) {
     if(self istouching(level.gondola_docks_landing_killbrush))
       return false;
   }
@@ -176,7 +176,7 @@ player_out_of_playable_area() {
 init_player() {
   flag_wait("initial_players_connected");
 
-  if(isdefined(level.is_forever_solo_game) && level.is_forever_solo_game)
+  if(isDefined(level.is_forever_solo_game) && level.is_forever_solo_game)
     self.lives = 3;
   else
     self.lives = 1;
@@ -190,10 +190,10 @@ init_player() {
 }
 
 afterlife_remove(b_afterlife_death) {
-  if(!isdefined(b_afterlife_death))
+  if(!isDefined(b_afterlife_death))
     b_afterlife_death = 0;
 
-  if(isdefined(b_afterlife_death) && b_afterlife_death)
+  if(isDefined(b_afterlife_death) && b_afterlife_death)
     self.lives = 0;
   else if(self.lives > 0)
     self.lives--;
@@ -203,7 +203,7 @@ afterlife_remove(b_afterlife_death) {
 }
 
 afterlife_add() {
-  if(isdefined(level.is_forever_solo_game) && level.is_forever_solo_game) {
+  if(isDefined(level.is_forever_solo_game) && level.is_forever_solo_game) {
     if(self.lives < 3) {
       self.lives++;
       self thread afterlife_add_fx();
@@ -218,11 +218,11 @@ afterlife_add() {
 }
 
 afterlife_add_fx() {
-  if(isdefined(self.afterlife) && !self.afterlife) {
+  if(isDefined(self.afterlife) && !self.afterlife) {
     self setclientfieldtoplayer("player_afterlife_refill", 1);
     wait 3;
 
-    if(isdefined(self.afterlife) && !self.afterlife)
+    if(isDefined(self.afterlife) && !self.afterlife)
       self setclientfieldtoplayer("player_afterlife_refill", 0);
   }
 }
@@ -232,7 +232,7 @@ afterlife_player_refill_watch() {
   self endon("_zombie_game_over");
   level endon("stage_final");
 
-  while (true) {
+  while(true) {
     level waittill("end_of_round");
     wait 2;
     self afterlife_add();
@@ -241,14 +241,14 @@ afterlife_player_refill_watch() {
 }
 
 afterlife_player_damage_callback(einflictor, eattacker, idamage, idflags, smeansofdeath, sweapon, vpoint, vdir, shitloc, psoffsettime) {
-  if(isdefined(eattacker)) {
-    if(isdefined(eattacker.is_zombie) && eattacker.is_zombie) {
-      if(isdefined(eattacker.custom_damage_func))
+  if(isDefined(eattacker)) {
+    if(isDefined(eattacker.is_zombie) && eattacker.is_zombie) {
+      if(isDefined(eattacker.custom_damage_func))
         idamage = eattacker[[eattacker.custom_damage_func]](self);
-      else if(isdefined(eattacker.meleedamage) && smeansofdeath != "MOD_GRENADE_SPLASH")
+      else if(isDefined(eattacker.meleedamage) && smeansofdeath != "MOD_GRENADE_SPLASH")
         idamage = eattacker.meleedamage;
 
-      if(isdefined(self.afterlife) && self.afterlife) {
+      if(isDefined(self.afterlife) && self.afterlife) {
         self afterlife_reduce_mana(10);
         self clientnotify("al_d");
         return 0;
@@ -256,23 +256,23 @@ afterlife_player_damage_callback(einflictor, eattacker, idamage, idflags, smeans
     }
   }
 
-  if(isdefined(self.afterlife) && self.afterlife)
+  if(isDefined(self.afterlife) && self.afterlife)
     return 0;
 
-  if(isdefined(eattacker) && (isdefined(eattacker.is_zombie) && eattacker.is_zombie || isplayer(eattacker))) {
-    if(isdefined(self.hasriotshield) && self.hasriotshield && isdefined(vdir)) {
+  if(isDefined(eattacker) && (isDefined(eattacker.is_zombie) && eattacker.is_zombie || isplayer(eattacker))) {
+    if(isDefined(self.hasriotshield) && self.hasriotshield && isDefined(vdir)) {
       item_dmg = 100;
 
-      if(isdefined(eattacker.custom_item_dmg))
+      if(isDefined(eattacker.custom_item_dmg))
         item_dmg = eattacker.custom_item_dmg;
 
-      if(isdefined(self.hasriotshieldequipped) && self.hasriotshieldequipped) {
-        if(self player_shield_facing_attacker(vdir, 0.2) && isdefined(self.player_shield_apply_damage)) {
+      if(isDefined(self.hasriotshieldequipped) && self.hasriotshieldequipped) {
+        if(self player_shield_facing_attacker(vdir, 0.2) && isDefined(self.player_shield_apply_damage)) {
           self[[self.player_shield_apply_damage]](item_dmg, 0);
           return 0;
         }
-      } else if(!isdefined(self.riotshieldentity)) {
-        if(!self player_shield_facing_attacker(vdir, -0.2) && isdefined(self.player_shield_apply_damage)) {
+      } else if(!isDefined(self.riotshieldentity)) {
+        if(!self player_shield_facing_attacker(vdir, -0.2) && isDefined(self.player_shield_apply_damage)) {
           self[[self.player_shield_apply_damage]](item_dmg, 0);
           return 0;
         }
@@ -280,7 +280,7 @@ afterlife_player_damage_callback(einflictor, eattacker, idamage, idflags, smeans
     }
   }
 
-  if(sweapon == "tower_trap_zm" || sweapon == "tower_trap_upgraded_zm" || sweapon == "none" && shitloc == "riotshield" && !(isdefined(eattacker.is_zombie) && eattacker.is_zombie)) {
+  if(sweapon == "tower_trap_zm" || sweapon == "tower_trap_upgraded_zm" || sweapon == "none" && shitloc == "riotshield" && !(isDefined(eattacker.is_zombie) && eattacker.is_zombie)) {
     self.use_adjusted_grenade_damage = 1;
     return 0;
   }
@@ -292,7 +292,7 @@ afterlife_player_damage_callback(einflictor, eattacker, idamage, idflags, smeans
         idamage = 0;
       }
 
-      if(isalive(self) && !(isdefined(self.is_zombie) && self.is_zombie)) {
+      if(isalive(self) && !(isDefined(self.is_zombie) && self.is_zombie)) {
         self.use_adjusted_grenade_damage = 1;
         idamage = 10;
       }
@@ -300,13 +300,13 @@ afterlife_player_damage_callback(einflictor, eattacker, idamage, idflags, smeans
       if(self hasperk("specialty_flakjacket"))
         return 0;
 
-      if(self.health > 75 && !(isdefined(self.is_zombie) && self.is_zombie))
+      if(self.health > 75 && !(isDefined(self.is_zombie) && self.is_zombie))
         idamage = 75;
     }
   }
 
-  if(idamage >= self.health && (isdefined(level.intermission) && !level.intermission)) {
-    if(self.lives > 0 && (isdefined(self.afterlife) && !self.afterlife)) {
+  if(idamage >= self.health && (isDefined(level.intermission) && !level.intermission)) {
+    if(self.lives > 0 && (isDefined(self.afterlife) && !self.afterlife)) {
       self playsoundtoplayer("zmb_afterlife_death", self);
       self afterlife_remove();
       self.afterlife = 1;
@@ -324,10 +324,10 @@ afterlife_player_damage_callback(einflictor, eattacker, idamage, idflags, smeans
 }
 
 afterlife_enter() {
-  if(!isdefined(self.afterlife_visionset) || self.afterlife_visionset == 0) {
+  if(!isDefined(self.afterlife_visionset) || self.afterlife_visionset == 0) {
     maps\mp\_visionset_mgr::vsmgr_activate("visionset", "zm_afterlife", self);
 
-    if(isdefined(level.optimise_for_splitscreen) && !level.optimise_for_splitscreen)
+    if(isDefined(level.optimise_for_splitscreen) && !level.optimise_for_splitscreen)
       maps\mp\_visionset_mgr::vsmgr_activate("overlay", "zm_afterlife_filter", self);
 
     self.afterlife_visionset = 1;
@@ -343,7 +343,7 @@ afterlife_enter() {
   self setclientfield("player_afterlife_fx", 1);
   self afterlife_create_mana_bar(self.e_afterlife_corpse);
 
-  if(!isdefined(self.keep_perks) && flag("afterlife_start_over"))
+  if(!isDefined(self.keep_perks) && flag("afterlife_start_over"))
     self increment_downed_stat();
 
   a_afterlife_triggers = getstructarray("afterlife_trigger", "targetname");
@@ -354,24 +354,24 @@ afterlife_enter() {
   a_exterior_goals = getstructarray("exterior_goal", "targetname");
 
   foreach(struct in a_exterior_goals) {
-    if(isdefined(struct.unitrigger_stub))
+    if(isDefined(struct.unitrigger_stub))
       struct.unitrigger_stub maps\mp\zombies\_zm_unitrigger::run_visibility_function_for_all_triggers();
   }
 }
 
 afterlife_leave(b_revived) {
-  if(!isdefined(b_revived))
+  if(!isDefined(b_revived))
     b_revived = 1;
 
-  while (self ismantling())
+  while(self ismantling())
     wait 0.05;
 
   self clientnotify("al_t");
 
-  if(isdefined(self.afterlife_visionset) && self.afterlife_visionset) {
+  if(isDefined(self.afterlife_visionset) && self.afterlife_visionset) {
     maps\mp\_visionset_mgr::vsmgr_deactivate("visionset", "zm_afterlife", self);
 
-    if(isdefined(level.optimise_for_splitscreen) && !level.optimise_for_splitscreen)
+    if(isDefined(level.optimise_for_splitscreen) && !level.optimise_for_splitscreen)
       maps\mp\_visionset_mgr::vsmgr_deactivate("overlay", "zm_afterlife_filter", self);
 
     self.afterlife_visionset = 0;
@@ -396,12 +396,12 @@ afterlife_leave(b_revived) {
   else
     self setorigin(self.e_afterlife_corpse.origin);
 
-  if(isdefined(level.e_gondola)) {
+  if(isDefined(level.e_gondola)) {
     a_gondola_doors_gates = get_gondola_doors_and_gates();
 
-    for (i = 0; i < a_gondola_doors_gates.size; i++) {
+    for(i = 0; i < a_gondola_doors_gates.size; i++) {
       if(self.e_afterlife_corpse istouching(a_gondola_doors_gates[i])) {
-        if(isdefined(level.e_gondola.is_moving) && level.e_gondola.is_moving)
+        if(isDefined(level.e_gondola.is_moving) && level.e_gondola.is_moving)
           str_location = level.e_gondola.destination;
         else
           str_location = level.e_gondola.location;
@@ -419,7 +419,7 @@ afterlife_leave(b_revived) {
       }
     }
 
-    if(self.e_afterlife_corpse islinkedto(level.e_gondola) && (isdefined(level.e_gondola.is_moving) && level.e_gondola.is_moving))
+    if(self.e_afterlife_corpse islinkedto(level.e_gondola) && (isDefined(level.e_gondola.is_moving) && level.e_gondola.is_moving))
       self.is_on_gondola = 1;
   }
 
@@ -427,7 +427,7 @@ afterlife_leave(b_revived) {
   self.afterlife = 0;
   self afterlife_laststand_cleanup(self.e_afterlife_corpse);
 
-  if(isdefined(b_revived) && !b_revived) {
+  if(isDefined(b_revived) && !b_revived) {
     self afterlife_remove(1);
     self dodamage(1000, self.origin);
   }
@@ -436,14 +436,14 @@ afterlife_leave(b_revived) {
 }
 
 afterlife_laststand(b_electric_chair) {
-  if(!isdefined(b_electric_chair))
+  if(!isDefined(b_electric_chair))
     b_electric_chair = 0;
 
   self endon("disconnect");
   self endon("afterlife_bleedout");
   level endon("end_game");
 
-  if(isdefined(level.afterlife_laststand_override)) {
+  if(isDefined(level.afterlife_laststand_override)) {
     self thread[[level.afterlife_laststand_override]](b_electric_chair);
     return;
   }
@@ -458,10 +458,10 @@ afterlife_laststand(b_electric_chair) {
   self[[level.afterlife_save_loadout]]();
   self afterlife_fake_death();
 
-  if(isdefined(b_electric_chair) && !b_electric_chair)
+  if(isDefined(b_electric_chair) && !b_electric_chair)
     wait 1;
 
-  if(isdefined(b_has_electric_cherry) && b_has_electric_cherry && (isdefined(b_electric_chair) && !b_electric_chair)) {
+  if(isDefined(b_has_electric_cherry) && b_has_electric_cherry && (isDefined(b_electric_chair) && !b_electric_chair)) {
     self maps\mp\zombies\_zm_perk_electric_cherry::electric_cherry_laststand();
     wait 2;
   }
@@ -485,7 +485,7 @@ afterlife_laststand(b_electric_chair) {
   wait 0.5;
   self show();
 
-  if(!(isdefined(self.hostmigrationcontrolsfrozen) && self.hostmigrationcontrolsfrozen))
+  if(!(isDefined(self.hostmigrationcontrolsfrozen) && self.hostmigrationcontrolsfrozen))
     self freezecontrols(0);
 
   self disableinvulnerability();
@@ -505,7 +505,7 @@ afterlife_clean_up_on_disconnect() {
   e_corpse endon("death");
   self waittill("disconnect");
 
-  if(isdefined(e_corpse.revivetrigger)) {
+  if(isDefined(e_corpse.revivetrigger)) {
     e_corpse notify("stop_revive_trigger");
     e_corpse.revivetrigger delete();
     e_corpse.revivetrigger = undefined;
@@ -533,7 +533,7 @@ afterlife_laststand_cleanup(corpse) {
 
 afterlife_create_mana_bar(corpse) {
   if(self.afterliferound == level.round_number) {
-    if(!isdefined(self.keep_perks) || self.afterlifedeaths == 0)
+    if(!isDefined(self.keep_perks) || self.afterlifedeaths == 0)
       self.afterlifedeaths++;
   } else {
     self.afterliferound = level.round_number;
@@ -547,10 +547,10 @@ afterlife_create_mana_bar(corpse) {
 }
 
 afterlife_infinite_mana(b_infinite) {
-  if(!isdefined(b_infinite))
+  if(!isDefined(b_infinite))
     b_infinite = 1;
 
-  if(isdefined(b_infinite) && b_infinite)
+  if(isDefined(b_infinite) && b_infinite)
     self.infinite_mana = 1;
   else
     self.infinite_mana = 0;
@@ -560,7 +560,7 @@ afterlife_mana_watch(corpse) {
   self endon("disconnect");
   corpse endon("player_revived");
 
-  while (self.manacur > 0) {
+  while(self.manacur > 0) {
     wait 0.05;
     self afterlife_reduce_mana(0.05 * self.afterlifedeaths * 3);
 
@@ -571,8 +571,8 @@ afterlife_mana_watch(corpse) {
     self setclientfieldtoplayer("player_afterlife_mana", n_mapped_mana);
   }
 
-  if(isdefined(corpse.revivetrigger)) {
-    while (corpse.revivetrigger.beingrevived)
+  if(isDefined(corpse.revivetrigger)) {
+    while(corpse.revivetrigger.beingrevived)
       wait 0.05;
   }
 
@@ -596,7 +596,7 @@ afterlife_doors_open() {
       wait_network_frame();
     }
 
-    if(isdefined(ent))
+    if(isDefined(ent))
       ent setvisibletoplayer(self);
   }
 
@@ -614,13 +614,13 @@ afterlife_doors_open() {
       wait_network_frame();
     }
 
-    if(isdefined(ent))
+    if(isDefined(ent))
       ent setinvisibletoplayer(self);
   }
 
-  if(isdefined(self.claymores)) {
+  if(isDefined(self.claymores)) {
     foreach(claymore in self.claymores) {
-      if(isdefined(claymore.pickuptrigger))
+      if(isDefined(claymore.pickuptrigger))
         claymore.pickuptrigger setinvisibletoplayer(self);
     }
   }
@@ -639,7 +639,7 @@ afterlife_doors_close() {
       wait_network_frame();
     }
 
-    if(isdefined(ent))
+    if(isDefined(ent))
       ent setinvisibletoplayer(self);
   }
 
@@ -657,13 +657,13 @@ afterlife_doors_close() {
       wait_network_frame();
     }
 
-    if(isdefined(ent))
+    if(isDefined(ent))
       ent setvisibletoplayer(self);
   }
 
-  if(isdefined(self.claymores)) {
+  if(isDefined(self.claymores)) {
     foreach(claymore in self.claymores) {
-      if(isdefined(claymore.pickuptrigger))
+      if(isDefined(claymore.pickuptrigger))
         claymore.pickuptrigger setvisibletoplayer(self);
     }
   }
@@ -672,7 +672,7 @@ afterlife_doors_close() {
 afterlife_corpse_cleanup(corpse) {
   playsoundatposition("zmb_afterlife_revived", corpse.origin);
 
-  if(isdefined(corpse.revivetrigger)) {
+  if(isDefined(corpse.revivetrigger)) {
     corpse notify("stop_revive_trigger");
     corpse.revivetrigger delete();
     corpse.revivetrigger = undefined;
@@ -693,23 +693,23 @@ is_weapon_available_in_afterlife_corpse(weapon, player_to_check) {
   count = 0;
   upgradedweapon = weapon;
 
-  if(isdefined(level.zombie_weapons[weapon]) && isdefined(level.zombie_weapons[weapon].upgrade_name))
+  if(isDefined(level.zombie_weapons[weapon]) && isDefined(level.zombie_weapons[weapon].upgrade_name))
     upgradedweapon = level.zombie_weapons[weapon].upgrade_name;
 
   players = getplayers();
 
-  if(isdefined(players)) {
-    for (player_index = 0; player_index < players.size; player_index++) {
+  if(isDefined(players)) {
+    for(player_index = 0; player_index < players.size; player_index++) {
       player = players[player_index];
 
-      if(isdefined(player_to_check) && player != player_to_check) {
+      if(isDefined(player_to_check) && player != player_to_check) {
         continue;
       }
-      if(isdefined(player.loadout) && isdefined(player.loadout.weapons)) {
-        for (i = 0; i < player.loadout.weapons.size; i++) {
+      if(isDefined(player.loadout) && isDefined(player.loadout.weapons)) {
+        for(i = 0; i < player.loadout.weapons.size; i++) {
           afterlife_weapon = player.loadout.weapons[i];
 
-          if(isdefined(afterlife_weapon) && (afterlife_weapon == weapon || afterlife_weapon == upgradedweapon))
+          if(isDefined(afterlife_weapon) && (afterlife_weapon == weapon || afterlife_weapon == upgradedweapon))
             count++;
         }
       }
@@ -720,7 +720,7 @@ is_weapon_available_in_afterlife_corpse(weapon, player_to_check) {
 }
 
 afterlife_spawn_corpse() {
-  if(isdefined(self.is_on_gondola) && self.is_on_gondola && level.e_gondola.destination == "roof")
+  if(isDefined(self.is_on_gondola) && self.is_on_gondola && level.e_gondola.destination == "roof")
     corpse = maps\mp\zombies\_zm_clone::spawn_player_clone(self, self.origin, undefined);
   else {
     trace_start = self.origin;
@@ -751,8 +751,8 @@ afterlife_corpse_create_pois() {
   a_nodes = afterlife_corpse_get_array_poi_positions();
   self.pois = [];
 
-  if(isdefined(a_nodes) && a_nodes.size > 3) {
-    for (i = 0; i < 3; i++) {
+  if(isDefined(a_nodes) && a_nodes.size > 3) {
+    for(i = 0; i < 3; i++) {
       self.pois[i] = afterlife_corpse_create_poi(a_nodes[i].origin, n_attractors);
       wait 0.05;
     }
@@ -763,15 +763,17 @@ afterlife_corpse_create_poi(v_origin, n_attractors) {
   e_poi = spawn("script_origin", v_origin);
   e_poi create_zombie_point_of_interest(10000, 24, 5000, 1);
   e_poi thread create_zombie_point_of_interest_attractor_positions();
+
   e_poi thread print3d_ent("Corpse POI");
+
   return e_poi;
 }
 
 afterlife_corpse_remove_pois() {
-  if(!isdefined(self.pois)) {
+  if(!isDefined(self.pois)) {
     return;
   }
-  for (i = 0; i < self.pois.size; i++) {
+  for(i = 0; i < self.pois.size; i++) {
     remove_poi_attractor(self.pois[i]);
     self.pois[i] delete();
   }
@@ -783,7 +785,7 @@ afterlife_corpse_get_array_poi_positions() {
   n_ideal_dist_sq = 490000;
   a_nodes = getanynodearray(self.origin, 1200);
 
-  for (i = 0; i < a_nodes.size; i++) {
+  for(i = 0; i < a_nodes.size; i++) {
     if(!a_nodes[i] is_valid_teleport_node())
       a_nodes[i] = undefined;
   }
@@ -829,31 +831,31 @@ afterlife_revive_trigger_think() {
   self endon("death");
   wait 1;
 
-  while (true) {
+  while(true) {
     wait 0.1;
     self.revivetrigger sethintstring("");
     players = get_players();
 
-    for (i = 0; i < players.size; i++) {
+    for(i = 0; i < players.size; i++) {
       if(players[i] afterlife_can_revive(self)) {
         self.revivetrigger setrevivehintstring(&"GAME_BUTTON_TO_REVIVE_PLAYER", self.team);
         break;
       }
     }
 
-    for (i = 0; i < players.size; i++) {
+    for(i = 0; i < players.size; i++) {
       reviver = players[i];
 
       if(self == reviver || !reviver is_reviving_afterlife(self)) {
         continue;
       }
       gun = reviver getcurrentweapon();
-      assert(isdefined(gun));
+      assert(isDefined(gun));
 
       if(gun == level.revive_tool || gun == level.afterlife_revive_tool) {
         continue;
       }
-      if(isdefined(reviver.afterlife) && reviver.afterlife) {
+      if(isDefined(reviver.afterlife) && reviver.afterlife) {
         reviver giveweapon(level.afterlife_revive_tool);
         reviver switchtoweapon(level.afterlife_revive_tool);
         reviver setweaponammostock(level.afterlife_revive_tool, 1);
@@ -881,10 +883,10 @@ afterlife_revive_trigger_think() {
 }
 
 afterlife_can_revive(revivee) {
-  if(isdefined(self.afterlife) && self.afterlife && isdefined(self.e_afterlife_corpse) && self.e_afterlife_corpse != revivee)
+  if(isDefined(self.afterlife) && self.afterlife && isDefined(self.e_afterlife_corpse) && self.e_afterlife_corpse != revivee)
     return false;
 
-  if(!isdefined(revivee.revivetrigger))
+  if(!isDefined(revivee.revivetrigger))
     return false;
 
   if(!isalive(self))
@@ -902,12 +904,12 @@ afterlife_can_revive(revivee) {
   ignore_sight_checks = 0;
   ignore_touch_checks = 0;
 
-  if(isdefined(level.revive_trigger_should_ignore_sight_checks)) {
+  if(isDefined(level.revive_trigger_should_ignore_sight_checks)) {
     ignore_sight_checks = [
       [level.revive_trigger_should_ignore_sight_checks]
     ](self);
 
-    if(ignore_sight_checks && isdefined(revivee.revivetrigger.beingrevived) && revivee.revivetrigger.beingrevived == 1)
+    if(ignore_sight_checks && isDefined(revivee.revivetrigger.beingrevived) && revivee.revivetrigger.beingrevived == 1)
       ignore_touch_checks = 1;
   }
 
@@ -932,7 +934,7 @@ afterlife_revive_do_revive(playerbeingrevived, revivergun) {
   revivetime = 3;
   playloop = 0;
 
-  if(isdefined(self.afterlife) && self.afterlife) {
+  if(isDefined(self.afterlife) && self.afterlife) {
     playloop = 1;
     revivetime = 1;
   }
@@ -947,16 +949,16 @@ afterlife_revive_do_revive(playerbeingrevived, revivergun) {
   if(isplayer(playerbeingrevived))
     playerbeingrevived startrevive(self);
 
-  if(!isdefined(self.reviveprogressbar))
+  if(!isDefined(self.reviveprogressbar))
     self.reviveprogressbar = self createprimaryprogressbar();
 
-  if(!isdefined(self.revivetexthud))
+  if(!isDefined(self.revivetexthud))
     self.revivetexthud = newclienthudelem(self);
 
   self thread revive_clean_up_on_gameover();
   self thread laststand_clean_up_on_disconnect(playerbeingrevived, revivergun);
 
-  if(!isdefined(self.is_reviving_any))
+  if(!isDefined(self.is_reviving_any))
     self.is_reviving_any = 0;
 
   self.is_reviving_any++;
@@ -988,10 +990,10 @@ afterlife_revive_do_revive(playerbeingrevived, revivergun) {
   e_fx thread revive_fx_clean_up_on_disconnect(playerbeingrevived);
   playfxontag(level._effect["afterlife_leave"], e_fx, "tag_origin");
 
-  if(isdefined(playloop) && playloop)
+  if(isDefined(playloop) && playloop)
     e_fx playloopsound("zmb_afterlife_reviving", 0.05);
 
-  while (self is_reviving_afterlife(playerbeingrevived)) {
+  while(self is_reviving_afterlife(playerbeingrevived)) {
     wait 0.05;
     timer = timer + 0.05;
 
@@ -999,7 +1001,7 @@ afterlife_revive_do_revive(playerbeingrevived, revivergun) {
       break;
     }
 
-    if(isdefined(playerbeingrevived.revivetrigger.auto_revive) && playerbeingrevived.revivetrigger.auto_revive == 1) {
+    if(isDefined(playerbeingrevived.revivetrigger.auto_revive) && playerbeingrevived.revivetrigger.auto_revive == 1) {
       break;
     }
 
@@ -1011,14 +1013,13 @@ afterlife_revive_do_revive(playerbeingrevived, revivergun) {
 
   e_fx delete();
 
-  if(isdefined(self.reviveprogressbar))
+  if(isDefined(self.reviveprogressbar))
     self.reviveprogressbar destroyelem();
 
-  if(isdefined(self.revivetexthud))
+  if(isDefined(self.revivetexthud))
     self.revivetexthud destroy();
 
-  if(isdefined(playerbeingrevived.revivetrigger.auto_revive) && playerbeingrevived.revivetrigger.auto_revive == 1) {
-
+  if(isDefined(playerbeingrevived.revivetrigger.auto_revive) && playerbeingrevived.revivetrigger.auto_revive == 1) {
   } else if(!revived) {
     if(isplayer(playerbeingrevived))
       playerbeingrevived stoprevive(self);
@@ -1045,10 +1046,10 @@ revive_clean_up_on_gameover() {
   self endon("do_revive_ended_normally");
   level waittill("end_game");
 
-  if(isdefined(self.reviveprogressbar))
+  if(isDefined(self.reviveprogressbar))
     self.reviveprogressbar destroyelem();
 
-  if(isdefined(self.revivetexthud))
+  if(isDefined(self.revivetexthud))
     self.revivetexthud destroy();
 }
 
@@ -1088,7 +1089,7 @@ afterlife_save_loadout() {
 
   self.loadout.equipment = self get_player_equipment();
 
-  if(isdefined(self.loadout.equipment))
+  if(isDefined(self.loadout.equipment))
     self equipment_take(self.loadout.equipment);
 
   if(self hasweapon("claymore_zm")) {
@@ -1128,8 +1129,8 @@ afterlife_give_loadout() {
     self takeweapon(weapon);
   }
 
-  for (i = 0; i < loadout.weapons.size; i++) {
-    if(!isdefined(loadout.weapons[i])) {
+  for(i = 0; i < loadout.weapons.size; i++) {
+    if(!isDefined(loadout.weapons[i])) {
       continue;
     }
     if(loadout.weapons[i] == "none") {
@@ -1161,24 +1162,24 @@ afterlife_give_loadout() {
   self setspawnweapon(loadout.weapons[loadout.current_weapon]);
   self switchtoweaponimmediate(loadout.weapons[loadout.current_weapon]);
 
-  if(isdefined(self get_player_melee_weapon()))
+  if(isDefined(self get_player_melee_weapon()))
     self giveweapon(self get_player_melee_weapon());
 
   self maps\mp\zombies\_zm_equipment::equipment_give(self.loadout.equipment);
 
-  if(isdefined(loadout.hasclaymore) && loadout.hasclaymore && !self hasweapon("claymore_zm")) {
+  if(isDefined(loadout.hasclaymore) && loadout.hasclaymore && !self hasweapon("claymore_zm")) {
     self giveweapon("claymore_zm");
     self set_player_placeable_mine("claymore_zm");
     self setactionslot(4, "weapon", "claymore_zm");
     self setweaponammoclip("claymore_zm", loadout.claymoreclip);
   }
 
-  if(isdefined(loadout.hasemp) && loadout.hasemp) {
+  if(isDefined(loadout.hasemp) && loadout.hasemp) {
     self giveweapon("emp_grenade_zm");
     self setweaponammoclip("emp_grenade_zm", loadout.empclip);
   }
 
-  if(isdefined(loadout.hastomahawk) && loadout.hastomahawk) {
+  if(isDefined(loadout.hastomahawk) && loadout.hastomahawk) {
     self giveweapon(self.current_tomahawk_weapon);
     self set_player_tactical_grenade(self.current_tomahawk_weapon);
     self setclientfieldtoplayer("tomahawk_in_use", 1);
@@ -1187,14 +1188,14 @@ afterlife_give_loadout() {
   self.score = loadout.score;
   perk_array = maps\mp\zombies\_zm_perks::get_perk_array(1);
 
-  for (i = 0; i < perk_array.size; i++) {
+  for(i = 0; i < perk_array.size; i++) {
     perk = perk_array[i];
     self unsetperk(perk);
     self set_perk_clientfield(perk, 0);
   }
 
-  if(isdefined(self.keep_perks) && self.keep_perks && isdefined(loadout.perks) && loadout.perks.size > 0) {
-    for (i = 0; i < loadout.perks.size; i++) {
+  if(isDefined(self.keep_perks) && self.keep_perks && isDefined(loadout.perks) && loadout.perks.size > 0) {
+    for(i = 0; i < loadout.perks.size; i++) {
       if(self hasperk(loadout.perks[i])) {
         continue;
       }
@@ -1233,7 +1234,7 @@ afterlife_fake_death() {
   self setstance("prone");
 
   if(self is_jumping()) {
-    while (self is_jumping())
+    while(self is_jumping())
       wait 0.05;
   }
 
@@ -1275,26 +1276,26 @@ afterlife_fake_revive() {
 afterlife_get_spawnpoint() {
   spawnpoint = check_for_valid_spawn_in_zone(self);
 
-  if(!isdefined(spawnpoint))
+  if(!isDefined(spawnpoint))
     spawnpoint = maps\mp\zombies\_zm::check_for_valid_spawn_near_position(self, self.origin, 1);
 
-  if(!isdefined(spawnpoint))
+  if(!isDefined(spawnpoint))
     spawnpoint = maps\mp\zombies\_zm::check_for_valid_spawn_near_team(self, 1);
 
-  if(!isdefined(spawnpoint)) {
+  if(!isDefined(spawnpoint)) {
     match_string = "";
     location = level.scr_zm_map_start_location;
 
-    if((location == "default" || location == "") && isdefined(level.default_start_location))
+    if((location == "default" || location == "") && isDefined(level.default_start_location))
       location = level.default_start_location;
 
     match_string = level.scr_zm_ui_gametype + "_" + location;
     spawnpoints = [];
     structs = getstructarray("initial_spawn", "script_noteworthy");
 
-    if(isdefined(structs)) {
+    if(isDefined(structs)) {
       foreach(struct in structs) {
-        if(isdefined(struct.script_string)) {
+        if(isDefined(struct.script_string)) {
           tokens = strtok(struct.script_string, " ");
 
           foreach(token in tokens) {
@@ -1305,10 +1306,10 @@ afterlife_get_spawnpoint() {
       }
     }
 
-    if(!isdefined(spawnpoints) || spawnpoints.size == 0)
+    if(!isDefined(spawnpoints) || spawnpoints.size == 0)
       spawnpoints = getstructarray("initial_spawn_points", "targetname");
 
-    assert(isdefined(spawnpoints), "Could not find initial spawn points!");
+    assert(isDefined(spawnpoints), "Could not find initial spawn points!");
     spawnpoint = maps\mp\zombies\_zm::getfreespawnpoint(spawnpoints, self);
   }
 
@@ -1318,7 +1319,7 @@ afterlife_get_spawnpoint() {
 check_for_valid_spawn_in_zone(player) {
   a_spawn_points = maps\mp\gametypes_zm\_zm_gametype::get_player_spawns_for_gametype();
 
-  if(isdefined(level.e_gondola) && (isdefined(level.e_gondola.is_moving) && level.e_gondola.is_moving)) {
+  if(isDefined(level.e_gondola) && (isDefined(level.e_gondola.is_moving) && level.e_gondola.is_moving)) {
     if(player maps\mp\zm_alcatraz_travel::is_player_on_gondola()) {
       if(level.e_gondola.destination == "roof")
         str_player_zone = "zone_cellblock_west_gondola";
@@ -1338,7 +1339,7 @@ check_for_valid_spawn_in_zone(player) {
 
       foreach(s_spawn in a_spawn_structs) {
         if(!flag("afterlife_start_over")) {
-          if(isdefined(s_spawn.en_num) && s_spawn.en_num != player.playernum)
+          if(isDefined(s_spawn.en_num) && s_spawn.en_num != player.playernum)
             continue;
         }
 
@@ -1372,13 +1373,13 @@ afterlife_save_perks(ent) {
 }
 
 afterlife_hostmigration() {
-  while (true) {
+  while(true) {
     level waittill("host_migration_end");
 
     foreach(player in getplayers()) {
       player setclientfieldtoplayer("player_lives", player.lives);
 
-      if(isdefined(player.e_afterlife_corpse))
+      if(isDefined(player.e_afterlife_corpse))
         player.e_afterlife_corpse setclientfield("player_corpse_id", 0);
     }
 
@@ -1386,20 +1387,20 @@ afterlife_hostmigration() {
     wait_network_frame();
 
     foreach(player in getplayers()) {
-      if(isdefined(player.e_afterlife_corpse))
+      if(isDefined(player.e_afterlife_corpse))
         player.e_afterlife_corpse setclientfield("player_corpse_id", player getentitynumber() + 1);
     }
   }
 }
 
 afterlife_reduce_mana(n_mana) {
-  if(isdefined(self.afterlife) && !self.afterlife) {
+  if(isDefined(self.afterlife) && !self.afterlife) {
     return;
   }
-  if(isdefined(level.hostmigrationtimer)) {
+  if(isDefined(level.hostmigrationtimer)) {
     return;
   }
-  if(isdefined(self.infinite_mana) && self.infinite_mana) {
+  if(isDefined(self.infinite_mana) && self.infinite_mana) {
     self.manacur = 200;
     return;
   }
@@ -1409,7 +1410,7 @@ afterlife_reduce_mana(n_mana) {
     return;
   }
 
-  if(isdefined(self.e_afterlife_corpse) && (isdefined(self.e_afterlife_corpse.revivetrigger.beingrevived) && self.e_afterlife_corpse.revivetrigger.beingrevived)) {
+  if(isDefined(self.e_afterlife_corpse) && (isDefined(self.e_afterlife_corpse.revivetrigger.beingrevived) && self.e_afterlife_corpse.revivetrigger.beingrevived)) {
     return;
   }
   self.manacur = self.manacur - n_mana;
@@ -1419,7 +1420,7 @@ afterlife_lightning_watch(corpse) {
   self endon("disconnect");
   corpse endon("player_revived");
 
-  while (true) {
+  while(true) {
     self waittill("weapon_fired");
     self afterlife_reduce_mana(1);
     wait 0.05;
@@ -1430,7 +1431,7 @@ afterlife_jump_watch(corpse) {
   self endon("disconnect");
   corpse endon("player_revived");
 
-  while (true) {
+  while(true) {
     if(self is_jumping()) {
       self afterlife_reduce_mana(0.3);
       earthquake(0.1, 0.05, self.origin, 200, self);
@@ -1472,8 +1473,8 @@ afterlife_trigger_visibility(player) {
   else {
     self sethintstring(self.stub.hint_string);
 
-    if(!isdefined(player.has_played_afterlife_trigger_hint) && player is_player_looking_at(self.stub.origin, 0.25)) {
-      if(!(isdefined(player.dontspeak) && player.dontspeak)) {
+    if(!isDefined(player.has_played_afterlife_trigger_hint) && player is_player_looking_at(self.stub.origin, 0.25)) {
+      if(!(isDefined(player.dontspeak) && player.dontspeak)) {
         player thread maps\mp\zombies\_zm_audio::create_and_play_dialog("general", "killswitch_clue");
         player.has_played_afterlife_trigger_hint = 1;
       }
@@ -1487,7 +1488,7 @@ afterlife_trigger_think() {
   self endon("kill_trigger");
   flag_wait("start_zombie_round_logic");
 
-  while (true) {
+  while(true) {
     self waittill("trigger", player);
 
     if(player.lives <= 0) {
@@ -1500,7 +1501,7 @@ afterlife_trigger_think() {
       continue;
     }
 
-    if(isdefined(player.afterlife) && !player.afterlife) {
+    if(isDefined(player.afterlife) && !player.afterlife) {
       self setinvisibletoplayer(player, 1);
       self playsound("zmb_afterlife_trigger_activate");
       player playsoundtoplayer("zmb_afterlife_trigger_electrocute", player);
@@ -1526,9 +1527,9 @@ afterlife_trigger_think() {
 afterlife_interact_object_think() {
   self endon("afterlife_interact_complete");
 
-  if(isdefined(self.script_int) && self.script_int > 0)
+  if(isDefined(self.script_int) && self.script_int > 0)
     n_total_interact_count = self.script_int;
-  else if(!isdefined(self.script_int) || isdefined(self.script_int) && self.script_int <= 0)
+  else if(!isDefined(self.script_int) || isDefined(self.script_int) && self.script_int <= 0)
     n_total_interact_count = 0;
 
   n_count = 0;
@@ -1537,7 +1538,7 @@ afterlife_interact_object_think() {
   self useanimtree(#animtree);
   self playloopsound("zmb_afterlife_shockbox_off", 1);
 
-  if(!isdefined(level.shockbox_anim)) {
+  if(!isDefined(level.shockbox_anim)) {
     level.shockbox_anim["on"] = % fxanim_zom_al_shock_box_on_anim;
     level.shockbox_anim["off"] = % fxanim_zom_al_shock_box_off_anim;
   }
@@ -1545,7 +1546,7 @@ afterlife_interact_object_think() {
   trig_spawn_offset = (0, 0, 0);
 
   if(self.model != "p6_anim_zm_al_nixie_tubes") {
-    if(isdefined(self.script_string) && self.script_string == "intro_powerup_activate")
+    if(isDefined(self.script_string) && self.script_string == "intro_powerup_activate")
       self.t_bump = spawn("trigger_radius", self.origin + vectorscale((0, 1, 0), 28.0), 0, 28, 64);
     else {
       if(issubstr(self.model, "p6_zm_al_shock_box")) {
@@ -1560,10 +1561,10 @@ afterlife_interact_object_think() {
     }
   }
 
-  while (true) {
-    if(isdefined(self.unitrigger_stub))
+  while(true) {
+    if(isDefined(self.unitrigger_stub))
       self.unitrigger_stub.is_activated_in_afterlife = 0;
-    else if(isdefined(self.t_bump)) {
+    else if(isDefined(self.t_bump)) {
       self.t_bump setcursorhint("HINT_NOICON");
       self.t_bump sethintstring(&"ZM_PRISON_AFTERLIFE_INTERACT");
     }
@@ -1571,21 +1572,21 @@ afterlife_interact_object_think() {
     self waittill("damage", amount, attacker);
 
     if(attacker == level || isplayer(attacker) && attacker getcurrentweapon() == "lightning_hands_zm") {
-      if(isdefined(self.script_string)) {
-        if(isdefined(level.afterlife_interact_dist)) {
+      if(isDefined(self.script_string)) {
+        if(isDefined(level.afterlife_interact_dist)) {
           if(attacker == level || distancesquared(attacker.origin, self.origin) < level.afterlife_interact_dist * level.afterlife_interact_dist) {
             level notify(self.script_string);
 
-            if(isdefined(self.unitrigger_stub)) {
+            if(isDefined(self.unitrigger_stub)) {
               self.unitrigger_stub.is_activated_in_afterlife = 1;
               self.unitrigger_stub maps\mp\zombies\_zm_unitrigger::run_visibility_function_for_all_triggers();
-            } else if(isdefined(self.t_bump))
+            } else if(isDefined(self.t_bump))
               self.t_bump sethintstring("");
 
             self playloopsound("zmb_afterlife_shockbox_on", 1);
 
             if(self.model == "p6_zm_al_shock_box_off") {
-              if(!isdefined(self.playing_fx)) {
+              if(!isDefined(self.playing_fx)) {
                 playfxontag(level._effect["box_activated"], self, "tag_origin");
                 self.playing_fx = 1;
                 self thread afterlife_interact_object_fx_cooldown();
@@ -1607,12 +1608,12 @@ afterlife_interact_object_think() {
                 self setanim(level.shockbox_anim["off"]);
               }
 
-              if(isdefined(self.unitrigger_stub)) {
+              if(isDefined(self.unitrigger_stub)) {
                 self.unitrigger_stub.is_activated_in_afterlife = 0;
                 self.unitrigger_stub maps\mp\zombies\_zm_unitrigger::run_visibility_function_for_all_triggers();
               }
             } else {
-              if(isdefined(self.t_bump))
+              if(isDefined(self.t_bump))
                 self.t_bump delete();
 
               break;
@@ -1639,7 +1640,7 @@ afterlife_interact_hint_trigger_create(m_interact, v_trig_offset, str_hint) {
 }
 
 afterlife_trigger_visible_in_afterlife(player) {
-  b_is_invis = isdefined(self.stub.is_activated_in_afterlife) && self.stub.is_activated_in_afterlife;
+  b_is_invis = isDefined(self.stub.is_activated_in_afterlife) && self.stub.is_activated_in_afterlife;
   self setinvisibletoplayer(player, b_is_invis);
   self sethintstring(self.stub.hint_string);
 
@@ -1658,7 +1659,7 @@ afterlife_trigger_visible_in_afterlife(player) {
 afterlife_interact_hint_trigger_think() {
   self endon("kill_trigger");
 
-  while (true) {
+  while(true) {
     self waittill("trigger");
     wait 1000;
   }
@@ -1675,11 +1676,11 @@ afterlife_zombie_damage() {
 
 afterlife_damage_func(einflictor, eattacker, idamage, idflags, smeansofdeath, sweapon, vpoint, vdir, shitloc, psoffsettime, boneindex) {
   if(sweapon == "lightning_hands_zm") {
-    if(!isdefined(self.zapped)) {
+    if(!isDefined(self.zapped)) {
       a_zombies = get_array_of_closest(self.origin, getaiarray("axis"), undefined, 5, 80);
 
-      for (i = 0; i < a_zombies.size; i++) {
-        if(isalive(a_zombies[i]) && !isdefined(a_zombies[i].zapped)) {
+      for(i = 0; i < a_zombies.size; i++) {
+        if(isalive(a_zombies[i]) && !isDefined(a_zombies[i].zapped)) {
           a_zombies[i] notify("zapped");
           a_zombies[i] thread[[level.afterlife_zapped]]();
           wait 0.05;
@@ -1707,7 +1708,7 @@ afterlife_zapped() {
     a_nodes = array_randomize(a_nodes);
     nd_target = undefined;
 
-    for (i = 0; i < a_nodes.size; i++) {
+    for(i = 0; i < a_nodes.size; i++) {
       if(distance2dsquared(a_nodes[i].origin, self.origin) > n_ideal_dist_sq) {
         if(a_nodes[i] is_valid_teleport_node()) {
           nd_target = a_nodes[i];
@@ -1716,8 +1717,8 @@ afterlife_zapped() {
       }
     }
 
-    if(!isdefined(nd_target)) {
-      for (i = 0; i < a_nodes.size; i++) {
+    if(!isDefined(nd_target)) {
+      for(i = 0; i < a_nodes.size; i++) {
         if(distance2dsquared(a_nodes[i].origin, self.origin) > n_min_dist_sq) {
           if(a_nodes[i] is_valid_teleport_node()) {
             nd_target = a_nodes[i];
@@ -1727,7 +1728,7 @@ afterlife_zapped() {
       }
     }
 
-    if(isdefined(nd_target)) {
+    if(isDefined(nd_target)) {
       v_fx_offset = vectorscale((0, 0, 1), 40.0);
       playfx(level._effect["afterlife_teleport"], self.origin);
       playsoundatposition("zmb_afterlife_zombie_warp_out", self.origin);
@@ -1745,6 +1746,7 @@ afterlife_zapped() {
       self show();
     } else {
       iprintln("Could not teleport");
+
       playfx(level._effect["afterlife_teleport"], self.origin);
       playsoundatposition("zmb_afterlife_zombie_warp_out", self.origin);
       level.zombie_total++;
@@ -1757,7 +1759,7 @@ afterlife_zapped() {
     self notify("stop_find_flesh");
     self thread afterlife_zapped_fx();
 
-    for (i = 0; i < 3; i++) {
+    for(i = 0; i < 3; i++) {
       self animscripted(self.origin, self.angles, "zm_afterlife_stun");
       self maps\mp\animscripts\shared::donotetracks("stunned");
     }
@@ -1774,10 +1776,10 @@ is_valid_teleport_node() {
   if(self.type != "Path")
     return false;
 
-  if(isdefined(self.script_noteworthy) && self.script_noteworthy == "no_teleport")
+  if(isDefined(self.script_noteworthy) && self.script_noteworthy == "no_teleport")
     return false;
 
-  if(isdefined(self.no_teleport) && self.no_teleport)
+  if(isDefined(self.no_teleport) && self.no_teleport)
     return false;
 
   return true;
@@ -1807,7 +1809,7 @@ afterlife_zapped_fx() {
   tagarray[0] = "J_Wrist_RI";
   tagarray[1] = "J_Wrist_LE";
 
-  if(!isdefined(self.a.gib_ref) || self.a.gib_ref != "no_legs") {
+  if(!isDefined(self.a.gib_ref) || self.a.gib_ref != "no_legs") {
     tagarray[2] = "J_Ankle_RI";
     tagarray[3] = "J_Ankle_LE";
   }
@@ -1823,7 +1825,7 @@ enable_afterlife_prop() {
   a_players = getplayers();
 
   foreach(player in a_players) {
-    if(isdefined(player.afterlife) && player.afterlife) {
+    if(isDefined(player.afterlife) && player.afterlife) {
       self setvisibletoplayer(player);
       continue;
     }
@@ -1844,14 +1846,14 @@ last_stand_conscience_vo() {
   self endon("disconnect");
   self endon("end_game");
 
-  if(!isdefined(self.conscience_vo_played))
+  if(!isDefined(self.conscience_vo_played))
     self.conscience_vo_played = 0;
 
   self.conscience_vo_played++;
   convo = [];
   convo = level.conscience_vo["conscience_" + self.character_name + "_convo_" + self.conscience_vo_played];
 
-  if(isdefined(convo)) {
+  if(isDefined(convo)) {
     wait 5;
     a_players = getplayers();
 
@@ -1866,7 +1868,7 @@ last_stand_conscience_vo() {
 
     self.dontspeak = 1;
 
-    for (i = 0; i < convo.size; i++) {
+    for(i = 0; i < convo.size; i++) {
       n_duration = soundgetplaybacktime(convo[i]);
       self playsoundtoplayer(convo[i], self);
       self thread conscience_vo_ended_early(convo[i]);

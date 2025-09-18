@@ -32,7 +32,9 @@ init() {
   debuglittlebird = setdvar("scr_heli_guard_debug", 0);
   level._effect["heli_guard_light"]["friendly"] = loadfx("light/fx_vlight_mp_escort_eye_grn");
   level._effect["heli_guard_light"]["enemy"] = loadfx("light/fx_vlight_mp_escort_eye_red");
+
   set_dvar_float_if_unset("scr_lbguard_timeout", 60.0);
+
   level.heliguardflyovernfz = 0;
 
   if(level.script == "mp_hydro")
@@ -44,7 +46,7 @@ register() {
 }
 
 tryuseheliguardsupport(lifeid) {
-  if(isdefined(level.civilianjetflyby)) {
+  if(isDefined(level.civilianjetflyby)) {
     self iprintlnbold(&"MP_CIVILIAN_AIR_TRAFFIC");
     return false;
   }
@@ -52,7 +54,7 @@ tryuseheliguardsupport(lifeid) {
   if(self isremotecontrolling())
     return false;
 
-  if(!isdefined(level.heli_paths) || level.heli_paths.size <= 0) {
+  if(!isDefined(level.heli_paths) || level.heli_paths.size <= 0) {
     self iprintlnbold(&"MP_UNAVAILABLE_IN_LEVEL");
     return false;
   }
@@ -64,7 +66,7 @@ tryuseheliguardsupport(lifeid) {
 
   heliguard = createheliguardsupport(lifeid, killstreak_id);
 
-  if(!isdefined(heliguard))
+  if(!isDefined(heliguard))
     return false;
 
   self thread startheliguardsupport(heliguard, lifeid);
@@ -75,7 +77,7 @@ createheliguardsupport(lifeid, killstreak_id) {
   hardpointtype = "helicopter_guard_mp";
   closeststartnode = heliguardsupport_getcloseststartnode(self.origin);
 
-  if(isdefined(closeststartnode.angles))
+  if(isDefined(closeststartnode.angles))
     startang = closeststartnode.angles;
   else
     startang = (0, 0, 0);
@@ -87,7 +89,7 @@ createheliguardsupport(lifeid, killstreak_id) {
   startpos = closeststartnode.origin;
   heliguard = spawnhelicopter(self, startpos, startang, "heli_guard_mp", "veh_t6_drone_overwatch_light");
 
-  if(!isdefined(heliguard)) {
+  if(!isDefined(heliguard)) {
     return;
   }
   target_set(heliguard, vectorscale((0, 0, -1), 50.0));
@@ -157,7 +159,7 @@ startheliguardsupport(littlebird, lifeid) {
   dist = 1500;
   target = littlebird.targetpos + vectostart * dist;
 
-  for (collide = crossesnoflyzone(target, playermeshorigin); isdefined(collide) && dist > 0; collide = crossesnoflyzone(target, playermeshorigin)) {
+  for(collide = crossesnoflyzone(target, playermeshorigin); isDefined(collide) && dist > 0; collide = crossesnoflyzone(target, playermeshorigin)) {
     dist = dist - 500;
     target = littlebird.targetpos + vectostart * dist;
   }
@@ -170,8 +172,10 @@ startheliguardsupport(littlebird, lifeid) {
   littlebird waittill("near_goal");
   littlebird setspeed(littlebird.speed, 80, 30);
   littlebird waittill("goal");
+
   if(getdvar(#"scr_heli_guard_debug") == "1")
     debug_no_fly_zones();
+
   littlebird thread heliguardsupport_followplayer();
 }
 
@@ -180,7 +184,7 @@ heliguardsupport_followplayer() {
   self endon("death");
   self endon("leaving");
 
-  if(!isdefined(self.owner)) {
+  if(!isDefined(self.owner)) {
     self thread heliguardsupport_leave();
     return;
   }
@@ -190,8 +194,8 @@ heliguardsupport_followplayer() {
   self.owner endon("joined_spectators");
   self setspeed(self.followspeed, 20, 20);
 
-  while (true) {
-    if(isdefined(self.owner) && isalive(self.owner))
+  while(true) {
+    if(isDefined(self.owner) && isalive(self.owner))
       heliguardsupport_movetoplayer();
 
     wait 3;
@@ -210,10 +214,12 @@ heliguardsupport_movetoplayer() {
   self endon("heliGuardSupport_moveToPlayer");
   maxmeshheight = getmeshheight(self, self.owner);
   hovergoal = (self.owner.origin[0], self.owner.origin[1], maxmeshheight);
+
   littlebird_debug_line(self.origin, hovergoal, (1, 0, 0));
+
   zoneindex = crossesnoflyzone(self.origin, hovergoal);
 
-  if(isdefined(zoneindex) && level.heliguardflyovernfz) {
+  if(isDefined(zoneindex) && level.heliguardflyovernfz) {
     self.intransit = 1;
     noflyzoneheight = getnoflyzoneheightcrossed(hovergoal, self.origin, maxmeshheight);
     self setvehgoalpos((hovergoal[0], hovergoal[1], noflyzoneheight), 1);
@@ -221,8 +227,9 @@ heliguardsupport_movetoplayer() {
     return;
   }
 
-  if(isdefined(zoneindex)) {
+  if(isDefined(zoneindex)) {
     littlebird_debug_text("NO FLY ZONE between heli and hoverGoal");
+
     dist = distance2d(self.owner.origin, level.noflyzones[zoneindex].origin);
     zoneorgtoplayer2d = self.owner.origin - level.noflyzones[zoneindex].origin;
     zoneorgtoplayer2d = zoneorgtoplayer2d * (1, 1, 0);
@@ -236,25 +243,30 @@ heliguardsupport_movetoplayer() {
     zoneorgtooppositeperpendicular = (zoneorgtoadjpos[1] * -1, zoneorgtoadjpos[0], 0);
     perpendiculargoalpos = zoneorgtoperpendicular + zoneorgatmeshheight;
     oppositeperpendiculargoalpos = zoneorgtooppositeperpendicular + zoneorgatmeshheight;
+
     littlebird_debug_line(self.origin, perpendiculargoalpos, (0, 0, 1));
     littlebird_debug_line(self.origin, oppositeperpendiculargoalpos, (0.2, 0.6, 1));
 
     if(dist < level.noflyzones[zoneindex].radius) {
       littlebird_debug_text("Owner is in a no fly zone, find perimeter hover goal");
       littlebird_debug_line(self.origin, adjacentgoalpos, (0, 1, 0));
+
       zoneindex = undefined;
       zoneindex = crossesnoflyzone(self.origin, adjacentgoalpos);
 
-      if(isdefined(zoneindex)) {
+      if(isDefined(zoneindex)) {
         littlebird_debug_text("adjacentGoalPos is through no fly zone, move to perpendicular edge of cyl");
+
         hovergoal = perpendiculargoalpos;
       } else {
         littlebird_debug_text("adjacentGoalPos is NOT through fly zone, move to edge closest to player");
+
         hovergoal = adjacentgoalpos;
       }
     } else {
       littlebird_debug_text("Owner outside no fly zone, navigate around perimeter");
       littlebird_debug_line(self.origin, perpendiculargoalpos, (0, 0, 1));
+
       hovergoal = perpendiculargoalpos;
     }
   }
@@ -262,8 +274,9 @@ heliguardsupport_movetoplayer() {
   zoneindex = undefined;
   zoneindex = crossesnoflyzone(self.origin, hovergoal);
 
-  if(isdefined(zoneindex)) {
+  if(isDefined(zoneindex)) {
     littlebird_debug_text("Try opposite perimeter goal");
+
     hovergoal = oppositeperpendiculargoalpos;
   }
 
@@ -295,7 +308,9 @@ heliguardsupport_watchtimeout() {
   self.owner endon("joined_team");
   self.owner endon("joined_spectators");
   timeout = 60.0;
+
   timeout = getdvarfloat(#"scr_lbguard_timeout");
+
   maps\mp\gametypes\_hostmigration::waitlongdurationwithhostmigrationpause(timeout);
   shouldtimeout = getdvar(#"scr_heli_guard_no_timeout");
 
@@ -321,7 +336,7 @@ heliguardsupport_watchownerdamage() {
   self.owner endon("joined_team");
   self.owner endon("joined_spectators");
 
-  while (true) {
+  while(true) {
     self.owner waittill("damage", damage, attacker, direction_vec, point, meansofdeath, modelname, tagname, partname, weapon, idflags);
 
     if(isplayer(attacker)) {
@@ -356,7 +371,7 @@ heliguardsupport_leave() {
   targetpos = self.origin + anglestoforward(self.angles) * 1500 + (0, 0, flyheight);
   collide = crossesnoflyzone(self.origin, targetpos);
 
-  for (tries = 5; isdefined(collide) && tries > 0; tries--) {
+  for(tries = 5; isDefined(collide) && tries > 0; tries--) {
     yaw = randomint(360);
     targetpos = self.origin + anglestoforward((self.angles[0], yaw, self.angles[2])) * 1500 + (0, 0, flyheight);
     collide = crossesnoflyzone(self.origin, targetpos);
@@ -379,7 +394,7 @@ heliguardsupport_leave() {
 helidestroyed() {
   level.littlebirdguard = undefined;
 
-  if(!isdefined(self)) {
+  if(!isDefined(self)) {
     return;
   }
   self setspeed(25, 5);
@@ -399,7 +414,7 @@ lbspin(speed) {
   self thread trail_fx(level.chopper_fx["smoke"]["trail"], "tail_rotor_jnt", "stop tail smoke");
   self setyawspeed(speed, speed, speed);
 
-  while (isdefined(self)) {
+  while(isDefined(self)) {
     self settargetyaw(self.angles[1] + speed * 0.9);
     wait 1;
   }
@@ -410,7 +425,7 @@ trail_fx(trail_fx, trail_tag, stop_notify) {
   self endon(stop_notify);
   self endon("death");
 
-  for (;;) {
+  for(;;) {
     playfxontag(trail_fx, self, trail_tag);
     wait 0.05;
   }
@@ -420,7 +435,7 @@ removelittlebird() {
   level.lbstrike = 0;
   maps\mp\killstreaks\_killstreakrules::killstreakstop("helicopter_guard_mp", self.team, self.killstreak_id);
 
-  if(isdefined(self.marker))
+  if(isDefined(self.marker))
     self.marker delete();
 
   self delete();
@@ -430,15 +445,15 @@ heliguardsupport_watchsamproximity(player, missileteam, missiletarget, missilegr
   level endon("game_ended");
   missiletarget endon("death");
 
-  for (i = 0; i < missilegroup.size; i++) {
-    if(isdefined(missilegroup[i]) && !missiletarget.hasdodged) {
+  for(i = 0; i < missilegroup.size; i++) {
+    if(isDefined(missilegroup[i]) && !missiletarget.hasdodged) {
       missiletarget.hasdodged = 1;
       newtarget = spawn("script_origin", missiletarget.origin);
       newtarget.angles = missiletarget.angles;
       newtarget movegravity(anglestoright(missilegroup[i].angles) * -1000, 0.05);
 
-      for (j = 0; j < missilegroup.size; j++) {
-        if(isdefined(missilegroup[j]))
+      for(j = 0; j < missilegroup.size; j++) {
+        if(isDefined(missilegroup[j]))
           missilegroup[j] settargetentity(newtarget);
       }
 
@@ -501,7 +516,7 @@ heli_path_debug() {
     foreach(loc in path) {
       prev = loc;
 
-      for (target = loc.target; isdefined(target); target = prev.target) {
+      for(target = loc.target; isDefined(target); target = prev.target) {
         target = getent(target, "targetname");
         line(prev.origin, target.origin, (1, 0, 0), 1, 0, 50000);
         debugstar(prev.origin, 50000, (0, 1, 0));
@@ -515,7 +530,7 @@ heli_path_debug() {
     target = loc.target;
     first = loc;
 
-    while (isdefined(target)) {
+    while(isDefined(target)) {
       target = getent(target, "targetname");
       line(prev.origin, target.origin, (0, 1, 0), 1, 0, 50000);
       debugstar(prev.origin, 50000, (1, 0, 0));
@@ -527,6 +542,7 @@ heli_path_debug() {
       }
     }
   }
+
 }
 
 heliguardsupport_getclosestlinkednode(pos) {
@@ -534,7 +550,7 @@ heliguardsupport_getclosestlinkednode(pos) {
   totaldistance = distance2d(self.currentnode.origin, pos);
   closestdistance = totaldistance;
 
-  for (target = self.currentnode.target; isdefined(target); target = nextnode.target) {
+  for(target = self.currentnode.target; isDefined(target); target = nextnode.target) {
     nextnode = getent(target, "targetname");
 
     if(nextnode == self.currentnode) {
@@ -597,7 +613,7 @@ heliguardsupport_attacktargets() {
   level endon("game_ended");
   self endon("leaving");
 
-  for (;;)
+  for(;;)
     self heliguardsupport_firestart();
 }
 
@@ -607,13 +623,13 @@ heliguardsupport_firestart() {
   self endon("stop_shooting");
   level endon("game_ended");
 
-  for (;;) {
+  for(;;) {
     numshots = randomintrange(10, 21);
 
-    if(!isdefined(self.primarytarget))
+    if(!isDefined(self.primarytarget))
       self waittill("primary acquired");
 
-    if(isdefined(self.primarytarget)) {
+    if(isDefined(self.primarytarget)) {
       targetent = self.primarytarget;
       self thread heliguardsupport_firestop(targetent);
       self setlookatent(targetent);
@@ -623,7 +639,7 @@ heliguardsupport_firestart() {
       wait 0.2;
       self setclientfield("vehicle_is_firing", 1);
 
-      for (i = 0; i < numshots; i++) {
+      for(i = 0; i < numshots; i++) {
         self firegunnerweapon(0, self);
         self fireweapon();
         wait 0.15;

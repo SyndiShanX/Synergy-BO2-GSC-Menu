@@ -1,7 +1,7 @@
-/*******************************************************
+/*********************************************************
  * Decompiled and Edited by SyndiShanX
  * Script: clientscripts\mp\zm_buried_grief_street.csc
-*******************************************************/
+*********************************************************/
 
 #include clientscripts\mp\_utility;
 #include clientscripts\mp\zombies\_zm_weapons;
@@ -9,10 +9,6 @@
 #include clientscripts\mp\zm_buried_buildables;
 #include clientscripts\mp\zombies\_zm;
 #include clientscripts\mp\zombies\_zm_game_mode_objects;
-
-precache() {
-
-}
 
 premain() {
   griefbuildables = array("chalk", "turbine", "springpad_zm", "subwoofer_zm");

@@ -16,14 +16,14 @@ spawned(localclientnum) {
 watchforfakefire(localclientnum) {
   self endon("entityshutdown");
 
-  while (true) {
+  while(true) {
     self waittill("fake_fire");
     playfxontag(localclientnum, level._effect["decoy_fire"], self, "tag_origin");
   }
 }
 
 levelwatchforfakefire() {
-  while (true) {
+  while(true) {
     self waittill("fake_fire", origin);
     playfx(0, level._effect["decoy_fire"], origin);
   }

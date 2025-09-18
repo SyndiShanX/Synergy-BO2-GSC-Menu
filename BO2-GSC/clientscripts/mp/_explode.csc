@@ -18,13 +18,13 @@ watchforrespawn() {
   self endon("entityshutdown");
   menuname = "fullscreen_dirt";
 
-  if(isdefined(level.iswinter) && level.iswinter)
+  if(isDefined(level.iswinter) && level.iswinter)
     menuname = "fullscreen_snow";
 
-  while (true) {
+  while(true) {
     localplayers = level.localplayers;
 
-    for (i = 0; i < localplayers.size; i++) {
+    for(i = 0; i < localplayers.size; i++) {
       if(getactivelocalclients() == 1 && localplayers[i] == self) {
         animateui(i, menuname, "dirt", "Default", 0);
         animateui(i, menuname, "blurred_dirt", "Default", 0);
@@ -43,7 +43,7 @@ watchforexplosion() {
   if(getactivelocalclients() > 1) {
     return;
   }
-  while (true) {
+  while(true) {
     level waittill("explode", localclientnum, position, mod, weaponname, owner_cent);
     localplayer = getlocalplayer(localclientnum);
 
@@ -58,14 +58,14 @@ watchforexplosion() {
         rdot = vectordot(explosionvec, rightvec);
 
         if(weaponname == "proximity_grenade_mp" && distancesquared(localplayer.origin, position) < 40000) {
-          if(isdefined(owner_cent)) {
+          if(isDefined(owner_cent)) {
             if(owner_cent == localplayer || !owner_cent friendnotfoe(localclientnum))
               localplayer thread clientscripts\mp\_proximity_grenade::taserhudfx(localclientnum, position);
           }
         } else if((mod == "MOD_GRENADE_SPLASH" || mod == "MOD_PROJECTILE_SPLASH") && distancesquared(localplayer.origin, position) < 360000) {
           menuname = "fullscreen_dirt";
 
-          if(isdefined(level.iswinter) && level.iswinter)
+          if(isDefined(level.iswinter) && level.iswinter)
             menuname = "fullscreen_snow";
 
           if(fdot > 0.5)

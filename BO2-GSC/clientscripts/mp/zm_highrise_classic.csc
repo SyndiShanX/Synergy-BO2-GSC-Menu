@@ -8,19 +8,11 @@
 #include clientscripts\mp\zombies\_zm_utility;
 #include clientscripts\mp\zm_highrise_buildables;
 
-precache() {
-
-}
-
 premain() {
   clientscripts\mp\zm_highrise_buildables::include_buildables();
   clientscripts\mp\zm_highrise_buildables::init_buildables();
   onplayerconnect_callback(::floor_indicators);
   onplayerconnect_callback(::teller_fx_setup);
-}
-
-main() {
-
 }
 
 teller_fx_setup(localclientnum) {
@@ -45,7 +37,7 @@ floor_indicators(localclientnum) {
   foreach(floor in floors) {
     indicators = getentarray(localclientnum, "elevator_bldg" + floor + "_indicator", "targetname");
 
-    if(isdefined(indicators) && indicators.size > 0)
+    if(isDefined(indicators) && indicators.size > 0)
       level thread floor_indicator(localclientnum, indicators, floor);
   }
 }
@@ -66,7 +58,7 @@ floor_indicator(clientnum, indicators, floorname) {
   level endon("kill_floor_indicators_" + clientnum);
   indicators_list = [];
 
-  while (true) {
+  while(true) {
     event = level waittill_any_return(floorname + "_u", floorname + "_d");
     new_indicators = [];
     floor_fx = level._effect["perk_elevator_indicator_down"];
@@ -75,7 +67,7 @@ floor_indicator(clientnum, indicators, floorname) {
       floor_fx = level._effect["perk_elevator_indicator_up"];
 
     foreach(indicator in indicators) {
-      if(isdefined(indicator.arrow_fx))
+      if(isDefined(indicator.arrow_fx))
         stopfx(clientnum, indicator.arrow_fx);
 
       indicator.arrow_fx = playfxontag(clientnum, floor_fx, indicator, "tag_origin");
@@ -94,7 +86,7 @@ escape_pod_tell_fx(localclientnum, oldval, newval, bnewent, binitialsnap, fieldn
 
   if(newval == 1)
     self.tell_fx = playfxontag(localclientnum, level._effect["elevator_tell"], self, "tag_origin");
-  else if(isdefined(self.tell_fx))
+  else if(isDefined(self.tell_fx))
     stopfx(localclientnum, self.tell_fx);
 }
 
@@ -103,7 +95,7 @@ escape_pod_sparks_fx(localclientnum, oldval, newval, bnewent, binitialsnap, fiel
 
   if(newval == 1)
     self.sparks_fx = playfxontag(localclientnum, level._effect["elevator_sparks"], self, "tag_origin");
-  else if(isdefined(self.sparks_fx))
+  else if(isDefined(self.sparks_fx))
     stopfx(localclientnum, self.sparks_fx);
 }
 
@@ -112,7 +104,7 @@ escape_pod_impact_fx(localclientnum, oldval, newval, bnewent, binitialsnap, fiel
 
   if(newval == 1)
     self.impact_fx = playfxontag(localclientnum, level._effect["elevator_impact"], self, "tag_origin");
-  else if(isdefined(self.impact_fx))
+  else if(isDefined(self.impact_fx))
     stopfx(localclientnum, self.impact_fx);
 }
 
@@ -121,6 +113,6 @@ escape_pod_light_fx(localclientnum, oldval, newval, bnewent, binitialsnap, field
 
   if(newval == 1)
     self.light_fx = playfxontag(localclientnum, level._effect["elevator_light"], self, "tag_animate");
-  else if(isdefined(self.light_fx))
+  else if(isDefined(self.light_fx))
     stopfx(localclientnum, self.light_fx);
 }

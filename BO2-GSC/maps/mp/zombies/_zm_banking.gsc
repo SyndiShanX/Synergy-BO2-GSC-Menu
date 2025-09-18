@@ -16,15 +16,15 @@
 init() {
   onplayerconnect_callback(::onplayerconnect_bank_deposit_box);
 
-  if(!isdefined(level.ta_vaultfee))
+  if(!isDefined(level.ta_vaultfee))
     level.ta_vaultfee = 100;
 
-  if(!isdefined(level.ta_tellerfee))
+  if(!isDefined(level.ta_tellerfee))
     level.ta_tellerfee = 100;
 }
 
 main() {
-  if(!isdefined(level.banking_map))
+  if(!isDefined(level.banking_map))
     level.banking_map = level.script;
 
   level thread bank_teller_init();
@@ -34,7 +34,7 @@ main() {
 bank_teller_init() {
   level.bank_teller_dmg_trig = getent("bank_teller_tazer_trig", "targetname");
 
-  if(isdefined(level.bank_teller_dmg_trig)) {
+  if(isDefined(level.bank_teller_dmg_trig)) {
     level.bank_teller_transfer_trig = getent(level.bank_teller_dmg_trig.target, "targetname");
     level.bank_teller_powerup_spot = getstruct(level.bank_teller_transfer_trig.target, "targetname");
     level thread bank_teller_logic();
@@ -47,10 +47,10 @@ bank_teller_init() {
 bank_teller_logic() {
   level endon("end_game");
 
-  while (true) {
+  while(true) {
     level.bank_teller_dmg_trig waittill("damage", damage, attacker, direction, point, type, tagname, modelname, partname, weaponname, blah);
 
-    if(isdefined(attacker) && isplayer(attacker) && damage == 1500 && type == "MOD_MELEE") {
+    if(isDefined(attacker) && isplayer(attacker) && damage == 1500 && type == "MOD_MELEE") {
       bank_teller_give_money();
       level.bank_teller_transfer_trig trigger_off();
     }
@@ -63,13 +63,13 @@ bank_teller_give_money() {
   level.bank_teller_transfer_trig trigger_on();
   bank_transfer = undefined;
 
-  while (true) {
+  while(true) {
     level.bank_teller_transfer_trig waittill("trigger", player);
 
     if(!is_player_valid(player, 0) || player.score < 1000 + level.ta_tellerfee) {
       continue;
     }
-    if(!isdefined(bank_transfer)) {
+    if(!isDefined(bank_transfer)) {
       bank_transfer = maps\mp\zombies\_zm_powerups::specific_powerup_drop("teller_withdrawl", level.bank_teller_powerup_spot.origin + vectorscale((0, 0, -1), 40.0));
       bank_transfer thread stop_bank_teller();
       bank_transfer.value = 0;
@@ -130,42 +130,42 @@ bank_unitrigger(name, prompt_fn, think_fn, override_length, override_width, over
   unitrigger_stub = spawnstruct();
   unitrigger_stub.origin = self.origin;
 
-  if(isdefined(self.script_angles))
+  if(isDefined(self.script_angles))
     unitrigger_stub.angles = self.script_angles;
   else
     unitrigger_stub.angles = self.angles;
 
   unitrigger_stub.script_angles = unitrigger_stub.angles;
 
-  if(isdefined(override_length))
+  if(isDefined(override_length))
     unitrigger_stub.script_length = override_length;
-  else if(isdefined(self.script_length))
+  else if(isDefined(self.script_length))
     unitrigger_stub.script_length = self.script_length;
   else
     unitrigger_stub.script_length = 32;
 
-  if(isdefined(override_width))
+  if(isDefined(override_width))
     unitrigger_stub.script_width = override_width;
-  else if(isdefined(self.script_width))
+  else if(isDefined(self.script_width))
     unitrigger_stub.script_width = self.script_width;
   else
     unitrigger_stub.script_width = 32;
 
-  if(isdefined(override_height))
+  if(isDefined(override_height))
     unitrigger_stub.script_height = override_height;
-  else if(isdefined(self.script_height))
+  else if(isDefined(self.script_height))
     unitrigger_stub.script_height = self.script_height;
   else
     unitrigger_stub.script_height = 64;
 
-  if(isdefined(override_radius))
+  if(isDefined(override_radius))
     unitrigger_stub.script_radius = override_radius;
-  else if(isdefined(self.radius))
+  else if(isDefined(self.radius))
     unitrigger_stub.radius = self.radius;
   else
     unitrigger_stub.radius = 32;
 
-  if(isdefined(self.script_unitrigger_type))
+  if(isDefined(self.script_unitrigger_type))
     unitrigger_stub.script_unitrigger_type = self.script_unitrigger_type;
   else {
     unitrigger_stub.script_unitrigger_type = "unitrigger_box_use";
@@ -193,7 +193,7 @@ trigger_deposit_update_prompt(player) {
 trigger_deposit_think() {
   self endon("kill_trigger");
 
-  while (true) {
+  while(true) {
     self waittill("trigger", player);
 
     if(!is_player_valid(player)) {
@@ -205,7 +205,7 @@ trigger_deposit_think() {
       player.account_value = player.account_value + level.bank_account_increment;
       player maps\mp\zombies\_zm_stats::set_map_stat("depositBox", player.account_value, level.banking_map);
 
-      if(isdefined(level.custom_bank_deposit_vo))
+      if(isDefined(level.custom_bank_deposit_vo))
         player thread[[level.custom_bank_deposit_vo]]();
 
       if(player.account_value >= level.bank_account_max)
@@ -231,7 +231,7 @@ trigger_withdraw_update_prompt(player) {
 trigger_withdraw_think() {
   self endon("kill_trigger");
 
-  while (true) {
+  while(true) {
     self waittill("trigger", player);
 
     if(!is_player_valid(player)) {
@@ -244,7 +244,7 @@ trigger_withdraw_think() {
       player.account_value = player.account_value - level.bank_account_increment;
       player maps\mp\zombies\_zm_stats::set_map_stat("depositBox", player.account_value, level.banking_map);
 
-      if(isdefined(level.custom_bank_withdrawl_vo))
+      if(isDefined(level.custom_bank_withdrawl_vo))
         player thread[[level.custom_bank_withdrawl_vo]]();
       else
         player thread do_player_general_vox("general", "exert_laugh", 10, 50);

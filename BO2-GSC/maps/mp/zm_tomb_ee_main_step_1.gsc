@@ -19,11 +19,11 @@ init_stage() {
 
 stage_logic() {
   iprintln(level._cur_stage_name + " of little girl lost started");
+
   flag_wait("ee_all_staffs_upgraded");
   wait_network_frame();
   stage_completed("little_girl_lost", level._cur_stage_name);
 }
 
 exit_stage(success) {
-
 }

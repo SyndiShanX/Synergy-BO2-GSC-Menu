@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\mp_studio.gsc
-***************************************/
+**************************************/
 
 #include maps\mp\_utility;
 #include maps\mp\mp_studio_fx;
@@ -63,14 +63,14 @@ levelspawndvars(reset_dvars) {
 triggercheck(target) {
   self endon("game_ended");
 
-  while (true) {
+  while(true) {
     self waittill("trigger", player);
     distance = distance(target.origin, self.origin);
 
     if(distance <= 90) {
       target notify("targetStopMoving");
 
-      while (isdefined(player) && player istouching(self) && distance <= 90) {
+      while(isDefined(player) && player istouching(self) && distance <= 90) {
         if(distancesquared(target.origin, target.railpoints[0]) < distancesquared(player.origin, target.railpoints[0]))
           target.preferrednextpos = 0;
         else
@@ -85,7 +85,7 @@ triggercheck(target) {
 damagetarget(dir) {
   self endon("game_ended");
 
-  while (true) {
+  while(true) {
     self waittill("damage", damage, attacker, direction);
 
     switch (dir) {
@@ -99,7 +99,7 @@ damagetarget(dir) {
       case 2:
         rotation = 1;
 
-        if(isdefined(attacker) && isplayer(attacker)) {
+        if(isDefined(attacker) && isplayer(attacker)) {
           yaw = get2dyaw(attacker.origin, self.origin);
 
           if(attacker.angles[1] > yaw)
@@ -138,7 +138,7 @@ damagetarget(dir) {
 damagetargetlights(light_on, light_off, speaker, alias, exploderhandle) {
   self endon("game_ended");
 
-  while (true) {
+  while(true) {
     self waittill("damage");
     speaker playsound(alias);
     exploder(exploderhandle);
@@ -191,7 +191,7 @@ movetarget(dir, dis, speed) {
   self.preferrednextpos = 1;
   self.playertrigger = 0;
 
-  while (true) {
+  while(true) {
     nextpos = self.railpoints[self.preferrednextpos];
 
     if(self.preferrednextpos == 0)
@@ -208,7 +208,7 @@ movetarget(dir, dis, speed) {
 rotatetarget(dir, deg, speed, pausetime) {
   self endon("game_ended");
 
-  while (true) {
+  while(true) {
     switch (dir) {
       case 1:
         self rotateyaw(self.angles[2] + deg, speed);
@@ -266,11 +266,11 @@ rotatetarget(dir, deg, speed, pausetime) {
 }
 
 movement_process() {
-  for (;;) {
+  for(;;) {
     entities = getdamageableentarray(self.origin, 50);
 
     foreach(entity in entities) {
-      if(isdefined(entity.targetname) && (entity.targetname == "alleyTarget_Cover" || entity.targetname == "alleyTarget_Path")) {
+      if(isDefined(entity.targetname) && (entity.targetname == "alleyTarget_Cover" || entity.targetname == "alleyTarget_Path")) {
         continue;
       }
       if(isplayer(entity)) {
@@ -279,11 +279,11 @@ movement_process() {
       if(!entity istouching(self)) {
         continue;
       }
-      if(isdefined(entity.classname) && entity.classname == "grenade") {
-        if(!isdefined(entity.name)) {
+      if(isDefined(entity.classname) && entity.classname == "grenade") {
+        if(!isDefined(entity.name)) {
           continue;
         }
-        if(!isdefined(entity.owner)) {
+        if(!isDefined(entity.owner)) {
           continue;
         }
         if(entity.name == "satchel_charge_mp") {
@@ -293,20 +293,20 @@ movement_process() {
 
         watcher = entity.owner getwatcherforweapon(entity.name);
 
-        if(!isdefined(watcher)) {
+        if(!isDefined(watcher)) {
           continue;
         }
         watcher thread maps\mp\gametypes\_weaponobjects::waitanddetonate(entity, 0.0, undefined);
       }
 
-      if(isdefined(entity.targetname)) {
+      if(isDefined(entity.targetname)) {
         if(entity.targetname == "riotshield_mp") {
           entity dodamage(1, self.origin + (0, 0, 1), self, self, 0, "MOD_CRUSH");
           continue;
         }
       }
 
-      if(isdefined(entity.model) && entity.model == "t6_wpn_tac_insert_world")
+      if(isDefined(entity.model) && entity.model == "t6_wpn_tac_insert_world")
         entity thread maps\mp\_tacticalinsertion::fizzle();
     }
 
@@ -315,13 +315,13 @@ movement_process() {
 }
 
 getwatcherforweapon(weapname) {
-  if(!isdefined(self))
+  if(!isDefined(self))
     return undefined;
 
   if(!isplayer(self))
     return undefined;
 
-  for (i = 0; i < self.weaponobjectwatcherarray.size; i++) {
+  for(i = 0; i < self.weaponobjectwatcherarray.size; i++) {
     if(self.weaponobjectwatcherarray[i].weapon != weapname) {
       continue;
     }
@@ -334,7 +334,7 @@ getwatcherforweapon(weapname) {
 death_streamer_think(notifytype, attacker) {
   streamers = getentarray("airconditioner_streamer", "targetname");
 
-  for (i = 0; i < streamers.size; i++) {
+  for(i = 0; i < streamers.size; i++) {
     streamer = streamers[i];
 
     if(distancesquared(streamer.origin, self.origin) < 2500)

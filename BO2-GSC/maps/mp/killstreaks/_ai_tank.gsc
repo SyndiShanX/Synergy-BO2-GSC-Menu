@@ -69,6 +69,7 @@ init() {
   anims[anims.size] = % o_drone_tank_missile3_fire;
   anims[anims.size] = % o_drone_tank_missile_full_reload;
   setdvar("scr_ai_tank_no_timeout", 0);
+
   level thread tank_devgui_think();
 }
 
@@ -93,7 +94,7 @@ usekillstreakaitankdrop(hardpointtype) {
   result = self maps\mp\killstreaks\_supplydrop::usesupplydropmarker(killstreak_id);
   self notify("supply_drop_marker_done");
 
-  if(!isdefined(result) || !result) {
+  if(!isDefined(result) || !result) {
     maps\mp\killstreaks\_killstreakrules::killstreakstop(hardpointtype, team, killstreak_id);
     return 0;
   }
@@ -102,7 +103,7 @@ usekillstreakaitankdrop(hardpointtype) {
 }
 
 crateland(crate, weaponname, owner, team) {
-  if(!crate valid_location() || !isdefined(owner) || team != owner.team || owner maps\mp\killstreaks\_emp::isenemyempkillstreakactive()) {
+  if(!crate valid_location() || !isDefined(owner) || team != owner.team || owner maps\mp\killstreaks\_emp::isenemyempkillstreakactive()) {
     maps\mp\killstreaks\_killstreakrules::killstreakstop(weaponname, team, crate.package_contents_id);
     wait 10;
     crate delete();
@@ -112,7 +113,7 @@ crateland(crate, weaponname, owner, team) {
   origin = crate.origin;
   cratebottom = bullettrace(origin, origin + vectorscale((0, 0, -1), 50.0), 0, crate);
 
-  if(isdefined(cratebottom))
+  if(isDefined(cratebottom))
     origin = cratebottom["position"] + (0, 0, 1);
 
   playfx(level.ai_tank_crate_explode_fx, origin, (1, 0, 0), (0, 0, 1));
@@ -124,7 +125,7 @@ crateland(crate, weaponname, owner, team) {
 valid_location() {
   node = getnearestnode(self.origin);
 
-  if(!isdefined(node))
+  if(!isDefined(node))
     return false;
 
   start = self getcentroid();
@@ -138,7 +139,7 @@ valid_location() {
   level.ai_tank_valid_locations = array_randomize(level.ai_tank_valid_locations);
   count = min(level.ai_tank_valid_locations.size, 5);
 
-  for (i = 0; i < count; i++) {
+  for(i = 0; i < count; i++) {
     if(findpath(origin, level.ai_tank_valid_locations[i], self, 0, 1))
       return true;
   }
@@ -173,7 +174,7 @@ ai_tank_killstreak_start(owner, origin, killstreak_id, weaponname) {
   drone.warningshots = 3;
   drone setdrawinfrared(1);
 
-  if(!isdefined(drone.owner.numtankdrones))
+  if(!isDefined(drone.owner.numtankdrones))
     drone.owner.numtankdrones = 1;
   else
     drone.owner.numtankdrones++;
@@ -194,7 +195,6 @@ ai_tank_killstreak_start(owner, origin, killstreak_id, weaponname) {
   owner maps\mp\killstreaks\_remote_weapons::initremoteweapon(drone, "killstreak_ai_tank_mp");
   drone thread deleteonkillbrush(drone.owner);
   level thread tank_game_end_think(drone);
-
 }
 
 tank_team_kill() {
@@ -221,7 +221,7 @@ tank_game_end_think(drone) {
 }
 
 stop_remote() {
-  if(!isdefined(self)) {
+  if(!isDefined(self)) {
     return;
   }
   self clearusingremote();
@@ -238,10 +238,11 @@ tank_damage_think() {
   low_health = 0;
   damage_taken = 0;
 
-  for (;;) {
+  for(;;) {
     self waittill("damage", damage, attacker, dir, point, mod, model, tag, part, weapon, flags);
     self.maxhealth = 999999;
     self.health = self.maxhealth;
+
     self.damage_debug = damage + " (" + weapon + ")";
 
     if(weapon == "emp_grenade_mp" && mod == "MOD_GRENADE_SPLASH") {
@@ -292,7 +293,7 @@ tank_damage_think() {
       low_health = 1;
     }
 
-    if(isdefined(attacker) && isplayer(attacker) && self tank_is_idle() && !self.isstunned) {
+    if(isDefined(attacker) && isplayer(attacker) && self tank_is_idle() && !self.isstunned) {
       self.aim_entity.origin = attacker getcentroid();
       self.aim_entity.delay = 8;
       self notify("aim_updated");
@@ -314,10 +315,10 @@ deleteonkillbrush(player) {
   self endon("death");
   killbrushes = getentarray("trigger_hurt", "classname");
 
-  while (true) {
-    for (i = 0; i < killbrushes.size; i++) {
+  while(true) {
+    for(i = 0; i < killbrushes.size; i++) {
       if(self istouching(killbrushes[i])) {
-        if(isdefined(self))
+        if(isDefined(self))
           self notify("death", self.owner);
 
         return;
@@ -344,7 +345,7 @@ tank_stun(duration) {
     self.owner sendkillstreakdamageevent(400);
   }
 
-  if(isdefined(self.owner.fullscreen_static))
+  if(isDefined(self.owner.fullscreen_static))
     self.owner thread maps\mp\killstreaks\_remote_weapons::stunstaticfx(duration);
 
   self setclientflag(3);
@@ -371,7 +372,7 @@ emp_crazy_death() {
   time = 0;
   randomangle = randomint(360);
 
-  while (time < 1.45) {
+  while(time < 1.45) {
     self setturrettargetvec(self.origin + anglestoforward((randomintrange(305, 315), int(randomangle + time * 180), 0)) * 100);
 
     if(time > 0.2) {
@@ -380,7 +381,7 @@ emp_crazy_death() {
       if(randomint(100) > 85) {
         rocket = self firegunnerweapon(0);
 
-        if(isdefined(rocket))
+        if(isDefined(rocket))
           rocket.from_ai = 1;
       }
     }
@@ -403,7 +404,7 @@ tank_death_think(hardpointname) {
   self laseroff();
   self clearvehgoalpos();
 
-  if(self.controlled == 1 && isdefined(self.owner)) {
+  if(self.controlled == 1 && isDefined(self.owner)) {
     self.owner sendkillstreakdamageevent(600);
     self.owner destroy_remote_hud();
   }
@@ -420,19 +421,18 @@ tank_death_think(hardpointname) {
     wait 0.05;
     self hide();
 
-    if(isdefined(self.damage_fx))
+    if(isDefined(self.damage_fx))
       self.damage_fx delete();
   }
 
-  if(isdefined(attacker) && isplayer(attacker) && isdefined(self.owner) && attacker != self.owner) {
+  if(isDefined(attacker) && isplayer(attacker) && isDefined(self.owner) && attacker != self.owner) {
     if(self.owner isenemyplayer(attacker)) {
       maps\mp\_scoreevents::processscoreevent("destroyed_aitank", attacker, self.owner, weapon);
       attacker addweaponstat(weapon, "destroyed_aitank", 1);
 
-      if(isdefined(self.wascontrollednowdead) && self.wascontrollednowdead)
+      if(isDefined(self.wascontrollednowdead) && self.wascontrollednowdead)
         attacker addweaponstat(weapon, "destroyed_controlled_killstreak", 1);
     } else {
-
     }
   }
 
@@ -447,10 +447,12 @@ tank_move_think() {
   self endon("stunned");
   self endon("remote_start");
   level endon("game_ended");
+
   self endon("debug_patrol");
+
   do_wait = 1;
 
-  for (;;) {
+  for(;;) {
     if(do_wait)
       wait(randomfloatrange(1, 4));
 
@@ -480,7 +482,7 @@ tank_move_think() {
 
     avg_position = tank_compute_enemy_position();
 
-    if(isdefined(avg_position))
+    if(isDefined(avg_position))
       nodes = getnodesinradiussorted(avg_position, 256, 0);
     else
       nodes = getnodesinradiussorted(self.owner.origin, 1024, 256, 128);
@@ -507,7 +509,7 @@ tank_riotshield_think() {
   self endon("death");
   self endon("remote_start");
 
-  for (;;) {
+  for(;;) {
     level waittill("riotshield_planted", owner);
 
     if(owner == self.owner || owner.team == self.team) {
@@ -523,7 +525,7 @@ tank_ground_abort_think() {
   self endon("death");
   ground_trace_fail = 0;
 
-  for (;;) {
+  for(;;) {
     wait 1;
     nodes = getnodesinradius(self.origin, 256, 0, 128, "Path");
 
@@ -542,13 +544,13 @@ tank_aim_think() {
   self endon("stunned");
   self endon("remote_start");
 
-  if(!isdefined(self.aim_entity))
+  if(!isDefined(self.aim_entity))
     self.aim_entity = spawn("script_model", (0, 0, 0));
 
   self.aim_entity.delay = 0;
   self tank_idle();
 
-  for (;;) {
+  for(;;) {
     self wait_endon(randomfloatrange(1, 3), "aim_updated");
 
     if(self.aim_entity.delay > 0) {
@@ -567,7 +569,7 @@ tank_aim_think() {
         enemy = enemies[0];
         node = getvisiblenode(self.origin, enemy.origin, self);
 
-        if(isdefined(node)) {
+        if(isDefined(node)) {
           self.aim_entity.origin = node.origin + vectorscale((0, 0, 1), 16.0);
           continue;
         }
@@ -587,7 +589,7 @@ tank_combat_think() {
   self endon("remote_start");
   level endon("game_ended");
 
-  for (;;) {
+  for(;;) {
     wait 0.5;
     self laseroff();
     origin = self.origin + vectorscale((0, 0, 1), 32.0);
@@ -637,7 +639,7 @@ tank_engage(enemy) {
   warning_shots = self.warningshots;
   self laseron();
 
-  for (;;) {
+  for(;;) {
     if(!valid_target(enemy, self.team, self.owner)) {
       return;
     }
@@ -681,7 +683,7 @@ tank_engage(enemy) {
       rocket = self firegunnerweapon(0, self.owner);
       self notify("missile_fire");
 
-      if(isdefined(rocket)) {
+      if(isDefined(rocket)) {
         rocket.from_ai = 1;
         rocket.killcament = self;
         rocket wait_endon(randomfloatrange(0.5, 1), "death");
@@ -693,10 +695,10 @@ tank_engage(enemy) {
     warning_shots--;
     wait(level.ai_tank_turret_fire_rate);
 
-    if(isdefined(enemy) && !isalive(enemy)) {
+    if(isDefined(enemy) && !isalive(enemy)) {
       bullets = randomintrange(8, 15);
 
-      for (i = 0; i < bullets; i++) {
+      for(i = 0; i < bullets; i++) {
         self fireweapon();
         wait(level.ai_tank_turret_fire_rate);
       }
@@ -740,7 +742,7 @@ tank_rocket_think() {
       self disablegunnerfiring(0, 0);
   }
 
-  while (true) {
+  while(true) {
     self waittill("missile_fire");
     self.numberrockets--;
     self setclientfield("ai_tank_missile_fire", self.numberrockets);
@@ -763,7 +765,7 @@ tank_rocket_think() {
 }
 
 tank_set_target(entity, use_rocket) {
-  if(!isdefined(use_rocket))
+  if(!isDefined(use_rocket))
     use_rocket = 0;
 
   self.target_entity = entity;
@@ -797,13 +799,13 @@ tank_has_radar() {
   if(level.teambased)
     return maps\mp\killstreaks\_radar::teamhasspyplane(self.team) || maps\mp\killstreaks\_radar::teamhassatellite(self.team);
 
-  return isdefined(self.owner.hasspyplane) && self.owner.hasspyplane || isdefined(self.owner.hassatellite) && self.owner.hassatellite;
+  return isDefined(self.owner.hasspyplane) && self.owner.hasspyplane || isDefined(self.owner.hassatellite) && self.owner.hassatellite;
 }
 
 tank_get_player_enemies(on_radar) {
   enemies = [];
 
-  if(!isdefined(on_radar))
+  if(!isDefined(on_radar))
     on_radar = 0;
 
   if(on_radar)
@@ -854,7 +856,7 @@ tank_compute_enemy_position() {
 }
 
 valid_target(target, team, owner) {
-  if(!isdefined(target))
+  if(!isDefined(target))
     return false;
 
   if(!isalive(target))
@@ -867,32 +869,33 @@ valid_target(target, team, owner) {
     if(target.sessionstate != "playing")
       return false;
 
-    if(isdefined(target.lastspawntime) && gettime() - target.lastspawntime < 3000)
+    if(isDefined(target.lastspawntime) && gettime() - target.lastspawntime < 3000)
       return false;
 
     if(target isinmovemode("ufo", "noclip"))
       return false;
+
   }
 
   if(level.teambased) {
-    if(isdefined(target.team) && team == target.team)
+    if(isDefined(target.team) && team == target.team)
       return false;
 
-    if(isdefined(target.aiteam) && team == target.aiteam)
+    if(isDefined(target.aiteam) && team == target.aiteam)
       return false;
   }
 
-  if(isdefined(target.owner) && target.owner == owner)
+  if(isDefined(target.owner) && target.owner == owner)
     return false;
 
-  if(isdefined(target.script_owner) && target.script_owner == owner)
+  if(isDefined(target.script_owner) && target.script_owner == owner)
     return false;
 
-  if(isdefined(target.dead) && target.dead)
+  if(isDefined(target.dead) && target.dead)
     return false;
 
-  if(isdefined(target.targetname) && target.targetname == "riotshield_mp") {
-    if(isdefined(target.damagetaken) && target.damagetaken >= getdvarint(#"riotshield_deployed_health"))
+  if(isDefined(target.targetname) && target.targetname == "riotshield_mp") {
+    if(isDefined(target.damagetaken) && target.damagetaken >= getdvarint(#"riotshield_deployed_health"))
       return false;
   }
 
@@ -927,7 +930,7 @@ endtankremotecontrol(drone, isdead) {
 }
 
 end_remote_control_ai_tank(drone) {
-  if(!isdefined(drone.dead) || !drone.dead) {
+  if(!isDefined(drone.dead) || !drone.dead) {
     self thread maps\mp\gametypes\_hud::fadetoblackforxsec(0, 0.25, 0.1, 0.25);
     wait 0.3;
   } else {
@@ -944,7 +947,7 @@ end_remote_control_ai_tank(drone) {
   self stop_remote();
   drone showpart("tag_pov_hide");
 
-  if(isdefined(self.hud_prompt_control) && (!isdefined(drone.dead) || !drone.dead)) {
+  if(isDefined(self.hud_prompt_control) && (!isDefined(drone.dead) || !drone.dead)) {
     self.hud_prompt_control settext("HOLD [{+activate}] TO CONTROL A.G.R.");
     self.hud_prompt_exit settext("");
   }
@@ -953,7 +956,7 @@ end_remote_control_ai_tank(drone) {
   wait 0.5;
   self takeweapon("killstreak_ai_tank_mp");
 
-  if(!isdefined(drone.dead) || !drone.dead) {
+  if(!isDefined(drone.dead) || !drone.dead) {
     drone thread tank_move_think();
     drone thread tank_riotshield_think();
     drone thread tank_aim_think();
@@ -967,7 +970,7 @@ tank_fire_watch(drone) {
   drone endon("death");
   level endon("game_ended");
 
-  while (true) {
+  while(true) {
     drone waittill("turret_fire");
 
     if(drone.isstunned) {
@@ -1002,7 +1005,7 @@ tank_rocket_watch(player) {
   if(!self.isstunned)
     self disablegunnerfiring(0, 0);
 
-  while (true) {
+  while(true) {
     player waittill("missile_fire");
     self.numberrockets--;
     self setclientfield("ai_tank_missile_fire", self.numberrockets);
@@ -1079,8 +1082,8 @@ fade_out_weapon_hud() {
   wait 8;
   time = 0;
 
-  while (time < 2) {
-    if(!isdefined(self.tank_rocket_hint)) {
+  while(time < 2) {
+    if(!isDefined(self.tank_rocket_hint)) {
       return;
     }
     self.tank_rocket_hint.alpha = self.tank_rocket_hint.alpha - 0.025;
@@ -1094,7 +1097,7 @@ fade_out_weapon_hud() {
 }
 
 update_weapon_hud(player) {
-  if(isdefined(player.tank_rocket_3)) {
+  if(isDefined(player.tank_rocket_3)) {
     player.tank_rocket_3 setshader("mech_check_fill", 32, 16);
     player.tank_rocket_2 setshader("mech_check_fill", 32, 16);
     player.tank_rocket_1 setshader("mech_check_fill", 32, 16);
@@ -1115,50 +1118,50 @@ destroy_remote_hud() {
   self useservervisionset(0);
   self setinfraredvision(0);
 
-  if(isdefined(self.fullscreen_static))
+  if(isDefined(self.fullscreen_static))
     self.fullscreen_static destroy();
 
-  if(isdefined(self.remote_hud_reticle))
+  if(isDefined(self.remote_hud_reticle))
     self.remote_hud_reticle destroy();
 
-  if(isdefined(self.remote_hud_bracket_right))
+  if(isDefined(self.remote_hud_bracket_right))
     self.remote_hud_bracket_right destroy();
 
-  if(isdefined(self.remote_hud_bracket_left))
+  if(isDefined(self.remote_hud_bracket_left))
     self.remote_hud_bracket_left destroy();
 
-  if(isdefined(self.remote_hud_arrow_right))
+  if(isDefined(self.remote_hud_arrow_right))
     self.remote_hud_arrow_right destroy();
 
-  if(isdefined(self.remote_hud_arrow_left))
+  if(isDefined(self.remote_hud_arrow_left))
     self.remote_hud_arrow_left destroy();
 
-  if(isdefined(self.tank_rocket_1))
+  if(isDefined(self.tank_rocket_1))
     self.tank_rocket_1 destroy();
 
-  if(isdefined(self.tank_rocket_2))
+  if(isDefined(self.tank_rocket_2))
     self.tank_rocket_2 destroy();
 
-  if(isdefined(self.tank_rocket_3))
+  if(isDefined(self.tank_rocket_3))
     self.tank_rocket_3 destroy();
 
-  if(isdefined(self.tank_rocket_hint))
+  if(isDefined(self.tank_rocket_hint))
     self.tank_rocket_hint destroy();
 
-  if(isdefined(self.tank_mg_bar))
+  if(isDefined(self.tank_mg_bar))
     self.tank_mg_bar destroy();
 
-  if(isdefined(self.tank_mg_arrow))
+  if(isDefined(self.tank_mg_arrow))
     self.tank_mg_arrow destroy();
 
-  if(isdefined(self.tank_mg_hint))
+  if(isDefined(self.tank_mg_hint))
     self.tank_mg_hint destroy();
 }
 
 tank_devgui_think() {
   setdvar("devgui_tank", "");
 
-  for (;;) {
+  for(;;) {
     wait 0.25;
     level.ai_tank_turret_fire_rate = weaponfiretime("ai_tank_drone_gun_mp");
 
@@ -1167,13 +1170,14 @@ tank_devgui_think() {
       setdvar("devgui_tank", "");
     }
   }
+
 }
 
 tank_debug_patrol(node1, node2) {
   self endon("death");
   self endon("debug_patrol");
 
-  for (;;) {
+  for(;;) {
     self setvehgoalpos(node1.origin, 1, 2);
     self waittill("reached_end_node");
     wait 1;
@@ -1181,13 +1185,14 @@ tank_debug_patrol(node1, node2) {
     self waittill("reached_end_node");
     wait 1;
   }
+
 }
 
 devgui_debug_route() {
   iprintln("Choose nodes with 'A' or press 'B' to cancel");
   nodes = maps\mp\gametypes\_dev::dev_get_node_pair();
 
-  if(!isdefined(nodes)) {
+  if(!isDefined(nodes)) {
     iprintln("Route Debug Cancelled");
     return;
   }
@@ -1199,10 +1204,11 @@ devgui_debug_route() {
     tank notify("debug_patrol");
     tank thread tank_debug_patrol(nodes[0], nodes[1]);
   }
+
 }
 
 tank_debug_hud_init() {
-  for (host = gethostplayer(); !isdefined(host); host = gethostplayer())
+  for(host = gethostplayer(); !isDefined(host); host = gethostplayer())
     wait 0.25;
 
   x = 80;
@@ -1234,10 +1240,10 @@ tank_debug_health() {
   level.ai_tank_bar.alpha = 1;
   level.ai_tank_text.alpha = 1;
 
-  for (;;) {
+  for(;;) {
     wait 0.05;
 
-    if(!isdefined(self) || !isalive(self)) {
+    if(!isDefined(self) || !isalive(self)) {
       level.ai_tank_bar.alpha = 0;
       level.ai_tank_text.alpha = 0;
       return;
@@ -1249,4 +1255,5 @@ tank_debug_health() {
     str = self.health + "Last Damage: " + self.damage_debug;
     level.ai_tank_text settext(str);
   }
+
 }

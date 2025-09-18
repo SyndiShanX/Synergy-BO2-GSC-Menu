@@ -9,10 +9,10 @@ init(localclientnum) {
   triggers = getentarray(localclientnum, "multicam_enable", "targetname");
   array_thread(triggers, ::multicams_trigger_thread);
 
-  for (i = 1; i <= 4; i++) {
+  for(i = 1; i <= 4; i++) {
     camerastruct = getstruct("extracam" + i, "targetname");
 
-    if(isdefined(camerastruct)) {
+    if(isDefined(camerastruct)) {
       camera_ent = spawn(localclientnum, camerastruct.origin, "script_origin");
       camera_ent.angles = camerastruct.angles;
       camera_ent isextracam(i - 1);
@@ -21,7 +21,7 @@ init(localclientnum) {
 }
 
 multicams_trigger_thread() {
-  for (;;) {
+  for(;;) {
     self waittill("trigger", trigplayer);
     self thread trigger_thread(trigplayer, ::multicams_trigger_enter, ::multicams_trigger_leave);
   }

@@ -1,7 +1,7 @@
-/***************************************************************
+/*************************************************************************
  * Decompiled and Edited by SyndiShanX
  * Script: aitype\clientscripts\zm_buried_basic_01_char_04.csc
-***************************************************************/
+*************************************************************************/
 
 #include character\clientscripts\c_zom_zombie_buried_civilian4;
 #include character\clientscripts\c_zom_zombie_buried_civilian4_nohat;

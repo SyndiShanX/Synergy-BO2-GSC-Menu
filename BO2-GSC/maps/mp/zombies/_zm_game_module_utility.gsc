@@ -1,7 +1,7 @@
-/*******************************************************
+/*********************************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\zombies\_zm_game_module_utility.gsc
-*******************************************************/
+*********************************************************/
 
 #include maps\mp\_utility;
 #include maps\mp\gametypes_zm\_hud_util;
@@ -20,7 +20,7 @@ move_ring(ring) {
   positions = array_randomize(positions);
   level endon("end_game");
 
-  while (true) {
+  while(true) {
     foreach(position in positions) {
       self moveto(position.origin, randomintrange(30, 45));
       self waittill("movedone");
@@ -35,7 +35,7 @@ rotate_ring(forward) {
   if(forward)
     dir = 360;
 
-  while (true) {
+  while(true) {
     self rotateyaw(dir, 9);
     wait 9;
   }

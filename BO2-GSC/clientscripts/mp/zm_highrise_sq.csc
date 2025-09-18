@@ -33,7 +33,7 @@ sq_play_maxis_vo(localclientnum, oldval, newval, bnewent, binitialsnap, fieldnam
         dist = distance(s_spot.origin, self.origin);
         is_inserted = 0;
 
-        for (i = 0; i < a_sorted_spots.size; i++) {
+        for(i = 0; i < a_sorted_spots.size; i++) {
           if(dist < a_sorted_spots[i].dist) {
             arrayinsert(a_sorted_spots, s_spot, i);
             a_sorted_spots[i].dist = dist;
@@ -49,7 +49,7 @@ sq_play_maxis_vo(localclientnum, oldval, newval, bnewent, binitialsnap, fieldnam
         }
       }
 
-      for (i = 0; i < 3; i++)
+      for(i = 0; i < 3; i++)
         playsound(localclientnum, level.sq_clientfield_vo[newval], a_sorted_spots[i].origin);
     }
   }
@@ -60,7 +60,7 @@ dragon_fireworks_init() {
   a_which_drg = array("r", "m");
   assert(a_tail_noteworthy.size == a_which_drg.size, "zm_highrise_sq::dragon_fireworks_init - a_tail_noteworthy and a_which_drg must be the same size");
 
-  for (i = 0; i < a_tail_noteworthy.size; i++)
+  for(i = 0; i < a_tail_noteworthy.size; i++)
     level thread dragon_fireworks_think(a_tail_noteworthy[i], a_which_drg[i]);
 }
 
@@ -71,7 +71,7 @@ dragon_fireworks_think(str_tail_noteworthy, str_which_drg) {
   if(str_which_drg == "r")
     str_fx = "sidequest_dragon_spark_ric";
 
-  for (localclientnum = 0; localclientnum < level.localplayers.size; localclientnum++) {
+  for(localclientnum = 0; localclientnum < level.localplayers.size; localclientnum++) {
     m_tail = getstruct(str_tail_noteworthy, "targetname");
     playfx(localclientnum, level._effect[str_fx], m_tail.origin, anglestoforward(m_tail.angles));
     level thread play_fireworks_audio(m_tail.origin);
@@ -79,17 +79,18 @@ dragon_fireworks_think(str_tail_noteworthy, str_which_drg) {
 
   n_firework_id = 0;
 
-  while (true) {
+  while(true) {
     level waittill(str_which_drg + "_start_firework");
     str_firework_name = str_which_drg + "_drg_firework_" + n_firework_id;
 
-    for (localclientnum = 0; localclientnum < level.localplayers.size; localclientnum++) {
+    for(localclientnum = 0; localclientnum < level.localplayers.size; localclientnum++) {
       m_firework_loc = getstruct(str_firework_name, "targetname");
       playfx(localclientnum, level._effect[str_fx], m_firework_loc.origin, anglestoforward(m_firework_loc.angles));
       level thread play_fireworks_audio(m_firework_loc.origin);
     }
 
     println("Dragon Firework On");
+
     n_firework_id++;
     wait 0.1;
   }
@@ -110,7 +111,7 @@ dragon_fireball_init() {
 dragon_fireball(str_which_dragon) {
   level waittill("start_fireball_" + str_which_dragon);
 
-  for (localclientnum = 0; localclientnum < level.localplayers.size; localclientnum++)
+  for(localclientnum = 0; localclientnum < level.localplayers.size; localclientnum++)
     level thread dragon_fireball_go(localclientnum, str_which_dragon);
 }
 
@@ -123,7 +124,7 @@ dragon_fireball_go(localclientnum, str_which_dragon) {
     str_fx = "sidequest_dragon_fireball_ric";
 
   foreach(m_fxanim in a_fxanim) {
-    if(isdefined(m_fxanim.fxanim_scene_1) && m_fxanim.fxanim_scene_1 == str_which_dragon) {
+    if(isDefined(m_fxanim.fxanim_scene_1) && m_fxanim.fxanim_scene_1 == str_which_dragon) {
       n_fx_id = playfxontag(localclientnum, level._effect["sidequest_dragon_fireball_max"], m_fxanim, "tag_mouth_fx");
       origin = m_fxanim gettagorigin("tag_mouth_fx");
       playsound(0, "zmb_sq_fireball_start", origin);

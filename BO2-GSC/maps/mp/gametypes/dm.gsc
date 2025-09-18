@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\gametypes\dm.gsc
-***************************************/
+**************************************/
 
 #include maps\mp\_utility;
 #include maps\mp\gametypes\_hud_util;
@@ -88,16 +88,16 @@ onspawnplayer(predictedspawn) {
 }
 
 onendgame(winningplayer) {
-  if(isdefined(winningplayer) && isplayer(winningplayer))
+  if(isDefined(winningplayer) && isplayer(winningplayer))
     [[level._setplayerscore]](winningplayer, winningplayer[[level._getplayerscore]]() + 1);
 }
 
 onscoreclosemusic() {
-  while (!level.gameended) {
+  while(!level.gameended) {
     scorelimit = level.scorelimit;
     scorethreshold = scorelimit * 0.9;
 
-    for (i = 0; i < level.players.size; i++) {
+    for(i = 0; i < level.players.size; i++) {
       scorecheck = [
         [level._getplayerscore]
       ](level.players[i]);

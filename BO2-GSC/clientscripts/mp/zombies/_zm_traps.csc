@@ -12,7 +12,7 @@ init() {
   a_registered_traps = [];
 
   foreach(trap in s_traps_array) {
-    if(isdefined(trap.script_noteworthy)) {
+    if(isDefined(trap.script_noteworthy)) {
       if(!trap is_trap_registered(a_registered_traps))
         a_registered_traps[trap.script_noteworthy] = 1;
     }
@@ -33,5 +33,5 @@ init() {
 }
 
 is_trap_registered(a_registered_traps) {
-  return isdefined(a_registered_traps[self.script_noteworthy]);
+  return isDefined(a_registered_traps[self.script_noteworthy]);
 }

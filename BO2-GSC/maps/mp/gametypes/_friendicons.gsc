@@ -11,20 +11,20 @@ init() {
     setdvar("scr_drawfriend", "0");
 
   level.drawfriend = getdvarint(#"scr_drawfriend");
-  assert(isdefined(game["headicon_allies"]), "Allied head icons are not defined.Check the team set for the level.");
-  assert(isdefined(game["headicon_axis"]), "Axis head icons are not defined.Check the team set for the level.");
+  assert(isDefined(game["headicon_allies"]), "Allied head icons are not defined.Check the team set for the level.");
+  assert(isDefined(game["headicon_axis"]), "Axis head icons are not defined.Check the team set for the level.");
   precacheheadicon(game["headicon_allies"]);
   precacheheadicon(game["headicon_axis"]);
   level thread onplayerconnect();
 
-  for (;;) {
+  for(;;) {
     updatefriendiconsettings();
     wait 5;
   }
 }
 
 onplayerconnect() {
-  for (;;) {
+  for(;;) {
     level waittill("connecting", player);
     player thread onplayerspawned();
     player thread onplayerkilled();
@@ -34,7 +34,7 @@ onplayerconnect() {
 onplayerspawned() {
   self endon("disconnect");
 
-  for (;;) {
+  for(;;) {
     self waittill("spawned_player");
     self thread showfriendicon();
   }
@@ -43,7 +43,7 @@ onplayerspawned() {
 onplayerkilled() {
   self endon("disconnect");
 
-  for (;;) {
+  for(;;) {
     self waittill("killed_player");
     self.headicon = "";
   }
@@ -69,10 +69,10 @@ updatefriendiconsettings() {
 updatefriendicons() {
   players = level.players;
 
-  for (i = 0; i < players.size; i++) {
+  for(i = 0; i < players.size; i++) {
     player = players[i];
 
-    if(isdefined(player.pers["team"]) && player.pers["team"] != "spectator" && player.sessionstate == "playing") {
+    if(isDefined(player.pers["team"]) && player.pers["team"] != "spectator" && player.sessionstate == "playing") {
       if(level.drawfriend) {
         team = self.pers["team"];
         self.headicon = game["headicon_" + team];
@@ -82,10 +82,10 @@ updatefriendicons() {
 
       players = level.players;
 
-      for (i = 0; i < players.size; i++) {
+      for(i = 0; i < players.size; i++) {
         player = players[i];
 
-        if(isdefined(player.pers["team"]) && player.pers["team"] != "spectator" && player.sessionstate == "playing")
+        if(isDefined(player.pers["team"]) && player.pers["team"] != "spectator" && player.sessionstate == "playing")
           player.headicon = "";
       }
     }

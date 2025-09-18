@@ -40,7 +40,7 @@ stage_vo_ric() {
 stage_logic() {
   iprintlnbold("OWS Started");
 
-  while (!flag("sq_ows_success")) {
+  while(!flag("sq_ows_success")) {
     level thread ows_fountain_wait();
     flag_wait("sq_ows_start");
     ows_targets_start();
@@ -51,7 +51,6 @@ stage_logic() {
 }
 
 exit_stage(success) {
-
 }
 
 ows_fountain_wait() {
@@ -74,10 +73,10 @@ ows_targets_start() {
   level thread sndsidequestowsmusic();
   a_sign_spots = getstructarray("otw_target_spot", "script_noteworthy");
 
-  while (n_cur_second < 40) {
+  while(n_cur_second < 40) {
     a_spawn_spots = ows_targets_get_cur_spots(n_cur_second);
 
-    if(isdefined(a_spawn_spots) && a_spawn_spots.size > 0)
+    if(isDefined(a_spawn_spots) && a_spawn_spots.size > 0)
       ows_targets_spawn(a_spawn_spots);
 
     wait 1;
@@ -99,7 +98,7 @@ ows_targets_get_cur_spots(n_time) {
   str_time = "" + n_time;
 
   foreach(s_spot in a_target_spots) {
-    if(isdefined(s_spot.script_string)) {
+    if(isDefined(s_spot.script_string)) {
       a_spawn_times = strtok(s_spot.script_string, " ");
 
       if(isinarray(a_spawn_times, str_time))
@@ -121,7 +120,7 @@ ows_targets_spawn(a_spawn_spots) {
     playfxontag(level._effect["sq_spawn"], m_target, "tag_origin");
     m_target playsound("zmb_sq_target_spawn");
 
-    if(isdefined(s_spot.target))
+    if(isDefined(s_spot.target))
       m_target thread ows_target_move(s_spot.target);
 
     m_target thread ows_target_think();
@@ -135,7 +134,7 @@ ows_target_think() {
   self thread ows_target_delete_timer();
   self waittill_either("ows_target_timeout", "damage");
 
-  if(isdefined(self.m_linker)) {
+  if(isDefined(self.m_linker)) {
     self unlink();
     self.m_linker delete();
   }
@@ -158,11 +157,12 @@ ows_target_delete_timer() {
   wait 4;
   self notify("ows_target_timeout");
   flag_set("sq_ows_target_missed");
+
   iprintlnbold("missed target! step failed. target @ " + self.origin);
 }
 
 sndsidequestowsmusic() {
-  while (is_true(level.music_override))
+  while(is_true(level.music_override))
     wait 0.1;
 
   level.music_override = 1;

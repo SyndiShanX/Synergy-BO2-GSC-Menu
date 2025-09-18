@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\_demo.gsc
-***************************************/
+**************************************/
 
 init() {
   level.bookmark["kill"] = 0;
@@ -32,7 +32,7 @@ init() {
 }
 
 bookmark(type, time, clientent1, clientent2, eventpriority, inflictorent, overrideentitycamera, actorent) {
-  assert(isdefined(level.bookmark[type]), "Unable to find a bookmark type for type - " + type);
+  assert(isDefined(level.bookmark[type]), "Unable to find a bookmark type for type - " + type);
   client1 = 255;
   client2 = 255;
   inflictorentnum = -1;
@@ -41,34 +41,34 @@ bookmark(type, time, clientent1, clientent2, eventpriority, inflictorent, overri
   actorentnum = undefined;
   scoreeventpriority = 0;
 
-  if(isdefined(clientent1))
+  if(isDefined(clientent1))
     client1 = clientent1 getentitynumber();
 
-  if(isdefined(clientent2))
+  if(isDefined(clientent2))
     client2 = clientent2 getentitynumber();
 
-  if(isdefined(eventpriority))
+  if(isDefined(eventpriority))
     scoreeventpriority = eventpriority;
 
-  if(isdefined(inflictorent)) {
+  if(isDefined(inflictorent)) {
     inflictorentnum = inflictorent getentitynumber();
     inflictorenttype = inflictorent getentitytype();
 
-    if(isdefined(inflictorent.birthtime))
+    if(isDefined(inflictorent.birthtime))
       inflictorbirthtime = inflictorent.birthtime;
   }
 
-  if(!isdefined(overrideentitycamera))
+  if(!isDefined(overrideentitycamera))
     overrideentitycamera = 0;
 
-  if(isdefined(actorent))
+  if(isDefined(actorent))
     actorentnum = actorent getentitynumber();
 
   adddemobookmark(level.bookmark[type], time, client1, client2, scoreeventpriority, inflictorentnum, inflictorenttype, inflictorbirthtime, overrideentitycamera, actorentnum);
 }
 
 gameresultbookmark(type, winningteamindex, losingteamindex) {
-  assert(isdefined(level.bookmark[type]), "Unable to find a bookmark type for type - " + type);
+  assert(isDefined(level.bookmark[type]), "Unable to find a bookmark type for type - " + type);
   client1 = 255;
   client2 = 255;
   scoreeventpriority = 0;
@@ -78,10 +78,10 @@ gameresultbookmark(type, winningteamindex, losingteamindex) {
   overrideentitycamera = 0;
   actorentnum = undefined;
 
-  if(isdefined(winningteamindex))
+  if(isDefined(winningteamindex))
     client1 = winningteamindex;
 
-  if(isdefined(losingteamindex))
+  if(isDefined(losingteamindex))
     client2 = losingteamindex;
 
   adddemobookmark(level.bookmark[type], gettime(), client1, client2, scoreeventpriority, inflictorentnum, inflictorenttype, inflictorbirthtime, overrideentitycamera, actorentnum);

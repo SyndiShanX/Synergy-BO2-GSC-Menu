@@ -21,14 +21,6 @@ ghost_init_end() {
   disable_traversal_clip_around_mansion();
 }
 
-prespawn_start() {
-
-}
-
-prespawn_end() {
-
-}
-
 ghost_round_start() {
   level thread ghost_teleport_to_playable_area();
 }
@@ -40,12 +32,12 @@ ghost_round_end() {
 is_player_in_ghost_zone(player) {
   result = 0;
 
-  if(!isdefined(level.ghost_zone_overrides))
+  if(!isDefined(level.ghost_zone_overrides))
     level.ghost_zone_overrides = getentarray("ghost_round_override", "script_noteworthy");
 
   is_player_in_override_trigger = 0;
 
-  if(isdefined(level.zombie_ghost_round_states) && !is_true(level.zombie_ghost_round_states.is_started)) {
+  if(isDefined(level.zombie_ghost_round_states) && !is_true(level.zombie_ghost_round_states.is_started)) {
     foreach(trigger in level.ghost_zone_overrides) {
       if(player istouching(trigger)) {
         is_player_in_override_trigger = 1;
@@ -56,7 +48,7 @@ is_player_in_ghost_zone(player) {
 
   curr_zone = player get_current_zone();
 
-  if(!is_player_in_override_trigger && isdefined(curr_zone) && curr_zone == "zone_mansion")
+  if(!is_player_in_override_trigger && isDefined(curr_zone) && curr_zone == "zone_mansion")
     result = 1;
 
   return result;
@@ -110,14 +102,14 @@ ghost_bad_path_failsafe() {
   self endon("stop_bad_path_failsafe");
   self thread non_ghost_round_failsafe();
 
-  while (true) {
+  while(true) {
     player = self.favoriteenemy;
 
-    if(isdefined(player)) {
+    if(isDefined(player)) {
       in_bad_zone = 0;
 
       foreach(zone in level.bad_zones) {
-        if(isdefined(zone.ignore_func)) {
+        if(isDefined(zone.ignore_func)) {
           if(level[[zone.ignore_func]]()) {
             break;
           }
@@ -137,7 +129,7 @@ ghost_bad_path_failsafe() {
             }
           }
 
-          if(isdefined(zone.flag) && flag(zone.flag)) {
+          if(isDefined(zone.flag) && flag(zone.flag)) {
             if(self maps\mp\zombies\_zm_zonemgr::entity_in_zone(zone.flag_adjacent))
               ghost_is_adjacent = 1;
           }
@@ -157,8 +149,8 @@ ghost_bad_path_failsafe() {
         else
           node = getnearestnode(player.origin);
 
-        if(isdefined(node)) {
-          while (true) {
+        if(isDefined(node)) {
+          while(true) {
             if(!is_true(self.is_traversing)) {
               break;
             }
@@ -178,7 +170,7 @@ ghost_bad_path_failsafe() {
 non_ghost_round_failsafe() {
   self endon("death");
 
-  while (true) {
+  while(true) {
     self waittill("bad_path");
 
     if(self.state == "runaway_update") {
@@ -193,7 +185,7 @@ non_ghost_round_failsafe() {
 }
 
 disable_traversal_clip_around_mansion() {
-  if(isdefined(level.ghost_zone_door_clips) && level.ghost_zone_door_clips.size > 0) {
+  if(isDefined(level.ghost_zone_door_clips) && level.ghost_zone_door_clips.size > 0) {
     foreach(door_clip in level.ghost_zone_door_clips)
     door_clip notsolid();
   }
@@ -228,7 +220,7 @@ ghost_teleport_to_playable_area() {
   level endon("ghost_round_end");
   monitor_time = 0;
 
-  while (true) {
+  while(true) {
     ghosts = get_current_ghosts();
 
     foreach(ghost in ghosts) {
@@ -238,7 +230,7 @@ ghost_teleport_to_playable_area() {
             if(is_player_valid(ghost.favoriteenemy)) {
               destination_node = ghost maps\mp\zombies\_zm_ai_ghost::get_best_flying_target_node(ghost.favoriteenemy);
 
-              if(isdefined(destination_node)) {
+              if(isDefined(destination_node)) {
                 ghost forceteleport(destination_node.origin, (0, 0, 0));
                 self.is_teleported_in_bad_zone = 1;
               }

@@ -1,14 +1,13 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\mp_carrier_fx.gsc
-***************************************/
+**************************************/
 
 #include maps\mp\_utility;
 #include maps\mp\createfx\mp_carrier_fx;
 #include maps\mp\createart\mp_carrier_art;
 
 precache_util_fx() {
-
 }
 
 precache_scripted_fx() {

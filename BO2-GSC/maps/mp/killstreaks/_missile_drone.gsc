@@ -41,7 +41,7 @@ missile_drone_killstreak(weaponname) {
   hardpointtype = "missile_drone_mp";
   result = usemissiledrone(hardpointtype);
 
-  if(!isdefined(result) || !result)
+  if(!isDefined(result) || !result)
     return 0;
 
   return result;
@@ -59,7 +59,7 @@ usemissiledrone(hardpointtype) {
   if(ismissiledroneweapon(currentweapon))
     missileweapon = currentweapon;
 
-  assert(isdefined(missileweapon));
+  assert(isDefined(missileweapon));
   notifystring = self waittill_any_return("weapon_change", "grenade_fire", "death");
 
   if(notifystring == "weapon_change" || notifystring == "death")
@@ -70,7 +70,7 @@ usemissiledrone(hardpointtype) {
   if(notifystring == "death")
     return true;
 
-  if(!isdefined(missileweapon))
+  if(!isDefined(missileweapon))
     return false;
 
   self takeweapon(missileweapon);
@@ -161,7 +161,7 @@ drone_target_acquired(hardpointtype, target) {
 drone_target_search(hardpointtype) {
   self endon("death");
 
-  if(isdefined(self.dronetarget)) {
+  if(isDefined(self.dronetarget)) {
     self drone_target_acquired(hardpointtype, self.dronetarget);
     self missile_settarget(self.goal);
   }
@@ -175,8 +175,8 @@ drone_target_search(hardpointtype) {
   wait 0.1;
   searchcounter = 0;
 
-  for (;;) {
-    if(!isdefined(self))
+  for(;;) {
+    if(!isDefined(self))
       self notify("death");
 
     target = self projectile_find_target(self.owner, searchdotprodminimums[searchcounter]);
@@ -188,16 +188,20 @@ drone_target_search(hardpointtype) {
       direction = vectornormalize(anglestoforward(self.angles));
       direction = vecscale(direction, 1024);
       self.goal.origin = (self.origin[0] + direction[0], self.origin[1] + direction[1], level.missile_drone_origin[2]);
+
       debug_line(self.origin, self.goal.origin, (1, 1, 0), 5000);
+
     } else {
       currentangles = self.angles;
       direction = vectornormalize(anglestoforward(self.angles));
       direction = vecscale(direction, 1024);
       self.goal.origin = (level.missile_drone_origin[0] + direction[0], level.missile_drone_origin[1] + direction[1], level.missile_drone_origin[2]);
+
       debug_line(self.origin, self.goal.origin, (0, 1, 1), 5000);
+
     }
 
-    if(isdefined(target)) {
+    if(isDefined(target)) {
       self set_drone_target(hardpointtype, target);
       self missile_settarget(self.goal);
     }
@@ -219,7 +223,7 @@ set_drone_target(hardpointtype, target) {
   self missile_settarget(target["entity"], target["offset"]);
   self playsound("veh_harpy_drone_swarm_incomming");
 
-  if(!isdefined(target["entity"].swarmsound) || target["entity"].swarmsound == 0)
+  if(!isDefined(target["entity"].swarmsound) || target["entity"].swarmsound == 0)
     self thread target_sounds(target["entity"]);
 
   target["entity"] notify("stinger_fired_at_me", self, hardpointtype, self.owner);
@@ -237,12 +241,13 @@ check_target_lost(target) {
   failurelimit = 3;
   failurecount = 0;
 
-  for (;;) {
+  for(;;) {
     debug_star(target["entity"].origin, (0, 1, 0), 1000);
     debug_star(self.origin, (0, 1, 0), 1000);
 
     if(bullettracepassed(self.origin, target["entity"].origin + target["offset"], 0, target["entity"])) {
       debug_line(self.origin, target["entity"].origin, (0, 1, 0), 1000);
+
       failurecount = 0;
     } else {
       failurecount++;
@@ -261,11 +266,11 @@ projectile_find_target(owner, mincos) {
   ks = self projectile_find_target_killstreak(owner, mincos);
   player = self projectile_find_target_player(owner, mincos);
 
-  if(isdefined(ks) && !isdefined(player))
+  if(isDefined(ks) && !isDefined(player))
     return ks;
-  else if(!isdefined(ks) && isdefined(player))
+  else if(!isDefined(ks) && isDefined(player))
     return player;
-  else if(isdefined(ks) && isdefined(player)) {
+  else if(isDefined(ks) && isDefined(player)) {
     if(player["dotprod"] < ks["dotprod"])
       return ks;
 
@@ -290,29 +295,29 @@ projectile_find_target_killstreak(owner, mincos) {
   targets = get_array_sorted_dot_prod(targets, mincos);
 
   foreach(target in targets) {
-    if(isdefined(target.owner) && target.owner == owner) {
+    if(isDefined(target.owner) && target.owner == owner) {
       continue;
     }
-    if(isdefined(target.script_owner) && target.script_owner == owner) {
+    if(isDefined(target.script_owner) && target.script_owner == owner) {
       continue;
     }
-    if(level.teambased && isdefined(target.team)) {
+    if(level.teambased && isDefined(target.team)) {
       if(target.team == self.team)
         continue;
     }
 
-    if(level.teambased && isdefined(target.aiteam)) {
+    if(level.teambased && isDefined(target.aiteam)) {
       if(target.aiteam == self.team)
         continue;
     }
 
-    if(isdefined(target.vehicletype) && target.vehicletype == "heli_supplydrop_mp") {
+    if(isDefined(target.vehicletype) && target.vehicletype == "heli_supplydrop_mp") {
       continue;
     }
     if(bullettracepassed(self.origin, target.origin, 0, target)) {
       ks["entity"] = target;
 
-      if(isdefined(target.sorteddotprod))
+      if(isDefined(target.sorteddotprod))
         ks["dotprod"] = target.sorteddotprod;
       else
         ks["dotprod"] = -1;
@@ -332,7 +337,9 @@ projectile_find_target_player(owner, mincos) {
     startoffset = self getplayerviewheight();
     startorigin = (self.origin[0], self.origin[1], self.origin[2] + startoffset);
     startangles = self getplayerangles();
+
     debug_star(startorigin, (0, 0, 1), 1000);
+
   } else {
     startorigin = self.origin;
     startangles = self.angles;
@@ -347,12 +354,13 @@ projectile_find_target_player(owner, mincos) {
     currentplayeroffset = undefined;
     currentplayerdotprod = undefined;
     currentplayerrating = 0;
+
     debug_star(player.origin, (1, 1, 1), 1000);
 
     if(bullettracepassed(startorigin, player.origin, 0, player)) {
       debug_line(startorigin, player.origin, (1, 1, 1), 1000);
 
-      if(!isdefined(currentplayeroffset))
+      if(!isDefined(currentplayeroffset))
         currentplayeroffset = (0, 0, 0);
 
       currentplayerrating = currentplayerrating + 4;
@@ -360,24 +368,26 @@ projectile_find_target_player(owner, mincos) {
 
     verticaloffset = player getplayerviewheight();
     playerheadoffset = (0, 0, verticaloffset);
+
     debug_star(player.origin + playerheadoffset, (1, 0, 0), 1000);
 
     if(bullettracepassed(startorigin, player.origin + playerheadoffset, 0, player)) {
       debug_line(startorigin, player.origin + playerheadoffset, (1, 0, 0), 1000);
 
-      if(!isdefined(currentplayeroffset))
+      if(!isDefined(currentplayeroffset))
         currentplayeroffset = playerheadoffset;
 
       currentplayerrating = currentplayerrating + 3;
     }
 
     end = player.origin + playerheadoffset + vectorscale((0, 0, 1), 96.0);
+
     debug_star(end, (1, 1, 0), 1000);
 
     if(bullettracepassed(player.origin + playerheadoffset, end, 0, player)) {
       debug_line(player.origin + playerheadoffset, end, (1, 1, 0), 1000);
 
-      if(!isdefined(currentplayeroffset))
+      if(!isDefined(currentplayeroffset))
         currentplayeroffset = vectorscale((0, 0, 1), 30.0);
 
       currentplayerrating = currentplayerrating + 2;
@@ -388,7 +398,7 @@ projectile_find_target_player(owner, mincos) {
       target["entity"] = player;
       target["offset"] = currentplayeroffset;
 
-      if(isdefined(player.sorteddotprod))
+      if(isDefined(player.sorteddotprod))
         target["dotprod"] = player.sorteddotprod;
       else
         target["dotprod"] = -1;
@@ -445,20 +455,19 @@ watchdamage() {
   self.maxhealth = 100000;
   self.health = self.maxhealth;
 
-  for (;;) {
+  for(;;) {
     self waittill("damage", damage, attacker, direction, point, type, tagname, modelname, partname, weaponname);
 
-    if(!isdefined(attacker) || !isplayer(attacker)) {
+    if(!isDefined(attacker) || !isplayer(attacker)) {
       continue;
     }
-    if(isplayer(attacker) && level.teambased && isdefined(attacker.team) && self.team == attacker.team && level.friendlyfire == 0) {
+    if(isplayer(attacker) && level.teambased && isDefined(attacker.team) && self.team == attacker.team && level.friendlyfire == 0) {
       continue;
     }
     if(self.owner isenemyplayer(attacker)) {
       maps\mp\_scoreevents::processscoreevent("destroyed_missile_drone", attacker, self.owner, weaponname);
       attacker maps\mp\_challenges::addflyswatterstat(weaponname, self);
     } else {
-
     }
 
     self detonate();
@@ -469,10 +478,10 @@ get_array_sorted_dot_prod(array, mincos) {
   if(isplayer(self)) {
     org = self.origin;
     angles = self getplayerangles();
-    assert(isdefined(angles));
+    assert(isDefined(angles));
   } else {
     org = self.origin;
-    assert(isdefined(self.angles));
+    assert(isDefined(self.angles));
     angles = self.angles;
   }
 
@@ -480,15 +489,15 @@ get_array_sorted_dot_prod(array, mincos) {
   dotprod = [];
   index = [];
 
-  for (i = 0; i < array.size; i++) {
-    assert(isdefined(forwardvec));
-    assert(isdefined(array[i]));
-    assert(isdefined(array[i].origin));
-    assert(isdefined(org));
+  for(i = 0; i < array.size; i++) {
+    assert(isDefined(forwardvec));
+    assert(isDefined(array[i]));
+    assert(isDefined(array[i].origin));
+    assert(isDefined(org));
     cosa = vectordot(forwardvec, vectornormalize(array[i].origin - org));
-    assert(isdefined(cosa));
+    assert(isDefined(cosa));
 
-    if(isdefined(mincos) && cosa < mincos) {
+    if(isDefined(mincos) && cosa < mincos) {
       continue;
     }
     array[i].sorteddotprod = cosa;
@@ -496,10 +505,10 @@ get_array_sorted_dot_prod(array, mincos) {
     index[index.size] = i;
   }
 
-  for (;;) {
+  for(;;) {
     change = 0;
 
-    for (i = 0; i < dotprod.size - 1; i++) {
+    for(i = 0; i < dotprod.size - 1; i++) {
       if(dotprod[i] >= dotprod[i + 1]) {
         continue;
       }
@@ -519,7 +528,7 @@ get_array_sorted_dot_prod(array, mincos) {
 
   newarray = [];
 
-  for (i = 0; i < dotprod.size; i++)
+  for(i = 0; i < dotprod.size; i++)
     newarray[i] = array[index[i]];
 
   return newarray;
@@ -534,10 +543,10 @@ updatetargetting() {
   mincos = getdvarfloatdefault("scr_missile_drone_min_cos", 0.9);
   updatewait = getdvarfloatdefault("scr_missile_drone_update_wait", 0.5);
 
-  for (;;) {
+  for(;;) {
     self.dronetarget = self projectile_find_target(self, mincos);
 
-    if(isdefined(self.dronetarget)) {
+    if(isDefined(self.dronetarget)) {
       self thread clearinvaliddronetarget();
       self setclientfieldtoplayer("missile_drone_active", 2);
     } else

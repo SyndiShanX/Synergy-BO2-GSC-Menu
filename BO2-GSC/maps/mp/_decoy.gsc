@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\_decoy.gsc
-***************************************/
+**************************************/
 
 #include common_scripts\utility;
 #include maps\mp\_utility;
@@ -39,7 +39,7 @@ onspawndecoy(watcher, owner) {
   owner addweaponstat("nightingale_mp", "used", 1);
   self thread simulateweaponfire(owner);
 
-  while (true) {
+  while(true) {
     if(gettime() > spawn_time + decoy_time * 1000) {
       self destroydecoy(watcher, owner);
       return;
@@ -66,7 +66,7 @@ movedecoy(owner, count, fire_time, main_dir, max_offset_angle) {
   start_time = gettime();
   gravity = getdvarint(#"bg_gravity");
 
-  for (i = 0; i < 1; i++) {
+  for(i = 0; i < 1; i++) {
     angles = (0, randomintrange(current_main_dir - max_offset_angle, current_main_dir + max_offset_angle), 0);
     dir = anglestoforward(angles);
     dir = vectorscale(dir, randomfloatrange(min_speed, max_speed));
@@ -143,7 +143,7 @@ simulateweaponfiremachinegunsemiauto(owner, weapon) {
   burst_spacing_min = 4;
   burst_spacing_max = 10;
 
-  while (true) {
+  while(true) {
     if(clipsize <= 1)
       burst_count = 1;
     else
@@ -162,7 +162,7 @@ simulateweaponfirepistol(owner, weapon) {
   burst_spacing_min = 0.5;
   burst_spacing_max = 4;
 
-  while (true) {
+  while(true) {
     burst_count = randomintrange(1, clipsize);
     self thread movedecoy(owner, burst_count, firetime, self.main_dir, self.max_offset_angle);
     self fireburst(owner, weapon, firetime, burst_count, 0);
@@ -181,7 +181,7 @@ simulateweaponfireshotgun(owner, weapon) {
   burst_spacing_min = 0.5;
   burst_spacing_max = 4;
 
-  while (true) {
+  while(true) {
     burst_count = randomintrange(1, clipsize);
     self thread movedecoy(owner, burst_count, firetime, self.main_dir, self.max_offset_angle);
     self fireburst(owner, weapon, firetime, burst_count, 0);
@@ -200,7 +200,7 @@ simulateweaponfiremachinegunfullauto(owner, weapon) {
   burst_spacing_min = 2;
   burst_spacing_max = 6;
 
-  while (true) {
+  while(true) {
     burst_count = randomintrange(int(clipsize * 0.6), clipsize);
     interrupt = 0;
     self thread movedecoy(owner, burst_count, firetime, self.main_dir, self.max_offset_angle);
@@ -220,7 +220,7 @@ simulateweaponfiresniper(owner, weapon) {
   burst_spacing_min = 3;
   burst_spacing_max = 5;
 
-  while (true) {
+  while(true) {
     burst_count = randomintrange(1, clipsize);
     self thread movedecoy(owner, burst_count, firetime, self.main_dir, self.max_offset_angle);
     self fireburst(owner, weapon, firetime, burst_count, 0);
@@ -277,7 +277,7 @@ doexplosion(owner, pos, weapon, count) {
   min_offset = 100;
   max_offset = 500;
 
-  for (i = 0; i < count; i++) {
+  for(i = 0; i < count; i++) {
     wait(randomfloatrange(0.1, 0.5));
     offset = (randomfloatrange(min_offset, max_offset) * (randomintrange(0, 2) * 2 - 1), randomfloatrange(min_offset, max_offset) * (randomintrange(0, 2) * 2 - 1), 0);
     owner fakefire(owner, pos + offset, weapon, 1);
@@ -291,7 +291,9 @@ pickrandomweapon() {
     type = "semiauto";
 
   randomval = randomintrange(0, level.decoyweapons[type].size);
+
   println("Decoy type: " + type + " weapon: " + level.decoyweapons[type][randomval]);
+
   return level.decoyweapons[type][randomval];
 }
 
@@ -308,7 +310,7 @@ trackmaindirection() {
   self.main_dir = int(vectortoangles((self.initial_velocity[0], self.initial_velocity[1], 0))[1]);
   up = (0, 0, 1);
 
-  while (true) {
+  while(true) {
     self waittill("grenade_bounce", pos, normal);
     dot = vectordot(normal, up);
 

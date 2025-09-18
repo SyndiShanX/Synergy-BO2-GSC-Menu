@@ -12,7 +12,7 @@ planesounds(localclientnum, spawnsound, flybysound, flybysoundloop) {
   self endon("delete");
   fake_ent_plane = spawnfakeent(0);
 
-  if(!isdefined(fake_ent_plane)) {
+  if(!isDefined(fake_ent_plane)) {
     return;
   }
   playsound(0, spawnsound, (0, 0, 0));
@@ -26,29 +26,29 @@ plane_position_updater(localclientnum, fake_ent, plane, flybysound, flybysoundlo
   lastpos = undefined;
   starttime = 0;
 
-  while (isdefined(plane)) {
+  while(isDefined(plane)) {
     setfakeentorg(0, fake_ent, plane.origin);
 
-    if(soundid < 0 && isdefined(lastpos)) {
+    if(soundid < 0 && isDefined(lastpos)) {
       dx = plane.origin - lastpos;
 
       if(length(dx) > 0.01) {
         velocity = dx / (getrealtime() - lasttime);
-        assert(isdefined(velocity));
+        assert(isDefined(velocity));
         players = level.localplayers;
-        assert(isdefined(players));
+        assert(isDefined(players));
         other_point = plane.origin + velocity * 100000;
         point = closest_point_on_line_to_point(players[0].origin, plane.origin, other_point);
-        assert(isdefined(point));
+        assert(isDefined(point));
         dist = distance(point, plane.origin);
-        assert(isdefined(dist));
+        assert(isDefined(dist));
         time = dist / length(velocity);
-        assert(isdefined(time));
+        assert(isDefined(time));
 
-        if(isdefined(flybysoundloop) && isdefined(fake_ent))
+        if(isDefined(flybysoundloop) && isDefined(fake_ent))
           soundid = playloopsound(0, fake_ent, flybysoundloop, 0);
 
-        if(isdefined(flybysound))
+        if(isDefined(flybysound))
           plane playsound(0, flybysound);
 
         starttime = getrealtime();
@@ -124,7 +124,7 @@ planeturn(localclientnum, plane, yaw, halflife, starttime, isturningright) {
   waitamount = 0.1;
   waitformovedone = 0;
 
-  while (looptime <= halflife) {
+  while(looptime <= halflife) {
     if(plane.angles[1] == 360)
       plane.angles = (plane.angles[0], 0, plane.angles[2]);
 
@@ -165,7 +165,7 @@ planeturn(localclientnum, plane, yaw, halflife, starttime, isturningright) {
   maxy = getdvarfloatdefault("scr_max_planey2", 90);
   accumturn = 0;
 
-  while (looptime < halflife + halflife) {
+  while(looptime < halflife + halflife) {
     if(plane.angles[1] == 360)
       plane.angles = (plane.angles[0], 0, plane.angles[2]);
 
@@ -216,7 +216,7 @@ doabarrelroll(localclientnum, plane, endpoint, flytime, starttime) {
   angles = plane.angles;
   originalroll = plane.angles[2];
 
-  while (timeelapsed < flytime) {
+  while(timeelapsed < flytime) {
     timeelapsed = timeelapsed + waitamount;
 
     if(timeelapsed > loopwaittime && degreesrolled < degreestoroll) {

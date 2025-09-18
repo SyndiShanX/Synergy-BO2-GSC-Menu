@@ -1,7 +1,7 @@
-/**********************************************************
+/***************************************************************
  * Decompiled and Edited by SyndiShanX
  * Script: clientscripts\mp\zombies\_zm_weap_tomahawk.csc
-**********************************************************/
+***************************************************************/
 
 #include clientscripts\mp\_utility;
 #include clientscripts\mp\_fx;
@@ -33,14 +33,14 @@ play_tomahawk_pickup_fx(localclientnum, oldval, newval, bnewent, binitialsnap, f
     if(newval == 1) {
       e_pickup_fx = getent(localclientnum, "tomahawk_pickup_fx_origin", "targetname");
 
-      if(isdefined(e_pickup_fx) && isdefined(e_pickup_fx.fx_id)) {
+      if(isDefined(e_pickup_fx) && isDefined(e_pickup_fx.fx_id)) {
         stopfx(localclientnum, e_pickup_fx.fx_id);
         e_pickup_fx.fx_id = playfxontag(localclientnum, level._effect["tomahawk_pickup"], e_pickup_fx, "tag_origin");
       }
     } else if(newval == 2) {
       e_pickup_upgrade_fx = getent(localclientnum, "tomahawk_pickup_upgrade_fx_origin", "targetname");
 
-      if(isdefined(e_pickup_upgrade_fx) && isdefined(e_pickup_upgrade_fx.fx_id)) {
+      if(isDefined(e_pickup_upgrade_fx) && isDefined(e_pickup_upgrade_fx.fx_id)) {
         stopfx(localclientnum, e_pickup_upgrade_fx.fx_id);
         e_pickup_upgrade_fx.fx_id = playfxontag(localclientnum, level._effect["tomahawk_pickup_upgrade"], e_pickup_upgrade_fx, "tag_origin");
       }
@@ -52,21 +52,21 @@ play_tomahawk_pickup_fx(localclientnum, oldval, newval, bnewent, binitialsnap, f
   if(newval == 1) {
     e_pickup_fx = getent(localclientnum, "tomahawk_pickup_fx_origin", "targetname");
 
-    if(!isdefined(e_pickup_fx)) {
+    if(!isDefined(e_pickup_fx)) {
       e_pickup_fx = spawn(localclientnum, self.origin, "script_model");
       e_pickup_fx.angles = self.angles;
       e_pickup_fx.targetname = "tomahawk_pickup_fx_origin";
       e_pickup_fx setmodel("tag_origin");
     }
 
-    if(isdefined(e_pickup_fx.fx_id))
+    if(isDefined(e_pickup_fx.fx_id))
       stopfx(localclientnum, e_pickup_fx.fx_id);
 
     e_pickup_fx.fx_id = playfxontag(localclientnum, level._effect["tomahawk_pickup"], e_pickup_fx, "tag_origin");
   } else if(newval == 2) {
     e_pickup_fx = getent(localclientnum, "tomahawk_pickup_fx_origin", "targetname");
 
-    if(isdefined(e_pickup_fx)) {
+    if(isDefined(e_pickup_fx)) {
       e_pickup_upgrade_fx = spawn(localclientnum, e_pickup_fx.origin, "script_model");
       e_pickup_upgrade_fx.angles = e_pickup_fx.angles;
       e_pickup_upgrade_fx.targetname = "tomahawk_pickup_upgrade_fx_origin";
@@ -74,7 +74,7 @@ play_tomahawk_pickup_fx(localclientnum, oldval, newval, bnewent, binitialsnap, f
       e_pickup_fx delete();
     }
 
-    if(isdefined(e_pickup_upgrade_fx.fx_id))
+    if(isDefined(e_pickup_upgrade_fx.fx_id))
       stopfx(localclientnum, e_pickup_upgrade_fx.fx_id);
 
     e_pickup_upgrade_fx.fx_id = playfxontag(localclientnum, level._effect["tomahawk_pickup_upgrade"], e_pickup_upgrade_fx, "tag_origin");

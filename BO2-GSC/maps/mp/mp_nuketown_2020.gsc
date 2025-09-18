@@ -111,7 +111,7 @@ levelspawndvars(reset_dvars) {
 move_spawn_point(targetname, start_point, new_point) {
   spawn_points = getentarray(targetname, "classname");
 
-  for (i = 0; i < spawn_points.size; i++) {
+  for(i = 0; i < spawn_points.size; i++) {
     if(distancesquared(spawn_points[i].origin, start_point) < 1) {
       spawn_points[i].origin = new_point;
       return;
@@ -133,14 +133,14 @@ nuked_mannequin_init() {
   remove_count = clamp(remove_count, 0, remove_count);
   mannequins = array_randomize(mannequins);
 
-  for (i = 0; i < remove_count; i++) {
-    assert(isdefined(mannequins[i].target));
+  for(i = 0; i < remove_count; i++) {
+    assert(isDefined(mannequins[i].target));
 
     if(level.endgamemannequin == mannequins[i]) {
       continue;
     }
     collision = getent(mannequins[i].target, "targetname");
-    assert(isdefined(collision));
+    assert(isDefined(collision));
     collision delete();
     mannequins[i] delete();
     level.mannequin_count--;
@@ -153,7 +153,7 @@ nuked_mannequin_init() {
 nuked_mannequin_filter(destructibles) {
   mannequins = [];
 
-  for (i = 0; i < destructibles.size; i++) {
+  for(i = 0; i < destructibles.size; i++) {
     destructible = destructibles[i];
 
     if(issubstr(destructible.destructibledef, "male"))
@@ -190,13 +190,13 @@ nuke_detonation() {
   bomb_loc playsound("amb_end_nuke_2d");
   destructibles = getentarray("destructible", "targetname");
 
-  for (i = 0; i < destructibles.size; i++) {
+  for(i = 0; i < destructibles.size; i++) {
     if(getsubstr(destructibles[i].destructibledef, 0, 4) == "veh_")
       destructibles[i] hide();
   }
 
   displaysign = getent("nuke_display_glass_server", "targetname");
-  assert(isdefined(displaysign));
+  assert(isDefined(displaysign));
   displaysign hide();
   bombwaitpretime = getdvarfloatdefault("scr_nuke_car_pre", 0.5);
   wait(bombwaitpretime);
@@ -225,14 +225,14 @@ nuked_bomb_drop_think() {
   bomb_explode_delay = set_dvar_float_if_unset("scr_bomb_explode_delay", "2.75");
   env_destroy_delay = set_dvar_float_if_unset("scr_env_destroy_delay", "0.5");
 
-  for (;;) {
+  for(;;) {
     camera = spawn("script_model", camerastart.origin);
     camera.angles = camerastart.angles;
     camera setmodel("tag_origin");
     level waittill("bomb_drop_pre");
     level notify("fxanim_dome_explode_start");
 
-    for (i = 0; i < get_players().size; i++) {
+    for(i = 0; i < get_players().size; i++) {
       player = get_players()[i];
       player camerasetposition(camera);
       player camerasetlookat();
@@ -260,10 +260,10 @@ nuked_population_sign_think() {
   tens_model rotateroll(step, 0.05);
   ones_model rotateroll(step, 0.05);
 
-  for (;;) {
+  for(;;) {
     wait 1;
 
-    for (;;) {
+    for(;;) {
       num_players = get_players().size;
       dial = ones + tens * 10;
 
@@ -323,7 +323,7 @@ do_vcs() {
   screen = getent("nuketown_tv", "targetname");
   screen setmodel("nt_sign_population_vcs");
 
-  while (true) {
+  while(true) {
     level.vcs_trigger waittill("trigger", player);
 
     if(player isusingremote() || !isalive(player)) {
@@ -348,7 +348,7 @@ do_vcs() {
     player wait_till_done_playing_vcs();
 
     if(!level.gameended) {
-      if(isdefined(player)) {
+      if(isDefined(player)) {
         player disableinvulnerability();
         player unlink();
         player takeweapon("vcs_controller_mp");
@@ -363,7 +363,7 @@ do_vcs() {
 wait_till_done_playing_vcs() {
   self endon("disconnect");
 
-  while (true) {
+  while(true) {
     self waittill("menuresponse", menu, response);
     return;
   }

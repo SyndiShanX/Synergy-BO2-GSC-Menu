@@ -21,10 +21,6 @@ premain() {
   clientscripts\mp\zm_alcatraz_craftables::init_craftables();
 }
 
-main() {
-
-}
-
 #using_animtree("fxanim_props");
 
 init_fan_trap_animtree() {

@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\_art.gsc
-***************************************/
+**************************************/
 
 #include common_scripts\utility;
 #include maps\mp\_utility;
@@ -16,7 +16,7 @@ main() {
   if(getdvar(#"scr_cinematic_autofocus") == "")
     setdvar("scr_cinematic_autofocus", "1");
 
-  if(getdvar(#"scr_art_visionfile") == "" && isdefined(level.script))
+  if(getdvar(#"scr_art_visionfile") == "" && isDefined(level.script))
     setdvar("scr_art_visionfile", level.script);
 
   if(getdvar(#"debug_reflection") == "")
@@ -36,7 +36,7 @@ main() {
   level thread debug_reflection_matte();
   level thread debug_color_pallete();
 
-  if(!isdefined(level.dofdefault)) {
+  if(!isDefined(level.dofdefault)) {
     level.dofdefault["nearStart"] = 0;
     level.dofdefault["nearEnd"] = 1;
     level.dofdefault["farStart"] = 8000;
@@ -46,9 +46,10 @@ main() {
   }
 
   level.curdof = (level.dofdefault["farStart"] - level.dofdefault["nearEnd"]) / 2;
+
   thread tweakart();
 
-  if(!isdefined(level.script))
+  if(!isDefined(level.script))
     level.script = tolower(getdvar(#"mapname"));
 }
 
@@ -63,7 +64,7 @@ strtok_loc(string, par1) {
   stringlist = [];
   indexstring = "";
 
-  for (i = 0; i < string.size; i++) {
+  for(i = 0; i < string.size; i++) {
     if(string[i] == " ") {
       stringlist[stringlist.size] = indexstring;
       indexstring = "";
@@ -87,7 +88,7 @@ setfogsliders() {
   halfplane = getdvar(#"g_fogHalfDistReadOnly");
   nearplane = getdvar(#"g_fogStartDistReadOnly");
 
-  if(!isdefined(red) || !isdefined(green) || !isdefined(blue) || !isdefined(halfplane)) {
+  if(!isDefined(red) || !isDefined(green) || !isDefined(blue) || !isDefined(halfplane)) {
     red = 1;
     green = 1;
     blue = 1;
@@ -101,7 +102,7 @@ setfogsliders() {
 }
 
 tweakart() {
-  if(!isdefined(level.tweakfile))
+  if(!isDefined(level.tweakfile))
     level.tweakfile = 0;
 
   if(getdvar(#"scr_fog_baseheight") == "") {
@@ -124,8 +125,8 @@ tweakart() {
   filename = undefined;
   tweak_toggle = 1;
 
-  for (;;) {
-    while (getdvarint(#"scr_art_tweak") == 0) {
+  for(;;) {
+    while(getdvarint(#"scr_art_tweak") == 0) {
       tweak_toggle = 1;
       wait 0.05;
     }
@@ -179,7 +180,7 @@ tweakart() {
     dumpsettings();
 
     if(!getdvarint(#"_id_DBBD8F3B")) {
-      if(!isdefined(level.fogsundir)) {
+      if(!isDefined(level.fogsundir)) {
         level.fogsundir = [];
         level.fogsundir[0] = 1;
         level.fogsundir[1] = 0;
@@ -192,6 +193,7 @@ tweakart() {
 
     wait 0.1;
   }
+
 }
 
 fovslidercheck() {
@@ -252,12 +254,13 @@ dumpsettings() {
     println("\\t\\tsun_stop_ang, time, max_fog_opacity);");
     setdvar("scr_art_dump", "0");
   }
+
 }
 
 debug_reflection() {
   level.debug_reflection = 0;
 
-  while (true) {
+  while(true) {
     wait 0.1;
 
     if(getdvar(#"debug_reflection") == "2" && level.debug_reflection != 2 || getdvar(#"debug_reflection") == "3" && level.debug_reflection != 3) {
@@ -282,36 +285,39 @@ debug_reflection() {
       level.debug_reflection = 0;
     }
   }
+
 }
 
 remove_reflection_objects() {
-  if((level.debug_reflection == 2 || level.debug_reflection == 3) && isdefined(level.debug_reflection_objects)) {
-    for (i = 0; i < level.debug_reflection_objects.size; i++)
+  if((level.debug_reflection == 2 || level.debug_reflection == 3) && isDefined(level.debug_reflection_objects)) {
+    for(i = 0; i < level.debug_reflection_objects.size; i++)
       level.debug_reflection_objects[i] delete();
 
     level.debug_reflection_objects = undefined;
   }
 
   if(level.debug_reflection == 1 || level.debug_reflection == 3 || level.debug_reflection_matte == 1 || level.debug_color_pallete == 1 || level.debug_color_pallete == 2) {
-    if(isdefined(level.debug_reflectionobject))
+    if(isDefined(level.debug_reflectionobject))
       level.debug_reflectionobject delete();
   }
+
 }
 
 create_reflection_objects() {
   reflection_locs = getreflectionlocs();
 
-  for (i = 0; i < reflection_locs.size; i++) {
+  for(i = 0; i < reflection_locs.size; i++) {
     level.debug_reflection_objects[i] = spawn("script_model", reflection_locs[i]);
     level.debug_reflection_objects[i] setmodel("test_sphere_silver");
   }
+
 }
 
 create_reflection_object(model) {
-  if(!isdefined(model))
+  if(!isDefined(model))
     model = "test_sphere_silver";
 
-  if(isdefined(level.debug_reflectionobject))
+  if(isDefined(level.debug_reflectionobject))
     level.debug_reflectionobject delete();
 
   players = get_players();
@@ -330,7 +336,7 @@ debug_reflection_buttons() {
   offset = 100;
   lastoffset = offset;
 
-  while (getdvar(#"debug_reflection") == "1" || getdvar(#"debug_reflection") == "3" || getdvar(#"debug_reflection_matte") == "1" || getdvar(#"debug_color_pallete") == "1" || getdvar(#"debug_color_pallete") == "2") {
+  while(getdvar(#"debug_reflection") == "1" || getdvar(#"debug_reflection") == "3" || getdvar(#"debug_reflection_matte") == "1" || getdvar(#"debug_color_pallete") == "1" || getdvar(#"debug_color_pallete") == "2") {
     players = get_players();
 
     if(players[0] buttonpressed("BUTTON_X"))
@@ -353,15 +359,16 @@ debug_reflection_buttons() {
     line(level.debug_reflectionobject.origin, getreflectionorigin(level.debug_reflectionobject.origin), (1, 0, 0), 1, 1);
     wait 0.05;
 
-    if(isdefined(level.debug_reflectionobject))
+    if(isDefined(level.debug_reflectionobject))
       level.debug_reflectionobject linkto(players[0]);
   }
+
 }
 
 debug_reflection_matte() {
   level.debug_reflection_matte = 0;
 
-  while (true) {
+  while(true) {
     wait 0.1;
 
     if(getdvar(#"debug_reflection_matte") == "1" && level.debug_reflection_matte != 1) {
@@ -375,12 +382,13 @@ debug_reflection_matte() {
       level.debug_reflection_matte = 0;
     }
   }
+
 }
 
 debug_color_pallete() {
   level.debug_color_pallete = 0;
 
-  while (true) {
+  while(true) {
     wait 0.1;
 
     if(getdvar(#"debug_color_pallete") == "1" && level.debug_color_pallete != 1) {
@@ -398,4 +406,5 @@ debug_color_pallete() {
       level.debug_color_pallete = 0;
     }
   }
+
 }

@@ -27,6 +27,7 @@ main() {
   setsaveddvar("r_waterwavesteepness", "1 1 1 1");
   setsaveddvar("r_waterwaveangle", "0 90 180 270");
   waitforclient(0);
+
   println("*** Client : mp_castaway running...");
 }
 

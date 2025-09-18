@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\_teargrenades.gsc
-***************************************/
+**************************************/
 
 #include maps\mp\gametypes\_perplayer;
 
@@ -34,28 +34,29 @@ monitortearusage() {
   }
   prevammo = self getammocount("tear_grenade_mp");
 
-  while (true) {
+  while(true) {
     ammo = self getammocount("tear_grenade_mp");
 
     if(ammo < prevammo) {
       num = prevammo - ammo;
-      for (i = 0; i < num; i++) {
+
+      for(i = 0; i < num; i++) {
         grenades = getentarray("grenade", "classname");
         bestdist = undefined;
         bestg = undefined;
 
-        for (g = 0; g < grenades.size; g++) {
-          if(!isdefined(grenades[g].teargrenade)) {
+        for(g = 0; g < grenades.size; g++) {
+          if(!isDefined(grenades[g].teargrenade)) {
             dist = distance(grenades[g].origin, self.origin + vectorscale((0, 0, 1), 48.0));
 
-            if(!isdefined(bestdist) || dist < bestdist) {
+            if(!isDefined(bestdist) || dist < bestdist) {
               bestdist = dist;
               bestg = g;
             }
           }
         }
 
-        if(isdefined(bestdist)) {
+        if(isDefined(bestdist)) {
           grenades[bestg].teargrenade = 1;
           grenades[bestg] thread teargrenade_think(self.team);
         }
@@ -79,7 +80,7 @@ tear(pos) {
   self thread teartimer();
   self endon("tear_timeout");
 
-  while (true) {
+  while(true) {
     trig waittill("trigger", player);
 
     if(player.sessionstate != "playing") {
@@ -105,7 +106,7 @@ tear(pos) {
     }
     player.teargasstarttime = gettime();
 
-    if(!isdefined(player.teargassuffering))
+    if(!isDefined(player.teargassuffering))
       player thread teargassuffering();
   }
 }
@@ -123,7 +124,7 @@ teargassuffering() {
   if(self mayapplyscreeneffect())
     self shellshock("teargas", 60);
 
-  while (true) {
+  while(true) {
     if(gettime() - self.teargasstarttime > level.tearsufferingduration * 1000) {
       break;
     }
@@ -140,7 +141,7 @@ teargassuffering() {
 drawcylinder(pos, rad, height) {
   time = 0;
 
-  while (true) {
+  while(true) {
     currad = rad;
     curheight = height;
 
@@ -149,7 +150,7 @@ drawcylinder(pos, rad, height) {
       curheight = curheight * (time / level.teargasfillduration);
     }
 
-    for (r = 0; r < 20; r++) {
+    for(r = 0; r < 20; r++) {
       theta = r / 20 * 360;
       theta2 = (r + 1) / 20 * 360;
       line(pos + (cos(theta) * currad, sin(theta) * currad, 0), pos + (cos(theta2) * currad, sin(theta2) * currad, 0));

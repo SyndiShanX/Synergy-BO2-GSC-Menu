@@ -20,11 +20,12 @@ main() {
   thread clientscripts\mp\mp_vertigo_amb::main();
   level.onplayerconnect = ::vertigoplayerconnected;
   waitforclient(0);
+
   println("*** Client : mp_vertigo running...");
 }
 
 vertigoplayerconnected(localclientnum) {
-  for (;;) {
+  for(;;) {
     level waittill("snap_processed", snapshotlocalclientnum);
 
     if(snapshotlocalclientnum == localclientnum) {
@@ -42,10 +43,10 @@ cameratrackplayer(localclientnum) {
   pitch = self.angles[0];
   roll = self.angles[2];
 
-  for (;;) {
+  for(;;) {
     localplayer = getnonpredictedlocalplayer(0);
 
-    if(isdefined(localplayer) && isdefined(localplayer.origin)) {
+    if(isDefined(localplayer) && isDefined(localplayer.origin)) {
       direction = localplayer.origin - self.origin;
       angles = vectortoangles(direction);
       flattenedangles = (pitch, angles[1] + 90, roll);

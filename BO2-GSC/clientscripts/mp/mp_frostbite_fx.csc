@@ -9,7 +9,6 @@
 #include clientscripts\mp\_fx;
 
 precache_scripted_fx() {
-
 }
 
 precache_createfx_fx() {
@@ -62,7 +61,7 @@ precache_fxanim_props_dlc4() {
 fxanim_init(localclientnum) {
   level thread clientscripts\mp\_fxanim_dlc4::fxanim_init_dlc(localclientnum);
 
-  for (;;) {
+  for(;;) {
     level waittill("snap_processed", snapshotlocalclientnum);
 
     if(snapshotlocalclientnum == localclientnum) {
@@ -73,11 +72,11 @@ fxanim_init(localclientnum) {
   level thread clientscripts\mp\_fxanim_dlc4::fxanim_init_dlc(localclientnum);
   radar = getent(localclientnum, "fxanim_dlc4_crane", "targetname");
 
-  if(isdefined(radar)) {
-    if(!isdefined(level.radar_waits)) {
+  if(isDefined(radar)) {
+    if(!isDefined(level.radar_waits)) {
       level.radar_waits = [];
 
-      for (i = 1; i < 6; i++)
+      for(i = 1; i < 6; i++)
         level.radar_waits[i] = randomfloatrange(5, 10);
     }
 
@@ -103,10 +102,10 @@ fxanim_radar_think(localclientnum) {
   self useanimtree(#animtree);
   anim_index = 1;
 
-  for (;;) {
+  for(;;) {
     self setflaggedanimrestart("radar_done" + anim_index, level.scr_anim["fxanim_props_dlc4"]["crane0" + anim_index], 1.0, 0.0, 1.0);
 
-    for (;;) {
+    for(;;) {
       self waittill("radar_done" + anim_index, note);
 
       if(note == "end") {
@@ -131,6 +130,6 @@ main() {
   precache_fxanim_props_dlc4();
   disablefx = getdvarint(#"_id_C9B177D6");
 
-  if(!isdefined(disablefx) || disablefx <= 0)
+  if(!isDefined(disablefx) || disablefx <= 0)
     precache_scripted_fx();
 }

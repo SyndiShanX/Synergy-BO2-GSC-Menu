@@ -66,7 +66,7 @@ include_buildables() {
   ekey.buildablepieces[0].onspawn = ::onspawn_keys;
   include_buildable(ekey);
 
-  if(!isdefined(level.gamedifficulty) || level.gamedifficulty != 0) {
+  if(!isDefined(level.gamedifficulty) || level.gamedifficulty != 0) {
     sq_common_electricbox = generate_zombie_buildable_piece("sq_common", "p6_zm_buildable_sq_electric_box", 32, 64, 0, "zm_hud_icon_sq_powerbox", ::onpickup_common, ::ondrop_common, undefined, "tag_part_02", undefined, 10);
     sq_common_meteor = generate_zombie_buildable_piece("sq_common", "p6_zm_buildable_sq_meteor", 32, 64, 0, "zm_hud_icon_sq_meteor", ::onpickup_common, ::ondrop_common, undefined, "tag_part_04", undefined, 11);
     sq_common_scaffolding = generate_zombie_buildable_piece("sq_common", "p6_zm_buildable_sq_scaffolding", 64, 96, 0, "zm_hud_icon_sq_scafold", ::onpickup_common, ::ondrop_common, undefined, "tag_part_01", undefined, 12);
@@ -90,7 +90,7 @@ springpadbuildable() {
 slipgunbuildable() {
   level thread wait_for_slipgun();
 
-  if(!(isdefined(level.slipgun_as_equipment) && level.slipgun_as_equipment))
+  if(!(isDefined(level.slipgun_as_equipment) && level.slipgun_as_equipment))
     persist = 2;
   else
     persist = 1;
@@ -114,12 +114,14 @@ ekeysbuildable() {
 
 ondrop_common(player) {
   println("ZM >> Common part callback onDrop()");
+
   self droponelevator(player);
   self.piece_owner = undefined;
 }
 
 onpickup_common(player) {
   println("ZM >> Common part callback onPickup()");
+
   player playsound("zmb_buildable_pickup");
   self pickupfromelevator();
   self.piece_owner = player;
@@ -138,7 +140,7 @@ onbuyweapon_slipgun(player) {
 wait_for_slipgun() {
   level.zombie_include_weapons["slipgun_zm"] = 0;
 
-  if(!(isdefined(level.slipgun_as_equipment) && level.slipgun_as_equipment)) {
+  if(!(isDefined(level.slipgun_as_equipment) && level.slipgun_as_equipment)) {
     level waittill("slipgun_bought", player);
     level.zombie_include_weapons["slipgun_zm"] = 1;
     level.zombie_weapons["slipgun_zm"].is_in_box = 1;
@@ -146,7 +148,7 @@ wait_for_slipgun() {
 }
 
 keyscreateglint() {
-  if(!isdefined(self.model.glint_fx))
+  if(!isDefined(self.model.glint_fx))
     playfxontag(level._effect["elevator_glint"], self.model, "tag_origin");
 }
 
@@ -159,7 +161,6 @@ ondrop_keys(player) {
 }
 
 onpickup_keys(player) {
-
 }
 
 escape_pod_key_prompt(player) {
@@ -181,10 +182,10 @@ watch_elevator_prompt(player, trig) {
   player endon("watch_elevator_prompt");
   trig endon("kill_trigger");
 
-  while (true) {
+  while(true) {
     trig.stub.elevator waittill("floor_changed");
 
-    if(isdefined(self.stub.elevator)) {
+    if(isDefined(self.stub.elevator)) {
       if(trig.stub.elevator maps\mp\zm_highrise_elevators::elevator_is_on_floor(trig.stub.floor)) {
         thread maps\mp\zombies\_zm_unitrigger::cleanup_trigger(trig, player);
         return;
@@ -194,10 +195,10 @@ watch_elevator_prompt(player, trig) {
 }
 
 elevator_key_prompt(player) {
-  if(!isdefined(self.stub.elevator)) {
+  if(!isDefined(self.stub.elevator)) {
     elevatorname = self.stub.script_noteworthy;
 
-    if(isdefined(elevatorname) && isdefined(self.stub.script_parameters)) {
+    if(isDefined(elevatorname) && isDefined(self.stub.script_parameters)) {
       elevator = level.elevators[elevatorname];
       floor = int(self.stub.script_parameters);
       flevel = elevator maps\mp\zm_highrise_elevators::elevator_level_for_floor(floor);
@@ -206,8 +207,8 @@ elevator_key_prompt(player) {
     }
   }
 
-  if(!isdefined(self.stub.elevator)) {
-    if(isdefined(self.stub.script_noteworthy))
+  if(!isDefined(self.stub.elevator)) {
+    if(isDefined(self.stub.script_noteworthy))
       error("Cannot locate elevator " + self.stub.script_noteworthy);
     else
       error("Cannot locate elevator ");
@@ -221,7 +222,7 @@ elevator_key_prompt(player) {
       print3d(self.stub.origin, text, color, 1, 0.5, 300);
   }
 
-  if(isdefined(self.stub.elevator)) {
+  if(isDefined(self.stub.elevator)) {
     if(self.stub.elevator maps\mp\zm_highrise_elevators::elevator_is_on_floor(self.stub.floor)) {
       self.stub.hint_string = "";
       self sethintstring(self.stub.hint_string);
@@ -246,11 +247,11 @@ elevator_key_prompt(player) {
 onuseplantobject_elevatorkey(player) {
   elevatorname = self.script_noteworthy;
 
-  if(isdefined(elevatorname) && isdefined(self.script_parameters)) {
+  if(isDefined(elevatorname) && isDefined(self.script_parameters)) {
     floor = int(self.script_parameters);
     elevator = level.elevators[elevatorname];
 
-    if(isdefined(elevator)) {
+    if(isDefined(elevator)) {
       elevator.body.force_starting_floor = floor;
       elevator.body notify("forcego");
     }
@@ -258,7 +259,7 @@ onuseplantobject_elevatorkey(player) {
 }
 
 droponelevator(player) {
-  if(isdefined(player) && (isdefined(player maps\mp\zm_highrise_elevators::object_is_on_elevator()) && player maps\mp\zm_highrise_elevators::object_is_on_elevator())) {
+  if(isDefined(player) && (isDefined(player maps\mp\zm_highrise_elevators::object_is_on_elevator()) && player maps\mp\zm_highrise_elevators::object_is_on_elevator())) {
     self.model linkto(player.elevator_parent);
     self.linked_to_elevator = 1;
     self.unitrigger.link_parent = player.elevator_parent;
@@ -267,26 +268,27 @@ droponelevator(player) {
 }
 
 pickupfromelevator() {
-  if(isdefined(self.linked_to_elevator) && self.linked_to_elevator) {
-    if(isdefined(self.model))
+  if(isDefined(self.linked_to_elevator) && self.linked_to_elevator) {
+    if(isDefined(self.model))
       self.model unlink();
 
     self.linked_to_elevator = undefined;
   }
 
-  if(isdefined(self.unitrigger))
+  if(isDefined(self.unitrigger))
     self.unitrigger.link_parent = undefined;
 }
 
 onuseplantobject_slipgun(player) {
   println("ZM >> Slipgun Buildable CallBack onUsePlantObject()");
+
   buildable = self.buildablezone;
   first_part = "TAG_COOKER";
   second_part = "TAG_BASE";
 
-  for (i = 0; i < buildable.pieces.size; i++) {
+  for(i = 0; i < buildable.pieces.size; i++) {
     if(buildable.pieces[i].part_name == first_part) {
-      if(isdefined(buildable.pieces[i].built) && buildable.pieces[i].built || player player_get_buildable_piece().part_name == first_part) {
+      if(isDefined(buildable.pieces[i].built) && buildable.pieces[i].built || player player_get_buildable_piece().part_name == first_part) {
         buildable.stub.model showpart(second_part);
         continue;
       }

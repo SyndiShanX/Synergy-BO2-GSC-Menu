@@ -1,7 +1,7 @@
-/*******************************************************
+/*********************************************************
  * Decompiled and Edited by SyndiShanX
  * Script: clientscripts\mp\zm_highrise_buildables.csc
-*******************************************************/
+*********************************************************/
 
 #include clientscripts\mp\zombies\_zm_utility;
 

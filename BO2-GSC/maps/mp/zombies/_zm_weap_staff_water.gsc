@@ -45,11 +45,11 @@ init_tag_array() {
 }
 
 water_dart_cleanup() {
-  while (true) {
+  while(true) {
     a_grenades = getentarray("grenade", "classname");
 
     foreach(e_grenade in a_grenades) {
-      if(isdefined(e_grenade.model) && e_grenade.model == "p6_zm_tm_staff_projectile_ice") {
+      if(isDefined(e_grenade.model) && e_grenade.model == "p6_zm_tm_staff_projectile_ice") {
         time = gettime();
 
         if(time - e_grenade.birthtime >= 1000)
@@ -75,7 +75,7 @@ onplayerspawned() {
 watch_staff_water_fired() {
   self endon("disconnect");
 
-  while (true) {
+  while(true) {
     self waittill("missile_fire", e_projectile, str_weapon);
 
     if(str_weapon == "staff_water_zm" || str_weapon == "staff_water_upgraded_zm") {
@@ -92,7 +92,7 @@ watch_staff_water_fired() {
 watch_staff_water_impact() {
   self endon("disconnect");
 
-  while (true) {
+  while(true) {
     self waittill("projectile_impact", str_weapon, v_explode_point, n_radius, str_name, n_impact);
 
     if(str_weapon == "staff_water_upgraded2_zm" || str_weapon == "staff_water_upgraded3_zm") {
@@ -110,10 +110,10 @@ staff_water_kill_zombie(player, str_weapon) {
   self freeze_zombie();
   self do_damage_network_safe(player, self.health, str_weapon, "MOD_RIFLE_BULLET");
 
-  if(isdefined(self.deathanim))
+  if(isDefined(self.deathanim))
     self waittillmatch("death_anim", "shatter");
 
-  if(isdefined(self))
+  if(isDefined(self))
     self thread frozen_zombie_shatter();
 
   player maps\mp\zombies\_zm_score::player_add_points("death", "", "");
@@ -155,7 +155,7 @@ frozen_zombie_shatter() {
   if(is_true(self.is_mechz)) {
     return;
   }
-  if(isdefined(self)) {
+  if(isDefined(self)) {
     if(is_mature()) {
       v_fx = self gettagorigin("J_SpineLower");
       level thread network_safe_play_fx("frozen_shatter", 2, level._effect["staff_water_shatter"], v_fx);
@@ -172,14 +172,14 @@ frozen_zombie_gib(gib_type) {
   self ghost();
   wait 0.4;
 
-  if(isdefined(self))
+  if(isDefined(self))
     self self_delete();
 }
 
 staff_water_position_source(v_detonate, n_lifetime_sec, str_weapon) {
   self endon("disconnect");
 
-  if(isdefined(v_detonate)) {
+  if(isDefined(v_detonate)) {
     level notify("blizzard_shot");
     e_fx = spawn("script_model", v_detonate + vectorscale((0, 0, 1), 33.0));
     e_fx setmodel("tag_origin");
@@ -205,7 +205,7 @@ ice_staff_blizzard_do_kills(player, str_weapon) {
   player endon("disconnect");
   self endon("blizzard_off");
 
-  while (true) {
+  while(true) {
     a_zombies = getaiarray(level.zombie_team);
 
     foreach(zombie in a_zombies) {
@@ -262,9 +262,9 @@ staff_water_zombie_range(v_source, n_range) {
   a_zombies = getaiarray(level.zombie_team);
   a_zombies = get_array_of_closest(v_source, a_zombies);
 
-  if(isdefined(a_zombies)) {
-    for (i = 0; i < a_zombies.size; i++) {
-      if(!isdefined(a_zombies[i])) {
+  if(isDefined(a_zombies)) {
+    for(i = 0; i < a_zombies.size; i++) {
+      if(!isDefined(a_zombies[i])) {
         continue;
       }
       v_zombie_pos = a_zombies[i] gettagorigin("j_head");
@@ -275,7 +275,7 @@ staff_water_zombie_range(v_source, n_range) {
       if(!bullet_trace_throttled(v_source, v_zombie_pos, undefined)) {
         continue;
       }
-      if(isdefined(a_zombies[i]) && isalive(a_zombies[i]))
+      if(isDefined(a_zombies[i]) && isalive(a_zombies[i]))
         a_enemies[a_enemies.size] = a_zombies[i];
     }
   }
@@ -284,7 +284,7 @@ staff_water_zombie_range(v_source, n_range) {
 }
 
 is_staff_water_damage() {
-  return isdefined(self.damageweapon) && (self.damageweapon == "staff_water_zm" || self.damageweapon == "staff_water_upgraded_zm" || self.damageweapon == "staff_water_fake_dart_zm") && !is_true(self.set_beacon_damage);
+  return isDefined(self.damageweapon) && (self.damageweapon == "staff_water_zm" || self.damageweapon == "staff_water_upgraded_zm" || self.damageweapon == "staff_water_fake_dart_zm") && !is_true(self.set_beacon_damage);
 }
 
 ice_affect_mechz(e_player, is_upgraded) {
@@ -303,13 +303,13 @@ ice_affect_mechz(e_player, is_upgraded) {
 }
 
 ice_affect_zombie(str_weapon, e_player, always_kill, n_mod) {
-  if(!isdefined(str_weapon))
+  if(!isDefined(str_weapon))
     str_weapon = "staff_water_zm";
 
-  if(!isdefined(always_kill))
+  if(!isDefined(always_kill))
     always_kill = 0;
 
-  if(!isdefined(n_mod))
+  if(!isDefined(n_mod))
     n_mod = 1;
 
   self endon("death");
@@ -384,7 +384,7 @@ staff_water_death_event() {
     self.nodeathragdoll = 1;
     self freeze_zombie();
 
-    if(isdefined(self.deathanim))
+    if(isDefined(self.deathanim))
       self waittillmatch("death_anim", "shatter");
 
     self thread frozen_zombie_shatter();
@@ -415,7 +415,7 @@ _icicle_locate_target(str_weapon) {
         str_tag = a_tags[randomint(a_tags.size)];
         b_trace_pass = bullet_trace_throttled(fire_origin, target gettagorigin(str_tag), target);
 
-        if(b_trace_pass && isdefined(target) && isalive(target)) {
+        if(b_trace_pass && isDefined(target) && isalive(target)) {
           if(is_true(target.is_mechz))
             target thread ice_affect_mechz(self, is_upgraded);
           else

@@ -1,7 +1,7 @@
-/******************************************************
+/*******************************************************
  * Decompiled and Edited by SyndiShanX
  * Script: aitype\clientscripts\zm_nuked_basic_02.csc
-******************************************************/
+*******************************************************/
 
 #include character\clientscripts\c_zom_dlc0_zombie_soldier_1;
 #include character\clientscripts\c_zom_dlc0_zombie_soldier_civ_1;

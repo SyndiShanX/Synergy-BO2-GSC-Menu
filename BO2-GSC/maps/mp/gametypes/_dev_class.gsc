@@ -11,7 +11,7 @@ dev_cac_init() {
   dev_cac_camera_on = 0;
   level thread dev_cac_gdt_update_think();
 
-  for (;;) {
+  for(;;) {
     wait 0.5;
     reset = 1;
 
@@ -20,7 +20,7 @@ dev_cac_init() {
     }
     host = gethostplayer();
 
-    if(!isdefined(level.dev_cac_player))
+    if(!isDefined(level.dev_cac_player))
       level.dev_cac_player = host;
 
     switch (getdvar(#"devgui_dev_cac")) {
@@ -107,6 +107,7 @@ dev_cac_init() {
     if(reset)
       setdvar("devgui_dev_cac", "");
   }
+
 }
 
 dev_cac_camera(on) {
@@ -119,6 +120,7 @@ dev_cac_camera(on) {
     self setclientthirdperson(0);
     setdvar("cg_fov", getdvar(#"cg_fov_default"));
   }
+
 }
 
 dev_cac_dpad_think(part_name, cycle_function, tag) {
@@ -131,7 +133,7 @@ dev_cac_dpad_think(part_name, cycle_function, tag) {
   dpad_right = 0;
   level.dev_cac_player thread highlight_player();
 
-  for (;;) {
+  for(;;) {
     self setactionslot(3, "");
     self setactionslot(4, "");
 
@@ -153,15 +155,16 @@ dev_cac_dpad_think(part_name, cycle_function, tag) {
 
     wait 0.05;
   }
+
 }
 
 next_in_list(value, list) {
-  if(!isdefined(value))
+  if(!isDefined(value))
     return list[0];
 
-  for (i = 0; i < list.size; i++) {
+  for(i = 0; i < list.size; i++) {
     if(value == list[i]) {
-      if(isdefined(list[i + 1]))
+      if(isDefined(list[i + 1]))
         value = list[i + 1];
       else
         value = list[0];
@@ -174,12 +177,12 @@ next_in_list(value, list) {
 }
 
 prev_in_list(value, list) {
-  if(!isdefined(value))
+  if(!isDefined(value))
     return list[0];
 
-  for (i = 0; i < list.size; i++) {
+  for(i = 0; i < list.size; i++) {
     if(value == list[i]) {
-      if(isdefined(list[i - 1]))
+      if(isDefined(list[i - 1]))
         value = list[i - 1];
       else
         value = list[list.size - 1];
@@ -251,13 +254,13 @@ dev_cac_cycle_render_options(forward, tag) {
 }
 
 dev_cac_player_valid() {
-  return isdefined(level.dev_cac_player) && level.dev_cac_player.sessionstate == "playing";
+  return isDefined(level.dev_cac_player) && level.dev_cac_player.sessionstate == "playing";
 }
 
 dev_cac_cycle_player(forward) {
   players = get_players();
 
-  for (i = 0; i < players.size; i++) {
+  for(i = 0; i < players.size; i++) {
     if(forward)
       level.dev_cac_player = next_in_list(level.dev_cac_player, players);
     else
@@ -286,11 +289,10 @@ dev_cac_overlay_think() {
 }
 
 dev_cac_overlay_update(hud) {
-
 }
 
 dev_cac_overlay_destroy(hud) {
-  for (i = 0; i < hud.menu.size; i++)
+  for(i = 0; i < hud.menu.size; i++)
     hud.menu[i] destroy();
 
   hud destroy();
@@ -375,7 +377,7 @@ color(value) {
 }
 
 dev_cac_gdt_update_think() {
-  for (;;) {
+  for(;;) {
     level waittill("gdt_update", asset, keyvalue);
     keyvalue = strtok(keyvalue, "\\");
     key = keyvalue[0];
@@ -401,24 +403,24 @@ dev_cac_gdt_update_think() {
         break;
     }
 
-    if(!isdefined(key)) {
+    if(!isDefined(key)) {
       continue;
     }
     value = float(keyvalue[1]);
     level.cac_attributes[key][asset] = value;
     players = get_players();
 
-    for (i = 0; i < players.size; i++) {
-
+    for(i = 0; i < players.size; i++) {
     }
   }
+
 }
 
 sort_greatest(function, attribute, greatest) {
   keys = getarraykeys(level.cac_functions[function]);
   greatest = keys[0];
 
-  for (i = 0; i < keys.size; i++) {
+  for(i = 0; i < keys.size; i++) {
     if(level.cac_attributes[attribute][keys[i]] > level.cac_attributes[attribute][greatest])
       greatest = keys[i];
   }
@@ -430,7 +432,7 @@ sort_least(function, attribute, least) {
   keys = getarraykeys(level.cac_functions[function]);
   least = keys[0];
 
-  for (i = 0; i < keys.size; i++) {
+  for(i = 0; i < keys.size; i++) {
     if(level.cac_attributes[attribute][keys[i]] < level.cac_attributes[attribute][least])
       least = keys[i];
   }

@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\zm_tomb_amb.gsc
-***************************************/
+**************************************/
 
 #include common_scripts\utility;
 #include maps\mp\_utility;
@@ -29,7 +29,6 @@ sndsetupendgamemusicstates() {
 }
 
 sndtrackers() {
-
 }
 
 sndstingersetup() {
@@ -87,7 +86,7 @@ sndstingersetupstates() {
 createstingerstate(state, alias, prewait, interrupt) {
   s = level.sndstinger;
 
-  if(!isdefined(s.states[state])) {
+  if(!isDefined(s.states[state])) {
     s.states[state] = spawnstruct();
     s.states[state].alias = alias;
     s.states[state].prewait = prewait;
@@ -96,7 +95,7 @@ createstingerstate(state, alias, prewait, interrupt) {
 }
 
 sndboardmonitor() {
-  while (true) {
+  while(true) {
     level waittill("last_board_torn", barrier_origin);
     players = getplayers();
 
@@ -117,7 +116,7 @@ locationstingerwait(zone_name, type) {
   level.sndlocationplayed = 0;
   level thread sndlocationbetweenroundswait();
 
-  while (true) {
+  while(true) {
     level waittill("newzoneActive", activezone);
     wait 0.1;
 
@@ -143,7 +142,7 @@ locationstingerwait(zone_name, type) {
 
     level waittill("between_round_over");
 
-    while (is_true(level.sndroundwait))
+    while(is_true(level.sndroundwait))
       wait 0.1;
 
     level.sndlocationplayed = 0;
@@ -216,7 +215,7 @@ sndlocationbetweenrounds() {
   activezones = maps\mp\zombies\_zm_zonemgr::get_active_zone_names();
 
   foreach(zone in activezones) {
-    if(isdefined(level.sndlastzone) && zone == level.sndlastzone) {
+    if(isDefined(level.sndlastzone) && zone == level.sndlastzone) {
       continue;
     }
     players = getplayers();
@@ -235,14 +234,14 @@ sndlocationbetweenrounds() {
 }
 
 sndlocationbetweenroundswait() {
-  while (is_true(level.sndroundwait))
+  while(is_true(level.sndroundwait))
     wait 0.1;
 
-  while (true) {
+  while(true) {
     level thread sndlocationbetweenrounds();
     level waittill("between_round_over");
 
-    while (is_true(level.sndroundwait))
+    while(is_true(level.sndroundwait))
       wait 0.1;
   }
 }
@@ -250,7 +249,7 @@ sndlocationbetweenroundswait() {
 sndlocationqueue(zone) {
   level endon("newzoneActive");
 
-  while (is_true(level.sndstinger.isplaying))
+  while(is_true(level.sndstinger.isplaying))
     wait 0.5;
 
   level notify("newzoneActive", zone);
@@ -259,7 +258,7 @@ sndlocationqueue(zone) {
 sndplaystinger(state, player) {
   s = level.sndstinger;
 
-  if(!isdefined(s.states[state])) {
+  if(!isDefined(s.states[state])) {
     return;
   }
   interrupt = s.states[state].interrupt == "ignore";
@@ -287,20 +286,20 @@ sndplaystinger(state, player) {
 playstinger(state, player, ignore) {
   s = level.sndstinger;
 
-  if(!isdefined(s.states[state])) {
+  if(!isDefined(s.states[state])) {
     return;
   }
   if(is_true(level.music_override)) {
     return;
   }
   if(is_true(ignore)) {
-    if(isdefined(player))
+    if(isDefined(player))
       player playsoundtoplayer(s.states[state].alias, player);
     else {
       s.ent playsound(s.states[state].alias);
       s.ent thread playstingerstop();
     }
-  } else if(isdefined(player)) {
+  } else if(isDefined(player)) {
     player playsoundtoplayer(s.states[state].alias, player);
     wait 8;
   } else {
@@ -319,7 +318,7 @@ sndqueuestinger(state, player) {
   else {
     s.queue = 1;
 
-    while (true) {
+    while(true) {
       if(is_true(level.sndroundwait) || is_true(s.isplaying)) {
         wait 0.5;
         count++;
@@ -339,7 +338,7 @@ sndstingerroundwait() {
   wait 25;
   level.sndroundwait = 0;
 
-  while (true) {
+  while(true) {
     level waittill("end_of_round");
     level thread sndstingerroundwait_start();
   }
@@ -374,7 +373,7 @@ sndmusicegg() {
   level.meteor_counter = 0;
   level.music_override = 0;
 
-  for (i = 0; i < origins.size; i++)
+  for(i = 0; i < origins.size; i++)
     level thread sndmusicegg_wait(origins[i]);
 }
 
@@ -444,7 +443,7 @@ sndplaystingerwithoverride(alias, length) {
 sndwait() {
   counter = 0;
 
-  while (is_true(level.music_override)) {
+  while(is_true(level.music_override)) {
     wait 1;
     counter++;
 
@@ -465,7 +464,7 @@ snddoormusictrigs() {
 snddoormusic() {
   self endon("sndDoorMusic_Triggered");
 
-  while (true) {
+  while(true) {
     self waittill("trigger");
 
     if(is_true(level.music_override)) {
@@ -475,7 +474,7 @@ snddoormusic() {
       break;
   }
 
-  if(isdefined(self.target)) {
+  if(isDefined(self.target)) {
     ent = getent(self.target, "targetname");
     ent notify("sndDoorMusic_Triggered");
   }
@@ -486,10 +485,10 @@ snddoormusic() {
 sndmaelstrom() {
   trig = getent("sndMaelstrom", "targetname");
 
-  if(!isdefined(trig)) {
+  if(!isDefined(trig)) {
     return;
   }
-  while (true) {
+  while(true) {
     trig waittill("trigger", who);
 
     if(isplayer(who) && !is_true(who.sndmaelstrom)) {

@@ -1,7 +1,7 @@
-/********************************************************
+/***********************************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\zombies\_zm_hackables_packapunch.gsc
-********************************************************/
+***********************************************************/
 
 #include common_scripts\utility;
 #include maps\mp\_utility;
@@ -12,7 +12,7 @@ hack_packapunch() {
   vending_weapon_upgrade_trigger = getentarray("specialty_weapupgrade", "script_noteworthy");
   perk = getent(vending_weapon_upgrade_trigger[0].target, "targetname");
 
-  if(isdefined(perk)) {
+  if(isDefined(perk)) {
     struct = spawnstruct();
     struct.origin = perk.origin + anglestoright(perk.angles) * 26 + vectorscale((0, 0, 1), 48.0);
     struct.radius = 48;
@@ -29,11 +29,11 @@ pack_trigger_think() {
   if(!flag_exists("enter_nml")) {
     return;
   }
-  while (true) {
+  while(true) {
     flag_wait("enter_nml");
     self.script_int = -1000;
 
-    while (flag("enter_nml"))
+    while(flag("enter_nml"))
       wait 1.0;
   }
 }

@@ -49,7 +49,7 @@ main() {
   level thread maps\mp\zm_highrise_elevators::init_elevators();
   temp_clips = getentarray("elevator_delete", "targetname");
 
-  if(isdefined(temp_clips) && temp_clips.size > 0)
+  if(isDefined(temp_clips) && temp_clips.size > 0)
     array_thread(temp_clips, ::self_delete);
 
   elev_bldg3b = getent("elevator_bldg3b_body", "targetname");
@@ -77,7 +77,7 @@ main() {
   array_thread(level.insta_kill_triggers, ::squashed_death_init, 0);
   e_trigger = getent("instant_death_escape_pod_shaft", "targetname");
 
-  if(isdefined(e_trigger)) {
+  if(isDefined(e_trigger)) {
     e_trigger thread squashed_death_init(1);
     e_trigger thread escape_pod_death_trigger_think();
     level.insta_kill_triggers[level.insta_kill_triggers.size] = e_trigger;
@@ -138,17 +138,17 @@ highrise_pap_move_in(trigger, origin_offset, angles_offset) {
   trigger.worldgun rotateto(self.angles + angles_offset + vectorscale((0, 1, 0), 90.0), 0.35, 0, 0);
   offsetdw = vectorscale((1, 1, 1), 3.0);
 
-  if(isdefined(trigger.worldgun.worldgundw))
+  if(isDefined(trigger.worldgun.worldgundw))
     worldgundw rotateto(self.angles + angles_offset + vectorscale((0, 1, 0), 90.0), 0.35, 0, 0);
 
   wait 0.5;
   move_vec = (self.origin + origin_offset - worldgun.origin) * 0.05 / 0.5;
   elapsed_time_counter = 0;
 
-  while (isdefined(worldgun) && elapsed_time_counter < 0.5) {
+  while(isDefined(worldgun) && elapsed_time_counter < 0.5) {
     worldgun.origin = (worldgun.origin[0] + move_vec[0], worldgun.origin[1] + move_vec[1], pap_machine.origin[2] + offset);
 
-    if(isdefined(worldgundw))
+    if(isDefined(worldgundw))
       worldgundw.origin = (worldgundw.origin[0] + move_vec[0], worldgundw.origin[1] + move_vec[1], pap_machine.origin[2] + offset + offsetdw[2]);
 
     elapsed_time_counter = elapsed_time_counter + 0.05;
@@ -167,10 +167,10 @@ highrise_pap_move_out(trigger, origin_offset, interact_offset) {
   move_vec = (interact_offset - origin_offset) * 0.05 / 0.5;
   elapsed_time_counter = 0;
 
-  while (isdefined(worldgun) && elapsed_time_counter < 0.5) {
+  while(isDefined(worldgun) && elapsed_time_counter < 0.5) {
     worldgun.origin = (worldgun.origin[0] + move_vec[0], worldgun.origin[1] + move_vec[1], pap_machine.origin[2] + offset);
 
-    if(isdefined(worldgundw))
+    if(isDefined(worldgundw))
       worldgundw.origin = (worldgundw.origin[0] + move_vec[0], worldgundw.origin[1] + move_vec[1], pap_machine.origin[2] + offset + offsetdw[2]);
 
     elapsed_time_counter = elapsed_time_counter + 0.05;
@@ -180,10 +180,10 @@ highrise_pap_move_out(trigger, origin_offset, interact_offset) {
   move_vec = (origin_offset - interact_offset) * 0.05 / level.packapunch_timeout;
   elapsed_time_counter = 0;
 
-  while (isdefined(worldgun) && elapsed_time_counter < level.packapunch_timeout) {
+  while(isDefined(worldgun) && elapsed_time_counter < level.packapunch_timeout) {
     worldgun.origin = (worldgun.origin[0] + move_vec[0], worldgun.origin[1] + move_vec[1], pap_machine.origin[2] + offset);
 
-    if(isdefined(worldgundw))
+    if(isDefined(worldgundw))
       worldgundw.origin = (worldgundw.origin[0] + move_vec[0], worldgundw.origin[1] + move_vec[1], pap_machine.origin[2] + offset + offsetdw[2]);
 
     elapsed_time_counter = elapsed_time_counter + 0.05;
@@ -194,7 +194,7 @@ highrise_pap_move_out(trigger, origin_offset, interact_offset) {
 escape_pod_death_trigger_think() {
   self endon("death");
 
-  while (true) {
+  while(true) {
     level waittill("escape_pod_falling_begin");
     self trigger_off();
     level waittill("escape_pod_falling_complete");
@@ -214,10 +214,10 @@ zm_treasure_chest_init() {
 }
 
 squashed_death_init(kill_if_falling) {
-  while (true) {
+  while(true) {
     self waittill("trigger", who);
 
-    if(!(isdefined(who.insta_killed) && who.insta_killed)) {
+    if(!(isDefined(who.insta_killed) && who.insta_killed)) {
       if(isplayer(who)) {
         who thread elevator_black_screen_squash_check();
         who thread insta_kill_player(1, kill_if_falling);
@@ -228,8 +228,8 @@ squashed_death_init(kill_if_falling) {
         who dodamage(who.health + 100, who.origin);
         who.insta_killed = 1;
 
-        if(!(isdefined(who.has_been_damaged_by_player) && who.has_been_damaged_by_player)) {
-          if(isdefined(who.is_leaper) && who.is_leaper)
+        if(!(isDefined(who.has_been_damaged_by_player) && who.has_been_damaged_by_player)) {
+          if(isDefined(who.is_leaper) && who.is_leaper)
             who thread maps\mp\zombies\_zm_ai_leaper::leaper_cleanup();
           else
             level.zombie_total++;
@@ -243,11 +243,11 @@ elevator_black_screen_squash_check() {
   if(!self hasperk("specialty_finalstand")) {
     return;
   }
-  if(isdefined(level.elevators)) {
+  if(isDefined(level.elevators)) {
     foreach(elevator in level.elevators) {
-      if(isdefined(elevator.body.trig)) {
+      if(isDefined(elevator.body.trig)) {
         if(self istouching(elevator.body.trig)) {
-          if(isdefined(self.fade_to_black_time)) {
+          if(isDefined(self.fade_to_black_time)) {
             time = gettime();
             dt = (time - self.fade_to_black_time) / 1000;
 
@@ -271,7 +271,7 @@ elevator_black_screen_squash_check() {
 insta_kill_player(perks_can_respawn_player, kill_if_falling) {
   self endon("disconnect");
 
-  if(isdefined(perks_can_respawn_player) && perks_can_respawn_player == 0) {
+  if(isDefined(perks_can_respawn_player) && perks_can_respawn_player == 0) {
     if(self hasperk("specialty_quickrevive"))
       self unsetperk("specialty_quickrevive");
 
@@ -281,10 +281,10 @@ insta_kill_player(perks_can_respawn_player, kill_if_falling) {
 
   self maps\mp\zombies\_zm_buildables::player_return_piece_to_original_spawn();
 
-  if(isdefined(self.insta_killed) && self.insta_killed) {
+  if(isDefined(self.insta_killed) && self.insta_killed) {
     return;
   }
-  if(isdefined(self.ignore_insta_kill)) {
+  if(isDefined(self.ignore_insta_kill)) {
     self.disable_chugabud_corpse = 1;
     return;
   }
@@ -296,7 +296,7 @@ insta_kill_player(perks_can_respawn_player, kill_if_falling) {
     return;
   }
 
-  if(!isdefined(kill_if_falling) || kill_if_falling == 0) {
+  if(!isDefined(kill_if_falling) || kill_if_falling == 0) {
     if(!self isonground())
       return;
   }
@@ -312,7 +312,7 @@ insta_kill_player(perks_can_respawn_player, kill_if_falling) {
     self thread blood_splat();
 
     if(getnumconnectedplayers() == 1) {
-      if(isdefined(self.lives) && self.lives > 0) {
+      if(isDefined(self.lives) && self.lives > 0) {
         self.waiting_to_revive = 1;
         points = getstruct("zone_green_start", "script_noteworthy");
         spawn_points = getstructarray(points.target, "targetname");
@@ -356,7 +356,7 @@ insta_kill_player(perks_can_respawn_player, kill_if_falling) {
 highrise_chugabud_reject_corpse_func(v_corpse_position) {
   reject = 0;
 
-  if(isdefined(level.elevator_volumes)) {
+  if(isDefined(level.elevator_volumes)) {
     scr_org = spawn("script_origin", v_corpse_position);
 
     foreach(volume in level.elevator_volumes) {
@@ -378,12 +378,12 @@ highrise_chugabud_reject_node_func(v_corpse_pos, nd_node) {
   scr_org = spawn("script_origin", nd_node.origin);
   player_zone = maps\mp\zombies\_zm_zonemgr::get_player_zone();
 
-  if(isdefined(player_zone)) {
+  if(isDefined(player_zone)) {
     if(player_zone == "zone_orange_elevator_shaft_middle_1" || player_zone == "zone_orange_elevator_shaft_middle_2")
       skip_elevator_volume_check = 1;
   }
 
-  if(!isdefined(level.chugabud_info_volume1))
+  if(!isDefined(level.chugabud_info_volume1))
     level.chugabud_info_volume1 = getent("zone_orange_level1_whos_who_info_volume", "targetname");
 
   scr_org.origin = v_corpse_pos;
@@ -396,7 +396,7 @@ highrise_chugabud_reject_node_func(v_corpse_pos, nd_node) {
   }
 
   if(!reject) {
-    if(!isdefined(level.chugabud_info_volume2))
+    if(!isDefined(level.chugabud_info_volume2))
       level.chugabud_info_volume2 = getent("whos_who_slide_info_volume", "targetname");
 
     scr_org.origin = v_corpse_pos;
@@ -411,7 +411,7 @@ highrise_chugabud_reject_node_func(v_corpse_pos, nd_node) {
     if(!skip_elevator_volume_check) {
       scr_org.origin = nd_node.origin;
 
-      if(isdefined(level.elevator_volumes)) {
+      if(isDefined(level.elevator_volumes)) {
         foreach(volume in level.elevator_volumes) {
           if(scr_org istouching(volume)) {
             reject = 1;
@@ -430,11 +430,11 @@ highrise_chugabud_post_respawn_func(v_new_player_position) {
   scr_org = spawn("script_origin", v_new_player_position);
   e_corpse = self.e_chugabud_corpse;
 
-  if(isdefined(e_corpse)) {
+  if(isDefined(e_corpse)) {
     corpse_zone = maps\mp\zombies\_zm_zonemgr::get_zone_from_position(e_corpse.origin);
 
-    if(isdefined(corpse_zone) && (corpse_zone == "zone_orange_elevator_shaft_middle_2" || corpse_zone == "zone_orange_elevator_shaft_middle_1")) {
-      if(!isdefined(level.elevator_shaft_middle_2_respawn_nodes)) {
+    if(isDefined(corpse_zone) && (corpse_zone == "zone_orange_elevator_shaft_middle_2" || corpse_zone == "zone_orange_elevator_shaft_middle_1")) {
+      if(!isDefined(level.elevator_shaft_middle_2_respawn_nodes)) {
         level.elevator_shaft_middle_2_respawn_nodes = getnodearray("orange_elevator_middle_2_player_respawn_loc", "targetname");
         level.elevator_shaft_middle_2_respawn_nodes_index = 0;
       }
@@ -451,14 +451,14 @@ highrise_chugabud_post_respawn_func(v_new_player_position) {
 
   e_corpse = self.e_chugabud_corpse;
 
-  if(isdefined(e_corpse)) {
+  if(isDefined(e_corpse)) {
     a_escape_pod_ents = [];
     a_escape_pod_ents[a_escape_pod_ents.size] = getent("escape_pod_trigger", "targetname");
     a_escape_pod_ents[a_escape_pod_ents.size] = getent("zone_green_escape_pod", "targetname");
     scr_org.origin = e_corpse.origin;
     touching = 0;
 
-    for (i = 0; i < a_escape_pod_ents.size; i++) {
+    for(i = 0; i < a_escape_pod_ents.size; i++) {
       e_ent = a_escape_pod_ents[i];
 
       if(scr_org istouching(e_ent)) {
@@ -471,7 +471,7 @@ highrise_chugabud_post_respawn_func(v_new_player_position) {
       scr_org.origin = v_new_player_position;
       touching = 0;
 
-      for (i = 0; i < a_escape_pod_ents.size; i++) {
+      for(i = 0; i < a_escape_pod_ents.size; i++) {
         e_ent = a_escape_pod_ents[i];
 
         if(scr_org istouching(e_ent)) {
@@ -482,7 +482,7 @@ highrise_chugabud_post_respawn_func(v_new_player_position) {
 
       if(!touching) {
         if(v_new_player_position[2] > 3300) {
-          if(!isdefined(level.escape_pod_corpse_respawn_nodes)) {
+          if(!isDefined(level.escape_pod_corpse_respawn_nodes)) {
             level.escape_pod_corpse_respawn_nodes = getnodearray("escape_pod_corpse_respawn_loc", "targetname");
             level.escape_pod_corpse_respawn_node_index = 0;
           }
@@ -495,7 +495,7 @@ highrise_chugabud_post_respawn_func(v_new_player_position) {
 
           maps\mp\zombies\_zm_chugabud::force_corpse_respawn_position(nd_node.origin);
 
-          if(isdefined(self.riding_escape_pod))
+          if(isDefined(self.riding_escape_pod))
             self.riding_escape_pod = undefined;
         }
       }
@@ -508,7 +508,7 @@ highrise_chugabud_post_respawn_func(v_new_player_position) {
 blood_splat() {
   earthquake(0.3, 3, self.origin, 128);
 
-  if(isdefined(self.blood_splats_overlay)) {
+  if(isDefined(self.blood_splats_overlay)) {
     return;
   }
   self.blood_splats_overlay = newclienthudelem(self);
@@ -531,7 +531,7 @@ blood_splat() {
 }
 
 is_player_killable(player, checkignoremeflag) {
-  if(!isdefined(player))
+  if(!isDefined(player))
     return false;
 
   if(!isalive(player))
@@ -546,10 +546,10 @@ is_player_killable(player, checkignoremeflag) {
   if(player.sessionstate == "intermission")
     return false;
 
-  if(isdefined(self.intermission) && self.intermission)
+  if(isDefined(self.intermission) && self.intermission)
     return false;
 
-  if(isdefined(checkignoremeflag) && player.ignoreme)
+  if(isDefined(checkignoremeflag) && player.ignoreme)
     return false;
 
   return true;
@@ -568,6 +568,7 @@ escapeelevatoruseanimtree() {
 init_escape_pod() {
   flag_init("escape_pod_needs_reset");
   level thread init_escape_elevators_anims();
+
   adddebugcommand("devgui_cmd \"Zombies:1/Highrise:15/Escape Pod:2/Reset To Top:1\" \"set zombie_devgui_hrescapepodreset 1\" \\n");
   level thread watch_escapepod_devgui();
 }
@@ -597,7 +598,7 @@ escape_pod() {
   escape_pod.is_elevator = 1;
   escape_pod._post_host_migration_thread = maps\mp\zm_highrise_elevators::escape_pod_host_migration_respawn_check;
 
-  if(!isdefined(escape_pod_trigger)) {
+  if(!isDefined(escape_pod_trigger)) {
     return;
   }
   escape_pod.home_origin = escape_pod.origin;
@@ -610,11 +611,11 @@ escape_pod() {
   escape_pod setclientfield("clientfield_escape_pod_light_fx", 1);
   escape_pod_trigger thread escape_pod_walk_on_off(escape_pod);
 
-  while (true) {
+  while(true) {
     escape_pod setanim(level.escape_elevator_idle);
     flag_clear("escape_pod_needs_reset");
 
-    if(isdefined(escape_pod_blocker_door)) {
+    if(isDefined(escape_pod_blocker_door)) {
       escape_pod escape_pod_linknodes("escape_pod_door_l_node");
       escape_pod escape_pod_linknodes("escape_pod_door_r_node");
       escape_pod_blocker_door unlink();
@@ -626,7 +627,7 @@ escape_pod() {
 
     escape_pod thread escape_pod_state_run();
 
-    while (true) {
+    while(true) {
       players_in_escape_pod = escape_pod_trigger escape_pod_get_all_alive_players_inside();
 
       if(players_in_escape_pod == 0) {
@@ -663,7 +664,7 @@ escape_pod() {
       player allowjump(0);
     }
 
-    if(isdefined(escape_pod_blocker_door)) {
+    if(isDefined(escape_pod_blocker_door)) {
       escape_pod_blocker_door trigger_on();
       escape_pod_blocker_door linkto(escape_pod);
       escape_pod escape_pod_unlinknodes("escape_pod_door_l_node");
@@ -690,7 +691,7 @@ escape_pod() {
 
     level notify("escape_pod_falling_complete");
 
-    if(isdefined(escape_pod_blocker_door)) {
+    if(isDefined(escape_pod_blocker_door)) {
       escape_pod_blocker_door unlink();
       escape_pod_blocker_door trigger_off();
       escape_pod escape_pod_linknodes("escape_pod_door_l_node");
@@ -710,7 +711,7 @@ escape_pod() {
     escape_pod playloopsound("zmb_elevator_run", 1);
     level notify("escape_pod_moving_back_to_start_position");
 
-    if(isdefined(escape_pod_blocker_door)) {
+    if(isDefined(escape_pod_blocker_door)) {
       escape_pod_blocker_door trigger_on();
       escape_pod_blocker_door linkto(escape_pod);
       escape_pod escape_pod_unlinknodes("escape_pod_door_l_node");
@@ -729,7 +730,7 @@ escape_pod() {
 }
 
 escape_pod_walk_on_off(escape_pod) {
-  while (true) {
+  while(true) {
     self waittill("trigger", who);
 
     if(isplayer(who)) {
@@ -744,7 +745,7 @@ escape_pod_walk_on_off_watch(who, escape_pod) {
   who.in_escape_pod_trigger = 1;
   playsoundatposition("zmb_esc_pod_bump", escape_pod.origin + vectorscale((0, 0, 1), 15.0));
 
-  while (who istouching(self))
+  while(who istouching(self))
     wait 1;
 
   playsoundatposition("zmb_esc_pod_bump", escape_pod.origin + vectorscale((0, 0, 1), 15.0));
@@ -764,7 +765,7 @@ impact_animate() {
 }
 
 escape_pod_state(set, wait_for_current_end) {
-  if(isdefined(self.state) && self.state == set) {
+  if(isDefined(self.state) && self.state == set) {
     return;
   }
   if(is_true(wait_for_current_end))
@@ -794,13 +795,13 @@ escape_pod_state(set, wait_for_current_end) {
 }
 
 escape_pod_state_run() {
-  while (true) {
-    if(!isdefined(self.escape_pod_state)) {
+  while(true) {
+    if(!isDefined(self.escape_pod_state)) {
       wait 0.05;
       continue;
     }
 
-    if(isdefined(self.state) && self.state == 1 && self.state == self.escape_pod_state) {
+    if(isDefined(self.state) && self.state == 1 && self.state == self.escape_pod_state) {
       wait 0.05;
       continue;
     }
@@ -925,7 +926,7 @@ escape_pod_shake() {
   duration = randomfloatrange(0.5, 1.5);
   wait_time = randomfloatrange(1.5, 2.5);
 
-  while (true) {
+  while(true) {
     wait(wait_time);
     earthquake(0.2, duration, self.origin, 1024);
   }
@@ -934,13 +935,13 @@ escape_pod_shake() {
 escape_pod_linknodes(node_name) {
   start_node = getnode(node_name, "targetname");
 
-  if(isdefined(start_node)) {
+  if(isDefined(start_node)) {
     start_node.links = [];
     near_nodes = getnodesinradiussorted(start_node.origin, 128, 0, 64, "pathnodes");
     links = 0;
 
     foreach(node in near_nodes) {
-      if(!isdefined(node.target)) {
+      if(!isDefined(node.target)) {
         self.link_start[self.link_start.size] = start_node;
         self.link_end[self.link_end.size] = node;
         maps\mp\zm_highrise_utility::highrise_link_nodes(start_node, node);
@@ -959,11 +960,11 @@ escape_pod_linknodes(node_name) {
 escape_pod_unlinknodes(node_name) {
   start_node = getnode(node_name, "targetname");
 
-  if(isdefined(start_node) && isdefined(start_node.links)) {
+  if(isDefined(start_node) && isDefined(start_node.links)) {
     linked_nodes = start_node.links;
 
     foreach(node in linked_nodes) {
-      if(!isdefined(node.target)) {
+      if(!isDefined(node.target)) {
         maps\mp\zm_highrise_utility::highrise_unlink_nodes(start_node, node);
         maps\mp\zm_highrise_utility::highrise_unlink_nodes(node, start_node);
       }
@@ -989,16 +990,17 @@ escape_pod_are_all_alive_players_ready() {
 }
 
 watch_escapepod_devgui() {
-  while (true) {
+  while(true) {
     resetcmd = getdvar(#"_id_C0F9913E");
 
-    if(isdefined(resetcmd) && resetcmd != "") {
+    if(isDefined(resetcmd) && resetcmd != "") {
       level notify("reset_escape_pod");
       setdvar("zombie_devgui_hrescapepodreset", "");
     }
 
     wait 1.0;
   }
+
 }
 
 check_valid_poi(valid) {

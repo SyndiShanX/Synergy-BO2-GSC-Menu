@@ -1,15 +1,11 @@
-/*********************************************************
+/*************************************************************
  * Decompiled and Edited by SyndiShanX
  * Script: clientscripts\mp\zombies\_zm_ai_screecher.csc
-*********************************************************/
+*************************************************************/
 
 #include clientscripts\mp\_utility;
 #include clientscripts\mp\zombies\_zm_utility;
 #include clientscripts\mp\_visionset_mgr;
-
-precache() {
-
-}
 
 init() {
   clientscripts\mp\_visionset_mgr::vsmgr_register_overlay_info_style_blur("zm_ai_screecher_blur", 1, 1, 0.1, 0.25, 4);

@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\mp_concert_fx.gsc
-***************************************/
+**************************************/
 
 #include maps\mp\_utility;
 #include maps\mp\createfx\mp_concert_fx;

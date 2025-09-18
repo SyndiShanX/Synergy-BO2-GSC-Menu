@@ -153,7 +153,7 @@ spawned_collision_fix() {
 }
 
 connect_zones_for_ffotd(zone_name_a, zone_name_b, one_way) {
-  if(!isdefined(one_way))
+  if(!isDefined(one_way))
     one_way = 0;
 
   zone_init(zone_name_a);
@@ -161,13 +161,13 @@ connect_zones_for_ffotd(zone_name_a, zone_name_b, one_way) {
   enable_zone(zone_name_a);
   enable_zone(zone_name_b);
 
-  if(!isdefined(level.zones[zone_name_a].adjacent_zones[zone_name_b]))
+  if(!isDefined(level.zones[zone_name_a].adjacent_zones[zone_name_b]))
     level.zones[zone_name_a].adjacent_zones[zone_name_b] = spawnstruct();
 
   level.zones[zone_name_a].adjacent_zones[zone_name_b].is_connected = 1;
 
   if(!one_way) {
-    if(!isdefined(level.zones[zone_name_b].adjacent_zones[zone_name_a]))
+    if(!isDefined(level.zones[zone_name_b].adjacent_zones[zone_name_a]))
       level.zones[zone_name_b].adjacent_zones[zone_name_a] = spawnstruct();
 
     level.zones[zone_name_b].adjacent_zones[zone_name_a].is_connected = 1;

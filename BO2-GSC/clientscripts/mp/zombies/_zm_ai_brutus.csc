@@ -1,14 +1,10 @@
-/******************************************************
+/*******************************************************
  * Decompiled and Edited by SyndiShanX
  * Script: clientscripts\mp\zombies\_zm_ai_brutus.csc
-******************************************************/
+*******************************************************/
 
 #include clientscripts\mp\_utility;
 #include clientscripts\mp\zombies\_zm_utility;
-
-precache() {
-
-}
 
 init() {
   registerclientfield("actor", "helmet_off", 9000, 1, "int", ::brutus_helmet_launch_cb);
@@ -32,10 +28,12 @@ brutus_lock_down_effects_cb(localclientnum, oldval, newval, bnewent, binitialsna
   }
   if(bnewent) {
     println("LDS: NewEnt!");
+
   }
 
   if(binitialsnap) {
     println("LDS: InitialSnap!");
+
   }
 
   player = getlocalplayer(localclientnum);
@@ -46,12 +44,12 @@ brutus_lock_down_effects_cb(localclientnum, oldval, newval, bnewent, binitialsna
 brutusfootstepcbfunc(localclientnum, pos, surface, notetrack, bone) {
   players = getlocalplayers();
 
-  for (i = 0; i < players.size; i++) {
+  for(i = 0; i < players.size; i++) {
     if(abs(self.origin[2] - players[i].origin[2]) < 100) {
       players[i] earthquake(0.5, 0.1, self.origin, 1500);
       playerlocalclientnum = players[i] getlocalclientnumber();
 
-      if(isdefined(playerlocalclientnum))
+      if(isDefined(playerlocalclientnum))
         playrumbleonposition(playerlocalclientnum, "brutus_footsteps", self.origin);
     }
   }
@@ -60,11 +58,12 @@ brutusfootstepcbfunc(localclientnum, pos, surface, notetrack, bone) {
 }
 
 registerbrutusfootstepcb(aitype, func) {
-  if(!isdefined(level._footstepcbfuncs))
+  if(!isDefined(level._footstepcbfuncs))
     level._footstepcbfuncs = [];
 
-  if(isdefined(level._footstepcbfuncs[aitype])) {
+  if(isDefined(level._footstepcbfuncs[aitype])) {
     println("Attempting to register footstep callback function for ai type " + aitype + " multiple times.");
+
     return;
   }
 

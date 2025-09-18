@@ -4,7 +4,7 @@
 ****************************************/
 
 init_filter_indices() {
-  if(isdefined(level.genericfilterinitialized)) {
+  if(isDefined(level.genericfilterinitialized)) {
     return;
   }
   level.genericfilterinitialized = 1;
@@ -12,7 +12,7 @@ init_filter_indices() {
 }
 
 map_material_helper(player, materialname) {
-  if(isdefined(level.filter_matid) && isdefined(level.filter_matid[materialname])) {
+  if(isDefined(level.filter_matid) && isDefined(level.filter_matid[materialname])) {
     player map_material(level.filter_matid[materialname], materialname);
     return;
   }

@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\bots\_bot_dem.gsc
-***************************************/
+**************************************/
 
 #include maps\mp\gametypes\dem;
 #include common_scripts\utility;
@@ -10,7 +10,7 @@
 #include maps\mp\bots\_bot;
 
 bot_dem_think() {
-  if(!isdefined(level.bombzones[0].dem_nodes)) {
+  if(!isDefined(level.bombzones[0].dem_nodes)) {
     foreach(zone in level.bombzones) {
       zone.dem_nodes = [];
       zone.dem_nodes = getnodesinradius(zone.trigger.origin, 1024, 64, 128, "Path");
@@ -29,7 +29,7 @@ bot_dem_attack_think() {
   if(!zones.size) {
     return;
   }
-  if(!isdefined(self.goal_flag)) {
+  if(!isDefined(self.goal_flag)) {
     zones = array_randomize(zones);
 
     foreach(zone in zones) {
@@ -43,7 +43,7 @@ bot_dem_attack_think() {
     }
   }
 
-  if(isdefined(self.goal_flag)) {
+  if(isDefined(self.goal_flag)) {
     if(is_true(self.goal_flag.bombexploded)) {
       self.goal_flag = undefined;
       self cancelgoal("dem_guard");
@@ -63,7 +63,7 @@ bot_dem_defend_think() {
   if(!zones.size) {
     return;
   }
-  if(!isdefined(self.goal_flag)) {
+  if(!isDefined(self.goal_flag)) {
     zones = array_randomize(zones);
 
     foreach(zone in zones) {
@@ -77,7 +77,7 @@ bot_dem_defend_think() {
     }
   }
 
-  if(isdefined(self.goal_flag)) {
+  if(isDefined(self.goal_flag)) {
     if(is_true(self.goal_flag.bombexploded)) {
       self.goal_flag = undefined;
       self cancelgoal("dem_guard");
@@ -95,7 +95,7 @@ bot_dem_attack(zone) {
   if(!self hasgoal("bomb")) {
     self.bomb_goal = self dem_get_bomb_goal(zone.visuals[0]);
 
-    if(isdefined(self.bomb_goal))
+    if(isDefined(self.bomb_goal))
       self addgoal(self.bomb_goal, 48, 2, "bomb");
 
     return;
@@ -136,7 +136,7 @@ bot_dem_guard(zone, nodes, origin) {
   self cancelgoal("bomb");
   enemy = self bot_dem_enemy_interacting(origin);
 
-  if(isdefined(enemy)) {
+  if(isDefined(enemy)) {
     self maps\mp\bots\_bot_combat::bot_combat_throw_lethal(enemy.origin);
     self addgoal(enemy.origin, 128, 3, "dem_guard");
     return;
@@ -144,7 +144,7 @@ bot_dem_guard(zone, nodes, origin) {
 
   enemy = self bot_dem_enemy_nearby(origin);
 
-  if(isdefined(enemy)) {
+  if(isDefined(enemy)) {
     self maps\mp\bots\_bot_combat::bot_combat_throw_lethal(enemy.origin);
     self addgoal(enemy.origin, 128, 3, "dem_guard");
     return;
@@ -165,7 +165,7 @@ bot_dem_defuse(zone) {
   if(!self hasgoal("bomb")) {
     self.bomb_goal = self dem_get_bomb_goal(zone.visuals[0]);
 
-    if(isdefined(self.bomb_goal))
+    if(isDefined(self.bomb_goal))
       self addgoal(self.bomb_goal, 48, 2, "bomb");
 
     return;
@@ -234,7 +234,7 @@ bot_dem_friend_interacting(origin) {
 bot_dem_enemy_nearby(origin) {
   enemy = maps\mp\bots\_bot::bot_get_closest_enemy(origin, 1);
 
-  if(isdefined(enemy)) {
+  if(isDefined(enemy)) {
     if(distancesquared(enemy.origin, origin) < 1048576)
       return enemy;
   }
@@ -256,7 +256,7 @@ dem_get_alive_zones() {
 }
 
 dem_get_bomb_goal(ent) {
-  if(!isdefined(ent.bot_goals)) {
+  if(!isDefined(ent.bot_goals)) {
     goals = [];
     ent.bot_goals = [];
     dir = anglestoforward(ent.angles);

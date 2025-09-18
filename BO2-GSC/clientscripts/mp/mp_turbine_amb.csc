@@ -90,8 +90,8 @@ wmill_sfx_setup() {
   location[2].origin = (-1073, 1351, 1941);
   location[2].alias = "amb_wmill_whoosh";
 
-  while (true) {
-    for (i = 0; i < location.size; i++)
+  while(true) {
+    for(i = 0; i < location.size; i++)
       playsound(0, location[i].alias, location[i].origin);
 
     wait 1.35;
@@ -99,25 +99,25 @@ wmill_sfx_setup() {
 }
 
 snd_play_auto_fx(fxid, alias, offsetx, offsety, offsetz, onground, area) {
-  for (i = 0; i < level.createfxent.size; i++) {
+  for(i = 0; i < level.createfxent.size; i++) {
     if(level.createfxent[i].v["fxid"] == fxid) {
       level.createfxent[i].soundent = spawnfakeent(0);
 
-      if(isdefined(area))
+      if(isDefined(area))
         level.createfxent[i].soundentarea = area;
 
       origin = level.createfxent[i].v["origin"];
 
-      if(isdefined(offsetx) && offsetx > 0)
+      if(isDefined(offsetx) && offsetx > 0)
         origin = origin + (offsetx, 0, 0);
 
-      if(isdefined(offsety) && offsetx > 0)
+      if(isDefined(offsety) && offsetx > 0)
         origin = origin + (0, offsety, 0);
 
-      if(isdefined(offsetz) && offsetx > 0)
+      if(isDefined(offsetz) && offsetx > 0)
         origin = origin + (0, 0, offsetz);
 
-      if(isdefined(onground) && onground) {
+      if(isDefined(onground) && onground) {
         trace = undefined;
         d = undefined;
         fxorigin = origin;
@@ -133,9 +133,8 @@ snd_play_auto_fx(fxid, alias, offsetx, offsety, offsetz, onground, area) {
 }
 
 snd_play_auto_fturbine_area_emmiters() {
-  for (i = 0; i < level.createfxent.size; i++) {
+  for(i = 0; i < level.createfxent.size; i++) {
     if(level.createfxent[i].soundentarea > 1) {
-
     }
   }
 }

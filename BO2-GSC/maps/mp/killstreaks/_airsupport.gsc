@@ -8,19 +8,24 @@
 #include maps\mp\gametypes\_weapons;
 
 initairsupport() {
-  if(!isdefined(level.airsupportheightscale))
+  if(!isDefined(level.airsupportheightscale))
     level.airsupportheightscale = 1;
 
   level.airsupportheightscale = getdvarintdefault("scr_airsupportHeightScale", level.airsupportheightscale);
   level.noflyzones = [];
   level.noflyzones = getentarray("no_fly_zone", "targetname");
   airsupport_heights = getstructarray("air_support_height", "targetname");
+
   if(airsupport_heights.size > 1)
     error("Found more then one 'air_support_height' structs in the map");
+
   airsupport_heights = getentarray("air_support_height", "targetname");
+
   if(airsupport_heights.size > 0)
     error("Found an entity in the map with an 'air_support_height' targetname.There should be only structs.");
+
   heli_height_meshes = getentarray("heli_height_lock", "classname");
+
   if(heli_height_meshes.size > 1)
     error("Found more then one 'heli_height_lock' classname in the map");
 }
@@ -60,7 +65,7 @@ endselectiononhostmigration() {
 endselectionthink() {
   assert(isplayer(self));
   assert(isalive(self));
-  assert(isdefined(self.selectinglocation));
+  assert(isDefined(self.selectinglocation));
   assert(self.selectinglocation == 1);
   self thread endselectionongameend();
   self thread endselectiononhostmigration();
@@ -97,18 +102,19 @@ calculatereleasetime(flytime, flyheight, flyspeed, bombspeedscale) {
 getminimumflyheight() {
   airsupport_height = getstruct("air_support_height", "targetname");
 
-  if(isdefined(airsupport_height))
+  if(isDefined(airsupport_height))
     planeflyheight = airsupport_height.origin[2];
   else {
     println("WARNING:Missing air_support_height entity in the map.Using default height.");
+
     planeflyheight = 850;
 
-    if(isdefined(level.airsupportheightscale)) {
+    if(isDefined(level.airsupportheightscale)) {
       level.airsupportheightscale = getdvarintdefault("scr_airsupportHeightScale", level.airsupportheightscale);
       planeflyheight = planeflyheight * getdvarintdefault("scr_airsupportHeightScale", level.airsupportheightscale);
     }
 
-    if(isdefined(level.forceairsupportmapheight))
+    if(isDefined(level.forceairsupportmapheight))
       planeflyheight = planeflyheight + level.forceairsupportmapheight;
   }
 
@@ -148,7 +154,7 @@ callstrike(flightplan) {
 }
 
 planestrike(owner, requireddeathcount, pathstart, pathend, bombtime, flytime, flyspeed, bombspeedscale, direction, planespawnedfunction) {
-  if(!isdefined(owner)) {
+  if(!isDefined(owner)) {
     return;
   }
   plane = spawnplane(owner, "script_model", pathstart);
@@ -156,7 +162,7 @@ planestrike(owner, requireddeathcount, pathstart, pathend, bombtime, flytime, fl
   plane moveto(pathend, flytime, 0, 0);
   thread debug_plane_line(flytime, flyspeed, pathstart, pathend);
 
-  if(isdefined(planespawnedfunction))
+  if(isDefined(planespawnedfunction))
     plane[[planespawnedfunction]](owner, requireddeathcount, pathstart, pathend, bombtime, bombspeedscale, flytime, flyspeed);
 
   wait(flytime);
@@ -197,7 +203,7 @@ clamptarget(target) {
 }
 
 _insidecylinder(point, base, radius, height) {
-  if(isdefined(height)) {
+  if(isDefined(height)) {
     if(point[2] > base[2] + height)
       return false;
   }
@@ -213,7 +219,7 @@ _insidecylinder(point, base, radius, height) {
 _insidenoflyzonebyindex(point, index, disregardheight) {
   height = level.noflyzones[index].height;
 
-  if(isdefined(disregardheight))
+  if(isDefined(disregardheight))
     height = undefined;
 
   return _insidecylinder(point, level.noflyzones[index].origin, level.noflyzones[index].radius, height);
@@ -223,7 +229,7 @@ getnoflyzoneheight(point) {
   height = point[2];
   origin = undefined;
 
-  for (i = 0; i < level.noflyzones.size; i++) {
+  for(i = 0; i < level.noflyzones.size; i++) {
     if(_insidenoflyzonebyindex(point, i)) {
       if(height < level.noflyzones[i].height) {
         height = level.noflyzones[i].height;
@@ -232,7 +238,7 @@ getnoflyzoneheight(point) {
     }
   }
 
-  if(!isdefined(origin))
+  if(!isDefined(origin))
     return point[2];
 
   return origin[2] + height;
@@ -241,7 +247,7 @@ getnoflyzoneheight(point) {
 insidenoflyzones(point, disregardheight) {
   noflyzones = [];
 
-  for (i = 0; i < level.noflyzones.size; i++) {
+  for(i = 0; i < level.noflyzones.size; i++) {
     if(_insidenoflyzonebyindex(point, i, disregardheight))
       noflyzones[noflyzones.size] = i;
   }
@@ -250,7 +256,7 @@ insidenoflyzones(point, disregardheight) {
 }
 
 crossesnoflyzone(start, end) {
-  for (i = 0; i < level.noflyzones.size; i++) {
+  for(i = 0; i < level.noflyzones.size; i++) {
     point = closestpointonline(level.noflyzones[i].origin + (0, 0, 0.5 * level.noflyzones[i].height), start, end);
     dist = distance2d(point, level.noflyzones[i].origin);
 
@@ -267,7 +273,7 @@ crossesnoflyzone(start, end) {
 crossesnoflyzones(start, end) {
   zones = [];
 
-  for (i = 0; i < level.noflyzones.size; i++) {
+  for(i = 0; i < level.noflyzones.size; i++) {
     point = closestpointonline(level.noflyzones[i].origin, start, end);
     dist = distance2d(point, level.noflyzones[i].origin);
 
@@ -284,7 +290,7 @@ crossesnoflyzones(start, end) {
 getnoflyzoneheightcrossed(start, end, minheight) {
   height = minheight;
 
-  for (i = 0; i < level.noflyzones.size; i++) {
+  for(i = 0; i < level.noflyzones.size; i++) {
     point = closestpointonline(level.noflyzones[i].origin, start, end);
     dist = distance2d(point, level.noflyzones[i].origin);
 
@@ -298,11 +304,11 @@ getnoflyzoneheightcrossed(start, end, minheight) {
 }
 
 _shouldignorenoflyzone(noflyzone, noflyzones) {
-  if(!isdefined(noflyzone))
+  if(!isDefined(noflyzone))
     return true;
 
-  for (i = 0; i < noflyzones.size; i++) {
-    if(isdefined(noflyzones[i]) && noflyzones[i] == noflyzone)
+  for(i = 0; i < noflyzones.size; i++) {
+    if(isDefined(noflyzones[i]) && noflyzones[i] == noflyzone)
       return true;
   }
 
@@ -310,7 +316,7 @@ _shouldignorenoflyzone(noflyzone, noflyzones) {
 }
 
 _shouldignorestartgoalnoflyzone(noflyzone, startnoflyzones, goalnoflyzones) {
-  if(!isdefined(noflyzone))
+  if(!isDefined(noflyzone))
     return true;
 
   if(_shouldignorenoflyzone(noflyzone, startnoflyzones))
@@ -332,7 +338,7 @@ gethelipath(start, goal) {
 
   goal_points = calculatepath(start, goal, startnoflyzones, goalnoflyzones);
 
-  if(!isdefined(goal_points))
+  if(!isDefined(goal_points))
     return undefined;
 
   assert(goal_points.size >= 1);
@@ -340,7 +346,7 @@ gethelipath(start, goal) {
 }
 
 followpath(path, donenotify, stopatgoal) {
-  for (i = 0; i < path.size - 1; i++) {
+  for(i = 0; i < path.size - 1; i++) {
     self setvehgoalpos(path[i], 0);
     thread debug_line(self.origin, path[i], (1, 1, 0));
     self waittill("goal");
@@ -350,18 +356,18 @@ followpath(path, donenotify, stopatgoal) {
   thread debug_line(self.origin, path[i], (1, 1, 0));
   self waittill("goal");
 
-  if(isdefined(donenotify))
+  if(isDefined(donenotify))
     self notify(donenotify);
 }
 
 setgoalposition(goal, donenotify, stopatgoal) {
-  if(!isdefined(stopatgoal))
+  if(!isDefined(stopatgoal))
     stopatgoal = 1;
 
   start = self.origin;
   goal_points = gethelipath(start, goal);
 
-  if(!isdefined(goal_points)) {
+  if(!isDefined(goal_points)) {
     goal_points = [];
     goal_points[0] = goal;
   }
@@ -372,7 +378,7 @@ setgoalposition(goal, donenotify, stopatgoal) {
 clearpath(start, end, startnoflyzone, goalnoflyzone) {
   noflyzones = crossesnoflyzones(start, end);
 
-  for (i = 0; i < noflyzones.size; i++) {
+  for(i = 0; i < noflyzones.size; i++) {
     if(!_shouldignorestartgoalnoflyzone(noflyzones[i], startnoflyzone, goalnoflyzone))
       return false;
   }
@@ -381,7 +387,7 @@ clearpath(start, end, startnoflyzone, goalnoflyzone) {
 }
 
 append_array(dst, src) {
-  for (i = 0; i < src.size; i++)
+  for(i = 0; i < src.size; i++)
     dst[dst.size] = src[i];
 }
 
@@ -395,7 +401,7 @@ calculatepath_r(start, end, points, startnoflyzones, goalnoflyzones, depth) {
 
   noflyzones = crossesnoflyzones(start, end);
 
-  for (i = 0; i < noflyzones.size; i++) {
+  for(i = 0; i < noflyzones.size; i++) {
     noflyzone = noflyzones[i];
 
     if(!_shouldignorestartgoalnoflyzone(noflyzone, startnoflyzones, goalnoflyzones))
@@ -410,14 +416,14 @@ calculatepath(start, end, startnoflyzones, goalnoflyzones) {
   points = [];
   points = calculatepath_r(start, end, points, startnoflyzones, goalnoflyzones, 3);
 
-  if(!isdefined(points))
+  if(!isDefined(points))
     return undefined;
 
   assert(points.size >= 1);
   debug_sphere(points[points.size - 1], 10, (1, 0, 0), 1, 1000);
   point = start;
 
-  for (i = 0; i < points.size; i++) {
+  for(i = 0; i < points.size; i++) {
     thread debug_line(point, points[i], (0, 1, 0));
     debug_sphere(points[i], 10, (0, 0, 1), 1, 1000);
     point = points[i];
@@ -433,7 +439,7 @@ _getstrikepathstartandend(goal, yaw, halfdistance) {
   noflyzone = crossesnoflyzone(startpoint, endpoint);
   path = [];
 
-  if(isdefined(noflyzone)) {
+  if(isDefined(noflyzone)) {
     path["noFlyZone"] = noflyzone;
     startpoint = (startpoint[0], startpoint[1], level.noflyzones[noflyzone].origin[2] + level.noflyzones[noflyzone].height);
     endpoint = (endpoint[0], endpoint[1], startpoint[2]);
@@ -456,11 +462,11 @@ getstrikepath(target, height, halfdistance, yaw) {
   goal = (target[0], target[1], worldheight);
   path = [];
 
-  if(!isdefined(yaw) || yaw != "random") {
-    for (i = 0; i < 3; i++) {
+  if(!isDefined(yaw) || yaw != "random") {
+    for(i = 0; i < 3; i++) {
       path = _getstrikepathstartandend(goal, randomint(360), halfdistance);
 
-      if(!isdefined(path["noFlyZone"])) {
+      if(!isDefined(path["noFlyZone"])) {
         break;
       }
     }
@@ -525,7 +531,7 @@ entlosradiusdamage(ent, pos, radius, max, min, owner, einflictor) {
 }
 
 debug_no_fly_zones() {
-  for (i = 0; i < level.noflyzones.size; i++)
+  for(i = 0; i < level.noflyzones.size; i++)
     debug_cylinder(level.noflyzones[i].origin, level.noflyzones[i].radius, level.noflyzones[i].height, (1, 1, 1), undefined, 5000);
 }
 
@@ -533,7 +539,7 @@ debug_plane_line(flytime, flyspeed, pathstart, pathend) {
   thread debug_line(pathstart, pathend, (1, 1, 1));
   delta = vectornormalize(pathend - pathstart);
 
-  for (i = 0; i < flytime; i++)
+  for(i = 0; i < flytime; i++)
     thread debug_star(pathstart + vectorscale(delta, i * flyspeed), (1, 0, 0));
 }
 
@@ -550,44 +556,46 @@ debug_draw_bomb_path(projectile, color, time) {
   self endon("death");
   level.airsupport_debug = getdvarintdefault("scr_airsupport_debug", 0);
 
-  if(!isdefined(color))
+  if(!isDefined(color))
     color = (0.5, 1, 0);
 
-  if(isdefined(level.airsupport_debug) && level.airsupport_debug == 1.0) {
+  if(isDefined(level.airsupport_debug) && level.airsupport_debug == 1.0) {
     prevpos = self.origin;
 
-    while (isdefined(self.origin)) {
+    while(isDefined(self.origin)) {
       thread debug_line(prevpos, self.origin, color, time);
       prevpos = self.origin;
 
-      if(isdefined(projectile) && projectile)
+      if(isDefined(projectile) && projectile)
         thread debug_draw_bomb_explosion(prevpos);
 
       wait 0.2;
     }
   }
+
 }
 
 debug_print3d_simple(message, ent, offset, frames) {
   level.airsupport_debug = getdvarintdefault("scr_airsupport_debug", 0);
 
-  if(isdefined(level.airsupport_debug) && level.airsupport_debug == 1.0) {
-    if(isdefined(frames))
+  if(isDefined(level.airsupport_debug) && level.airsupport_debug == 1.0) {
+    if(isDefined(frames))
       thread draw_text(message, vectorscale((1, 1, 1), 0.8), ent, offset, frames);
     else
       thread draw_text(message, vectorscale((1, 1, 1), 0.8), ent, offset, 0);
   }
+
 }
 
 draw_text(msg, color, ent, offset, frames) {
   if(frames == 0) {
-    while (isdefined(ent) && isdefined(ent.origin)) {
+    while(isDefined(ent) && isDefined(ent.origin)) {
       print3d(ent.origin + offset, msg, color, 0.5, 4);
       wait 0.05;
     }
   } else {
-    for (i = 0; i < frames; i++) {
-      if(!isdefined(ent)) {
+    for(i = 0; i < frames; i++) {
+      if(!isDefined(ent)) {
         break;
       }
 
@@ -595,95 +603,101 @@ draw_text(msg, color, ent, offset, frames) {
       wait 0.05;
     }
   }
+
 }
 
 debug_print3d(message, color, ent, origin_offset, frames) {
   level.airsupport_debug = getdvarintdefault("scr_airsupport_debug", 0);
 
-  if(isdefined(level.airsupport_debug) && level.airsupport_debug == 1.0)
+  if(isDefined(level.airsupport_debug) && level.airsupport_debug == 1.0)
     self thread draw_text(message, color, ent, origin_offset, frames);
 }
 
 debug_line(from, to, color, time, depthtest) {
   level.airsupport_debug = getdvarintdefault("scr_airsupport_debug", 0);
 
-  if(isdefined(level.airsupport_debug) && level.airsupport_debug == 1.0) {
-    if(!isdefined(time))
+  if(isDefined(level.airsupport_debug) && level.airsupport_debug == 1.0) {
+    if(!isDefined(time))
       time = 1000;
 
-    if(!isdefined(depthtest))
+    if(!isDefined(depthtest))
       depthtest = 1;
 
     line(from, to, color, 1, depthtest, time);
   }
+
 }
 
 debug_star(origin, color, time) {
   level.airsupport_debug = getdvarintdefault("scr_airsupport_debug", 0);
 
-  if(isdefined(level.airsupport_debug) && level.airsupport_debug == 1.0) {
-    if(!isdefined(time))
+  if(isDefined(level.airsupport_debug) && level.airsupport_debug == 1.0) {
+    if(!isDefined(time))
       time = 1000;
 
-    if(!isdefined(color))
+    if(!isDefined(color))
       color = (1, 1, 1);
 
     debugstar(origin, time, color);
   }
+
 }
 
 debug_circle(origin, radius, color, time) {
   level.airsupport_debug = getdvarintdefault("scr_airsupport_debug", 0);
 
-  if(isdefined(level.airsupport_debug) && level.airsupport_debug == 1) {
-    if(!isdefined(time))
+  if(isDefined(level.airsupport_debug) && level.airsupport_debug == 1) {
+    if(!isDefined(time))
       time = 1000;
 
-    if(!isdefined(color))
+    if(!isDefined(color))
       color = (1, 1, 1);
 
     circle(origin, radius, color, 1, 1, time);
   }
+
 }
 
 debug_sphere(origin, radius, color, alpha, time) {
   level.airsupport_debug = getdvarintdefault("scr_airsupport_debug", 0);
 
-  if(isdefined(level.airsupport_debug) && level.airsupport_debug == 1) {
-    if(!isdefined(time))
+  if(isDefined(level.airsupport_debug) && level.airsupport_debug == 1) {
+    if(!isDefined(time))
       time = 1000;
 
-    if(!isdefined(color))
+    if(!isDefined(color))
       color = (1, 1, 1);
 
     sides = int(10 * (1 + int(radius / 100)));
     sphere(origin, radius, color, alpha, 1, sides, time);
   }
+
 }
 
 debug_cylinder(origin, radius, height, color, mustrenderheight, time) {
   level.airsupport_debug = getdvarintdefault("scr_airsupport_debug", 0);
   subdivision = 600;
 
-  if(isdefined(level.airsupport_debug) && level.airsupport_debug == 1) {
-    if(!isdefined(time))
+  if(isDefined(level.airsupport_debug) && level.airsupport_debug == 1) {
+    if(!isDefined(time))
       time = 1000;
 
-    if(!isdefined(color))
+    if(!isDefined(color))
       color = (1, 1, 1);
 
     count = height / subdivision;
 
-    for (i = 0; i < count; i++) {
+    for(i = 0; i < count; i++) {
       point = origin + (0, 0, i * subdivision);
       circle(point, radius, color, 1, 1, time);
     }
 
-    if(isdefined(mustrenderheight)) {
+    if(isDefined(mustrenderheight)) {
       point = origin + (0, 0, mustrenderheight);
       circle(point, radius, color, 1, 1, time);
     }
   }
+
 }
 
 getpointonline(startpoint, endpoint, ratio) {
@@ -692,8 +706,8 @@ getpointonline(startpoint, endpoint, ratio) {
 }
 
 cantargetplayerwithspecialty() {
-  if(self hasperk("specialty_nottargetedbyairsupport") || isdefined(self.specialty_nottargetedbyairsupport) && self.specialty_nottargetedbyairsupport) {
-    if(!isdefined(self.nottargettedai_underminspeedtimer) || self.nottargettedai_underminspeedtimer < getdvarint(#"perk_nottargetedbyai_graceperiod"))
+  if(self hasperk("specialty_nottargetedbyairsupport") || isDefined(self.specialty_nottargetedbyairsupport) && self.specialty_nottargetedbyairsupport) {
+    if(!isDefined(self.nottargettedai_underminspeedtimer) || self.nottargettedai_underminspeedtimer < getdvarint(#"perk_nottargetedbyai_graceperiod"))
       return false;
   }
 
@@ -718,10 +732,10 @@ monitorspeed(spawnprotectiontime) {
   }
   self.nottargettedai_underminspeedtimer = 0;
 
-  if(isdefined(spawnprotectiontime))
+  if(isDefined(spawnprotectiontime))
     wait(spawnprotectiontime);
 
-  while (true) {
+  while(true) {
     velocity = self getvelocity();
     speedsq = lengthsquared(velocity);
 
@@ -735,6 +749,6 @@ monitorspeed(spawnprotectiontime) {
 }
 
 clearmonitoredspeed() {
-  if(isdefined(self.nottargettedai_underminspeedtimer))
+  if(isDefined(self.nottargettedai_underminspeedtimer))
     self.nottargettedai_underminspeedtimer = 0;
 }

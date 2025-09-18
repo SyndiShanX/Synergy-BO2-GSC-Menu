@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\mp_studio_fx.gsc
-***************************************/
+**************************************/
 
 #include maps\mp\_utility;
 #include maps\mp\createfx\mp_studio_fx;
@@ -15,7 +15,6 @@ main() {
 }
 
 precache_scripted_fx() {
-
 }
 
 precache_createfx_fx() {
@@ -107,5 +106,4 @@ precache_fxanim_props() {
 }
 
 precache_fxanim_props_dlc() {
-
 }

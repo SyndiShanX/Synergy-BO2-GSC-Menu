@@ -1,17 +1,13 @@
-/************************************************************
+/*******************************************************************
  * Decompiled and Edited by SyndiShanX
  * Script: clientscripts\mp\zm_alcatraz_grief_cellblock.csc
-************************************************************/
+*******************************************************************/
 
 #include clientscripts\mp\_utility;
 #include clientscripts\mp\zombies\_zm_weapons;
 #include clientscripts\mp\zombies\_zm_utility;
 #include clientscripts\mp\zombies\_zm_game_mode_objects;
 #include clientscripts\mp\zombies\_zm;
-
-precache() {
-
-}
 
 main() {
   level thread init_perk_machines_fx();
@@ -21,7 +17,7 @@ main() {
   level notify("zgrief_cellblock", 0);
   a_players = getlocalplayers();
 
-  for (i = 0; i < a_players.size; i++) {
+  for(i = 0; i < a_players.size; i++) {
     m_master_key_attachment = getent(i, "master_key_attachment", "targetname");
     m_master_key_attachment delete();
     m_dryer = getent(i, "dryer_model", "targetname");

@@ -13,22 +13,22 @@
 hack_boards() {
   windows = getstructarray("exterior_goal", "targetname");
 
-  for (i = 0; i < windows.size; i++) {
+  for(i = 0; i < windows.size; i++) {
     window = windows[i];
     struct = spawnstruct();
     spot = window;
 
-    if(isdefined(window.trigger_location))
+    if(isDefined(window.trigger_location))
       spot = window.trigger_location;
 
     org = groundpos(spot.origin) + vectorscale((0, 0, 1), 4.0);
     r = 96;
     h = 96;
 
-    if(isdefined(spot.radius))
+    if(isDefined(spot.radius))
       r = spot.radius;
 
-    if(isdefined(spot.height))
+    if(isDefined(spot.height))
       h = spot.height;
 
     struct.origin = org + vectorscale((0, 0, 1), 48.0);
@@ -68,21 +68,21 @@ board_hack(hacker) {
       hacker maps\mp\zombies\_zm_score::minus_to_player_score(cost);
   }
 
-  while (true) {
+  while(true) {
     if(all_chunks_intact(self.window, self.window.barrier_chunks)) {
       break;
     }
 
     chunk = get_random_destroyed_chunk(self.window, self.window.barrier_chunks);
 
-    if(!isdefined(chunk)) {
+    if(!isDefined(chunk)) {
       break;
     }
 
     self.window thread maps\mp\zombies\_zm_blockers::replace_chunk(self.window, chunk, undefined, 0, 1);
     last_repaired_chunk = chunk;
 
-    if(isdefined(self.clip)) {
+    if(isDefined(self.clip)) {
       self.window.clip enable_trigger();
       self.window.clip disconnectpaths();
     } else
@@ -96,13 +96,13 @@ board_hack(hacker) {
     }
   }
 
-  if(isdefined(self.window.zbarrier)) {
-    if(isdefined(last_repaired_chunk)) {
-      while (self.window.zbarrier getzbarrierpiecestate(last_repaired_chunk) == "closing")
+  if(isDefined(self.window.zbarrier)) {
+    if(isDefined(last_repaired_chunk)) {
+      while(self.window.zbarrier getzbarrierpiecestate(last_repaired_chunk) == "closing")
         wait 0.05;
     }
   } else {
-    while (isdefined(last_repaired_chunk) && last_repaired_chunk.state == "mid_repair")
+    while(isDefined(last_repaired_chunk) && last_repaired_chunk.state == "mid_repair")
       wait 0.05;
   }
 

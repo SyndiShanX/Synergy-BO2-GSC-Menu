@@ -11,8 +11,8 @@
 main() {
   self endon("killanimscript");
 
-  for (;;) {
-    if(isdefined(level.ignore_stop_func)) {
+  for(;;) {
+    if(isDefined(level.ignore_stop_func)) {
       if(self[[level.ignore_stop_func]]())
         return;
     }

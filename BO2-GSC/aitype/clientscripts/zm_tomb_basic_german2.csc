@@ -1,7 +1,7 @@
-/**********************************************************
+/***************************************************************
  * Decompiled and Edited by SyndiShanX
  * Script: aitype\clientscripts\zm_tomb_basic_german2.csc
-**********************************************************/
+***************************************************************/
 
 #include character\clientscripts\c_zom_tomb_german_2b_nohat;
 #include character\clientscripts\c_zom_tomb_german_3c;

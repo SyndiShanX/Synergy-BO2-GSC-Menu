@@ -38,7 +38,7 @@ main() {
   self thread deathnotify();
   self.baseaccuracy = self.accuracy;
 
-  if(!isdefined(self.script_accuracy))
+  if(!isDefined(self.script_accuracy))
     self.script_accuracy = 1;
 
   self.a.misstime = 0;
@@ -56,10 +56,11 @@ main() {
   self.a.crouchpain = 0;
   self.a.nextstandinghitdying = 0;
 
-  if(!isdefined(self.script_forcegrenade))
+  if(!isDefined(self.script_forcegrenade))
     self.script_forcegrenade = 0;
 
   self.a.lastdebugprint = "";
+
   self.lastenemysighttime = 0;
   self.combattime = 0;
   self.coveridleselecttime = -696969;
@@ -69,11 +70,9 @@ main() {
 }
 
 donothing() {
-
 }
 
 empty(one, two, three, whatever) {
-
 }
 
 clearenemy() {
@@ -91,19 +90,19 @@ deathnotify() {
 }
 
 firstinit() {
-  if(isdefined(anim.notfirsttime)) {
+  if(isDefined(anim.notfirsttime)) {
     return;
   }
   anim.notfirsttime = 1;
   anim.usefacialanims = 0;
 
-  if(!isdefined(anim.dog_health))
+  if(!isDefined(anim.dog_health))
     anim.dog_health = 1;
 
-  if(!isdefined(anim.dog_presstime))
+  if(!isDefined(anim.dog_presstime))
     anim.dog_presstime = 350;
 
-  if(!isdefined(anim.dog_hits_before_kill))
+  if(!isDefined(anim.dog_hits_before_kill))
     anim.dog_hits_before_kill = 1;
 
   level.nextgrenadedrop = randomint(3);
@@ -127,7 +126,7 @@ firstinit() {
   anim.totalgibs = randomintrange(anim.mingibs, anim.maxgibs);
   anim.corner_straight_yaw_limit = 36;
 
-  if(!isdefined(anim.optionalstepeffectfunction)) {
+  if(!isDefined(anim.optionalstepeffectfunction)) {
     anim.optionalstepeffects = [];
     anim.optionalstepeffectfunction = ::empty;
   }
@@ -135,7 +134,7 @@ firstinit() {
   anim.notetracks = [];
   maps\mp\animscripts\zm_shared::registernotetracks();
 
-  if(!isdefined(level.flag)) {
+  if(!isDefined(level.flag)) {
     level.flag = [];
     level.flags_lock = [];
   }

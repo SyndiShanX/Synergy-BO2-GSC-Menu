@@ -15,7 +15,6 @@ main() {
 }
 
 precache_scripted_fx() {
-
 }
 
 precache_createfx_fx() {

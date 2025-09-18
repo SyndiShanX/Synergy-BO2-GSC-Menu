@@ -9,7 +9,6 @@
 #include clientscripts\mp\_fx;
 
 precache_scripted_fx() {
-
 }
 
 precache_createfx_fx() {
@@ -109,25 +108,25 @@ main() {
   precache_fxanim_props_dlc();
   disablefx = getdvarint(#"_id_C9B177D6");
 
-  if(!isdefined(disablefx) || disablefx <= 0)
+  if(!isDefined(disablefx) || disablefx <= 0)
     precache_scripted_fx();
 }
 
 fxanim_level_init(localclientnum) {
   fxanims = getentarray(localclientnum, "fxanim_level", "targetname");
 
-  if(!isdefined(level.fxanim_waits)) {
+  if(!isDefined(level.fxanim_waits)) {
     level.fxanim_waits = [];
     level.fxanim_speeds = [];
 
-    for (i = 0; i < fxanims.size; i++) {
+    for(i = 0; i < fxanims.size; i++) {
       level.fxanim_waits[i] = randomfloatrange(0.1, 1.5);
       level.fxanim_speeds[i] = randomfloatrange(0.75, 1.4);
     }
   }
 
-  for (i = 0; i < fxanims.size; i++) {
-    assert(isdefined(fxanims[i].fxanim_scene_1));
+  for(i = 0; i < fxanims.size; i++) {
+    assert(isDefined(fxanims[i].fxanim_scene_1));
 
     switch (fxanims[i].fxanim_scene_1) {
       case "sparking_wires_med":
@@ -151,7 +150,7 @@ fxanim_wire_think(localclientnum, index, bone) {
   wait(level.fxanim_waits[index]);
   self setflaggedanim("wire_fx", level.scr_anim["fxanim_props"][self.fxanim_scene_1], 1.0, 0.0, level.fxanim_speeds[index]);
 
-  for (;;) {
+  for(;;) {
     self waittill("wire_fx", note);
     playfxontag(localclientnum, level._effect["fx_mp_elec_spark_burst_xsm_thin"], self, bone);
   }

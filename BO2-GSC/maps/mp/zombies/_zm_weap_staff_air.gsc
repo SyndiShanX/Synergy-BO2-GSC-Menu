@@ -50,7 +50,7 @@ air_projectile_delete() {
 watch_staff_air_fired() {
   self endon("disconnect");
 
-  while (true) {
+  while(true) {
     self waittill("missile_fire", e_projectile, str_weapon);
 
     if(str_weapon == "staff_air_upgraded_zm" || str_weapon == "staff_air_zm") {
@@ -66,7 +66,7 @@ watch_staff_air_fired() {
 watch_staff_air_impact() {
   self endon("disconnect");
 
-  while (true) {
+  while(true) {
     self waittill("projectile_impact", str_weap_name, v_explode_point, n_radius, projectile);
 
     if(str_weap_name == "staff_air_upgraded2_zm" || str_weap_name == "staff_air_upgraded3_zm")
@@ -77,14 +77,14 @@ watch_staff_air_impact() {
 staff_air_find_source(v_detonate, str_weapon) {
   self endon("disconnect");
 
-  if(!isdefined(v_detonate)) {
+  if(!isDefined(v_detonate)) {
     return;
   }
   a_zombies = getaiarray(level.zombie_team);
   a_zombies = get_array_of_closest(v_detonate, a_zombies);
 
   if(a_zombies.size) {
-    for (i = 0; i < a_zombies.size; i++) {
+    for(i = 0; i < a_zombies.size; i++) {
       if(isalive(a_zombies[i])) {
         if(is_true(a_zombies[i].staff_hit)) {
           continue;
@@ -108,20 +108,20 @@ staff_air_zombie_source(ai_zombie, str_weapon) {
   v_whirlwind_pos = ai_zombie.origin;
   self thread staff_air_position_source(v_whirlwind_pos, str_weapon);
 
-  if(!isdefined(ai_zombie.is_mechz))
+  if(!isDefined(ai_zombie.is_mechz))
     self thread source_zombie_death(ai_zombie);
 }
 
 staff_air_position_source(v_detonate, str_weapon) {
   self endon("disconnect");
 
-  if(!isdefined(v_detonate)) {
+  if(!isDefined(v_detonate)) {
     return;
   }
   if(flag("whirlwind_active")) {
     level notify("whirlwind_stopped");
 
-    while (flag("whirlwind_active"))
+    while(flag("whirlwind_active"))
       wait_network_frame();
 
     wait 0.3;
@@ -148,7 +148,7 @@ whirlwind_seek_zombies(n_level, str_weapon) {
   self.b_found_zombies = 0;
   n_range = get_air_blast_range(n_level);
 
-  while (true) {
+  while(true) {
     a_zombies = staff_air_zombie_range(self.origin, n_range);
 
     if(a_zombies.size) {
@@ -184,12 +184,12 @@ whirlwind_kill_zombies(n_level, str_weapon) {
   n_range = get_air_blast_range(n_level);
   self.n_charge_level = n_level;
 
-  while (true) {
+  while(true) {
     a_zombies = staff_air_zombie_range(self.origin, n_range);
     a_zombies = get_array_of_closest(self.origin, a_zombies);
 
-    for (i = 0; i < a_zombies.size; i++) {
-      if(!isdefined(a_zombies[i])) {
+    for(i = 0; i < a_zombies.size; i++) {
+      if(!isDefined(a_zombies[i])) {
         continue;
       }
       if(a_zombies[i].ai_state != "find_flesh") {
@@ -206,7 +206,7 @@ whirlwind_kill_zombies(n_level, str_weapon) {
       if(!bullet_trace_throttled(self.origin + v_offset, a_zombies[i].origin + v_offset, undefined)) {
         continue;
       }
-      if(!isdefined(a_zombies[i]) || !isalive(a_zombies[i])) {
+      if(!isDefined(a_zombies[i]) || !isalive(a_zombies[i])) {
         continue;
       }
       v_offset = (-10, -10, 64);
@@ -214,7 +214,7 @@ whirlwind_kill_zombies(n_level, str_weapon) {
       if(!bullet_trace_throttled(self.origin + v_offset, a_zombies[i].origin + v_offset, undefined)) {
         continue;
       }
-      if(!isdefined(a_zombies[i]) || !isalive(a_zombies[i])) {
+      if(!isDefined(a_zombies[i]) || !isalive(a_zombies[i])) {
         continue;
       }
       a_zombies[i] thread whirlwind_drag_zombie(self, str_weapon);
@@ -226,12 +226,12 @@ whirlwind_kill_zombies(n_level, str_weapon) {
 }
 
 whirlwind_drag_zombie(e_whirlwind, str_weapon) {
-  if(isdefined(self.e_linker)) {
+  if(isDefined(self.e_linker)) {
     return;
   }
   self whirlwind_move_zombie(e_whirlwind);
 
-  if(isdefined(self) && isdefined(e_whirlwind) && flag("whirlwind_active")) {
+  if(isDefined(self) && isDefined(e_whirlwind) && flag("whirlwind_active")) {
     player = e_whirlwind.player_owner;
     self do_damage_network_safe(player, self.health, str_weapon, "MOD_IMPACT");
     level thread staff_air_gib(self);
@@ -239,7 +239,7 @@ whirlwind_drag_zombie(e_whirlwind, str_weapon) {
 }
 
 whirlwind_move_zombie(e_whirlwind) {
-  if(isdefined(self.e_linker)) {
+  if(isDefined(self.e_linker)) {
     return;
   }
   self.e_linker = spawn("script_origin", (0, 0, 0));
@@ -248,15 +248,15 @@ whirlwind_move_zombie(e_whirlwind) {
   self linkto(self.e_linker);
   self thread whirlwind_unlink(e_whirlwind);
 
-  if(isdefined(e_whirlwind))
+  if(isDefined(e_whirlwind))
     n_dist_sq = distance2dsquared(e_whirlwind.origin, self.origin);
 
   n_fling_range_sq = 900;
 
-  while (isalive(self) && n_dist_sq > n_fling_range_sq && isdefined(e_whirlwind) && flag("whirlwind_active")) {
+  while(isalive(self) && n_dist_sq > n_fling_range_sq && isDefined(e_whirlwind) && flag("whirlwind_active")) {
     n_dist_sq = distance2dsquared(e_whirlwind.origin, self.origin);
 
-    if(isdefined(self.ai_state) && self.ai_state == "find_flesh") {
+    if(isDefined(self.ai_state) && self.ai_state == "find_flesh") {
       b_supercharged = e_whirlwind.n_charge_level == 3;
       self thread whirlwind_attract_anim(e_whirlwind.origin, b_supercharged);
       n_movetime = 1.0;
@@ -293,7 +293,7 @@ source_zombie_death(ai_zombie) {
   ai_zombie thread staff_air_fling_zombie(self);
   a_zombies = staff_air_zombie_range(v_source, n_range);
 
-  if(!isdefined(a_zombies)) {
+  if(!isDefined(a_zombies)) {
     return;
   }
   self thread staff_air_proximity_kill(a_zombies);
@@ -315,10 +315,10 @@ get_air_blast_range(n_charge) {
 staff_air_proximity_kill(a_zombies) {
   self endon("disconnect");
 
-  if(!isdefined(a_zombies)) {
+  if(!isDefined(a_zombies)) {
     return;
   }
-  for (i = 0; i < a_zombies.size; i++) {
+  for(i = 0; i < a_zombies.size; i++) {
     if(isalive(a_zombies[i])) {
       a_zombies[i] thread staff_air_fling_zombie(self);
       wait 0.05;
@@ -332,14 +332,14 @@ staff_air_zombie_range(v_source, n_range) {
   a_zombies = get_array_of_closest(v_source, a_zombies);
   n_range_sq = n_range * n_range;
 
-  if(isdefined(a_zombies)) {
-    for (i = 0; i < a_zombies.size; i++) {
-      if(!isdefined(a_zombies[i])) {
+  if(isDefined(a_zombies)) {
+    for(i = 0; i < a_zombies.size; i++) {
+      if(!isDefined(a_zombies[i])) {
         continue;
       }
       v_zombie_pos = a_zombies[i].origin;
 
-      if(isdefined(a_zombies[i].staff_hit) && a_zombies[i].staff_hit == 1) {
+      if(isDefined(a_zombies[i].staff_hit) && a_zombies[i].staff_hit == 1) {
         continue;
       }
       if(distancesquared(v_source, v_zombie_pos) > n_range_sq) {
@@ -358,7 +358,7 @@ staff_air_fling_zombie(player) {
   if(!isalive(self)) {
     return;
   }
-  if(isdefined(self.is_source) || cointoss())
+  if(isDefined(self.is_source) || cointoss())
     self thread zombie_launch(player, "staff_air_upgraded_zm");
   else {
     self do_damage_network_safe(player, self.health, "staff_air_upgraded_zm", "MOD_IMPACT");
@@ -369,7 +369,7 @@ staff_air_fling_zombie(player) {
 zombie_launch(e_attacker, str_weapon) {
   self do_damage_network_safe(e_attacker, self.health, str_weapon, "MOD_IMPACT");
 
-  if(isdefined(level.ragdoll_limit_check) && ![
+  if(isDefined(level.ragdoll_limit_check) && ![
       [level.ragdoll_limit_check]
     ]())
     level thread staff_air_gib(self);
@@ -401,7 +401,7 @@ staff_air_zombie_damage_response(mod, hit_location, hit_origin, player, amount) 
 }
 
 is_staff_air_damage() {
-  return isdefined(self.damageweapon) && (self.damageweapon == "staff_air_zm" || self.damageweapon == "staff_air_upgraded_zm") && !is_true(self.set_beacon_damage);
+  return isDefined(self.damageweapon) && (self.damageweapon == "staff_air_zm" || self.damageweapon == "staff_air_upgraded_zm") && !is_true(self.set_beacon_damage);
 }
 
 staff_air_death_event() {
@@ -412,7 +412,7 @@ staff_air_death_event() {
     self thread maps\mp\zombies\_zm_audio::do_zombies_playvocals("death", self.animname);
     self thread zombie_eye_glow_stop();
 
-    if(isdefined(level.ragdoll_limit_check) && ![
+    if(isDefined(level.ragdoll_limit_check) && ![
         [level.ragdoll_limit_check]
       ]())
       level thread staff_air_gib(self);
@@ -458,7 +458,7 @@ stun_zombie() {
   if(is_true(self.is_electrocuted)) {
     return;
   }
-  if(!isdefined(self.ai_state) || self.ai_state != "find_flesh") {
+  if(!isDefined(self.ai_state) || self.ai_state != "find_flesh") {
     return;
   }
   self.forcemovementscriptstate = 1;
@@ -479,7 +479,7 @@ stun_zombie() {
 whirlwind_attract_anim_watch_cancel() {
   self endon("death");
 
-  while (flag("whirlwind_active"))
+  while(flag("whirlwind_active"))
     wait_network_frame();
 
   self.deathanim = undefined;
@@ -488,7 +488,7 @@ whirlwind_attract_anim_watch_cancel() {
 }
 
 whirlwind_attract_anim(v_attract_point, b_move_fast) {
-  if(!isdefined(b_move_fast))
+  if(!isDefined(b_move_fast))
     b_move_fast = 0;
 
   self endon("death");

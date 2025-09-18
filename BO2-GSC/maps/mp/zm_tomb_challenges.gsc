@@ -28,12 +28,14 @@ tomb_challenges_add_stats() {
   n_zone_caps = 6;
   n_points_spent = 30000;
   n_boxes_filled = 4;
+
   if(getdvarint(#"_id_FA81816F") > 0) {
     n_kills = 1;
     n_zone_caps = 2;
     n_points_spent = 500;
     n_boxes_filled = 1;
   }
+
   add_stat("zc_headshots", 0, & "ZM_TOMB_CH1", n_kills, undefined, ::reward_packed_weapon);
   add_stat("zc_zone_captures", 0, & "ZM_TOMB_CH2", n_zone_caps, undefined, ::reward_powerup_max_ammo);
   add_stat("zc_points_spent", 0, & "ZM_TOMB_CH3", n_points_spent, undefined, ::reward_double_tap, ::track_points_spent);
@@ -41,7 +43,7 @@ tomb_challenges_add_stats() {
 }
 
 track_points_spent() {
-  while (true) {
+  while(true) {
     level waittill("spent_points", player, points);
     player increment_stat("zc_points_spent", points);
   }
@@ -60,8 +62,10 @@ init_box_footprints() {
 box_footprint_think() {
   self.n_souls_absorbed = 0;
   n_souls_required = 30;
+
   if(getdvarint(#"_id_FA81816F") > 0)
     n_souls_required = 10;
+
   self useanimtree(#animtree);
   self thread watch_for_foot_stomp();
   wait 1;
@@ -69,7 +73,7 @@ box_footprint_think() {
   wait 1;
   self setclientfield("foot_print_box_glow", 0);
 
-  while (self.n_souls_absorbed < n_souls_required) {
+  while(self.n_souls_absorbed < n_souls_required) {
     self waittill("soul_absorbed", player);
     self.n_souls_absorbed++;
 
@@ -78,17 +82,17 @@ box_footprint_think() {
       self setanim( % o_zombie_dlc4_challenge_box_open);
       self delay_thread(1, ::setclientfield, "foot_print_box_glow", 1);
 
-      if(isdefined(player) && !flag("vo_soul_box_intro_played"))
+      if(isDefined(player) && !flag("vo_soul_box_intro_played"))
         player delay_thread(1.5, ::richtofenrespondvoplay, "zm_box_start", 0, "vo_soul_box_intro_played");
     }
 
     if(self.n_souls_absorbed == floor(n_souls_required / 4)) {
-      if(isdefined(player) && flag("vo_soul_box_intro_played") && !flag("vo_soul_box_continue_played"))
+      if(isDefined(player) && flag("vo_soul_box_intro_played") && !flag("vo_soul_box_continue_played"))
         player thread richtofenrespondvoplay("zm_box_continue", 1, "vo_soul_box_continue_played");
     }
 
     if(self.n_souls_absorbed == floor(n_souls_required / 2) || self.n_souls_absorbed == floor(n_souls_required / 1.3)) {
-      if(isdefined(player))
+      if(isDefined(player))
         player create_and_play_dialog("soul_box", "zm_box_encourage");
     }
 
@@ -110,7 +114,7 @@ box_footprint_think() {
   n_rotations = randomintrange(5, 7);
   v_start_angles = self.angles;
 
-  for (i = 0; i < n_rotations; i++) {
+  for(i = 0; i < n_rotations; i++) {
     v_rotate_angles = v_start_angles + (randomfloatrange(-10, 10), randomfloatrange(-10, 10), randomfloatrange(-10, 10));
     n_rotate_time = randomfloatrange(0.2, 0.4);
     self rotateto(v_rotate_angles, n_rotate_time);
@@ -128,7 +132,7 @@ box_footprint_think() {
   self waittill("movedone");
   level maps\mp\zombies\_zm_challenges::increment_stat("zc_boxes_filled");
 
-  if(isdefined(player)) {
+  if(isDefined(player)) {
     if(level.n_soul_boxes_completed == 1)
       player thread richtofenrespondvoplay("zm_box_complete");
     else if(level.n_soul_boxes_completed == 4)
@@ -141,7 +145,7 @@ box_footprint_think() {
 watch_for_foot_stomp() {
   self endon("box_finished");
 
-  while (true) {
+  while(true) {
     self waittill("robot_foot_stomp");
     self clearanim( % o_zombie_dlc4_challenge_box_open, 0);
     self setanim( % o_zombie_dlc4_challenge_box_close);
@@ -155,7 +159,7 @@ footprint_zombie_killed(attacker) {
   a_volumes = getentarray("foot_box_volume", "script_noteworthy");
 
   foreach(e_volume in a_volumes) {
-    if(self istouching(e_volume) && isdefined(attacker) && isplayer(attacker)) {
+    if(self istouching(e_volume) && isDefined(attacker) && isplayer(attacker)) {
       self setclientfield("foot_print_box_fx", 1);
       m_box = getent(e_volume.target, "targetname");
       m_box notify("soul_absorbed", attacker);
@@ -167,7 +171,7 @@ footprint_zombie_killed(attacker) {
 }
 
 reward_packed_weapon(player, s_stat) {
-  if(!isdefined(s_stat.str_reward_weapon)) {
+  if(!isDefined(s_stat.str_reward_weapon)) {
     a_weapons = array("scar_zm", "galil_zm", "mp44_zm");
     s_stat.str_reward_weapon = maps\mp\zombies\_zm_weapons::get_upgrade_weapon(random(a_weapons));
   }
@@ -187,7 +191,7 @@ reward_packed_weapon(player, s_stat) {
   weapon_limit = get_player_weapon_limit(player);
   primaries = player getweaponslistprimaries();
 
-  if(isdefined(primaries) && primaries.size >= weapon_limit)
+  if(isDefined(primaries) && primaries.size >= weapon_limit)
     player maps\mp\zombies\_zm_weapons::weapon_give(s_stat.str_reward_weapon);
   else {
     player giveweapon(s_stat.str_reward_weapon, 0, player maps\mp\zombies\_zm_weapons::get_pack_a_punch_weapon_options(s_stat.str_reward_weapon));
@@ -214,10 +218,10 @@ reward_powerup_zombie_blood(player, n_timeout) {
 }
 
 reward_powerup(player, str_powerup, n_timeout) {
-  if(!isdefined(n_timeout))
+  if(!isDefined(n_timeout))
     n_timeout = 10;
 
-  if(!isdefined(level.zombie_powerups[str_powerup])) {
+  if(!isDefined(level.zombie_powerups[str_powerup])) {
     return;
   }
   s_powerup = level.zombie_powerups[str_powerup];
@@ -233,7 +237,7 @@ reward_powerup(player, str_powerup, n_timeout) {
 
   m_reward.hint = s_powerup.hint;
 
-  if(!isdefined(player))
+  if(!isDefined(player))
     player = self.player_using;
 
   switch (str_powerup) {
@@ -335,7 +339,7 @@ reward_beacon(player, s_stat) {
 
   player maps\mp\zombies\_zm_weapons::weapon_give("beacon_zm");
 
-  if(isdefined(level.zombie_include_weapons["beacon_zm"]) && !level.zombie_include_weapons["beacon_zm"]) {
+  if(isDefined(level.zombie_include_weapons["beacon_zm"]) && !level.zombie_include_weapons["beacon_zm"]) {
     level.zombie_include_weapons["beacon_zm"] = 1;
     level.zombie_weapons["beacon_zm"].is_in_box = 1;
   }

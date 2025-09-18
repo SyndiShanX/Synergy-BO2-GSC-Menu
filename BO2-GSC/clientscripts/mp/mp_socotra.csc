@@ -21,5 +21,6 @@ main() {
   setsaveddvar("compassmaxrange", "2100");
   setsaveddvar("sm_sunsamplesizenear", 0.39);
   waitforclient(0);
+
   println("*** Client : mp_socotra running...");
 }

@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: aitype\enemy_dog_mp.gsc
-***************************************/
+**************************************/
 
 #include character\character_mp_german_shepherd;
 

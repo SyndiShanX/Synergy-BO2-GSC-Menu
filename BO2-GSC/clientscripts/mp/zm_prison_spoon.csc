@@ -15,7 +15,7 @@ spoon_visual_callback(localclientnum, oldval, newval, bnewent, binitialsnap, fie
     m_spoon setmodel("t6_wpn_zmb_spoon_world");
     m_spoon playsound(0, "zmb_squest_spoon_in");
 
-    for (i = 0; i < 20; i++) {
+    for(i = 0; i < 20; i++) {
       m_spoon rotateyaw(90, 1);
       wait 0.15;
     }

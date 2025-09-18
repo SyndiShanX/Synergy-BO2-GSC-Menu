@@ -1,7 +1,7 @@
-/*************************************************************
+/*********************************************************************
  * Decompiled and Edited by SyndiShanX
  * Script: character\c_zom_zombie_buried_civilian2_nohat.gsc
-*************************************************************/
+*********************************************************************/
 
 #include codescripts\character;
 #include xmodelalias\c_zom_zombie_buried_male_heads_als;

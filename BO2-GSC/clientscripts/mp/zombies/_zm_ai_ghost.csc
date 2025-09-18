@@ -5,11 +5,6 @@
 
 #include clientscripts\mp\_utility;
 #include clientscripts\mp\zombies\_zm_utility;
-
-precache() {
-
-}
-
 #using_animtree("zm_buried_ghost");
 
 init_animtree() {
@@ -17,7 +12,7 @@ init_animtree() {
 }
 
 precache_fx() {
-  if(!isdefined(level.ghost_effects)) {
+  if(!isDefined(level.ghost_effects)) {
     level.ghost_effects = [];
     level.ghost_effects[1] = loadfx("maps/zombie_buried/fx_buried_ghost_death");
     level.ghost_effects[2] = loadfx("maps/zombie_buried/fx_buried_ghost_drain");
@@ -42,7 +37,7 @@ register_client_fields() {
 }
 
 play_impact_fx_clientfield_cb(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump) {
-  if(!isdefined(newval)) {
+  if(!isDefined(newval)) {
     return;
   }
   if(newval > 0)
@@ -54,17 +49,17 @@ play_impact_fx_internal(localclientnum, newval) {
   self waittill_dobj(localclientnum);
   effect = level.ghost_impact_effects[newval];
 
-  if(isdefined(effect))
+  if(isDefined(effect))
     playfx(localclientnum, effect, self.origin + vectorscale((0, 0, 1), 36.0));
 }
 
 play_fx_clientfield_cb(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump) {
-  if(!isdefined(newval)) {
+  if(!isDefined(newval)) {
     return;
   }
   if(newval > 0)
     self play_fx(localclientnum, newval);
-  else if(isdefined(self._fx_array) && isdefined(self._fx_array[localclientnum]))
+  else if(isDefined(self._fx_array) && isDefined(self._fx_array[localclientnum]))
     deletefx(localclientnum, self._fx_array[localclientnum], 0);
 }
 
@@ -76,16 +71,16 @@ play_fx_internal(localclientnum, newval) {
   self endon("entityshutdown");
   self waittill_dobj(localclientnum);
 
-  if(!isdefined(self._fx_array))
+  if(!isDefined(self._fx_array))
     self._fx_array = [];
 
   linktag = "tag_origin";
   effect = level.ghost_effects[newval];
 
-  if(isdefined(self._fx_tag_override))
+  if(isDefined(self._fx_tag_override))
     linktag = self._fx_tag_override;
 
-  if(isdefined(self._fx_array[localclientnum]))
+  if(isDefined(self._fx_array[localclientnum]))
     deletefx(localclientnum, self._fx_array[localclientnum], 0);
 
   if(newval == 1)
@@ -98,7 +93,7 @@ play_fx_internal(localclientnum, newval) {
 }
 
 ghost_round_presentation_light_state_cb(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump) {
-  if(!isdefined(newval)) {
+  if(!isDefined(newval)) {
     return;
   }
   if(newval == 1) {
@@ -113,7 +108,7 @@ ghost_round_presentation_light_state_cb(localclientnum, oldval, newval, bnewent,
 }
 
 sndghostaudio(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump) {
-  if(!isdefined(self.sndent)) {
+  if(!isDefined(self.sndent)) {
     self.sndent = spawn(0, self.origin, "script_origin");
     self.sndent linkto(self);
     self thread sndghostaudiodeleteent(self.sndent);
@@ -134,7 +129,7 @@ sndghostaudiodeleteent(ent) {
 }
 
 sndghostattackaudio() {
-  if(!isdefined(self.sndattackent)) {
+  if(!isDefined(self.sndattackent)) {
     self.sndattackent = spawn(0, self.origin, "script_origin");
     self.sndattackent linkto(self);
     self thread sndghostattackaudiodeleteent(self.sndattackent);

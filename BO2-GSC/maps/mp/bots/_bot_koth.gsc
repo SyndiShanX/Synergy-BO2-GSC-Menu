@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\bots\_bot_koth.gsc
-***************************************/
+**************************************/
 
 #include maps\mp\gametypes\koth;
 #include common_scripts\utility;
@@ -10,11 +10,13 @@
 #include maps\mp\bots\_bot_combat;
 
 bot_koth_think() {
-  if(!isdefined(level.zone.trig.goal_radius)) {
+  if(!isDefined(level.zone.trig.goal_radius)) {
     maxs = level.zone.trig getmaxs();
     maxs = level.zone.trig.origin + maxs;
     level.zone.trig.goal_radius = distance(level.zone.trig.origin, maxs);
+
     println("distance: " + level.zone.trig.goal_radius);
+
     ground = bullettrace(level.zone.gameobject.curorigin, level.zone.gameobject.curorigin - vectorscale((0, 0, 1), 1024.0), 0, undefined);
     level.zone.trig.goal = ground["position"] + vectorscale((0, 0, 1), 8.0);
   }
@@ -32,7 +34,7 @@ bot_koth_think() {
 bot_has_hill_goal() {
   origin = self getgoal("koth_hill");
 
-  if(isdefined(origin)) {
+  if(isDefined(origin)) {
     if(distance2dsquared(level.zone.gameobject.curorigin, origin) < level.zone.trig.goal_radius * level.zone.trig.goal_radius)
       return true;
   }
@@ -77,10 +79,10 @@ bot_move_to_hill() {
 bot_get_look_at() {
   enemy = self maps\mp\bots\_bot::bot_get_closest_enemy(self.origin, 1);
 
-  if(isdefined(enemy)) {
+  if(isDefined(enemy)) {
     node = getvisiblenode(self.origin, enemy.origin);
 
-    if(isdefined(node) && distancesquared(self.origin, node.origin) > 1024)
+    if(isDefined(node) && distancesquared(self.origin, node.origin) > 1024)
       return node.origin;
   }
 
@@ -89,17 +91,17 @@ bot_get_look_at() {
   if(enemies.size)
     enemy = random(enemies);
 
-  if(isdefined(enemy)) {
+  if(isDefined(enemy)) {
     node = getvisiblenode(self.origin, enemy.origin);
 
-    if(isdefined(node) && distancesquared(self.origin, node.origin) > 1024)
+    if(isDefined(node) && distancesquared(self.origin, node.origin) > 1024)
       return node.origin;
   }
 
   spawn = random(level.spawnpoints);
   node = getvisiblenode(self.origin, spawn.origin);
 
-  if(isdefined(node) && distancesquared(self.origin, node.origin) > 1024)
+  if(isDefined(node) && distancesquared(self.origin, node.origin) > 1024)
     return node.origin;
 
   return level.zone.gameobject.curorigin;
@@ -129,7 +131,7 @@ bot_capture_hill() {
     if(cointoss() && lengthsquared(self getvelocity()) < 2) {
       nodes = getnodesinradius(level.zone.trig.goal, level.zone.trig.goal_radius + 128, 0, 128);
 
-      for (i = randomintrange(0, nodes.size); i < nodes.size; i++) {
+      for(i = randomintrange(0, nodes.size); i < nodes.size; i++) {
         node = nodes[i];
 
         if(distancesquared(node.origin, self.origin) > 1024) {
@@ -166,7 +168,7 @@ is_hill_contested(skip_team) {
 
   enemy = self maps\mp\bots\_bot::bot_get_closest_enemy(level.zone.gameobject.curorigin, 1);
 
-  if(isdefined(enemy) && distancesquared(enemy.origin, level.zone.gameobject.curorigin) < 262144)
+  if(isDefined(enemy) && distancesquared(enemy.origin, level.zone.gameobject.curorigin) < 262144)
     return true;
 
   return false;
@@ -188,7 +190,7 @@ bot_hill_grenade() {
   }
 
   if(!is_hill_contested(self.team)) {
-    if(!isdefined(level.next_smoke_time))
+    if(!isDefined(level.next_smoke_time))
       level.next_smoke_time = 0;
 
     if(gettime() > level.next_smoke_time) {
@@ -201,7 +203,7 @@ bot_hill_grenade() {
 
   enemy = self maps\mp\bots\_bot::bot_get_closest_enemy(level.zone.gameobject.curorigin, 0);
 
-  if(isdefined(enemy))
+  if(isDefined(enemy))
     origin = enemy.origin;
   else
     origin = level.zone.gameobject.curorigin;
@@ -211,7 +213,7 @@ bot_hill_grenade() {
   origin = origin + vectorscale(dir, 128);
 
   if(maps\mp\bots\_bot::bot_get_difficulty() == "easy") {
-    if(!isdefined(level.next_grenade_time))
+    if(!isDefined(level.next_grenade_time))
       level.next_grenade_time = 0;
 
     if(gettime() > level.next_grenade_time) {
@@ -231,17 +233,17 @@ bot_hill_tactical_insertion() {
   dist = self getlookaheaddist();
   dir = self getlookaheaddir();
 
-  if(!isdefined(dist) || !isdefined(dir)) {
+  if(!isDefined(dist) || !isDefined(dir)) {
     return;
   }
   node = hill_nearest_node();
   mine = getnearestnode(self.origin);
 
-  if(isdefined(mine) && !nodesvisible(mine, node)) {
+  if(isDefined(mine) && !nodesvisible(mine, node)) {
     origin = self.origin + vectorscale(dir, dist);
     next = getnearestnode(origin);
 
-    if(isdefined(next) && nodesvisible(next, node))
+    if(isDefined(next) && nodesvisible(next, node))
       bot_combat_tactical_insertion(self.origin);
   }
 }

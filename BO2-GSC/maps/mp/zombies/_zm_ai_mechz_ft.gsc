@@ -18,22 +18,23 @@
 init_flamethrower_triggers() {
   flag_wait("initial_players_connected");
   level.flamethrower_trigger_array = getentarray("flamethrower_trigger", "script_noteworthy");
-  assert(isdefined(level.flamethrower_trigger_array) && level.flamethrower_trigger_array.size >= 4);
+  assert(isDefined(level.flamethrower_trigger_array) && level.flamethrower_trigger_array.size >= 4);
 
-  for (i = 0; i < level.flamethrower_trigger_array.size; i++)
+  for(i = 0; i < level.flamethrower_trigger_array.size; i++)
     level.flamethrower_trigger_array[i] enablelinkto();
 }
 
 mechz_flamethrower_initial_setup() {
   self endon("death");
 
-  if(isdefined(self.flamethrower_trigger))
+  if(isDefined(self.flamethrower_trigger))
     self release_flamethrower_trigger();
 
   self.flamethrower_trigger = get_flamethrower_trigger();
 
-  if(!isdefined(self.flamethrower_trigger)) {
+  if(!isDefined(self.flamethrower_trigger)) {
     println("Error: No free flamethrower triggers! Make sure you haven't spawned more than 4 mech zombies");
+
     return;
   }
 
@@ -44,8 +45,8 @@ mechz_flamethrower_initial_setup() {
 }
 
 get_flamethrower_trigger() {
-  for (i = 0; i < level.flamethrower_trigger_array.size; i++) {
-    if(!(isdefined(level.flamethrower_trigger_array[i].in_use) && level.flamethrower_trigger_array[i].in_use)) {
+  for(i = 0; i < level.flamethrower_trigger_array.size; i++) {
+    if(!(isDefined(level.flamethrower_trigger_array[i].in_use) && level.flamethrower_trigger_array[i].in_use)) {
       level.flamethrower_trigger_array[i].in_use = 1;
       level.flamethrower_trigger_array[i].original_position = level.flamethrower_trigger_array[i].origin;
       return level.flamethrower_trigger_array[i];
@@ -56,7 +57,7 @@ get_flamethrower_trigger() {
 }
 
 release_flamethrower_trigger() {
-  if(!isdefined(self.flamethrower_trigger)) {
+  if(!isDefined(self.flamethrower_trigger)) {
     return;
   }
   self.flamethrower_trigger.in_use = 0;
@@ -70,8 +71,8 @@ mechz_flamethrower_dist_watcher() {
   self endon("kill_ft");
   wait 0.5;
 
-  while (true) {
-    if(!isdefined(self.favoriteenemy) || !is_player_valid(self.favoriteenemy, 1, 1) || distancesquared(self.origin, self.favoriteenemy.origin) > 50000) {
+  while(true) {
+    if(!isDefined(self.favoriteenemy) || !is_player_valid(self.favoriteenemy, 1, 1) || distancesquared(self.origin, self.favoriteenemy.origin) > 50000) {
       self notify("stop_ft");
       return;
     }
@@ -86,17 +87,17 @@ mechz_flamethrower_arc_watcher() {
   self endon("stop_ft");
   aim_anim = undefined;
 
-  while (true) {
+  while(true) {
     old_anim = aim_anim;
     aim_anim = mechz_get_aim_anim("zm_flamethrower", self.favoriteenemy.origin, 26);
     self.curr_aim_anim = aim_anim;
 
-    if(!isdefined(aim_anim)) {
+    if(!isDefined(aim_anim)) {
       self notify("stop_ft");
       return;
     }
 
-    if(!isdefined(old_anim) || old_anim != aim_anim)
+    if(!isDefined(old_anim) || old_anim != aim_anim)
       self notify("arc_change");
 
     wait 0.05;
@@ -109,7 +110,7 @@ mechz_play_flamethrower_aim() {
   self endon("stop_ft");
   self endon("arc_change");
 
-  if(isdefined(self.curr_aim_anim)) {
+  if(isDefined(self.curr_aim_anim)) {
     self stopanimscripted();
     self animscripted(self.origin, self.angles, self.curr_aim_anim);
     self maps\mp\animscripts\zm_shared::donotetracks("flamethrower_anim");
@@ -126,7 +127,7 @@ mechz_flamethrower_aim() {
   self thread mechz_flamethrower_arc_watcher();
   aim_anim = undefined;
 
-  while (true)
+  while(true)
     self mechz_play_flamethrower_aim();
 }
 
@@ -135,7 +136,7 @@ mechz_flamethrower_tank_sweep() {
   self endon("kill_ft");
   self endon("stop_ft");
 
-  while (true) {
+  while(true) {
     self stopanimscripted();
     self.angles = vectortoangles(level.vh_tank.origin - self.origin);
     self animscripted(self.origin, self.angles, "zm_flamethrower_sweep_up");
@@ -166,17 +167,17 @@ mechz_stop_firing_watcher() {
 mechz_watch_for_flamethrower_damage() {
   self endon("death");
 
-  while (true) {
+  while(true) {
     self waittillmatch("flamethrower_anim", "start_ft");
     self.firing = 1;
     self thread mechz_stop_firing_watcher();
 
-    while (isdefined(self.firing) && self.firing) {
-      do_tank_sweep_auto_damage = isdefined(self.doing_tank_sweep) && self.doing_tank_sweep && !level.vh_tank ent_flag("tank_moving");
+    while(isDefined(self.firing) && self.firing) {
+      do_tank_sweep_auto_damage = isDefined(self.doing_tank_sweep) && self.doing_tank_sweep && !level.vh_tank ent_flag("tank_moving");
       players = getplayers();
 
-      for (i = 0; i < players.size; i++) {
-        if(!(isdefined(players[i].is_burning) && players[i].is_burning)) {
+      for(i = 0; i < players.size; i++) {
+        if(!(isDefined(players[i].is_burning) && players[i].is_burning)) {
           if(do_tank_sweep_auto_damage && players[i] entity_on_tank() || players[i] istouching(self.flamethrower_trigger))
             players[i] thread player_flame_damage();
         }
@@ -184,11 +185,11 @@ mechz_watch_for_flamethrower_damage() {
 
       zombies = getaispeciesarray("axis", "all");
 
-      for (i = 0; i < zombies.size; i++) {
-        if(isdefined(zombies[i].is_mechz) && zombies[i].is_mechz) {
+      for(i = 0; i < zombies.size; i++) {
+        if(isDefined(zombies[i].is_mechz) && zombies[i].is_mechz) {
           continue;
         }
-        if(isdefined(zombies[i].on_fire) && zombies[i].on_fire) {
+        if(isDefined(zombies[i].on_fire) && zombies[i].on_fire) {
           continue;
         }
         if(do_tank_sweep_auto_damage && zombies[i] entity_on_tank() || zombies[i] istouching(self.flamethrower_trigger)) {
@@ -210,12 +211,12 @@ player_flame_damage() {
   n_jugga_dmg = 45;
   n_burn_time = 1.5;
 
-  if(isdefined(self.is_zombie) && self.is_zombie) {
+  if(isDefined(self.is_zombie) && self.is_zombie) {
     return;
   }
   self thread player_stop_burning();
 
-  if(!isdefined(self.is_burning) && is_player_valid(self, 1, 0)) {
+  if(!isDefined(self.is_burning) && is_player_valid(self, 1, 0)) {
     self.is_burning = 1;
     maps\mp\_visionset_mgr::vsmgr_activate("overlay", "zm_transit_burn", self, n_burn_time, level.zm_transit_burn_max_duration);
     self notify("burned");
@@ -243,13 +244,13 @@ zombie_burning_fx() {
   self endon("death");
   self endon("stop_flame_damage");
 
-  while (true) {
-    if(isdefined(level._effect) && isdefined(level._effect["character_fire_death_torso"])) {
+  while(true) {
+    if(isDefined(level._effect) && isDefined(level._effect["character_fire_death_torso"])) {
       if(!self.isdog)
         playfxontag(level._effect["character_fire_death_torso"], self, "J_SpineLower");
     }
 
-    if(isdefined(level._effect) && isdefined(level._effect["character_fire_death_sm"])) {
+    if(isDefined(level._effect) && isDefined(level._effect["character_fire_death_sm"])) {
       wait 1;
       tagarray = [];
 
@@ -275,7 +276,7 @@ zombie_burning_audio() {
   self playloopsound("zmb_fire_loop");
   self waittill_any("death", "stop_flame_damage");
 
-  if(isdefined(self) && isalive(self))
+  if(isDefined(self) && isalive(self))
     self stoploopsound(0.25);
 }
 
@@ -285,11 +286,11 @@ zombie_burning_dmg() {
   damageradius = 25;
   damage = 2;
 
-  while (true) {
+  while(true) {
     eyeorigin = self geteye();
     players = get_players();
 
-    for (i = 0; i < players.size; i++) {
+    for(i = 0; i < players.size; i++) {
       if(is_player_valid(players[i], 1, 0)) {
         playereye = players[i] geteye();
 
@@ -317,24 +318,24 @@ explode_on_death() {
   self endon("stop_flame_damage");
   self waittill("death");
 
-  if(!isdefined(self)) {
+  if(!isDefined(self)) {
     return;
   }
   tag = "J_SpineLower";
 
-  if(isdefined(self.animname) && self.animname == "zombie_dog")
+  if(isDefined(self.animname) && self.animname == "zombie_dog")
     tag = "tag_origin";
 
   if(is_mature()) {
-    if(isdefined(level._effect["zomb_gib"]))
+    if(isDefined(level._effect["zomb_gib"]))
       playfx(level._effect["zomb_gib"], self gettagorigin(tag));
-  } else if(isdefined(level._effect["spawn_cloud"]))
+  } else if(isDefined(level._effect["spawn_cloud"]))
     playfx(level._effect["spawn_cloud"], self gettagorigin(tag));
 
   self radiusdamage(self.origin, 128, 30, 15, undefined, "MOD_EXPLOSIVE");
   self ghost();
 
-  if(isdefined(self.isdog) && self.isdog)
+  if(isDefined(self.isdog) && self.isdog)
     self hide();
   else
     self delay_thread(1, ::self_delete);
@@ -344,38 +345,43 @@ on_fire_timeout() {
   self endon("death");
   wait 12;
 
-  if(isdefined(self) && isalive(self)) {
+  if(isDefined(self) && isalive(self)) {
     self.is_on_fire = 0;
     self notify("stop_flame_damage");
   }
 }
 
 should_do_flamethrower_attack() {
-  assert(isdefined(self.favoriteenemy));
+  assert(isDefined(self.favoriteenemy));
+
   if(getdvarint(#"_id_E7121222") > 1)
     println("\\n\\tMZ: Checking should flame\\n");
 
-  if(isdefined(self.disable_complex_behaviors) && self.disable_complex_behaviors) {
+  if(isDefined(self.disable_complex_behaviors) && self.disable_complex_behaviors) {
     if(getdvarint(#"_id_E7121222") > 1)
       println("\\n\\t\\tMZ: Not doing flamethrower because doing force aggro\\n");
+
     return false;
   }
 
-  if(isdefined(self.not_interruptable) && self.not_interruptable) {
+  if(isDefined(self.not_interruptable) && self.not_interruptable) {
     if(getdvarint(#"_id_E7121222") > 1)
       println("\\n\\t\\tMZ: Not doing flamethrower because another behavior has set not_interruptable\\n");
+
     return false;
   }
 
   if(!self mechz_check_in_arc(26)) {
     if(getdvarint(#"_id_E7121222") > 1)
       println("\\n\\t\\tMZ: Not doing flamethrower because target is not in front arc\\n");
+
     return false;
   }
 
-  if(isdefined(self.last_flamethrower_time) && gettime() - self.last_flamethrower_time < level.mechz_flamethrower_cooldown_time) {
+  if(isDefined(self.last_flamethrower_time) && gettime() - self.last_flamethrower_time < level.mechz_flamethrower_cooldown_time) {
     if(getdvarint(#"_id_E7121222") > 1)
       println("\\n\\t\\tMZ: Not doing flamethrower because it is still on cooldown\\n");
+
     return false;
   }
 
@@ -384,6 +390,7 @@ should_do_flamethrower_attack() {
   if(n_dist_sq < 10000 || n_dist_sq > 50000) {
     if(getdvarint(#"_id_E7121222") > 1)
       println("\\n\\t\\tMZ: Not doing flamethrower because target is not in range\\n");
+
     return false;
   }
 
@@ -392,6 +399,7 @@ should_do_flamethrower_attack() {
   if(!b_cansee) {
     if(getdvarint(#"_id_E7121222") > 1)
       println("\\n\\t\\tMZ: Not doing flamethrower because cannot see target\\n");
+
     return false;
   }
 
@@ -403,8 +411,10 @@ should_do_flamethrower_attack() {
 mechz_do_flamethrower_attack(tank_sweep) {
   self endon("death");
   self endon("kill_ft");
+
   if(getdvarint(#"_id_E7121222") > 0)
     println("\\n\\tMZ: Doing Flamethrower Attack\\n");
+
   self thread mechz_stop_basic_find_flesh();
   self.ai_state = "flamethrower_attack";
   self setgoalpos(self.origin);
@@ -412,7 +422,7 @@ mechz_do_flamethrower_attack(tank_sweep) {
   self.last_flamethrower_time = gettime();
   self thread mechz_kill_flamethrower_watcher();
 
-  if(!isdefined(self.flamethrower_trigger))
+  if(!isDefined(self.flamethrower_trigger))
     self mechz_flamethrower_initial_setup();
 
   n_nearby_enemies = 0;
@@ -423,7 +433,7 @@ mechz_do_flamethrower_attack(tank_sweep) {
       n_nearby_enemies++;
   }
 
-  if(isdefined(tank_sweep) && tank_sweep) {
+  if(isDefined(tank_sweep) && tank_sweep) {
     self.doing_tank_sweep = 1;
     self thread mechz_flamethrower_tank_sweep();
   } else if(randomint(100) < level.mechz_ft_sweep_chance && n_nearby_enemies > 1) {
@@ -438,7 +448,7 @@ mechz_do_flamethrower_attack(tank_sweep) {
 
   self orientmode("face default");
 
-  if(isdefined(self.doing_ft_sweep) && self.doing_ft_sweep)
+  if(isDefined(self.doing_ft_sweep) && self.doing_ft_sweep)
     self.doing_ft_sweep = 0;
   else {
     self.cant_melee = 1;

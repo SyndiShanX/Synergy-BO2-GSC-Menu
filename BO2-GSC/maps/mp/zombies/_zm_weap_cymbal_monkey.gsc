@@ -1,7 +1,7 @@
-/******************************************************
+/*******************************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\zombies\_zm_weap_cymbal_monkey.gsc
-******************************************************/
+*******************************************************/
 
 #include common_scripts\utility;
 #include maps\mp\_utility;
@@ -16,7 +16,7 @@ init() {
   }
   level.zombiemode_devgui_cymbal_monkey_give = ::player_give_cymbal_monkey;
 
-  if(isdefined(level.legacy_cymbal_monkey) && level.legacy_cymbal_monkey)
+  if(isDefined(level.legacy_cymbal_monkey) && level.legacy_cymbal_monkey)
     level.cymbal_monkey_model = "weapon_zombie_monkey_bomb";
   else
     level.cymbal_monkey_model = "t6_wpn_zmb_monkey_bomb_world";
@@ -39,20 +39,20 @@ player_handle_cymbal_monkey() {
   self endon("starting_monkey_watch");
   attract_dist_diff = level.monkey_attract_dist_diff;
 
-  if(!isdefined(attract_dist_diff))
+  if(!isDefined(attract_dist_diff))
     attract_dist_diff = 45;
 
   num_attractors = level.num_monkey_attractors;
 
-  if(!isdefined(num_attractors))
+  if(!isDefined(num_attractors))
     num_attractors = 96;
 
   max_attract_dist = level.monkey_attract_dist;
 
-  if(!isdefined(max_attract_dist))
+  if(!isDefined(max_attract_dist))
     max_attract_dist = 1536;
 
-  while (true) {
+  while(true) {
     grenade = get_thrown_monkey();
     self player_throw_cymbal_monkey(grenade, num_attractors, max_attract_dist, attract_dist_diff);
     wait 0.05;
@@ -67,16 +67,16 @@ watch_for_dud(model, actor) {
   self.monk_scream_vox = 1;
   wait 3;
 
-  if(isdefined(model))
+  if(isDefined(model))
     model delete();
 
-  if(isdefined(actor))
+  if(isDefined(actor))
     actor delete();
 
-  if(isdefined(self.damagearea))
+  if(isDefined(self.damagearea))
     self.damagearea delete();
 
-  if(isdefined(self))
+  if(isDefined(self))
     self delete();
 }
 
@@ -86,7 +86,7 @@ watch_for_emp(model, actor) {
   if(!should_watch_for_emp()) {
     return;
   }
-  while (true) {
+  while(true) {
     level waittill("emp_detonate", origin, radius);
 
     if(distancesquared(origin, self.origin) < radius * radius) {
@@ -96,7 +96,7 @@ watch_for_emp(model, actor) {
 
   self.stun_fx = 1;
 
-  if(isdefined(level._equipment_emp_destroy_fx))
+  if(isDefined(level._equipment_emp_destroy_fx))
     playfx(level._equipment_emp_destroy_fx, self.origin + vectorscale((0, 0, 1), 5.0), (0, randomfloat(360), 0));
 
   wait 0.15;
@@ -107,16 +107,16 @@ watch_for_emp(model, actor) {
   self detonate();
   wait 1;
 
-  if(isdefined(model))
+  if(isDefined(model))
     model delete();
 
-  if(isdefined(actor))
+  if(isDefined(actor))
     actor delete();
 
-  if(isdefined(self.damagearea))
+  if(isDefined(self.damagearea))
     self.damagearea delete();
 
-  if(isdefined(self))
+  if(isDefined(self))
     self delete();
 }
 
@@ -124,7 +124,7 @@ clone_player_angles(owner) {
   self endon("death");
   owner endon("death");
 
-  while (isdefined(self)) {
+  while(isDefined(self)) {
     self.angles = owner.angles;
     wait 0.05;
   }
@@ -133,7 +133,7 @@ clone_player_angles(owner) {
 show_briefly(showtime) {
   self endon("show_owner");
 
-  if(isdefined(self.show_for_time)) {
+  if(isDefined(self.show_for_time)) {
     self.show_for_time = showtime;
     return;
   }
@@ -141,7 +141,7 @@ show_briefly(showtime) {
   self.show_for_time = showtime;
   self setvisibletoall();
 
-  while (self.show_for_time > 0) {
+  while(self.show_for_time > 0) {
     self.show_for_time = self.show_for_time - 0.05;
     wait 0.05;
   }
@@ -158,7 +158,7 @@ show_owner_on_attack(owner) {
   self endon("grenade_dud");
   owner.show_for_time = undefined;
 
-  for (;;) {
+  for(;;) {
     owner waittill("weapon_fired");
     owner thread show_briefly(0.5);
   }
@@ -173,16 +173,18 @@ hide_owner(owner) {
   owner setvisibletoallexceptteam(level.zombie_team);
   owner.hide_owner = 1;
 
-  if(isdefined(level._effect["human_disappears"]))
+  if(isDefined(level._effect["human_disappears"]))
     playfx(level._effect["human_disappears"], owner.origin);
 
   self thread show_owner_on_attack(owner);
   evt = self waittill_any_return("explode", "death", "grenade_dud");
+
   println("ZMCLONE: Player visible again because of " + evt);
+
   owner notify("show_owner");
   owner unsetperk("specialty_immunemms");
 
-  if(isdefined(level._effect["human_disappears"]))
+  if(isDefined(level._effect["human_disappears"]))
     playfx(level._effect["human_disappears"], owner.origin);
 
   owner.no_burning_sfx = undefined;
@@ -194,7 +196,7 @@ hide_owner(owner) {
 proximity_detonate(owner) {
   wait 1.5;
 
-  if(!isdefined(self)) {
+  if(!isDefined(self)) {
     return;
   }
   detonateradius = 96;
@@ -205,20 +207,20 @@ proximity_detonate(owner) {
   damagearea linkto(self);
   self.damagearea = damagearea;
 
-  while (isdefined(self)) {
+  while(isDefined(self)) {
     damagearea waittill("trigger", ent);
 
-    if(isdefined(owner) && ent == owner) {
+    if(isDefined(owner) && ent == owner) {
       continue;
     }
-    if(isdefined(ent.team) && ent.team == owner.team) {
+    if(isDefined(ent.team) && ent.team == owner.team) {
       continue;
     }
     self playsound("wpn_claymore_alert");
     dist = distance(self.origin, ent.origin);
     radiusdamage(self.origin + vectorscale((0, 0, 1), 12.0), explosionradius, 1, 1, owner, "MOD_GRENADE_SPLASH", "cymbal_monkey_zm");
 
-    if(isdefined(owner))
+    if(isDefined(owner))
       self detonate(owner);
     else
       self detonate(undefined);
@@ -226,7 +228,7 @@ proximity_detonate(owner) {
     break;
   }
 
-  if(isdefined(damagearea))
+  if(isDefined(damagearea))
     damagearea delete();
 }
 
@@ -234,11 +236,11 @@ player_throw_cymbal_monkey(grenade, num_attractors, max_attract_dist, attract_di
   self endon("disconnect");
   self endon("starting_monkey_watch");
 
-  if(isdefined(grenade)) {
+  if(isDefined(grenade)) {
     grenade endon("death");
 
     if(self maps\mp\zombies\_zm_laststand::player_is_in_laststand()) {
-      if(isdefined(grenade.damagearea))
+      if(isDefined(grenade.damagearea))
         grenade.damagearea delete();
 
       grenade delete();
@@ -254,7 +256,7 @@ player_throw_cymbal_monkey(grenade, num_attractors, max_attract_dist, attract_di
     model thread monkey_cleanup(grenade);
     clone = undefined;
 
-    if(isdefined(level.cymbal_monkey_dual_view) && level.cymbal_monkey_dual_view) {
+    if(isDefined(level.cymbal_monkey_dual_view) && level.cymbal_monkey_dual_view) {
       model setvisibletoallexceptteam(level.zombie_team);
       clone = maps\mp\zombies\_zm_clone::spawn_player_clone(self, vectorscale((0, 0, -1), 999.0), level.cymbal_monkey_clone_weapon, undefined);
       model.simulacrum = clone;
@@ -271,21 +273,21 @@ player_throw_cymbal_monkey(grenade, num_attractors, max_attract_dist, attract_di
     grenade thread monitor_zombie_groans(info);
     grenade waittill("stationary");
 
-    if(isdefined(level.grenade_planted))
+    if(isDefined(level.grenade_planted))
       self thread[[level.grenade_planted]](grenade, model);
 
-    if(isdefined(grenade)) {
-      if(isdefined(model)) {
+    if(isDefined(grenade)) {
+      if(isDefined(model)) {
         model setanim( % o_monkey_bomb);
 
-        if(!(isdefined(grenade.backlinked) && grenade.backlinked)) {
+        if(!(isDefined(grenade.backlinked) && grenade.backlinked)) {
           model unlink();
           model.origin = grenade.origin;
           model.angles = grenade.angles;
         }
       }
 
-      if(isdefined(clone)) {
+      if(isDefined(clone)) {
         clone forceteleport(grenade.origin, grenade.angles);
         clone thread hide_owner(self);
         grenade thread proximity_detonate(self);
@@ -298,7 +300,7 @@ player_throw_cymbal_monkey(grenade, num_attractors, max_attract_dist, attract_di
       playfxontag(level._effect["monkey_glow"], model, "origin_animate_jnt");
       valid_poi = check_point_in_enabled_zone(grenade.origin, undefined, undefined);
 
-      if(isdefined(level.check_valid_poi))
+      if(isDefined(level.check_valid_poi))
         valid_poi = grenade[[level.check_valid_poi]](valid_poi);
 
       if(valid_poi) {
@@ -320,7 +322,7 @@ player_throw_cymbal_monkey(grenade, num_attractors, max_attract_dist, attract_di
 }
 
 grenade_stolen_by_sam(ent_grenade, ent_model, ent_actor) {
-  if(!isdefined(ent_model)) {
+  if(!isDefined(ent_model)) {
     return;
   }
   direction = ent_model.origin;
@@ -333,7 +335,7 @@ grenade_stolen_by_sam(ent_grenade, ent_model, ent_actor) {
 
   players = get_players();
 
-  for (i = 0; i < players.size; i++) {
+  for(i = 0; i < players.size; i++) {
     if(isalive(players[i]))
       players[i] playlocalsound(level.zmb_laugh_alias);
   }
@@ -343,16 +345,16 @@ grenade_stolen_by_sam(ent_grenade, ent_model, ent_actor) {
   ent_model vibrate(direction, 1.5, 2.5, 1.0);
   ent_model waittill("movedone");
 
-  if(isdefined(self.damagearea))
+  if(isDefined(self.damagearea))
     self.damagearea delete();
 
   ent_model delete();
 
-  if(isdefined(ent_actor))
+  if(isDefined(ent_actor))
     ent_actor delete();
 
-  if(isdefined(ent_grenade)) {
-    if(isdefined(ent_grenade.damagearea))
+  if(isDefined(ent_grenade)) {
+    if(isDefined(ent_grenade.damagearea))
       ent_grenade.damagearea delete();
 
     ent_grenade delete();
@@ -365,12 +367,12 @@ wait_for_attractor_positions_complete() {
 }
 
 monkey_cleanup(parent) {
-  while (true) {
-    if(!isdefined(parent)) {
-      if(isdefined(self) && (isdefined(self.dud) && self.dud))
+  while(true) {
+    if(!isDefined(parent)) {
+      if(isDefined(self) && (isDefined(self.dud) && self.dud))
         wait 6;
 
-      if(isdefined(self.simulacrum))
+      if(isDefined(self.simulacrum))
         self.simulacrum delete();
 
       self_delete();
@@ -384,7 +386,7 @@ monkey_cleanup(parent) {
 do_monkey_sound(model, info) {
   self.monk_scream_vox = 0;
 
-  if(isdefined(level.grenade_safe_to_bounce)) {
+  if(isDefined(level.grenade_safe_to_bounce)) {
     if(![
         [level.grenade_safe_to_bounce]
       ](self.owner, "cymbal_monkey_zm")) {
@@ -394,7 +396,7 @@ do_monkey_sound(model, info) {
   }
 
   if(!self.monk_scream_vox && level.music_override == 0) {
-    if(isdefined(level.cymbal_monkey_dual_view) && level.cymbal_monkey_dual_view)
+    if(isDefined(level.cymbal_monkey_dual_view) && level.cymbal_monkey_dual_view)
       self playsoundtoteam("zmb_monkey_song", "allies");
     else
       self playsound("zmb_monkey_song");
@@ -407,8 +409,8 @@ do_monkey_sound(model, info) {
   level notify("grenade_exploded", position, 100, 5000, 450);
   monkey_index = -1;
 
-  for (i = 0; i < level.cymbal_monkeys.size; i++) {
-    if(!isdefined(level.cymbal_monkeys[i])) {
+  for(i = 0; i < level.cymbal_monkeys.size; i++) {
+    if(!isDefined(level.cymbal_monkeys[i])) {
       monkey_index = i;
       break;
     }
@@ -417,11 +419,11 @@ do_monkey_sound(model, info) {
   if(monkey_index >= 0)
     arrayremoveindex(level.cymbal_monkeys, monkey_index);
 
-  if(isdefined(model))
+  if(isDefined(model))
     model clearanim( % o_monkey_bomb, 0.2);
 
-  for (i = 0; i < info.sound_attractors.size; i++) {
-    if(isdefined(info.sound_attractors[i]))
+  for(i = 0; i < info.sound_attractors.size; i++) {
+    if(isDefined(info.sound_attractors[i]))
       info.sound_attractors[i] notify("monkey_blown_up");
   }
 }
@@ -429,7 +431,7 @@ do_monkey_sound(model, info) {
 play_delayed_explode_vox() {
   wait 6.5;
 
-  if(isdefined(self))
+  if(isDefined(self))
     self playsound("zmb_vox_monkey_explode");
 }
 
@@ -437,7 +439,7 @@ get_thrown_monkey() {
   self endon("disconnect");
   self endon("starting_monkey_watch");
 
-  while (true) {
+  while(true) {
     self waittill("grenade_fire", grenade, weapname);
 
     if(weapname == "cymbal_monkey_zm") {
@@ -453,18 +455,18 @@ get_thrown_monkey() {
 monitor_zombie_groans(info) {
   self endon("explode");
 
-  while (true) {
-    if(!isdefined(self)) {
+  while(true) {
+    if(!isDefined(self)) {
       return;
     }
-    if(!isdefined(self.attractor_array)) {
+    if(!isDefined(self.attractor_array)) {
       wait 0.05;
       continue;
     }
 
-    for (i = 0; i < self.attractor_array.size; i++) {
+    for(i = 0; i < self.attractor_array.size; i++) {
       if(array_check_for_dupes(info.sound_attractors, self.attractor_array[i])) {
-        if(isdefined(self.origin) && isdefined(self.attractor_array[i].origin)) {
+        if(isDefined(self.origin) && isDefined(self.attractor_array[i].origin)) {
           if(distancesquared(self.origin, self.attractor_array[i].origin) < 250000) {
             info.sound_attractors[info.sound_attractors.size] = self.attractor_array[i];
             self.attractor_array[i] thread play_zombie_groans();
@@ -481,8 +483,8 @@ play_zombie_groans() {
   self endon("death");
   self endon("monkey_blown_up");
 
-  while (true) {
-    if(isdefined(self)) {
+  while(true) {
+    if(isDefined(self)) {
       self playsound("zmb_vox_zombie_groan");
       wait(randomfloatrange(2, 3));
     } else
@@ -491,5 +493,5 @@ play_zombie_groans() {
 }
 
 cymbal_monkey_exists() {
-  return isdefined(level.zombie_weapons["cymbal_monkey_zm"]);
+  return isDefined(level.zombie_weapons["cymbal_monkey_zm"]);
 }

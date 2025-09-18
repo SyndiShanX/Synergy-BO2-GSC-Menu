@@ -94,15 +94,15 @@ eject_player_trigger() {
 player_eject_watcher() {
   time = 0;
 
-  while (true) {
+  while(true) {
     self waittill("trigger", who);
 
     if(is_player_valid(who)) {
-      while (who istouching(self)) {
+      while(who istouching(self)) {
         time++;
 
         if(time >= 6) {
-          if(isdefined(self.point)) {
+          if(isDefined(self.point)) {
             if(!positionwouldtelefrag(self.point.origin)) {
               who setorigin(self.point.origin);
               who playlocalsound(level.zmb_laugh_alias);
@@ -124,7 +124,7 @@ player_eject_watcher() {
 }
 
 ejected_overrun(trig) {
-  if(!isdefined(trig.ejected))
+  if(!isDefined(trig.ejected))
     trig.ejected = 1;
   else {
     trig.ejected++;
@@ -137,28 +137,28 @@ ejected_overrun(trig) {
 
       lethal = self get_player_lethal_grenade();
 
-      if(isdefined(lethal) && lethal != "") {
+      if(isDefined(lethal) && lethal != "") {
         self takeweapon(lethal);
         maps\mp\zombies\_zm_weapons::unacquire_weapon_toggle(lethal);
       }
 
       tactical = self get_player_tactical_grenade();
 
-      if(isdefined(tactical) && tactical != "") {
+      if(isDefined(tactical) && tactical != "") {
         self takeweapon(tactical);
         maps\mp\zombies\_zm_weapons::unacquire_weapon_toggle(tactical);
       }
 
       mine = self get_player_placeable_mine();
 
-      if(isdefined(mine)) {
+      if(isDefined(mine)) {
         self takeweapon(mine);
         maps\mp\zombies\_zm_weapons::unacquire_weapon_toggle(mine);
       }
 
       melee_weapon = self get_player_melee_weapon();
 
-      if(isdefined(melee_weapon)) {
+      if(isDefined(melee_weapon)) {
         self takeweapon(melee_weapon);
         maps\mp\zombies\_zm_weapons::unacquire_weapon_toggle(melee_weapon);
       }
@@ -176,7 +176,7 @@ change_bad_spawner() {
   spawner_array = getstructarray("zone_blue_level4a_spawners", "targetname");
 
   foreach(struct in spawner_array) {
-    if(isdefined(struct.origin) && struct.origin == (2154, 748.5, 1312)) {
+    if(isDefined(struct.origin) && struct.origin == (2154, 748.5, 1312)) {
       struct.script_noteworthy = "riser_location";
       return;
     }

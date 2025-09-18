@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\zm_transit_bus.gsc
-***************************************/
+**************************************/
 
 #include common_scripts\utility;
 #include maps\mp\_utility;
@@ -110,11 +110,13 @@ bus_upgrades() {
 }
 
 bus_debug() {
-  while (true) {
+  while(true) {
     bus_forward = vectornormalize(anglestoforward(level.the_bus.angles));
     ret = level.the_bus.origin + vectorscale(bus_forward, -144);
     groundpos = groundpos_ignore_water_new(ret + vectorscale((0, 0, 1), 60.0));
+
     debugstar(groundpos, 1000, (1, 1, 1));
+
     wait 0.5;
   }
 }
@@ -140,7 +142,7 @@ bus_set_exit_triggers() {
   tags[1] = "window_left_rear_jnt";
   tags[2] = "window_right_rear_jnt";
 
-  for (i = 0; i < trigger_exit.size; i++) {
+  for(i = 0; i < trigger_exit.size; i++) {
     trigger = trigger_exit[i];
     trigger enablelinkto();
     trigger linkto(self, "", self worldtolocalcoords(trigger.origin), (0, 0, 0));
@@ -164,7 +166,9 @@ zm_mantle_over_40_move_speed_override() {
       traversealias = "barrier_sprint";
       break;
     default:
+
       assertmsg("Zombie move speed of '" + self.zombie_move_speed + "' is not supported for mantle_over_40.");
+
   }
 
   return traversealias;
@@ -172,16 +176,16 @@ zm_mantle_over_40_move_speed_override() {
 
 follow_path(node) {
   self endon("death");
-  assert(isdefined(node), "vehicle_path() called without a path");
+  assert(isDefined(node), "vehicle_path() called without a path");
   self notify("newpath");
 
-  if(isdefined(node))
+  if(isDefined(node))
     self.attachedpath = node;
 
   pathstart = self.attachedpath;
   self.currentnode = self.attachedpath;
 
-  if(!isdefined(pathstart)) {
+  if(!isDefined(pathstart)) {
     return;
   }
   self attachpath(pathstart);
@@ -189,17 +193,17 @@ follow_path(node) {
   self endon("newpath");
   nextpoint = pathstart;
 
-  while (isdefined(nextpoint)) {
+  while(isDefined(nextpoint)) {
     self waittill("reached_node", nextpoint);
     self.currentnode = nextpoint;
     nextpoint notify("trigger", self);
 
-    if(isdefined(nextpoint.script_noteworthy)) {
+    if(isDefined(nextpoint.script_noteworthy)) {
       self notify(nextpoint.script_noteworthy);
       self notify("noteworthy", nextpoint.script_noteworthy, nextpoint);
     }
 
-    if(isdefined(nextpoint.script_string)) {
+    if(isDefined(nextpoint.script_string)) {
       if(issubstr(nextpoint.script_string, "map_"))
         level thread do_player_bus_location_vox(nextpoint.script_string);
       else
@@ -224,7 +228,7 @@ busopeningscene() {
   self.currentnode = startnode;
   self thread follow_path(startnode);
 
-  while (!flag("OnPriDoorYar") && !flag("OnPriDoorYar2"))
+  while(!flag("OnPriDoorYar") && !flag("OnPriDoorYar2"))
     wait 0.5;
 
   level.automaton notify("start_head_think");
@@ -243,6 +247,7 @@ busschedule() {
   level.busschedule busscheduleadd("power2town", 1, 10, 26, 5);
   level.busschedule busscheduleadd("town", 0, randomintrange(40, 180), 18, 20);
   level.busschedule busscheduleadd("bridge", 1, 10, 23, 10);
+
   foreach(index, stop in level.busschedule.destinations)
   adddebugcommand("devgui_cmd \"Zombies:1/Bus:14/Teleport Bus:4/" + stop.name + ":" + index + "\" \"zombie_devgui teleport_bus " + stop.name + "\\n");
 }
@@ -250,17 +255,18 @@ busschedule() {
 busschedulethink() {
   self endon("death");
 
-  while (true) {
+  while(true) {
     self waittill("noteworthy", noteworthy, noteworthynode);
     zoneisempty = 1;
     shouldremovegas = 0;
     destinationindex = level.busschedule busschedulegetdestinationindex(noteworthy);
 
-    if(!isdefined(destinationindex) || !isdefined(noteworthynode)) {
-      if(isdefined(noteworthy))
+    if(!isDefined(destinationindex) || !isDefined(noteworthynode)) {
+      if(isDefined(noteworthy))
         println("^2Bus Debug: Not A Valid Destination (" + noteworthy + ")");
       else
         println("^2Bus Debug: Not A Valid Destination");
+
       continue;
     }
 
@@ -270,13 +276,14 @@ busschedulethink() {
     targetspeed = level.busschedule busschedulegetbusspeedleaving(self.destinationindex);
 
     foreach(zone in level.zones) {
-      if(!isdefined(zone.volumes) || zone.volumes.size == 0) {
+      if(!isDefined(zone.volumes) || zone.volumes.size == 0) {
         continue;
       }
       zonename = zone.volumes[0].targetname;
 
       if(self maps\mp\zombies\_zm_zonemgr::entity_in_zone(zonename)) {
         println("^2Bus Debug: Bus Is Touching Zone (" + zonename + ")");
+
         self.zone = zonename;
         zonestocheck = [];
         zonestocheck[zonestocheck.size] = zonename;
@@ -337,40 +344,46 @@ busschedulethink() {
         }
 
         foreach(zone in zonestocheck) {
-          if(!(isdefined(zoneisempty) && zoneisempty)) {
+          if(!(isDefined(zoneisempty) && zoneisempty)) {
             continue;
           }
           if(maps\mp\zombies\_zm_zonemgr::player_in_zone(zone)) {
             println("^2Bus Debug: Player(s) Detected Near Bus In The Zone (" + zone + ")");
+
             zoneisempty = 0;
           }
         }
 
-        if(isdefined(zoneisempty) && zoneisempty) {
+        if(isDefined(zoneisempty) && zoneisempty) {
           println("^2Bus Debug: No Player(s) Are In The Same Zone As Bus (" + zonename + ")");
+
           continue;
         }
 
         println("^2Bus Debug: Player(s) Are In The Same Zone As Bus (" + zonename + ")");
+
       }
     }
 
-    if(isdefined(shouldremovegas) && shouldremovegas)
+    if(isDefined(shouldremovegas) && shouldremovegas)
       self busgasremove(level.busschedule busschedulegetbusgasusage(self.destinationindex));
 
-    if(isdefined(zoneisempty) && zoneisempty) {
+    if(isDefined(zoneisempty) && zoneisempty) {
       println("^2Bus Debug: Bus Won't Consider Stopping Since Zone Is Empty.");
+
       self busstartmoving(targetspeed);
       continue;
     }
 
-    if(isdefined(self.skip_next_destination) && self.skip_next_destination) {
+    if(isDefined(self.skip_next_destination) && self.skip_next_destination) {
       println("^2Bus Debug: Bus Won't Consider Stopping Since It's Skipping Destination.");
+
       self notify("skipping_destination");
       self busstartmoving(targetspeed);
       continue;
     } else {
       println("^2Bus Debug: Bus Will Consider Stopping, Someone Is Nearby.");
+
     }
 
     if(level.busschedule busschedulegetisambushstop(self.destinationindex)) {
@@ -378,6 +391,7 @@ busschedulethink() {
 
       if(maps\mp\zm_transit_ambush::shouldstartambushround() && self.numplayersinsidebus != 0) {
         println("^2Bus Debug: Ambush Triggering");
+
         self busstopmoving(1);
         level.nml_zone_name = "zone_amb_" + noteworthy;
         thread maps\mp\zm_transit_ambush::ambushstartround();
@@ -387,10 +401,12 @@ busschedulethink() {
         thread automatonspeak("inform", "refueled_gas");
       } else {
         println("^2Bus Debug: Over Ambush Point But No BreakDown Triggered.");
+
         continue;
       }
     } else {
       println("^2Bus Debug: Arrived At Destination");
+
       self notify("reached_destination");
       shouldremovegas = 1;
       thread do_automaton_arrival_vox(noteworthy);
@@ -411,6 +427,7 @@ busschedulethink() {
     }
 
     waittimeatdestination = self.waittimeatdestination;
+
     if(getdvarint(#"_id_1CF9CD76") != 0) {
       println("^2Bus Debug: Using custom wait time of: " + getdvarint(#"_id_1CF9CD76") + " seconds.");
       waittimeatdestination = getdvarint(#"_id_1CF9CD76");
@@ -418,9 +435,12 @@ busschedulethink() {
 
     if(getdvarint(#"_id_FA81816F") > 0)
       thread busshowleavinghud(waittimeatdestination);
+
     self waittill_any_timeout(waittimeatdestination, "depart_early");
-    while (getdvarint(#"_id_F7C16264"))
+
+    while(getdvarint(#"_id_F7C16264"))
       wait 0.1;
+
     self notify("ready_to_depart");
     self thread buslightsflash();
     self thread buslightsignal("turn_signal_left");
@@ -440,8 +460,8 @@ busscheduledepartearly() {
   wait 15;
   triggerbuswait = 0;
 
-  while (true) {
-    if(isdefined(self.disabled_by_emp) && self.disabled_by_emp) {
+  while(true) {
+    if(isDefined(self.disabled_by_emp) && self.disabled_by_emp) {
       wait 1;
       continue;
     }
@@ -468,8 +488,10 @@ busscheduledepartearly() {
         triggerbuswait = 1;
       } else {
         self notify("depart_early");
-        if(isdefined(level.bus_leave_hud))
+
+        if(isDefined(level.bus_leave_hud))
           level.bus_leave_hud.alpha = 0;
+
         return;
       }
     } else if(triggerbuswait)
@@ -486,10 +508,10 @@ busschedulecreate() {
 }
 
 busscheduleadd(stopname, isambush, maxwaittimebeforeleaving, busspeedleaving, gasusage) {
-  assert(isdefined(stopname));
-  assert(isdefined(isambush));
-  assert(isdefined(maxwaittimebeforeleaving));
-  assert(isdefined(busspeedleaving));
+  assert(isDefined(stopname));
+  assert(isDefined(isambush));
+  assert(isDefined(maxwaittimebeforeleaving));
+  assert(isDefined(busspeedleaving));
   destinationindex = self.destinations.size;
   self.destinations[destinationindex] = spawnstruct();
   self.destinations[destinationindex].name = stopname;
@@ -531,7 +553,7 @@ busschedulegetbusgasusage(destinationindex) {
 }
 
 transit_actor_damage_override_wrapper(inflictor, attacker, damage, flags, meansofdeath, weapon, vpoint, vdir, shitloc, psoffsettime, boneindex) {
-  if(damage > self.health && (isdefined(self.isonbus) && self.isonbus)) {
+  if(damage > self.health && (isDefined(self.isonbus) && self.isonbus)) {
     ret = self maps\mp\zombies\_zm::actor_damage_override_wrapper(inflictor, attacker, self.health - 1, flags, meansofdeath, weapon, vpoint, vdir, shitloc, psoffsettime, boneindex);
     self zombie_in_bus_death_animscript_callback(inflictor, attacker, damage, flags, meansofdeath, weapon, vpoint, vdir, shitloc, psoffsettime, boneindex);
     return ret;
@@ -541,20 +563,20 @@ transit_actor_damage_override_wrapper(inflictor, attacker, damage, flags, meanso
 }
 
 zombie_in_bus_death_animscript_callback(inflictor, attacker, damage, flags, meansofdeath, weapon, vpoint, vdir, shitloc, psoffsettime, boneindex) {
-  if(isdefined(self) && isdefined(self.opening))
+  if(isDefined(self) && isDefined(self.opening))
     self.opening.zombie = undefined;
 
-  if(isdefined(self.exploding) && self.exploding) {
+  if(isDefined(self.exploding) && self.exploding) {
     self notify("killanimscript");
     self maps\mp\zombies\_zm_spawner::reset_attack_spot();
     return true;
   }
 
-  if(isdefined(self) && (isdefined(self.isonbus) && self.isonbus || isdefined(self.onbuswindow) && self.onbuswindow || isdefined(self.climbing_into_bus) && self.climbing_into_bus || isdefined(self.climbing_onto_bus) && self.climbing_onto_bus)) {
+  if(isDefined(self) && (isDefined(self.isonbus) && self.isonbus || isDefined(self.onbuswindow) && self.onbuswindow || isDefined(self.climbing_into_bus) && self.climbing_into_bus || isDefined(self.climbing_onto_bus) && self.climbing_onto_bus)) {
     level maps\mp\zombies\_zm_spawner::zombie_death_points(self.origin, meansofdeath, shitloc, attacker, self);
     launchvector = undefined;
 
-    if(isdefined(self.onbuswindow) && self.onbuswindow && !(isdefined(self.climbing_into_bus) && self.climbing_into_bus) || isdefined(self.climbing_onto_bus) && self.climbing_onto_bus) {
+    if(isDefined(self.onbuswindow) && self.onbuswindow && !(isDefined(self.climbing_into_bus) && self.climbing_into_bus) || isDefined(self.climbing_onto_bus) && self.climbing_onto_bus) {
       fwd = anglestoforward(flat_angle(self.angles * -1));
       my_velocity = vectorscale(fwd, 50);
       launchvector = (my_velocity[0], my_velocity[1], 20);
@@ -591,6 +613,7 @@ debug_busnear() {
     line(inside_pos - side_proj, inside_pos + side_proj, (1, 1, 1), 1, 0, 2);
     line(plow_pos - side_proj, plow_pos + side_proj, (1, 1, 1), 1, 0, 2);
   }
+
 }
 
 debug_zombieonbus(zombie) {
@@ -607,11 +630,12 @@ debug_zombieonbus(zombie) {
     zombie_origin = zombie.origin;
     zombie_origin_proj = pointonsegmentnearesttopoint(backward_pos, forward_pos, zombie_origin);
 
-    if(isdefined(zombie.isonbus) && zombie.isonbus)
+    if(isDefined(zombie.isonbus) && zombie.isonbus)
       line(zombie_origin_proj, zombie_origin, (0, 1, 0), 1, 0, 2);
     else
       line(zombie_origin_proj, zombie_origin, (1, 0, 0), 1, 0, 2);
   }
+
 }
 
 busupdatenearzombies() {
@@ -625,46 +649,48 @@ busupdatenearzombies() {
   zombiesclimbing_new = 0;
   zombiesclimbing_old = 0;
 
-  while (true) {
+  while(true) {
     self.zombiesinside = 0;
     self.zombies_climbing = 0;
     self.zombies_chasing_bus = 0;
     self.zombiesatwindow = 0;
     self.zombiesonroof = 0;
     self.zombies_near_bus = 0;
+
     self debug_busnear();
+
     zombies = get_round_enemy_array();
 
-    if(isdefined(zombies)) {
-      for (i = 0; i < zombies.size; i++) {
-        if(!isdefined(zombies[i])) {
+    if(isDefined(zombies)) {
+      for(i = 0; i < zombies.size; i++) {
+        if(!isDefined(zombies[i])) {
           continue;
         }
         zombie = zombies[i];
 
-        if(!(isdefined(zombie.completed_emerging_into_playable_area) && zombie.completed_emerging_into_playable_area)) {
+        if(!(isDefined(zombie.completed_emerging_into_playable_area) && zombie.completed_emerging_into_playable_area)) {
           continue;
         }
-        if(isdefined(zombie.isscreecher) && zombie.isscreecher || isdefined(zombie.is_avogadro) && zombie.is_avogadro) {
+        if(isDefined(zombie.isscreecher) && zombie.isscreecher || isDefined(zombie.is_avogadro) && zombie.is_avogadro) {
           continue;
         }
-        if(!isdefined(zombie.isonbus))
+        if(!isDefined(zombie.isonbus))
           zombie.isonbus = 0;
 
         zombie.ground_ent = zombie getgroundent();
 
-        if(isdefined(zombie.ground_ent)) {
-          if(isdefined(zombie.ground_ent.isonbus) && zombie.ground_ent.isonbus)
+        if(isDefined(zombie.ground_ent)) {
+          if(isDefined(zombie.ground_ent.isonbus) && zombie.ground_ent.isonbus)
             zombie.isonbus = 1;
           else {
             groundname = zombie.ground_ent.targetname;
 
-            if(isdefined(groundname)) {
+            if(isDefined(groundname)) {
               if(groundname == level.the_bus.targetname || groundname == "bus_path_blocker" || groundname == "hatch_clip") {
                 zombie.dont_throw_gib = 1;
                 zombie.isonbus = 1;
 
-                if(isdefined(zombie.entering_bus) && zombie.entering_bus)
+                if(isDefined(zombie.entering_bus) && zombie.entering_bus)
                   zombie.entering_bus = undefined;
               } else
                 zombie.isonbus = 0;
@@ -673,22 +699,22 @@ busupdatenearzombies() {
           }
         }
 
-        if(isdefined(zombie.entering_bus) && zombie.entering_bus)
+        if(isDefined(zombie.entering_bus) && zombie.entering_bus)
           zombie.isonbus = 1;
 
         zombie.isonbusroof = zombie _entityisonroof();
 
-        if(isdefined(zombie.isonbusroof) && zombie.isonbusroof)
+        if(isDefined(zombie.isonbusroof) && zombie.isonbusroof)
           zombie thread play_zmbonbusroof_sound();
 
-        if(isdefined(zombie.isonbus) && zombie.isonbus) {
-          if(!(isdefined(zombie.entering_bus) && zombie.entering_bus)) {
-            if(!isdefined(zombie.onbusfunc)) {
+        if(isDefined(zombie.isonbus) && zombie.isonbus) {
+          if(!(isDefined(zombie.entering_bus) && zombie.entering_bus)) {
+            if(!isDefined(zombie.onbusfunc)) {
               zombie.onbusfunc = maps\mp\zm_transit_openings::zombiemoveonbus;
               zombie thread[[zombie.onbusfunc]]();
             }
           }
-        } else if(isdefined(zombie.onbusfunc)) {
+        } else if(isDefined(zombie.onbusfunc)) {
           zombie.onbusfunc = undefined;
           zombie notify("endOnBus");
           zombie animmode("normal");
@@ -697,13 +723,13 @@ busupdatenearzombies() {
           zombie thread maps\mp\zombies\_zm_ai_basic::find_flesh();
         }
 
-        if(isdefined(zombie.isonbus) && zombie.isonbus)
+        if(isDefined(zombie.isonbus) && zombie.isonbus)
           self.zombiesinside++;
-        else if(isdefined(zombie.onbuswindow) && zombie.onbuswindow)
+        else if(isDefined(zombie.onbuswindow) && zombie.onbuswindow)
           self.zombiesatwindow++;
-        else if(isdefined(zombie.isonbusroof) && zombie.isonbusroof)
+        else if(isDefined(zombie.isonbusroof) && zombie.isonbusroof)
           self.zombiesonroof++;
-        else if(isdefined(zombie.climbing_into_bus) && zombie.climbing_into_bus)
+        else if(isDefined(zombie.climbing_into_bus) && zombie.climbing_into_bus)
           self.zombies_climbing++;
         else if(distancesquared(zombie.origin, self.origin) < 122500) {
           if(zombie.zombie_move_speed == "chase_bus")
@@ -723,15 +749,17 @@ busupdatenearzombies() {
           level.bus_zombie_danger = 0;
 
         if(self.ismoving && self getspeedmph() > 5) {
-          if(isdefined(self.plowtrigger)) {
+          if(isDefined(self.plowtrigger)) {
             if(zombie istouching(self.plowtrigger)) {
               println("^2Transit Debug: Plow killing zombie.");
+
               self thread busplowkillzombie(zombie);
               continue;
             }
-          } else if(isdefined(self.bussmashtrigger)) {
-            if(!isdefined(zombie.opening) && !(isdefined(zombie.isonbus) && zombie.isonbus) && zombie istouching(self.bussmashtrigger)) {
+          } else if(isDefined(self.bussmashtrigger)) {
+            if(!isDefined(zombie.opening) && !(isDefined(zombie.isonbus) && zombie.isonbus) && zombie istouching(self.bussmashtrigger)) {
               println("^2Transit Debug: Plow pushing zombie.");
+
               self thread buspushzombie(zombie, self.bussmashtrigger);
               continue;
             }
@@ -739,6 +767,7 @@ busupdatenearzombies() {
         }
 
         self update_zombie_move_speed(zombie);
+
         self debug_zombieonbus(zombie);
 
         if(i % 4 == 3)
@@ -764,16 +793,16 @@ busupdatenearzombies() {
 }
 
 entity_is_on_bus(use_cache) {
-  if(isdefined(self.isonbus) && (isdefined(use_cache) && use_cache))
+  if(isDefined(self.isonbus) && (isDefined(use_cache) && use_cache))
     return self.isonbus;
 
   self.isonbus = 0;
   self.ground_ent = self getgroundent();
 
-  if(isdefined(self.ground_ent)) {
+  if(isDefined(self.ground_ent)) {
     groundname = self.ground_ent.targetname;
 
-    if(isdefined(groundname)) {
+    if(isDefined(groundname)) {
       if(groundname == level.the_bus.targetname || groundname == "bus_path_blocker" || groundname == "hatch_clip")
         self.isonbus = 1;
     }
@@ -783,14 +812,14 @@ entity_is_on_bus(use_cache) {
 }
 
 busupdatechasers() {
-  while (true) {
-    if(isdefined(self.ismoving) && self.ismoving && (isdefined(self.exceed_chase_speed) && self.exceed_chase_speed)) {
+  while(true) {
+    if(isDefined(self.ismoving) && self.ismoving && (isDefined(self.exceed_chase_speed) && self.exceed_chase_speed)) {
       max_speed = 0;
       zombies = getaiarray(level.zombie_team);
       slow_zombies = [];
 
       foreach(zombie in zombies) {
-        if(isdefined(zombie.zombie_move_speed) && zombie.zombie_move_speed == "chase_bus" && !(isdefined(zombie.close_to_bus) && zombie.close_to_bus) && !isdefined(zombie.opening)) {
+        if(isDefined(zombie.zombie_move_speed) && zombie.zombie_move_speed == "chase_bus" && !(isDefined(zombie.close_to_bus) && zombie.close_to_bus) && !isDefined(zombie.opening)) {
           substate = zombie getanimsubstatefromasd();
 
           if(substate == 6) {
@@ -824,7 +853,7 @@ busupdatechasers() {
 }
 
 play_zmbonbusroof_sound() {
-  if(!(isdefined(self.sndbusroofplayed) && self.sndbusroofplayed)) {
+  if(!(isDefined(self.sndbusroofplayed) && self.sndbusroofplayed)) {
     self playsound("fly_step_zombie_bus");
     self.sndbusroofplayed = 1;
   }
@@ -833,17 +862,17 @@ play_zmbonbusroof_sound() {
 object_is_on_bus() {
   ground_ent = self getgroundent();
 
-  for (depth = 0; isdefined(ground_ent) && depth < 2; depth++) {
+  for(depth = 0; isDefined(ground_ent) && depth < 2; depth++) {
     groundname = ground_ent.targetname;
 
-    if(isdefined(groundname)) {
+    if(isDefined(groundname)) {
       if(groundname == level.the_bus.targetname || groundname == "bus_path_blocker" || groundname == "hatch_clip")
         return true;
     }
 
     new_ground_ent = ground_ent getgroundent();
 
-    if(!isdefined(new_ground_ent) || new_ground_ent == ground_ent) {
+    if(!isDefined(new_ground_ent) || new_ground_ent == ground_ent) {
       break;
     }
 
@@ -856,41 +885,43 @@ object_is_on_bus() {
 busupdatenearequipment() {
   equipment = maps\mp\zombies\_zm_equipment::get_destructible_equipment_list();
 
-  for (i = 0; i < equipment.size; i++) {
+  for(i = 0; i < equipment.size; i++) {
     item = equipment[i];
 
-    if(!isdefined(item)) {
+    if(!isDefined(item)) {
       continue;
     }
-    if(isdefined(item.isonbus) && item.isonbus) {
+    if(isDefined(item.isonbus) && item.isonbus) {
       continue;
     }
-    if(isdefined(self.bussmashtrigger) && item istouching(self.bussmashtrigger)) {
+    if(isDefined(self.bussmashtrigger) && item istouching(self.bussmashtrigger)) {
       item maps\mp\zombies\_zm_equipment::item_damage(10000);
+
       println("^2Bus hit an item.");
+
     }
   }
 }
 
 update_zombie_move_speed(zombie) {
-  if(!(isdefined(zombie.completed_emerging_into_playable_area) && zombie.completed_emerging_into_playable_area)) {
+  if(!(isDefined(zombie.completed_emerging_into_playable_area) && zombie.completed_emerging_into_playable_area)) {
     return;
   }
-  if(!isdefined(zombie.normal_move_speed))
+  if(!isDefined(zombie.normal_move_speed))
     zombie.normal_move_speed = 1;
 
   if(!zombie.has_legs) {
     return;
   }
-  enemyonbus = isdefined(zombie.favoriteenemy) && (isdefined(zombie.favoriteenemy.isonbus) && zombie.favoriteenemy.isonbus);
+  enemyonbus = isDefined(zombie.favoriteenemy) && (isDefined(zombie.favoriteenemy.isonbus) && zombie.favoriteenemy.isonbus);
 
-  if(isdefined(zombie.isonbus) && zombie.isonbus) {
+  if(isDefined(zombie.isonbus) && zombie.isonbus) {
     if(zombie.normal_move_speed)
       zombie.normal_move_speed = 0;
 
     walk_state = zombie.zombie_move_speed;
 
-    if(self.ismoving && !(isdefined(self.disabled_by_emp) && self.disabled_by_emp)) {
+    if(self.ismoving && !(isDefined(self.disabled_by_emp) && self.disabled_by_emp)) {
       if(zombie.zombie_move_speed != "bus_walk")
         walk_state = "bus_walk";
     } else if(zombie.zombie_move_speed != "walk")
@@ -900,7 +931,7 @@ update_zombie_move_speed(zombie) {
       zombie set_zombie_run_cycle(walk_state);
 
     return;
-  } else if(enemyonbus && !isdefined(zombie.opening)) {
+  } else if(enemyonbus && !isDefined(zombie.opening)) {
     if(self should_chase_bus(zombie)) {
       if(zombie.zombie_move_speed != "chase_bus") {
         zombie.normal_move_speed = 0;
@@ -925,16 +956,16 @@ should_chase_bus(zombie) {
   if(!self.ismoving)
     return false;
 
-  if(!(isdefined(self.exceed_chase_speed) && self.exceed_chase_speed))
+  if(!(isDefined(self.exceed_chase_speed) && self.exceed_chase_speed))
     return false;
 
-  if(isdefined(self.disabled_by_emp) && self.disabled_by_emp)
+  if(isDefined(self.disabled_by_emp) && self.disabled_by_emp)
     return false;
 
-  if(isdefined(zombie.is_inert) && zombie.is_inert)
+  if(isDefined(zombie.is_inert) && zombie.is_inert)
     return false;
 
-  if(isdefined(zombie.is_traversing) && zombie.is_traversing)
+  if(isDefined(zombie.is_traversing) && zombie.is_traversing)
     return false;
 
   if(!flag("OnPriDoorYar2")) {
@@ -970,13 +1001,13 @@ busupdatespeed() {
   if(is_false(self.ismoving))
     targetspeed = 0;
 
-  if(isdefined(self.forcestop) && self.forcestop)
+  if(isDefined(self.forcestop) && self.forcestop)
     targetspeed = 0;
 
-  if(isdefined(self.stalled) && self.stalled)
+  if(isDefined(self.stalled) && self.stalled)
     targetspeed = 0;
 
-  if(isdefined(self.disabled_by_emp) && self.disabled_by_emp)
+  if(isDefined(self.disabled_by_emp) && self.disabled_by_emp)
     targetspeed = 0;
 
   if(targetspeed < 0)
@@ -985,7 +1016,7 @@ busupdatespeed() {
   if(self.currentspeed != targetspeed) {
     self.currentspeed = targetspeed;
 
-    if(isdefined(self.immediatespeed) && self.immediatespeed) {
+    if(isDefined(self.immediatespeed) && self.immediatespeed) {
       self setspeedimmediate(targetspeed, self.accel, self.decel);
       self.immediatespeed = undefined;
     } else if(targetspeed == 0)
@@ -999,6 +1030,7 @@ busupdatespeed() {
     msgtext = "speed " + self getspeedmph();
     print3d(msgorigin, msgtext, (1, 1, 1), 1, 0.5, 2);
   }
+
 }
 
 bus_power_off() {
@@ -1008,8 +1040,8 @@ bus_power_off() {
   self buslightsdisableall();
   self notify("pre_power_off");
 
-  if(isdefined(self.ismoving) && self.ismoving) {
-    while (isdefined(self.istouchingignorewindowsvolume) && self.istouchingignorewindowsvolume)
+  if(isDefined(self.ismoving) && self.ismoving) {
+    while(isDefined(self.istouchingignorewindowsvolume) && self.istouchingignorewindowsvolume)
       wait 0.1;
   }
 
@@ -1052,15 +1084,15 @@ busupdateignorewindows() {
   if(self getspeed() <= 0) {
     return;
   }
-  if(!isdefined(level.bus_ignore_windows))
+  if(!isDefined(level.bus_ignore_windows))
     level.bus_ignore_windows = getentarray("bus_ignore_windows", "targetname");
 
   ignorewindowsvolume = undefined;
   istouchingignorewindowsvolume = 0;
 
-  if(isdefined(level.bus_ignore_windows) && level.bus_ignore_windows.size > 0) {
+  if(isDefined(level.bus_ignore_windows) && level.bus_ignore_windows.size > 0) {
     foreach(volume in level.bus_ignore_windows) {
-      if(isdefined(istouchingignorewindowsvolume) && istouchingignorewindowsvolume) {
+      if(isDefined(istouchingignorewindowsvolume) && istouchingignorewindowsvolume) {
         continue;
       }
       if(self istouching(volume)) {
@@ -1075,16 +1107,16 @@ busupdateignorewindows() {
 }
 
 zombie_surf(zombie) {
-  if(!isdefined(self.zombie_surf_count))
+  if(!isDefined(self.zombie_surf_count))
     self.zombie_surf_count = 0;
 
   damage = int(self.maxhealth / 10);
 
-  if(isdefined(zombie.isonbusroof) && zombie.isonbusroof && self.origin[2] - zombie.origin[2] >= 35 && !(isdefined(zombie.climbing_onto_bus) && zombie.climbing_onto_bus) && !(isdefined(self.hatch_jump) && self.hatch_jump)) {
+  if(isDefined(zombie.isonbusroof) && zombie.isonbusroof && self.origin[2] - zombie.origin[2] >= 35 && !(isDefined(zombie.climbing_onto_bus) && zombie.climbing_onto_bus) && !(isDefined(self.hatch_jump) && self.hatch_jump)) {
     damage = int(self.maxhealth / 8);
     self.zombie_surf_count++;
 
-    if(isdefined(level.zombie_surfing_kills) && level.zombie_surfing_kills && self.zombie_surf_count > level.zombie_surfing_kill_count) {
+    if(isDefined(level.zombie_surfing_kills) && level.zombie_surfing_kills && self.zombie_surf_count > level.zombie_surfing_kill_count) {
       self maps\mp\zombies\_zm_stats::increment_client_stat("cheat_total", 0);
       self playlocalsound(level.zmb_laugh_alias);
       self dodamage(self.maxhealth + 1, zombie.origin);
@@ -1097,7 +1129,7 @@ zombie_surf(zombie) {
 busupdateplayers() {
   level endon("end_game");
 
-  while (true) {
+  while(true) {
     self.numplayers = 0;
     self.numplayerson = 0;
     self.numplayersonroof = 0;
@@ -1107,12 +1139,14 @@ busupdateplayers() {
     self.frontworld = self localtoworldcoords(self.frontlocal);
     self.backworld = self localtoworldcoords(self.backlocal);
     self.bus_riders_alive = [];
+
     if(getdvarint(#"_id_10AC3C99") > 0) {
       line(self.frontworld + (0, 0, self.floor), self.backworld + (0, 0, self.floor), (1, 1, 1), 1, 0, 4);
       line(self.frontworld + (0, 0, self.floor), self.frontworld + (0, 0, self.height), (1, 1, 1), 1, 0, 4);
       circle(self.backworld + (0, 0, self.floor), self.radius, (1, 1, 1), 0, 1, 4);
       circle(self.frontworld + (0, 0, self.floor), self.radius, (1, 1, 1), 0, 1, 4);
     }
+
     players = get_players();
 
     foreach(player in players) {
@@ -1127,20 +1161,20 @@ busupdateplayers() {
       playerisinbus = 0;
       mover = player getmoverent();
 
-      if(isdefined(mover)) {
-        if(isdefined(mover.targetname)) {
+      if(isDefined(mover)) {
+        if(isDefined(mover.targetname)) {
           if(mover.targetname == "the_bus" || mover.targetname == "bus_path_blocker" || mover.targetname == "hatch_clip" || mover.targetname == "ladder_mantle")
             playerisinbus = 1;
         }
 
-        if(isdefined(mover.equipname)) {
+        if(isDefined(mover.equipname)) {
           if(mover.equipname == "riotshield_zm") {
-            if(isdefined(mover.isonbus) && mover.isonbus)
+            if(isDefined(mover.isonbus) && mover.isonbus)
               playerisinbus = 1;
           }
         }
 
-        if(isdefined(mover.is_zombie) && mover.is_zombie && (isdefined(mover.isonbus) && mover.isonbus))
+        if(isDefined(mover.is_zombie) && mover.is_zombie && (isDefined(mover.isonbus) && mover.isonbus))
           playerisinbus = 1;
       }
 
@@ -1158,11 +1192,11 @@ busupdateplayers() {
       if(player isonladder())
         ground_ent = mover;
 
-      if(isdefined(ground_ent)) {
-        if(isdefined(ground_ent.is_zombie) && ground_ent.is_zombie)
+      if(isDefined(ground_ent)) {
+        if(isDefined(ground_ent.is_zombie) && ground_ent.is_zombie)
           player thread zombie_surf(ground_ent);
         else {
-          if(playerisinbus && !(isdefined(player.isonbus) && player.isonbus)) {
+          if(playerisinbus && !(isDefined(player.isonbus) && player.isonbus)) {
             bbprint("zombie_events", "category %s type %s round %d playername %s", "BUS", "player_enter", level.round_number, player.name);
             player thread bus_audio_interior_loop(self);
             player clientnotify("OBS");
@@ -1176,7 +1210,6 @@ busupdateplayers() {
             if(isdivingtoprone)
               player thread playerdelayturnoffdivetoprone();
             else {
-
             }
 
             if(randomint(100) > 80 && level.automaton.greeting_timer == 0) {
@@ -1185,7 +1218,7 @@ busupdateplayers() {
             }
           }
 
-          if(!playerisinbus && (isdefined(player.isonbus) && player.isonbus)) {
+          if(!playerisinbus && (isDefined(player.isonbus) && player.isonbus)) {
             bbprint("zombie_events", "category %s type %s round %d playername %s", "BUS", "player_exit", level.round_number, player.name);
             self.buyable_weapon setinvisibletoplayer(player);
             player setclientplayerpushamount(1);
@@ -1207,10 +1240,10 @@ busupdateplayers() {
         }
       }
 
-      if(isdefined(player.isonbusroof) && player.isonbusroof) {
+      if(isDefined(player.isonbusroof) && player.isonbusroof) {
         self.buyable_weapon setinvisibletoplayer(player);
         self.numplayersonroof++;
-      } else if(isdefined(player.isonbus) && player.isonbus) {
+      } else if(isDefined(player.isonbus) && player.isonbus) {
         self.buyable_weapon setvisibletoplayer(player);
         self.numplayersinsidebus++;
       }
@@ -1223,7 +1256,7 @@ busupdateplayers() {
 }
 
 _entityisonroof() {
-  if(!isdefined(level.roof_trig))
+  if(!isDefined(level.roof_trig))
     level.roof_trig = getent("bus_roof_watch", "targetname");
 
   if(!self.isonbus)
@@ -1247,21 +1280,21 @@ greeting_timer() {
 _updateplayersinsafearea() {
   players = get_players();
 
-  if(!isdefined(level._safeareacachevalid) || !level._safeareacachevalid) {
+  if(!isDefined(level._safeareacachevalid) || !level._safeareacachevalid) {
     level.playable_areas = getentarray("player_volume", "script_noteworthy");
     level.nogas_areas = getentarray("no_gas", "targetname");
     level.ambush_areas = getentarray("ambush_volume", "script_noteworthy");
     level._safeareacachevaild = 1;
   }
 
-  for (p = 0; p < players.size; p++) {
+  for(p = 0; p < players.size; p++) {
     players[p].insafearea = _isplayerinsafearea(players[p]);
     players[p] _playercheckpoison();
   }
 }
 
 _isplayerinsafearea(player) {
-  if(isdefined(player.isonbus) && player.isonbus)
+  if(isDefined(player.isonbus) && player.isonbus)
     return level.the_bus.issafe;
 
   if(player _playertouchingsafearea(level.playable_areas))
@@ -1277,7 +1310,7 @@ _isplayerinsafearea(player) {
 }
 
 _playertouchingsafearea(areas) {
-  for (i = 0; i < areas.size; i++) {
+  for(i = 0; i < areas.size; i++) {
     touching = self istouching(areas[i]);
 
     if(touching)
@@ -1291,7 +1324,7 @@ _playercheckpoison() {
   if(!isalive(self) || self maps\mp\zombies\_zm_laststand::player_is_in_laststand()) {
     return;
   }
-  if(isdefined(self.poisoned) && self.poisoned) {
+  if(isDefined(self.poisoned) && self.poisoned) {
     return;
   }
   canbepoisoned = self playercanbepoisoned();
@@ -1299,7 +1332,7 @@ _playercheckpoison() {
   if(!canbepoisoned) {
     return;
   }
-  if(!isdefined(self.insafearea) || self.insafearea) {
+  if(!isDefined(self.insafearea) || self.insafearea) {
     return;
   }
   self thread _playerpoison();
@@ -1310,7 +1343,7 @@ playercanbepoisoned() {
   free_move = self isinmovemode("ufo", "noclip");
   zombie_cheat_num = getdvarint(#"_id_FA81816F");
   is_invunerable = zombie_cheat_num == 1 || zombie_cheat_num == 2 || zombie_cheat_num == 3;
-  return !god_mode && !isdefined(free_move) && !is_invunerable;
+  return !god_mode && !isDefined(free_move) && !is_invunerable;
 }
 
 _playerpoison() {
@@ -1320,7 +1353,7 @@ _playerpoison() {
   wait 1;
   damage = 15.0;
 
-  while (true) {
+  while(true) {
     if(self maps\mp\zombies\_zm_laststand::player_is_in_laststand() || !isalive(self)) {
       self stoppoisoning();
       self.poisoned = 0;
@@ -1336,9 +1369,7 @@ _playerpoison() {
     }
 
     if(randomfloat(100.0) < 60.0) {
-
     } else {
-
     }
 
     self dodamage(damage, self.origin);
@@ -1351,10 +1382,10 @@ _updateplayersinhubs() {
   players = get_players();
   hubs = getentarray("bus_hub", "script_noteworthy");
 
-  for (h = 0; h < hubs.size; h++) {
+  for(h = 0; h < hubs.size; h++) {
     hubs[h].active = 0;
 
-    for (p = 0; p < players.size && !hubs[h].active; p++)
+    for(p = 0; p < players.size && !hubs[h].active; p++)
       hubs[h].active = players[p] istouching(hubs[h]);
   }
 }
@@ -1367,10 +1398,10 @@ playerdelayturnoffdivetoprone() {
 busgivepowerup(location) {
   currentzone = level.zones[self.zone];
 
-  if(isdefined(currentzone.target2)) {
+  if(isDefined(currentzone.target2)) {
     spawndestent = getent(currentzone.target2, "targetname");
 
-    if(isdefined(spawndestent)) {
+    if(isDefined(spawndestent)) {
       level thread maps\mp\zombies\_zm_powerups::specific_powerup_drop("full_ammo", spawndestent.origin);
       level.powerup_drop_count = 0;
     }
@@ -1384,7 +1415,7 @@ buslightssetup() {
 buslightsflash() {
   self endon("departing");
 
-  while (true) {
+  while(true) {
     self buslightwaitenabled();
     self setclientfield("bus_flashing_lights", 1);
     wait 2.5;
@@ -1398,7 +1429,7 @@ buslightsbrake() {
   self setclientfield("bus_brake_lights", 1);
   wait 5;
 
-  while (is_false(self.ismoving)) {
+  while(is_false(self.ismoving)) {
     self buslightwaitenabled();
     self setclientfield("bus_brake_lights", 1);
     wait 0.8;
@@ -1410,7 +1441,7 @@ buslightsbrake() {
 }
 
 buslightwaitenabled() {
-  while (isdefined(self.bus_lights_disabled) && self.bus_lights_disabled)
+  while(isDefined(self.bus_lights_disabled) && self.bus_lights_disabled)
     wait 0.2;
 }
 
@@ -1429,7 +1460,7 @@ buslightsignal(turn_signal_side) {
   self endon("power_off");
   blink = 4;
 
-  for (x = 0; x < blink; x++) {
+  for(x = 0; x < blink; x++) {
     wait 1;
     self setclientfield("bus_" + turn_signal_side, 1);
     wait 1;
@@ -1438,7 +1469,7 @@ buslightsignal(turn_signal_side) {
 }
 
 buslightsdisableall() {
-  if(!isdefined(self.oldlights))
+  if(!isDefined(self.oldlights))
     self.oldlights = [];
 
   self buslightdisable("bus_flashing_lights");
@@ -1463,13 +1494,13 @@ busdoorssetup() {
   self.doorblockers = getentarray("bus_door_blocker", "targetname");
   doorstrigger = getentarray("bus_door_trigger", "targetname");
 
-  for (i = 0; i < self.doorblockers.size; i++) {
+  for(i = 0; i < self.doorblockers.size; i++) {
     self.doorblockers[i].offset = self worldtolocalcoords(self.doorblockers[i].origin);
     self.doorblockers[i] linkto(self, "", self.doorblockers[i].offset, (0, 0, 0));
     self.doorblockers[i] setmovingplatformenabled(1);
   }
 
-  for (i = 0; i < doorstrigger.size; i++) {
+  for(i = 0; i < doorstrigger.size; i++) {
     doorstrigger[i] enablelinkto();
     doorstrigger[i] linkto(self, "", self worldtolocalcoords(doorstrigger[i].origin), (0, 0, 0));
     doorstrigger[i] setcursorhint("HINT_NOICON");
@@ -1490,12 +1521,12 @@ busdoorsopen() {
   self thread bussetdoornodes(1);
   doorstrigger = getentarray("bus_door_trigger", "targetname");
 
-  for (i = 0; i < self.doorblockers.size; i++) {
+  for(i = 0; i < self.doorblockers.size; i++) {
     self.doorblockers[i] notsolid();
     self.doorblockers[i] playsound("zmb_bus_door_open");
   }
 
-  for (i = 0; i < doorstrigger.size; i++)
+  for(i = 0; i < doorstrigger.size; i++)
     doorstrigger[i] sethintstring(&"ZOMBIE_TRANSIT_CLOSE_BUS_DOOR");
 
   self bususeanimtree();
@@ -1515,12 +1546,12 @@ busdoorsclose() {
   level.the_bus showpart("doors_rear_right_2_jnt");
   doorstrigger = getentarray("bus_door_trigger", "targetname");
 
-  for (i = 0; i < self.doorblockers.size; i++) {
+  for(i = 0; i < self.doorblockers.size; i++) {
     self.doorblockers[i] solid();
     self.doorblockers[i] playsound("zmb_bus_door_close");
   }
 
-  for (i = 0; i < doorstrigger.size; i++)
+  for(i = 0; i < doorstrigger.size; i++)
     doorstrigger[i] sethintstring(&"ZOMBIE_TRANSIT_OPEN_BUS_DOOR");
 
   self bususeanimtree();
@@ -1531,14 +1562,14 @@ busdoorsclose() {
 busdoorsdisablefortime(time) {
   doorstrigger = getentarray("bus_door_trigger", "targetname");
 
-  for (i = 0; i < doorstrigger.size; i++)
+  for(i = 0; i < doorstrigger.size; i++)
     doorstrigger[i] setinvisibletoall();
 
   self.doorsdisabledfortime = 1;
   wait(time);
   self.doorsdisabledfortime = 0;
 
-  for (i = 0; i < doorstrigger.size; i++)
+  for(i = 0; i < doorstrigger.size; i++)
     doorstrigger[i] setvisibletoall();
 }
 
@@ -1574,11 +1605,11 @@ bususedoor(set) {
 }
 
 busidledoor() {
-  while (true) {
+  while(true) {
     notifystring = self waittill_any_return("departing", "BusUseDoor", "stopping");
 
     if(notifystring == "departing" || notifystring == "BusUseDoor") {
-      if(isdefined(self.ismoving) && self.ismoving && isdefined(self.door_state)) {
+      if(isDefined(self.ismoving) && self.ismoving && isDefined(self.door_state)) {
         wait 1;
 
         if(self.door_state)
@@ -1587,7 +1618,6 @@ busidledoor() {
           self setanim(level.bus_door_close_idle_state);
       }
     } else if(notifystring == "stopping") {
-
     }
   }
 }
@@ -1612,40 +1642,40 @@ busfxanims() {
 }
 
 busfxanims_start() {
-  if(!isdefined(self.fxanimmodel)) {
+  if(!isDefined(self.fxanimmodel)) {
     return;
   }
   self.fxanimmodel setanim(level.bus_props_start_state);
   wait(getanimlength(level.bus_props_start_state));
 
-  if(isdefined(self.ismoving) && self.ismoving)
+  if(isDefined(self.ismoving) && self.ismoving)
     self.fxanimmodel setanim(level.bus_props_idle_state);
 }
 
 busfxanims_end() {
-  if(!isdefined(self.fxanimmodel)) {
+  if(!isDefined(self.fxanimmodel)) {
     return;
   }
   self.fxanimmodel setanim(level.bus_props_start_state);
 }
 
 busdoorthink(trigger) {
-  while (true) {
+  while(true) {
     trigger waittill("trigger", player);
 
-    if(isdefined(self.force_lock_doors) && self.force_lock_doors) {
+    if(isDefined(self.force_lock_doors) && self.force_lock_doors) {
       continue;
     }
     if(self.doorsclosed) {
-      if(!(isdefined(level.bus_intro_done) && level.bus_intro_done)) {
+      if(!(isDefined(level.bus_intro_done) && level.bus_intro_done)) {
         thread automatonspeak("scripted", "discover_bus");
         level.bus_intro_done = 1;
-      } else if(randomint(100) > 75 && !isdefined(level.automaton.dmgfxorigin))
+      } else if(randomint(100) > 75 && !isDefined(level.automaton.dmgfxorigin))
         thread automatonspeak("inform", "doors_open");
 
       self busdoorsopen();
     } else {
-      if(randomint(100) > 75 && !isdefined(level.automaton.dmgfxorigin))
+      if(randomint(100) > 75 && !isDefined(level.automaton.dmgfxorigin))
         thread automatonspeak("inform", "doors_close");
 
       self busdoorsclose();
@@ -1671,7 +1701,7 @@ busdeferredinitplowclip(clip) {
   wait_for_buildable("cattlecatcher");
   trigger = getent("trigger_plow", "targetname");
 
-  while (true) {
+  while(true) {
     canbreak = 1;
     players = get_players();
 
@@ -1693,8 +1723,8 @@ busdeferredinitplowclip(clip) {
 }
 
 busplowupdatesolid() {
-  if(isdefined(self.cow_catcher_blocker)) {
-    if(!(isdefined(self.ismoving) && self.ismoving) && (isdefined(self.plow_attached) && self.plow_attached)) {
+  if(isDefined(self.cow_catcher_blocker)) {
+    if(!(isDefined(self.ismoving) && self.ismoving) && (isDefined(self.plow_attached) && self.plow_attached)) {
       self.cow_catcher_blocker solid();
       self.cow_catcher_blocker disconnectpaths();
     } else {
@@ -1707,8 +1737,8 @@ busplowupdatesolid() {
 busplowsetup() {
   clipbrush = getentarray("plow_clip", "targetname");
 
-  if(isdefined(clipbrush) && clipbrush.size > 0) {
-    for (i = 0; i < clipbrush.size; i++)
+  if(isDefined(clipbrush) && clipbrush.size > 0) {
+    for(i = 0; i < clipbrush.size; i++)
       self thread busdeferredinitplowclip(clipbrush[i]);
   }
 
@@ -1722,10 +1752,10 @@ busplowsetup() {
   self.bussmashtrigger = trigger;
   cow_catcher_blocker = getent("cow_catcher_path_blocker", "targetname");
 
-  if(isdefined(cow_catcher_blocker)) {
+  if(isDefined(cow_catcher_blocker)) {
     self.cow_catcher_blocker = cow_catcher_blocker;
 
-    if(!isdefined(self.path_blockers))
+    if(!isDefined(self.path_blockers))
       self.path_blockers = [];
 
     self.path_blockers[self.path_blockers.size] = cow_catcher_blocker;
@@ -1746,15 +1776,15 @@ busplowsetup() {
 busplowmoveplayeronbuilt() {
   wait_for_buildable("cattlecatcher");
 
-  while (!(isdefined(self.plow_clip_attached) && self.plow_clip_attached)) {
+  while(!(isDefined(self.plow_clip_attached) && self.plow_clip_attached)) {
     self busplowmoveplayerthink();
     wait 0.05;
   }
 }
 
 busplowmoveplayer() {
-  while (true) {
-    if(is_false(self.ismoving) || isdefined(self.disabled_by_emp) && self.disabled_by_emp) {
+  while(true) {
+    if(is_false(self.ismoving) || isDefined(self.disabled_by_emp) && self.disabled_by_emp) {
       wait 0.1;
       continue;
     }
@@ -1765,13 +1795,13 @@ busplowmoveplayer() {
 }
 
 busplowmoveplayerthink() {
-  if(!isdefined(level.triggerplow))
+  if(!isDefined(level.triggerplow))
     level.triggerplow = getent("trigger_plow", "targetname");
 
   players = get_players();
 
   foreach(player in players) {
-    if(isdefined(player.isonbus) && player.isonbus) {
+    if(isDefined(player.isonbus) && player.isonbus) {
       continue;
     }
     if(player istouching(level.triggerplow)) {
@@ -1779,7 +1809,7 @@ busplowmoveplayerthink() {
       leftdistance = distancesquared(player.origin, self gettagorigin("tag_wheel_front_left"));
       bus_dir = undefined;
 
-      if(isdefined(player.is_burning) && player getstance() == "stand")
+      if(isDefined(player.is_burning) && player getstance() == "stand")
         player setstance("crouch");
 
       if(rightdistance < leftdistance)
@@ -1797,7 +1827,7 @@ busplowmoveplayerthink() {
 buspushzombie(zombie, trigger) {
   opening = level.the_bus maps\mp\zm_transit_openings::busopeningbyname("front");
 
-  if(!isdefined(opening) || isdefined(opening.zombie) && opening.zombie != zombie || isdefined(zombie.is_inert) && zombie.is_inert)
+  if(!isDefined(opening) || isDefined(opening.zombie) && opening.zombie != zombie || isDefined(zombie.is_inert) && zombie.is_inert)
     busplowkillzombie(zombie);
   else
     zombie thread zombieattachtobus(level.the_bus, opening, 0);
@@ -1806,24 +1836,24 @@ buspushzombie(zombie, trigger) {
 busplowkillzombie(zombie) {
   zombie.killedbyplow = 1;
 
-  if(isdefined(zombie.busplowkillzombie)) {
+  if(isDefined(zombie.busplowkillzombie)) {
     zombie thread[[zombie.busplowkillzombie]]();
     return;
   }
 
   if(is_mature()) {
-    if(isdefined(level._effect["zomb_gib"]))
+    if(isDefined(level._effect["zomb_gib"]))
       playfxontag(level._effect["zomb_gib"], zombie, "J_SpineLower");
-  } else if(isdefined(level._effect["spawn_cloud"]))
+  } else if(isDefined(level._effect["spawn_cloud"]))
     playfxontag(level._effect["spawn_cloud"], zombie, "J_SpineLower");
 
   zombie thread busplowkillzombieuntildeath();
   wait 1;
 
-  if(isdefined(zombie))
+  if(isDefined(zombie))
     zombie hide();
 
-  if(!isdefined(self.upgrades["Plow"].killcount))
+  if(!isDefined(self.upgrades["Plow"].killcount))
     self.upgrades["Plow"].killcount = 0;
 
   self.upgrades["Plow"].killcount++;
@@ -1832,8 +1862,8 @@ busplowkillzombie(zombie) {
 busplowkillzombieuntildeath() {
   self endon("death");
 
-  while (isdefined(self) && isalive(self)) {
-    if(isdefined(self.health)) {
+  while(isDefined(self) && isalive(self)) {
+    if(isDefined(self.health)) {
       self.marked_for_recycle = 1;
       self dodamage(self.health + 666, self.origin, self, self, "none", "MOD_SUICIDE");
     }
@@ -1853,17 +1883,17 @@ busroofjumpoffpositionssetup() {
   jump_positions = getentarray("roof_jump_off_positions", "targetname");
   assert(jump_positions.size > 0);
 
-  for (i = 0; i < jump_positions.size; i++)
+  for(i = 0; i < jump_positions.size; i++)
     jump_positions[i] linkto(self, "", self worldtolocalcoords(jump_positions[i].origin), jump_positions[i].angles + self.angles);
 }
 
 bussideladderssetup() {
   side_ladders = getentarray("roof_ladder_outside", "targetname");
 
-  for (i = 0; i < side_ladders.size; i++) {
+  for(i = 0; i < side_ladders.size; i++) {
     side_ladders[i].trigger = getent(side_ladders[i].target, "targetname");
 
-    if(!isdefined(side_ladders[i].trigger)) {
+    if(!isDefined(side_ladders[i].trigger)) {
       side_ladders[i] delete();
       continue;
     }
@@ -1884,7 +1914,7 @@ bussideladderthink(ladder, trigger) {
   trigger setcursorhint("HINT_NOICON");
   trigger sethintstring(&"ZOMBIE_TRANSIT_BUS_CLIMB_ROOF");
 
-  while (true) {
+  while(true) {
     trigger waittill("trigger", player);
     teleport_location = self localtoworldcoords(ladder.script_vector);
     player setorigin(teleport_location);
@@ -1897,12 +1927,12 @@ bussideladderthink(ladder, trigger) {
 buspathblockersetup() {
   self.path_blockers = getentarray("bus_path_blocker", "targetname");
 
-  for (i = 0; i < self.path_blockers.size; i++)
+  for(i = 0; i < self.path_blockers.size; i++)
     self.path_blockers[i] linkto(self, "", self worldtolocalcoords(self.path_blockers[i].origin), self.path_blockers[i].angles + self.angles);
 
   cow_catcher_blocker = getent("cow_catcher_path_blocker", "targetname");
 
-  if(isdefined(cow_catcher_blocker))
+  if(isDefined(cow_catcher_blocker))
     cow_catcher_blocker linkto(self, "", self worldtolocalcoords(cow_catcher_blocker.origin), cow_catcher_blocker.angles + self.angles);
 
   trig = getent("bus_buyable_weapon1", "script_noteworthy");
@@ -1918,7 +1948,7 @@ buspathblockersetup() {
 }
 
 bussetdoornodes(enable) {
-  if(isdefined(self.door_nodes_avoid_linking) && self.door_nodes_avoid_linking) {
+  if(isDefined(self.door_nodes_avoid_linking) && self.door_nodes_avoid_linking) {
     return;
   }
   if(enable) {
@@ -1943,16 +1973,16 @@ bussetdoornodes(enable) {
 }
 
 buspathblockerenable() {
-  if(!isdefined(self.path_blockers)) {
+  if(!isDefined(self.path_blockers)) {
     return;
   }
   if(self.path_blocking) {
     return;
   }
-  while (level.the_bus getspeed() > 0)
+  while(level.the_bus getspeed() > 0)
     wait 0.1;
 
-  for (i = 0; i < self.path_blockers.size; i++)
+  for(i = 0; i < self.path_blockers.size; i++)
     self.path_blockers[i] disconnectpaths();
 
   self.link_start = [];
@@ -1966,12 +1996,12 @@ buslinkdoornodes(node_name) {
   start_node = getnode(node_name, "targetname");
   start_node.links = [];
 
-  if(isdefined(start_node)) {
+  if(isDefined(start_node)) {
     near_nodes = getnodesinradiussorted(start_node.origin, 128, 0, 64, "pathnodes");
     links = 0;
 
     foreach(node in near_nodes) {
-      if(!isdefined(node.target) || node.target != "the_bus") {
+      if(!isDefined(node.target) || node.target != "the_bus") {
         self.link_start[self.link_start.size] = start_node;
         self.link_end[self.link_end.size] = node;
         link_nodes(start_node, node);
@@ -1990,11 +2020,11 @@ buslinkdoornodes(node_name) {
 busunlinkdoornodes(node_name) {
   start_node = getnode(node_name, "targetname");
 
-  if(isdefined(start_node) && isdefined(start_node.links)) {
+  if(isDefined(start_node) && isDefined(start_node.links)) {
     linked_nodes = start_node.links;
 
     foreach(node in linked_nodes) {
-      if(!isdefined(node.target) || node.target != "the_bus") {
+      if(!isDefined(node.target) || node.target != "the_bus") {
         unlink_nodes(start_node, node);
         unlink_nodes(node, start_node);
       }
@@ -2003,13 +2033,13 @@ busunlinkdoornodes(node_name) {
 }
 
 buspathblockerdisable() {
-  if(!isdefined(self.path_blockers)) {
+  if(!isDefined(self.path_blockers)) {
     return;
   }
   if(!self.path_blocking) {
     return;
   }
-  for (i = 0; i < self.path_blockers.size; i++)
+  for(i = 0; i < self.path_blockers.size; i++)
     self.path_blockers[i] connectpaths();
 
   self.link_start = [];
@@ -2025,17 +2055,17 @@ buspathblockerdisable() {
 bussetupbounds() {
   self.bounds_origins = getentarray("bus_bounds_origin", "targetname");
 
-  for (i = 0; i < self.bounds_origins.size; i++)
+  for(i = 0; i < self.bounds_origins.size; i++)
     self.bounds_origins[i] linkto(self, "", self worldtolocalcoords(self.bounds_origins[i].origin), self.angles);
 }
 
 busstartwait() {
-  while (self getspeed() == 0)
+  while(self getspeed() == 0)
     wait 0.1;
 }
 
 busshowleavinghud(time) {
-  if(!isdefined(level.bus_leave_hud)) {
+  if(!isDefined(level.bus_leave_hud)) {
     level.bus_leave_hud = newhudelem();
     level.bus_leave_hud.color = (1, 1, 1);
     level.bus_leave_hud.fontscale = 4;
@@ -2073,7 +2103,7 @@ busstartmoving(targetspeed) {
       level.numbusstopssincelastambushround++;
   }
 
-  if(isdefined(targetspeed))
+  if(isDefined(targetspeed))
     self.targetspeed = targetspeed;
 
   self notify("OnKeysUsed");
@@ -2084,7 +2114,7 @@ busexceedchasespeed() {
   self notify("exceed_chase_speed");
   self endon("exceed_chase_speed");
 
-  while (isdefined(self.ismoving) && self.ismoving) {
+  while(isDefined(self.ismoving) && self.ismoving) {
     if(self getspeedmph() > 12) {
       self.exceed_chase_speed = 1;
       return;
@@ -2099,14 +2129,14 @@ busstopwait() {
     self.isstopping = 1;
     bbprint("zombie_events", "%s", "bus_stop");
 
-    while (self getspeed() > 0)
+    while(self getspeed() > 0)
       wait 0.1;
   }
 }
 
 busstopmoving(immediatestop) {
   if(self.ismoving) {
-    if(isdefined(immediatestop) && immediatestop)
+    if(isDefined(immediatestop) && immediatestop)
       self.immediatespeed = 1;
 
     self notify("stopping");
@@ -2128,13 +2158,14 @@ shakeplayersonbus() {
   players = get_players();
 
   foreach(player in players) {
-    if(isdefined(player.isonbus) && player.isonbus)
+    if(isDefined(player.isonbus) && player.isonbus)
       earthquake(randomfloatrange(0.3, 0.4), randomfloatrange(0.2, 0.4), player.origin + vectorscale((0, 0, 1), 32.0), 150);
   }
 }
 
 busgasadd(percent) {
   newgaslevel = level.the_bus.gas + percent;
+
   println("^2Bus Debug: Old Gas Level is " + newgaslevel);
 
   if(newgaslevel < 0)
@@ -2143,6 +2174,7 @@ busgasadd(percent) {
     newgaslevel = 100;
 
   level.the_bus.gas = newgaslevel;
+
   println("^2Bus Debug: New Gas Level is " + newgaslevel);
 }
 
@@ -2169,7 +2201,7 @@ busthink() {
   self thread busupdateplayers();
   self thread busupdatenearzombies();
 
-  while (true) {
+  while(true) {
     waittillframeend;
     self busupdatespeed();
     self busupdateignorewindows();
@@ -2177,7 +2209,7 @@ busthink() {
     if(self.ismoving)
       self busupdatenearequipment();
 
-    if(!(isdefined(level.bus_zombie_danger) && level.bus_zombie_danger) && (self.numplayersonroof || self.numplayersinsidebus)) {
+    if(!(isDefined(level.bus_zombie_danger) && level.bus_zombie_danger) && (self.numplayersonroof || self.numplayersinsidebus)) {
       no_danger++;
 
       if(no_danger > 40) {
@@ -2265,7 +2297,7 @@ busgetclosestopening() {
   closestdisttoplayer = -1.0;
   closestorigintoplayer = undefined;
 
-  for (i = 0; i < level.the_bus.openings.size; i++) {
+  for(i = 0; i < level.the_bus.openings.size; i++) {
     opening = level.the_bus.openings[i];
 
     if(!opening.enabled) {
@@ -2277,25 +2309,25 @@ busgetclosestopening() {
     jump_origin = maps\mp\zm_transit_openings::_determinejumpfromorigin(opening);
     dist2 = distancesquared(enemy.origin, jump_origin);
 
-    if(!isdefined(closestopeningtoplayer) || dist2 < closestdisttoplayer) {
+    if(!isDefined(closestopeningtoplayer) || dist2 < closestdisttoplayer) {
       closestopeningtoplayer = opening;
       closestorigintoplayer = jump_origin;
       closestdisttoplayer = dist2;
     }
 
-    if(isdefined(opening.zombie)) {
+    if(isDefined(opening.zombie)) {
       continue;
     }
     dist2 = distancesquared(self.origin, jump_origin);
 
-    if(!isdefined(closestopeningtozombie) || dist2 < closestdisttozombie) {
+    if(!isDefined(closestopeningtozombie) || dist2 < closestdisttozombie) {
       closestopeningtozombie = opening;
       closestorigintozombie = jump_origin;
       closestdisttozombie = dist2;
     }
   }
 
-  if(isdefined(closestopeningtozombie))
+  if(isDefined(closestopeningtozombie))
     closestorigin = closestorigintozombie;
   else
     closestorigin = closestorigintoplayer;
@@ -2307,7 +2339,7 @@ busgetclosestexit() {
   enemy = self.favoriteenemy;
   goal_node = level.the_bus.front_door_inside;
 
-  if(isdefined(enemy)) {
+  if(isDefined(enemy)) {
     dist_f = distancesquared(enemy.origin, level.the_bus.front_door_inside);
     dist_bl = distancesquared(enemy.origin, level.the_bus.exit_back_l);
     dist_br = distancesquared(enemy.origin, level.the_bus.exit_back_r);
@@ -2327,23 +2359,23 @@ enemy_location_override() {
   location = enemy.origin;
   bus = level.the_bus;
 
-  if(isdefined(self.isscreecher) && self.isscreecher || isdefined(self.is_avogadro) && self.is_avogadro)
+  if(isDefined(self.isscreecher) && self.isscreecher || isDefined(self.is_avogadro) && self.is_avogadro)
     return location;
 
-  if(isdefined(self.item))
+  if(isDefined(self.item))
     return self.origin;
 
   if(is_true(self.reroute)) {
-    if(isdefined(self.reroute_origin))
+    if(isDefined(self.reroute_origin))
       location = self.reroute_origin;
   }
 
-  if(isdefined(enemy.isonbus) && enemy.isonbus && !(isdefined(self.solo_revive_exit) && self.solo_revive_exit)) {
-    if(!(isdefined(self.isonbus) && self.isonbus)) {
-      if(isdefined(bus.ismoving) && bus.ismoving && !(isdefined(bus.disabled_by_emp) && bus.disabled_by_emp)) {
+  if(isDefined(enemy.isonbus) && enemy.isonbus && !(isDefined(self.solo_revive_exit) && self.solo_revive_exit)) {
+    if(!(isDefined(self.isonbus) && self.isonbus)) {
+      if(isDefined(bus.ismoving) && bus.ismoving && !(isDefined(bus.disabled_by_emp) && bus.disabled_by_emp)) {
         self.ignoreall = 1;
 
-        if(isdefined(self.close_to_bus) && self.close_to_bus && !(isdefined(bus.istouchingignorewindowsvolume) && bus.istouchingignorewindowsvolume)) {
+        if(isDefined(self.close_to_bus) && self.close_to_bus && !(isDefined(bus.istouchingignorewindowsvolume) && bus.istouchingignorewindowsvolume)) {
           self.goalradius = 2;
           location = self busgetclosestopening();
           location = groundpos_ignore_water_new(location + vectorscale((0, 0, 1), 60.0));
@@ -2381,11 +2413,11 @@ enemy_location_override() {
 
       self.close_to_bus = 0;
 
-      if(isdefined(bus.doorsclosed) && bus.doorsclosed) {
+      if(isDefined(bus.doorsclosed) && bus.doorsclosed) {
         self.ignoreall = 1;
         self.goalradius = 2;
         location = self busgetclosestopening();
-      } else if(isdefined(enemy.isonbusroof) && enemy.isonbusroof) {
+      } else if(isDefined(enemy.isonbusroof) && enemy.isonbusroof) {
         self.ignoreall = 1;
         self.goalradius = 2;
         location = self busgetclosestopening();
@@ -2412,10 +2444,10 @@ adjust_enemyoverride() {
   bus = level.the_bus;
   ent = self.enemyoverride[1];
 
-  if(isdefined(ent)) {
+  if(isDefined(ent)) {
     if(ent entity_is_on_bus(1)) {
-      if(!(isdefined(self.isonbus) && self.isonbus)) {
-        if(isdefined(bus.doorsclosed) && bus.doorsclosed) {
+      if(!(isDefined(self.isonbus) && self.isonbus)) {
+        if(isDefined(bus.doorsclosed) && bus.doorsclosed) {
           self.goalradius = 2;
           location = self busgetclosestopening();
         }
@@ -2428,7 +2460,7 @@ adjust_enemyoverride() {
 }
 
 attachpoweruptobus(powerup) {
-  if(!isdefined(powerup) || !isdefined(level.the_bus)) {
+  if(!isDefined(powerup) || !isDefined(level.the_bus)) {
     return;
   }
   distanceoutsideofbus = 50.0;
@@ -2485,7 +2517,7 @@ attachpoweruptobus(powerup) {
 }
 
 shouldsuppressgibs(zombie) {
-  if(!isdefined(zombie) || !isdefined(level.the_bus))
+  if(!isDefined(zombie) || !isDefined(level.the_bus))
     return false;
 
   pos = zombie.origin;
@@ -2504,20 +2536,21 @@ shouldsuppressgibs(zombie) {
 }
 
 bus_bridge_speedcontrol() {
-  while (true) {
+  while(true) {
     self waittill("reached_node", nextpoint);
+
     if(getdvarint(#"_id_583AF524") != 0) {
-      if(isdefined(nextpoint.target)) {
+      if(isDefined(nextpoint.target)) {
         futurenode = getvehiclenode(nextpoint.target, "targetname");
 
-        if(isdefined(futurenode.script_noteworthy) && futurenode.script_noteworthy == "emp_stop_point") {
+        if(isDefined(futurenode.script_noteworthy) && futurenode.script_noteworthy == "emp_stop_point") {
           player = get_players()[0];
           player thread maps\mp\zombies\_zm_weap_emp_bomb::emp_detonate(player magicgrenadetype("emp_grenade_zm", self.origin + vectorscale((0, 0, 1), 10.0), (0, 0, 0), 0.05));
         }
       }
     }
 
-    if(isdefined(nextpoint.script_string)) {
+    if(isDefined(nextpoint.script_string)) {
       if(nextpoint.script_string == "arrival_slowdown")
         self thread start_stopping_bus();
 
@@ -2525,11 +2558,11 @@ bus_bridge_speedcontrol() {
         self thread start_stopping_bus(1);
     }
 
-    if(isdefined(nextpoint.script_noteworthy)) {
+    if(isDefined(nextpoint.script_noteworthy)) {
       if(nextpoint.script_noteworthy == "slow_down") {
         self.targetspeed = 10;
 
-        if(isdefined(nextpoint.script_float))
+        if(isDefined(nextpoint.script_float))
           self.targetspeed = nextpoint.script_float;
 
         self setspeed(self.targetspeed, 80, 5);
@@ -2538,7 +2571,7 @@ bus_bridge_speedcontrol() {
       else if(nextpoint.script_noteworthy == "resume_speed") {
         self.targetspeed = 12;
 
-        if(isdefined(nextpoint.script_float))
+        if(isDefined(nextpoint.script_float))
           self.targetspeed = nextpoint.script_float;
 
         self setspeed(self.targetspeed, 60, 60);
@@ -2547,7 +2580,6 @@ bus_bridge_speedcontrol() {
       else if(nextpoint.script_noteworthy == "start_lava")
         playfxontag(level._effect["bus_lava_driving"], self, "tag_origin");
       else if(nextpoint.script_noteworthy == "stop_lava") {
-
       } else if(nextpoint.script_noteworthy == "bus_scrape")
         self playsound("zmb_bus_car_scrape");
       else if(nextpoint.script_noteworthy == "arriving") {
@@ -2562,7 +2594,7 @@ bus_bridge_speedcontrol() {
         player_near = 0;
         node = getvehiclenode("bridge_accel_point", "script_noteworthy");
 
-        if(isdefined(node)) {
+        if(isDefined(node)) {
           players = get_players();
 
           foreach(player in players) {
@@ -2582,11 +2614,11 @@ bus_bridge_speedcontrol() {
         volume = getent("depot_lava_pit", "targetname");
         traverse_volume = getent("depot_pit_traverse", "targetname");
 
-        if(isdefined(volume)) {
+        if(isDefined(volume)) {
           zombies = getaiarray(level.zombie_team);
 
-          for (i = 0; i < zombies.size; i++) {
-            if(isdefined(zombies[i].depot_lava_pit)) {
+          for(i = 0; i < zombies.size; i++) {
+            if(isDefined(zombies[i].depot_lava_pit)) {
               if(zombies[i] istouching(volume))
                 zombies[i] thread[[zombies[i].depot_lava_pit]]();
 
@@ -2610,7 +2642,7 @@ bus_bridge_speedcontrol() {
 }
 
 bus_audio_setup() {
-  if(!isdefined(self)) {
+  if(!isDefined(self)) {
     return;
   }
   self.engine_ent_1 = spawn("script_origin", self.origin);
@@ -2623,7 +2655,7 @@ play_bus_audio(type) {
   level notify("playing_bus_audio");
   level endon("playing_bus_audio");
 
-  if(isdefined(self.disabled_by_emp) && self.disabled_by_emp && type != "emp") {
+  if(isDefined(self.disabled_by_emp) && self.disabled_by_emp && type != "emp") {
     self notify("stop_bus_audio");
     self.engine_ent_1 stoploopsound(0.5);
     self.engine_ent_2 stoploopsound(0.5);
@@ -2641,7 +2673,7 @@ play_bus_audio(type) {
       self.engine_ent_1 stoploopsound(2);
       wait 7;
 
-      if(!(isdefined(self.disabled_by_emp) && self.disabled_by_emp)) {
+      if(!(isDefined(self.disabled_by_emp) && self.disabled_by_emp)) {
         self.engine_ent_1 playloopsound("zmb_bus_exterior_loop", 2);
         self.engine_ent_2 stoploopsound(3);
       }
@@ -2670,7 +2702,7 @@ play_bus_audio(type) {
 bus_audio_interior_loop(bus) {
   self endon("left bus");
 
-  while (!bus.ismoving || isdefined(bus.disabled_by_emp) && bus.disabled_by_emp)
+  while(!bus.ismoving || isDefined(bus.disabled_by_emp) && bus.disabled_by_emp)
     wait 0.1;
 
   self clientnotify("buslps");
@@ -2699,8 +2731,8 @@ play_lava_audio() {
   ent_front = spawn("script_origin", self gettagorigin("tag_wheel_front_right"));
   ent_front linkto(self, "tag_wheel_front_right");
 
-  while (true) {
-    if(!(isdefined(self.ismoving) && self.ismoving)) {
+  while(true) {
+    if(!(isDefined(self.ismoving) && self.ismoving)) {
       wait 1;
       continue;
     }
@@ -2710,11 +2742,11 @@ play_lava_audio() {
       ent_back playloopsound("zmb_bus_lava_wheels_loop", 0.5);
       wait 2;
 
-      while (self maps\mp\zm_transit_lava::object_touching_lava())
+      while(self maps\mp\zm_transit_lava::object_touching_lava())
         wait 2;
     }
 
-    if(isdefined(ent_back) && isdefined(ent_front)) {
+    if(isDefined(ent_back) && isDefined(ent_front)) {
       ent_front stoploopsound(1);
       ent_back stoploopsound(1);
     }
@@ -2730,7 +2762,7 @@ delete_lava_audio_ents(ent1, ent2) {
 }
 
 start_stopping_bus(stop_fast) {
-  if(isdefined(stop_fast) && stop_fast)
+  if(isDefined(stop_fast) && stop_fast)
     self setspeed(4, 15);
   else
     self setspeed(4, 5);
@@ -2744,10 +2776,10 @@ do_automoton_vox(name) {
   if(!issubstr(name, "vox_")) {
     return;
   }
-  if(!isdefined(level.stops))
+  if(!isDefined(level.stops))
     level.stops = [];
 
-  if(!isdefined(level.stops[name]))
+  if(!isDefined(level.stops[name]))
     level.stops[name] = 0;
 
   level.stops[name]++;
@@ -2760,13 +2792,13 @@ do_automoton_vox(name) {
       level thread automatonspeak("inform", "near_tunnel" + level.stops[name]);
       break;
     case "vox_ride_generic":
-      if(isdefined(level.stops) && isdefined(level.stops["depot"]) && level.stops["depot"] < 1) {
+      if(isDefined(level.stops) && isDefined(level.stops["depot"]) && level.stops["depot"] < 1) {
         return;
       }
       level thread automatonspeak("inform", "ride_generic");
       break;
     case "vox_exit_tunnel":
-      if(!(isdefined(level.tunnel_exit_vox_played) && level.tunnel_exit_vox_played)) {
+      if(!(isDefined(level.tunnel_exit_vox_played) && level.tunnel_exit_vox_played)) {
         level thread automatonspeak("inform", "leave_tunnel");
         level.tunnel_exit_vox_played = 1;
       }
@@ -2785,13 +2817,13 @@ do_automoton_vox(name) {
 }
 
 do_automaton_arrival_vox(destination) {
-  if(!isdefined(level.stops))
+  if(!isDefined(level.stops))
     level.stops = [];
 
-  if(!isdefined(level.stops[destination]))
+  if(!isDefined(level.stops[destination]))
     level.stops[destination] = 0;
 
-  if(destination == "depot" && !(isdefined(level.bus_intro_done) && level.bus_intro_done)) {
+  if(destination == "depot" && !(isDefined(level.bus_intro_done) && level.bus_intro_done)) {
     return;
   }
   level.stops[destination]++;
@@ -2801,7 +2833,7 @@ do_automaton_arrival_vox(destination) {
 
   switch (destination) {
     case "depot":
-      if(!(isdefined(level.bus_intro_done) && level.bus_intro_done)) {
+      if(!(isDefined(level.bus_intro_done) && level.bus_intro_done)) {
         break;
       }
 
@@ -2814,7 +2846,7 @@ do_automaton_arrival_vox(destination) {
       level thread automatonspeak("inform", "near_" + destination + level.stops[destination]);
       break;
     case "bridge":
-      if(isdefined(level.collapse_vox_said) && level.collapse_vox_said)
+      if(isDefined(level.collapse_vox_said) && level.collapse_vox_said)
         level thread automatonspeak("inform", "near_" + destination + level.stops[destination]);
 
       break;
@@ -2827,25 +2859,25 @@ do_player_bus_location_vox(node_info) {
   valid_player = undefined;
 
   foreach(player in players) {
-    if(isdefined(player.isonbus) && player.isonbus) {
+    if(isDefined(player.isonbus) && player.isonbus) {
       valid_player = player;
       break;
     }
   }
 
-  if(!isdefined(valid_player)) {
+  if(!isDefined(valid_player)) {
     return;
   }
-  if(isdefined(level.bus_zombie_danger) && level.bus_zombie_danger && !valid_player.talks_in_danger) {
+  if(isDefined(level.bus_zombie_danger) && level.bus_zombie_danger && !valid_player.talks_in_danger) {
     return;
   }
   vo_line = undefined;
 
   if(issubstr(node_info, "map_in")) {
-    if(!isdefined(level.arrivals))
+    if(!isDefined(level.arrivals))
       level.arrivals = [];
 
-    if(!isdefined(level.arrivals[node_info]))
+    if(!isDefined(level.arrivals[node_info]))
       level.arrivals[node_info] = 0;
 
     level.arrivals[node_info]++;
@@ -2861,7 +2893,7 @@ do_player_bus_location_vox(node_info) {
       vo_line = "bus_ride";
   }
 
-  if(!isdefined(vo_line)) {
+  if(!isDefined(vo_line)) {
     return;
   }
   if(randomint(100) < 25)
@@ -2869,15 +2901,15 @@ do_player_bus_location_vox(node_info) {
 }
 
 do_player_bus_zombie_vox(event, chance, timer) {
-  if(isdefined(level.doing_bus_zombie_vox) && level.doing_bus_zombie_vox || !isdefined(event)) {
+  if(isDefined(level.doing_bus_zombie_vox) && level.doing_bus_zombie_vox || !isDefined(event)) {
     return;
   }
-  if(!isdefined(chance))
+  if(!isDefined(chance))
     chance = 100;
 
   time = 30;
 
-  if(isdefined(timer))
+  if(isDefined(timer))
     time = timer;
 
   players = get_players();
@@ -2885,13 +2917,13 @@ do_player_bus_zombie_vox(event, chance, timer) {
   valid_player = undefined;
 
   foreach(player in players) {
-    if(isdefined(player.isonbus) && player.isonbus) {
+    if(isDefined(player.isonbus) && player.isonbus) {
       valid_player = player;
       break;
     }
   }
 
-  if(isdefined(valid_player)) {
+  if(isDefined(valid_player)) {
     valid_player thread do_player_general_vox("general", event, time, chance);
     level.doing_bus_zombie_vox = 1;
     wait 10;

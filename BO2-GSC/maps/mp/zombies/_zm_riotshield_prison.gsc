@@ -41,18 +41,18 @@ init() {
 }
 
 attachriotshield(model, tag) {
-  if(isdefined(self.prev_shield_model) && isdefined(self.prev_shield_tag))
+  if(isDefined(self.prev_shield_model) && isDefined(self.prev_shield_tag))
     self detachshieldmodel(self.prev_shield_model, self.prev_shield_tag);
 
   self.prev_shield_model = model;
   self.prev_shield_tag = tag;
 
-  if(isdefined(self.prev_shield_model) && isdefined(self.prev_shield_tag))
+  if(isDefined(self.prev_shield_model) && isDefined(self.prev_shield_tag))
     self attachshieldmodel(self.prev_shield_model, self.prev_shield_tag);
 }
 
 removeriotshield() {
-  if(isdefined(self.prev_shield_model) && isdefined(self.prev_shield_tag))
+  if(isDefined(self.prev_shield_model) && isDefined(self.prev_shield_tag))
     self detachshieldmodel(self.prev_shield_model, self.prev_shield_tag);
 
   self.prev_shield_model = undefined;
@@ -70,7 +70,7 @@ setriotshieldviewmodel(modelnum) {
   if(self getcurrentweapon() != level.riotshield_name) {
     return;
   }
-  if(isdefined(self.prev_shield_viewmodel))
+  if(isDefined(self.prev_shield_viewmodel))
     self setheldweaponmodel(self.prev_shield_viewmodel);
   else
     self setheldweaponmodel(0);
@@ -87,26 +87,26 @@ restoreriotshieldviewmodel() {
   if(self getcurrentweapon() != level.riotshield_name) {
     return;
   }
-  if(isdefined(self.prev_shield_viewmodel))
+  if(isDefined(self.prev_shield_viewmodel))
     self setheldweaponmodel(self.prev_shield_viewmodel);
   else
     self setheldweaponmodel(0);
 }
 
 updateriotshieldmodel() {
-  if(!isdefined(self.shield_damage_level)) {
-    if(isdefined(self.player_shield_reset_health))
+  if(!isDefined(self.shield_damage_level)) {
+    if(isDefined(self.player_shield_reset_health))
       self[[self.player_shield_reset_health]]();
   }
 
   update = 0;
 
-  if(!isdefined(self.prev_shield_damage_level) || self.prev_shield_damage_level != self.shield_damage_level) {
+  if(!isDefined(self.prev_shield_damage_level) || self.prev_shield_damage_level != self.shield_damage_level) {
     self.prev_shield_damage_level = self.shield_damage_level;
     update = 1;
   }
 
-  if(!isdefined(self.prev_shield_placement) || self.prev_shield_placement != self.shield_placement) {
+  if(!isDefined(self.prev_shield_placement) || self.prev_shield_placement != self.shield_placement) {
     self.prev_shield_placement = self.shield_placement;
     update = 1;
   }
@@ -122,7 +122,7 @@ updateriotshieldmodel() {
     else if(self.prev_shield_placement == 3) {
       self attachriotshield();
 
-      if(isdefined(self.shield_ent))
+      if(isDefined(self.shield_ent))
         self.shield_ent setmodel(level.deployedshieldmodel[self.prev_shield_damage_level]);
     }
   }
@@ -131,7 +131,7 @@ updateriotshieldmodel() {
 updatestandaloneriotshieldmodel() {
   update = 0;
 
-  if(!isdefined(self.prev_shield_damage_level) || self.prev_shield_damage_level != self.shield_damage_level) {
+  if(!isDefined(self.prev_shield_damage_level) || self.prev_shield_damage_level != self.shield_damage_level) {
     self.prev_shield_damage_level = self.shield_damage_level;
     update = 1;
   }
@@ -146,11 +146,11 @@ watchshieldlaststand() {
   self notify("watchShieldLastStand");
   self endon("watchShieldLastStand");
 
-  while (true) {
+  while(true) {
     self waittill("weapons_taken_for_last_stand");
     self.riotshield_hidden = 0;
 
-    if(isdefined(self.hasriotshield) && self.hasriotshield) {
+    if(isDefined(self.hasriotshield) && self.hasriotshield) {
       if(self.prev_shield_placement == 1 || self.prev_shield_placement == 2) {
         self.riotshield_hidden = 2;
         self.shield_placement = 0;
@@ -161,7 +161,7 @@ watchshieldlaststand() {
     str_notify = self waittill_any_return("player_revived", "bled_out");
 
     if(str_notify == "player_revived") {
-      if(isdefined(self.riotshield_hidden) && self.riotshield_hidden > 0) {
+      if(isDefined(self.riotshield_hidden) && self.riotshield_hidden > 0) {
         self.shield_placement = self.riotshield_hidden;
         self updateriotshieldmodel();
       }
@@ -189,23 +189,21 @@ trackriotshield() {
     }
   }
 
-  for (;;) {
+  for(;;) {
     self waittill("weapon_change", newweapon);
 
     if(newweapon == level.riotshield_name) {
       if(self.hasriotshieldequipped) {
         continue;
       }
-      if(isdefined(self.riotshieldentity))
+      if(isDefined(self.riotshieldentity))
         self notify("destroy_riotshield");
 
       self.shield_placement = 1;
       self updateriotshieldmodel();
 
       if(self.hasriotshield) {
-
       } else {
-
       }
 
       self.hasriotshield = 1;
@@ -220,11 +218,10 @@ trackriotshield() {
       assert(self.hasriotshield);
       self.hasriotshield = self hasweapon(level.riotshield_name);
 
-      if(isdefined(self.riotshield_hidden) && self.riotshield_hidden) {
-
+      if(isDefined(self.riotshield_hidden) && self.riotshield_hidden) {
       } else if(self.hasriotshield)
         self.shield_placement = 2;
-      else if(isdefined(self.shield_ent))
+      else if(isDefined(self.shield_ent))
         assert(self.shield_placement == 3);
       else
         self.shield_placement = 0;
@@ -256,7 +253,7 @@ trackequipmentchange() {
   self endon("death");
   self endon("disconnect");
 
-  for (;;) {
+  for(;;) {
     self waittill("equipment_dropped", equipname);
     self notify("weapon_change", self getcurrentweapon());
   }
@@ -269,7 +266,7 @@ updateriotshieldplacement() {
   self endon("start_riotshield_deploy");
   self endon("weapon_change");
 
-  while (true) {
+  while(true) {
     placement = self canplaceriotshield("raise_riotshield");
 
     if(placement["result"] && riotshielddistancetest(placement["origin"])) {
@@ -332,7 +329,7 @@ watchriotshielddeploy() {
 }
 
 check_plant_position(origin, angles) {
-  if(isdefined(level.equipment_safe_to_drop)) {
+  if(isDefined(level.equipment_safe_to_drop)) {
     ret = 1;
     test_ent = spawn("script_model", origin);
     test_ent setmodel(level.deployedshieldmodel[0]);
@@ -355,22 +352,24 @@ doriotshielddeploy(origin, angles) {
   self notify("deployed_riotshield");
   self maps\mp\zombies\_zm_buildables::track_placed_buildables(level.riotshield_name);
 
-  if(isdefined(self.current_equipment) && self.current_equipment == level.riotshield_name)
+  if(isDefined(self.current_equipment) && self.current_equipment == level.riotshield_name)
     self maps\mp\zombies\_zm_equipment::equipment_to_deployed(level.riotshield_name);
 
   zoffset = level.riotshield_placement_zoffset;
   shield_ent = self spawnriotshieldcover(origin + (0, 0, zoffset), angles);
   item_ent = deployriotshield(self, shield_ent);
   primaries = self getweaponslistprimaries();
-  assert(isdefined(item_ent));
-  assert(!isdefined(self.riotshieldretrievetrigger));
-  assert(!isdefined(self.riotshieldentity));
+
+  assert(isDefined(item_ent));
+  assert(!isDefined(self.riotshieldretrievetrigger));
+  assert(!isDefined(self.riotshieldentity));
+
   self maps\mp\zombies\_zm_weapons::switch_back_primary_weapon(primaries[0]);
 
-  if(isdefined(level.equipment_planted))
+  if(isDefined(level.equipment_planted))
     self[[level.equipment_planted]](shield_ent, level.riotshield_name, self);
 
-  if(isdefined(level.equipment_safe_to_drop)) {
+  if(isDefined(level.equipment_safe_to_drop)) {
     if(!self[[level.equipment_safe_to_drop]](shield_ent)) {
       self notify("destroy_riotshield");
       shield_ent delete();
@@ -391,16 +390,17 @@ doriotshielddeploy(origin, angles) {
 }
 
 riotshielddistancetest(origin) {
-  assert(isdefined(origin));
+  assert(isDefined(origin));
   min_dist_squared = getdvarfloat(#"riotshield_deploy_limit_radius");
   min_dist_squared = min_dist_squared * min_dist_squared;
 
-  for (i = 0; i < level.players.size; i++) {
-    if(isdefined(level.players[i].riotshieldentity)) {
+  for(i = 0; i < level.players.size; i++) {
+    if(isDefined(level.players[i].riotshieldentity)) {
       dist_squared = distancesquared(level.players[i].riotshieldentity.origin, origin);
 
       if(min_dist_squared > dist_squared) {
         println("Shield placement denied!Failed distance check to other riotshields.");
+
         return false;
       }
     }
@@ -410,21 +410,22 @@ riotshielddistancetest(origin) {
 }
 
 watchdeployedriotshieldents() {
-  assert(isdefined(self.riotshieldretrievetrigger));
-  assert(isdefined(self.riotshieldentity));
+  assert(isDefined(self.riotshieldretrievetrigger));
+  assert(isDefined(self.riotshieldentity));
+
   riotshieldretrievetrigger = self.riotshieldretrievetrigger;
   riotshieldentity = self.riotshieldentity;
   self waittill_any("destroy_riotshield", "disconnect", "alcatraz_shield_zm_taken");
 
-  if(isdefined(self)) {
+  if(isDefined(self)) {
     self.shield_placement = 0;
     self updateriotshieldmodel();
   }
 
-  if(isdefined(riotshieldretrievetrigger))
+  if(isDefined(riotshieldretrievetrigger))
     riotshieldretrievetrigger delete();
 
-  if(isdefined(riotshieldentity))
+  if(isDefined(riotshieldentity))
     riotshieldentity delete();
 }
 
@@ -433,23 +434,23 @@ watchdeployedriotshielddamage() {
   damagemax = getdvarint(#"riotshield_deployed_health");
   self.damagetaken = 0;
 
-  while (true) {
+  while(true) {
     self.maxhealth = 100000;
     self.health = self.maxhealth;
     self waittill("damage", damage, attacker, direction, point, type, tagname, modelname, partname, weaponname, idflags);
 
-    if(!(isdefined(level.players_can_damage_riotshields) && level.players_can_damage_riotshields)) {
+    if(!(isDefined(level.players_can_damage_riotshields) && level.players_can_damage_riotshields)) {
       continue;
     }
-    if(!isdefined(attacker) || !isplayer(attacker)) {
+    if(!isDefined(attacker) || !isplayer(attacker)) {
       continue;
     }
-    assert(isdefined(self.owner) && isdefined(self.owner.team));
+    assert(isDefined(self.owner) && isDefined(self.owner.team));
 
     if(is_encounter() && attacker.team == self.owner.team && attacker != self.owner) {
       continue;
     }
-    if(isdefined(level.riotshield_damage_callback))
+    if(isDefined(level.riotshield_damage_callback))
       self.owner[[level.riotshield_damage_callback]](damage, 0);
     else {
       if(type == "MOD_MELEE")
@@ -489,7 +490,7 @@ deleteshieldmodelonweaponpickup(shield_trigger) {
   self notify("destroy_riotshield");
 
   if(self != player) {
-    if(isdefined(level.transferriotshield))
+    if(isDefined(level.transferriotshield))
       [[level.transferriotshield]](self, player);
   }
 }
@@ -498,13 +499,13 @@ watchshieldtriggervisibility(trigger) {
   self endon("death");
   trigger endon("death");
 
-  while (isdefined(trigger)) {
+  while(isDefined(trigger)) {
     players = get_players();
 
     foreach(player in players) {
       pickup = 1;
 
-      if(!isdefined(player)) {
+      if(!isDefined(player)) {
         continue;
       }
       if(is_true(player.afterlife)) {
@@ -513,12 +514,12 @@ watchshieldtriggervisibility(trigger) {
         continue;
       }
 
-      if(isdefined(level.cantransferriotshield))
+      if(isDefined(level.cantransferriotshield))
         pickup = [
           [level.cantransferriotshield]
         ](self, player);
 
-      if(!isdefined(trigger)) {
+      if(!isDefined(trigger)) {
         return;
       }
       if(pickup)

@@ -1,7 +1,7 @@
-/********************************************************
+/***********************************************************
  * Decompiled and Edited by SyndiShanX
  * Script: clientscripts\mp\zombies\_zm_weap_beacon.csc
-********************************************************/
+***********************************************************/
 
 #include clientscripts\mp\_utility;
 #include clientscripts\mp\_fx;
@@ -48,7 +48,7 @@ play_artillery_fx(localclientnum, oldval, newval, bnewent, binitialsnap, fieldna
 sndfakelaunchaudio(origin) {
   playsound(0, "zmb_homingbeacon_missiile_alarm", origin);
 
-  for (i = 0; i < 5; i++) {
+  for(i = 0; i < 5; i++) {
     playsound(0, "zmb_homingbeacon_missile_fire", origin);
     wait 0.15;
   }
@@ -57,7 +57,7 @@ sndfakelaunchaudio(origin) {
 play_beacon_glow(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump) {
   self endon("weapon_beacon_destroyed");
 
-  while (isdefined(self)) {
+  while(isDefined(self)) {
     playsound(0, "evt_beacon_beep", self.origin);
     playfxontag(localclientnum, level._effect["beacon_glow"], self, "origin_animate_jnt");
     wait 1.5;
@@ -69,37 +69,37 @@ play_artillery_barrage(localclientnum, oldval, newval, bnewent, binitialsnap, fi
     return;
   }
   if(newval == 1) {
-    if(!isdefined(self.a_v_land_offsets))
+    if(!isDefined(self.a_v_land_offsets))
       self.a_v_land_offsets = [];
 
-    if(!isdefined(self.a_v_land_offsets[localclientnum]))
+    if(!isDefined(self.a_v_land_offsets[localclientnum]))
       self.a_v_land_offsets[localclientnum] = self build_weap_beacon_landing_offsets();
 
-    if(!isdefined(self.a_v_start_offsets))
+    if(!isDefined(self.a_v_start_offsets))
       self.a_v_start_offsets = [];
 
-    if(!isdefined(self.a_v_start_offsets[localclientnum]))
+    if(!isDefined(self.a_v_start_offsets[localclientnum]))
       self.a_v_start_offsets[localclientnum] = self build_weap_beacon_start_offsets();
   }
 
   if(newval == 2) {
-    if(!isdefined(self.a_v_land_offsets))
+    if(!isDefined(self.a_v_land_offsets))
       self.a_v_land_offsets = [];
 
-    if(!isdefined(self.a_v_land_offsets[localclientnum]))
+    if(!isDefined(self.a_v_land_offsets[localclientnum]))
       self.a_v_land_offsets[localclientnum] = self build_weap_beacon_landing_offsets_ee();
 
-    if(!isdefined(self.a_v_start_offsets))
+    if(!isDefined(self.a_v_start_offsets))
       self.a_v_start_offsets = [];
 
-    if(!isdefined(self.a_v_start_offsets[localclientnum]))
+    if(!isDefined(self.a_v_start_offsets[localclientnum]))
       self.a_v_start_offsets[localclientnum] = self build_weap_beacon_start_offsets_ee();
   }
 
-  if(!isdefined(self.num_rockets_fired))
+  if(!isDefined(self.num_rockets_fired))
     self.num_rockets_fired = [];
 
-  if(!isdefined(self.num_rockets_fired[localclientnum]))
+  if(!isDefined(self.num_rockets_fired[localclientnum]))
     self.num_rockets_fired[localclientnum] = 0;
 
   n_index = self.num_rockets_fired[localclientnum];

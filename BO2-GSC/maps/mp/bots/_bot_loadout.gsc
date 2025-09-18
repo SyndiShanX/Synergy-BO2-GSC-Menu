@@ -12,7 +12,7 @@ init() {
   level endon("game_ended");
   level.bot_banned_killstreaks = array("KILLSTREAK_RCBOMB", "KILLSTREAK_QRDRONE", "KILLSTREAK_REMOTE_MISSILE", "KILLSTREAK_REMOTE_MORTAR", "KILLSTREAK_HELICOPTER_GUNNER");
 
-  for (;;) {
+  for(;;) {
     level waittill("connected", player);
 
     if(!player istestclient()) {
@@ -25,7 +25,7 @@ init() {
 on_bot_connect() {
   self endon("disconnect");
 
-  if(isdefined(self.pers["bot_loadout"])) {
+  if(isDefined(self.pers["bot_loadout"])) {
     return;
   }
   wait 0.1;
@@ -51,7 +51,7 @@ on_bot_connect() {
 
   max_allocation = 10;
 
-  for (i = 1; i <= 3; i++) {
+  for(i = 1; i <= 3; i++) {
     if(self isitemlocked(maps\mp\gametypes\_rank::getitemindex("feature_allocation_slot_" + i)))
       max_allocation--;
   }
@@ -73,13 +73,13 @@ bot_construct_loadout(allocation_max) {
   bot_construct_class(4, item_list, allocation_max);
   killstreaks = item_list["killstreak1"];
 
-  if(isdefined(item_list["killstreak2"]))
+  if(isDefined(item_list["killstreak2"]))
     killstreaks = arraycombine(killstreaks, item_list["killstreak2"], 1, 0);
 
-  if(isdefined(item_list["killstreak3"]))
+  if(isDefined(item_list["killstreak3"]))
     killstreaks = arraycombine(killstreaks, item_list["killstreak3"], 1, 0);
 
-  if(isdefined(killstreaks) && killstreaks.size) {
+  if(isDefined(killstreaks) && killstreaks.size) {
     bot_choose_weapon(0, killstreaks);
     bot_choose_weapon(0, killstreaks);
     bot_choose_weapon(0, killstreaks);
@@ -94,7 +94,7 @@ bot_construct_class(class, items, allocation_max) {
   claimed_count = bot_build_claimed_list(items);
   self.claimed_items = [];
 
-  while (allocation < allocation_max) {
+  while(allocation < allocation_max) {
     secondary_chance = 40;
     remaining = allocation_max - allocation;
 
@@ -176,7 +176,7 @@ bot_construct_class(class, items, allocation_max) {
 
       remaining = allocation_max - allocation;
 
-      for (i = 0; i < 3; i++) {
+      for(i = 0; i < 3; i++) {
         perks = [];
         remaining = allocation_max - allocation;
 
@@ -252,16 +252,16 @@ bot_chose_action(action1, chance1, action2, chance2, action3, chance3, action4, 
   chance4 = int(chance4 / 10);
   actions = [];
 
-  for (i = 0; i < chance1; i++)
+  for(i = 0; i < chance1; i++)
     actions[actions.size] = action1;
 
-  for (i = 0; i < chance2; i++)
+  for(i = 0; i < chance2; i++)
     actions[actions.size] = action2;
 
-  for (i = 0; i < chance3; i++)
+  for(i = 0; i < chance3; i++)
     actions[actions.size] = action3;
 
-  for (i = 0; i < chance4; i++)
+  for(i = 0; i < chance4; i++)
     actions[actions.size] = action4;
 
   return random(actions);
@@ -277,12 +277,12 @@ bot_item_is_claimed(item) {
 }
 
 bot_choose_weapon(class, items) {
-  if(!isdefined(items) || !items.size)
+  if(!isDefined(items) || !items.size)
     return undefined;
 
   start = randomint(items.size);
 
-  for (i = 0; i < items.size; i++) {
+  for(i = 0; i < items.size; i++) {
     weapon = items[start];
 
     if(!bot_item_is_claimed(weapon)) {
@@ -302,7 +302,7 @@ bot_build_weapon_options_list(optiontype) {
   level.botweaponoptionsprob[optiontype] = [];
   prob = 0;
 
-  for (row = 0; row < 255; row++) {
+  for(row = 0; row < 255; row++) {
     if(tablelookupcolumnforrow("mp/attachmentTable.csv", row, 1) == optiontype) {
       index = level.botweaponoptionsid[optiontype].size;
       level.botweaponoptionsid[optiontype][index] = int(tablelookupcolumnforrow("mp/attachmentTable.csv", row, 0));
@@ -313,7 +313,7 @@ bot_build_weapon_options_list(optiontype) {
 }
 
 bot_choose_weapon_option(class, optiontype, primary) {
-  if(!isdefined(level.botweaponoptionsid)) {
+  if(!isDefined(level.botweaponoptionsid)) {
     level.botweaponoptionsid = [];
     level.botweaponoptionsprob = [];
     bot_build_weapon_options_list("camo");
@@ -331,7 +331,7 @@ bot_choose_weapon_option(class, optiontype, primary) {
 
   rnd = randomint(int(maxprob));
 
-  for (i = 0; i < numoptions; i++) {
+  for(i = 0; i < numoptions; i++) {
     if(level.botweaponoptionsprob[optiontype][i] > rnd) {
       self botclasssetweaponoption(class, primary, optiontype, level.botweaponoptionsid[optiontype][i]);
       break;
@@ -425,7 +425,7 @@ bot_build_item_list() {
   pixbeginevent("bot_build_item_list");
   items = [];
 
-  for (i = 0; i < 256; i++) {
+  for(i = 0; i < 256; i++) {
     row = tablelookuprownum(level.statstableid, 0, i);
 
     if(row > -1) {
@@ -449,7 +449,7 @@ bot_build_item_list() {
       if(bot_item_is_banned(slot, name)) {
         continue;
       }
-      if(!isdefined(items[slot]))
+      if(!isDefined(items[slot]))
         items[slot] = [];
 
       items[slot][items[slot].size] = name;

@@ -1,7 +1,7 @@
-/******************************************************
+/*******************************************************
  * Decompiled and Edited by SyndiShanX
  * Script: clientscripts\mp\zm_transit_buildables.csc
-******************************************************/
+*******************************************************/
 
 #include clientscripts\mp\zombies\_zm_utility;
 
@@ -35,6 +35,6 @@ include_buildables() {
   include_buildable("dinerhatch");
   include_buildable("busladder");
 
-  if(!isdefined(level.gamedifficulty) || level.gamedifficulty != 0)
+  if(!isDefined(level.gamedifficulty) || level.gamedifficulty != 0)
     include_buildable("sq_common");
 }

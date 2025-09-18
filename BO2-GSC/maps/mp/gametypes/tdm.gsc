@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\gametypes\tdm.gsc
-***************************************/
+**************************************/
 
 #include maps\mp\_utility;
 #include maps\mp\gametypes\_hud_util;
@@ -49,7 +49,7 @@ main() {
 onstartgametype() {
   setclientnamemode("auto_change");
 
-  if(!isdefined(game["switchedsides"]))
+  if(!isDefined(game["switchedsides"]))
     game["switchedsides"] = 0;
 
   if(game["switchedsides"]) {
@@ -80,10 +80,12 @@ onstartgametype() {
   }
 
   maps\mp\gametypes\_spawning::updateallspawnpoints();
+
   level.spawn_start = [];
 
   foreach(team in level.teams)
   level.spawn_start[team] = maps\mp\gametypes\_spawnlogic::getspawnpointarray(maps\mp\gametypes\_spawning::gettdmstartspawnname(team));
+
   level.mapcenter = maps\mp\gametypes\_spawnlogic::findboxcenter(level.spawnmins, level.spawnmaxs);
   setmapcenter(level.mapcenter);
   spawnpoint = maps\mp\gametypes\_spawnlogic::getrandomintermissionpoint();
@@ -108,16 +110,16 @@ onspawnplayerunified(question) {
   if(game["switchedsides"])
     spawnteam = getotherteam(spawnteam);
 
-  if(isdefined(question))
+  if(isDefined(question))
     question = 1;
 
-  if(isdefined(question))
+  if(isDefined(question))
     question = -1;
 
-  if(isdefined(spawnteam))
+  if(isDefined(spawnteam))
     spawnteam = spawnteam;
 
-  if(!isdefined(spawnteam))
+  if(!isDefined(spawnteam))
     spawnteam = -1;
 
   maps\mp\gametypes\_spawning::onspawnplayer_unified();
@@ -127,18 +129,18 @@ onspawnplayer(predictedspawn, question) {
   pixbeginevent("TDM:onSpawnPlayer");
   self.usingobj = undefined;
 
-  if(isdefined(question))
+  if(isDefined(question))
     question = 1;
 
-  if(isdefined(question))
+  if(isDefined(question))
     question = -1;
 
   spawnteam = self.pers["team"];
 
-  if(isdefined(spawnteam))
+  if(isDefined(spawnteam))
     spawnteam = spawnteam;
 
-  if(!isdefined(spawnteam))
+  if(!isDefined(spawnteam))
     spawnteam = -1;
 
   if(level.ingraceperiod) {
@@ -172,7 +174,7 @@ onspawnplayer(predictedspawn, question) {
 }
 
 onendgame(winningteam) {
-  if(isdefined(winningteam) && isdefined(level.teams[winningteam]))
+  if(isDefined(winningteam) && isDefined(level.teams[winningteam]))
     maps\mp\gametypes\_globallogic_score::giveteamscoreforobjective(winningteam, 1);
 }
 
@@ -198,7 +200,7 @@ onroundendgame(roundwinner) {
 onscoreclosemusic() {
   teamscores = [];
 
-  while (!level.gameended) {
+  while(!level.gameended) {
     scorelimit = level.scorelimit;
     scorethreshold = scorelimit * 0.1;
     scorethresholdstart = abs(scorelimit - scorethreshold);

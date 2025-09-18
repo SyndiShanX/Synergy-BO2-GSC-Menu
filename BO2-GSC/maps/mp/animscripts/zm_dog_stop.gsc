@@ -13,7 +13,7 @@ main() {
   self setaimanimweights(0, 0);
   self thread lookattarget("attackIdle");
 
-  while (true) {
+  while(true) {
     if(shouldattackidle()) {
       self randomattackidle();
       maps\mp\animscripts\zm_shared::donotetracks("attack_idle", ::dogidlenotetracks);
@@ -33,7 +33,7 @@ main() {
 
 dogidlenotetracks(note) {
   if(note == "breathe_fire") {
-    if(isdefined(level._effect["dog_breath"])) {
+    if(isDefined(level._effect["dog_breath"])) {
       self.breath_fx = spawn("script_model", self gettagorigin("TAG_MOUTH_FX"));
       self.breath_fx.angles = self gettagangles("TAG_MOUTH_FX");
       self.breath_fx setmodel("tag_origin");
@@ -44,7 +44,7 @@ dogidlenotetracks(note) {
 }
 
 isfacingenemy(tolerancecosangle) {
-  assert(isdefined(self.enemy));
+  assert(isDefined(self.enemy));
   vectoenemy = self.enemy.origin - self.origin;
   disttoenemy = length(vectoenemy);
 
@@ -72,7 +72,7 @@ randomattackidle() {
   idlechance = 33;
   barkchance = 66;
 
-  if(isdefined(self.mode)) {
+  if(isDefined(self.mode)) {
     if(self.mode == "growl") {
       idlechance = 15;
       barkchance = 30;
@@ -97,11 +97,11 @@ randomattackidle() {
 }
 
 shouldattackidle() {
-  return isdefined(self.enemy) && isalive(self.enemy) && distancesquared(self.origin, self.enemy.origin) < 1000000;
+  return isDefined(self.enemy) && isalive(self.enemy) && distancesquared(self.origin, self.enemy.origin) < 1000000;
 }
 
 should_growl() {
-  if(isdefined(self.script_growl))
+  if(isDefined(self.script_growl))
     return 1;
 
   if(!isalive(self.enemy))

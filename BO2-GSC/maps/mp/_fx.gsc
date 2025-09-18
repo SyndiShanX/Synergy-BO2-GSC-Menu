@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\_fx.gsc
-***************************************/
+**************************************/
 
 #include common_scripts\utility;
 #include maps\mp\_utility;
@@ -18,10 +18,10 @@ print_org(fxcommand, fxid, fxpos, waittime) {
     println("\"script_delay\" \"" + waittime + "\"");
     println("}");
   }
+
 }
 
 oneshotfx(fxid, fxpos, waittime, fxpos2) {
-
 }
 
 oneshotfxthread() {
@@ -45,7 +45,7 @@ exploderfx(num, fxid, fxpos, waittime, fxpos2, firefx, firefxdelay, firefxsound,
     ent.v["origin"] = fxpos;
     ent.v["angles"] = (0, 0, 0);
 
-    if(isdefined(fxpos2))
+    if(isDefined(fxpos2))
       ent.v["angles"] = vectortoangles(fxpos2 - fxpos);
 
     ent.v["delay"] = waittime;
@@ -76,7 +76,7 @@ exploderfx(num, fxid, fxpos, waittime, fxpos2, firefx, firefxdelay, firefxsound,
   forward = vectorscale(forward, 150);
   fx.targetpos = fxpos + forward;
 
-  if(!isdefined(level._script_exploders))
+  if(!isDefined(level._script_exploders))
     level._script_exploders = [];
 
   level._script_exploders[level._script_exploders.size] = fx;
@@ -85,11 +85,12 @@ exploderfx(num, fxid, fxpos, waittime, fxpos2, firefx, firefxdelay, firefxsound,
 
 loopfx(fxid, fxpos, waittime, fxpos2, fxstart, fxstop, timeout) {
   println("Loopfx is deprecated!");
+
   ent = createloopeffect(fxid);
   ent.v["origin"] = fxpos;
   ent.v["angles"] = (0, 0, 0);
 
-  if(isdefined(fxpos2))
+  if(isDefined(fxpos2))
     ent.v["angles"] = vectortoangles(fxpos2 - fxpos);
 
   ent.v["delay"] = waittime;
@@ -103,8 +104,8 @@ create_looper() {
 create_loopsound() {
   self notify("stop_loop");
 
-  if(isdefined(self.v["soundalias"]) && self.v["soundalias"] != "nil") {
-    if(isdefined(self.looper))
+  if(isDefined(self.v["soundalias"]) && self.v["soundalias"] != "nil") {
+    if(isDefined(self.looper))
       self.looper thread maps\mp\_utility::loop_fx_sound(self.v["soundalias"], self.v["origin"], "death");
     else
       thread maps\mp\_utility::loop_fx_sound(self.v["soundalias"], self.v["origin"], "stop_loop");
@@ -118,24 +119,24 @@ stop_loopsound() {
 loopfxthread() {
   wait 0.05;
 
-  if(isdefined(self.fxstart))
+  if(isDefined(self.fxstart))
     level waittill("start fx" + self.fxstart);
 
-  while (true) {
+  while(true) {
     create_looper();
 
-    if(isdefined(self.timeout))
+    if(isDefined(self.timeout))
       thread loopfxstop(self.timeout);
 
-    if(isdefined(self.fxstop))
+    if(isDefined(self.fxstop))
       level waittill("stop fx" + self.fxstop);
     else
       return;
 
-    if(isdefined(self.looper))
+    if(isDefined(self.looper))
       self.looper delete();
 
-    if(isdefined(self.fxstart))
+    if(isDefined(self.fxstart))
       level waittill("start fx" + self.fxstart);
     else
       return;
@@ -150,7 +151,7 @@ loopfxchangeid(ent) {
 loopfxchangeorg(ent) {
   self endon("death");
 
-  for (;;) {
+  for(;;) {
     ent waittill("effect org changed", change);
     self.origin = change;
   }
@@ -219,10 +220,10 @@ gunfireloopfxthread(fxid, fxpos, shotsmin, shotsmax, shotdelaymin, shotdelaymax,
   shotsrange = shotsmax - shotsmin;
   fxent = spawnfx(level._effect[fxid], fxpos);
 
-  for (;;) {
+  for(;;) {
     shotnum = shotsbase + randomint(shotsrange);
 
-    for (i = 0; i < shotnum; i++) {
+    for(i = 0; i < shotnum; i++) {
       triggerfx(fxent);
       wait(shotdelaybase + randomfloat(shotdelayrange));
     }
@@ -268,10 +269,10 @@ gunfireloopfxvecthread(fxid, fxpos, fxpos2, shotsmin, shotsmax, shotdelaymin, sh
   fxpos2 = vectornormalize(fxpos2 - fxpos);
   fxent = spawnfx(level._effect[fxid], fxpos, fxpos2);
 
-  for (;;) {
+  for(;;) {
     shotnum = shotsbase + randomint(shotsrange);
 
-    for (i = 0; i < int(shotnum / level.fxfireloopmod); i++) {
+    for(i = 0; i < int(shotnum / level.fxfireloopmod); i++) {
       triggerfx(fxent);
       delay = (shotdelaybase + randomfloat(shotdelayrange)) * level.fxfireloopmod;
 
@@ -291,26 +292,26 @@ setfireloopmod(value) {
 }
 
 setup_fx() {
-  if(!isdefined(self.script_fxid) || !isdefined(self.script_fxcommand) || !isdefined(self.script_delay)) {
+  if(!isDefined(self.script_fxid) || !isDefined(self.script_fxcommand) || !isDefined(self.script_delay)) {
     return;
   }
   org = undefined;
 
-  if(isdefined(self.target)) {
+  if(isDefined(self.target)) {
     ent = getent(self.target, "targetname");
 
-    if(isdefined(ent))
+    if(isDefined(ent))
       org = ent.origin;
   }
 
   fxstart = undefined;
 
-  if(isdefined(self.script_fxstart))
+  if(isDefined(self.script_fxstart))
     fxstart = self.script_fxstart;
 
   fxstop = undefined;
 
-  if(isdefined(self.script_fxstop))
+  if(isDefined(self.script_fxstop))
     fxstop = self.script_fxstop;
 
   if(self.script_fxcommand == "OneShotfx")
@@ -326,13 +327,13 @@ setup_fx() {
 }
 
 script_print_fx() {
-  if(!isdefined(self.script_fxid) || !isdefined(self.script_fxcommand) || !isdefined(self.script_delay)) {
+  if(!isDefined(self.script_fxid) || !isDefined(self.script_fxcommand) || !isDefined(self.script_delay)) {
     println("Effect at origin ", self.origin, " doesn't have script_fxid/script_fxcommand/script_delay");
     self delete();
     return;
   }
 
-  if(isdefined(self.target))
+  if(isDefined(self.target))
     org = getent(self.target, "targetname").origin;
   else
     org = "undefined";
@@ -351,7 +352,7 @@ script_playfx(id, pos, pos2) {
   if(!id) {
     return;
   }
-  if(isdefined(pos2))
+  if(isDefined(pos2))
     playfx(id, pos, pos2);
   else
     playfx(id, pos);
@@ -374,7 +375,7 @@ soundfx(fxid, fxpos, endonnotify) {
   org.origin = fxpos;
   org playloopsound(fxid);
 
-  if(isdefined(endonnotify))
+  if(isDefined(endonnotify))
     org thread soundfxdelete(endonnotify);
 }
 
@@ -389,7 +390,7 @@ blenddelete(blend) {
 }
 
 spawnfx_wrapper(fx_id, origin, forward, up) {
-  assert(isdefined(level._effect[fx_id]), "Missing level._effect[\"" + fx_id + "\"]. You did not setup the fx before calling it in createFx.");
+  assert(isDefined(level._effect[fx_id]), "Missing level._effect[\"" + fx_id + "\"]. You did not setup the fx before calling it in createFx.");
   fx_object = spawnfx(level._effect[fx_id], origin, forward, up);
   return fx_object;
 }

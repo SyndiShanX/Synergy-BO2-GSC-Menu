@@ -12,10 +12,6 @@
 #include maps\mp\zombies\_zm_zonemgr;
 #include maps\mp\zombies\_zm_game_module;
 
-precache() {
-
-}
-
 farm_treasure_chest_init() {
   chest1 = getstruct("farm_chest", "script_noteworthy");
   level.chests = [];
@@ -49,12 +45,12 @@ init_standard_farm() {
   ents = getentarray();
 
   foreach(ent in ents) {
-    if(isdefined(ent.script_flag) && ent.script_flag == "OnFarm_enter") {
+    if(isDefined(ent.script_flag) && ent.script_flag == "OnFarm_enter") {
       ent delete();
       continue;
     }
 
-    if(isdefined(ent.script_parameters)) {
+    if(isDefined(ent.script_parameters)) {
       tokens = strtok(ent.script_parameters, " ");
       remove = 0;
 
@@ -73,7 +69,7 @@ enemy_location_override(zombie, enemy) {
   location = enemy.origin;
 
   if(is_true(self.reroute)) {
-    if(isdefined(self.reroute_origin))
+    if(isDefined(self.reroute_origin))
       location = self.reroute_origin;
   }
 

@@ -143,8 +143,8 @@ snd_start_autofdrone_audio() {
 scanner_alert() {
   scannertrig = getent(0, "scanner_alert", "targetname");
 
-  if(isdefined(scannertrig)) {
-    for (;;) {
+  if(isDefined(scannertrig)) {
+    for(;;) {
       scannertrig waittill("trigger", trigplayer);
       scannertrig thread trigger_thread(trigplayer, ::trig_enter_alarm, ::trig_leave_alarm);
       wait 0.25;
@@ -159,5 +159,4 @@ trig_enter_alarm(trigplayer) {
 }
 
 trig_leave_alarm(trigplayer) {
-
 }

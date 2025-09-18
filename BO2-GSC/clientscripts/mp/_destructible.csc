@@ -17,7 +17,7 @@ destructible_car_animate(localclientnum, set) {
   }
   player = getlocalplayer(localclientnum);
 
-  if(!isdefined(player)) {
+  if(!isDefined(player)) {
     return;
   }
   if(player getinkillcam(localclientnum)) {

@@ -19,20 +19,22 @@ buscmdhandler(clientnum, state, oldstate) {
     return;
   }
   level.nextbusstate = state;
+
   println("bussing debug: got state '" + state + "'");
+
   level notify("new_bus");
 }
 
 updatebus() {
-  while (true) {
+  while(true) {
     if(level.activebusstate == level.nextbusstate)
       level waittill("new_bus");
 
     if(level.activebusstate == level.nextbusstate) {
       continue;
     }
-    assert(isdefined(level.nextbusstate));
-    assert(isdefined(level.activebusstate));
+    assert(isDefined(level.nextbusstate));
+    assert(isDefined(level.activebusstate));
     busstatedeactivate();
     next = level.nextbusstate;
 
@@ -46,27 +48,27 @@ updatebus() {
 busstateactivate(name) {
   state = level.busstates[name];
 
-  if(!isdefined(state)) {
+  if(!isDefined(state)) {
     println("invalid bus state '" + name + "'");
+
     return;
   }
 
-  assert(isdefined(state.time));
+  assert(isDefined(state.time));
   keys = getarraykeys(state.levels);
-  assert(isdefined(keys));
+  assert(isDefined(keys));
 }
 
 busstatedeactivate() {
-
 }
 
 declarebusstate(name) {
-  if(!isdefined(level.busstates)) {
+  if(!isDefined(level.busstates)) {
     return;
   }
   level.busdeclarename = name;
 
-  if(isdefined(level.busstates[name])) {
+  if(isDefined(level.busstates[name])) {
     return;
   }
   level.busstates[name] = spawnstruct();
@@ -83,7 +85,7 @@ busfadetime(time) {
 }
 
 busisin(bus, names) {
-  for (j = 0; j < names.size; j++) {
+  for(j = 0; j < names.size; j++) {
     if(bus == names[j])
       return true;
   }
@@ -92,36 +94,35 @@ busisin(bus, names) {
 }
 
 busvolumes(names, value) {
-  for (j = 0; j < names.size; j++)
+  for(j = 0; j < names.size; j++)
     busvolume(names[j], value);
 }
 
 busvolumeall(value) {
-
 }
 
 argsasdict(a, b, c, d, e, f, g) {
   names = [];
 
-  if(isdefined(a))
+  if(isDefined(a))
     names[0] = a;
 
-  if(isdefined(b))
+  if(isDefined(b))
     names[1] = b;
 
-  if(isdefined(c))
+  if(isDefined(c))
     names[2] = c;
 
-  if(isdefined(d))
+  if(isDefined(d))
     names[3] = d;
 
-  if(isdefined(e))
+  if(isDefined(e))
     names[4] = e;
 
-  if(isdefined(f))
+  if(isDefined(f))
     names[5] = f;
 
-  if(isdefined(g))
+  if(isDefined(g))
     names[6] = g;
 
   return names;
@@ -132,7 +133,7 @@ busvolumesexcept(a, b, c, d, e, f, g) {
   value = args[args.size - 1];
   names = [];
 
-  for (i = 0; i < args.size - 1; i++)
+  for(i = 0; i < args.size - 1; i++)
     names[i] = args[i];
 }
 

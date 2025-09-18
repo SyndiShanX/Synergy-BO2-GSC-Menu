@@ -24,7 +24,7 @@ main() {
   self _setupnumattachtable();
   self.openings = [];
 
-  for (x = 1; x <= 10; x++) {
+  for(x = 1; x <= 10; x++) {
     script_noteworthy = undefined;
 
     switch (x) {
@@ -60,7 +60,7 @@ busaddopening(tag_name, script_noteworthy) {
   opening.rebuildtrigger = undefined;
   opening.tagname = tag_name;
   opening.bindtag = _busfindclosesttag(self gettagorigin(tag_name));
-  assert(isdefined(opening.bindtag));
+  assert(isDefined(opening.bindtag));
   opening.jumptag = _busgetjumptagfrombindtag(opening.bindtag);
   opening.jumpent = level.the_bus;
   opening.roofjoint = _busgetroofjointfrombindtag(opening.bindtag);
@@ -68,13 +68,13 @@ busaddopening(tag_name, script_noteworthy) {
   opening.angles = self gettagangles(opening.bindtag);
   targets = getentarray(tag_name, "targetname");
 
-  if(!isdefined(targets)) {
+  if(!isDefined(targets)) {
     assert(0);
     return;
   }
 
   if(!is_classic()) {
-    for (i = 0; i < targets.size; i++) {
+    for(i = 0; i < targets.size; i++) {
       if(targets[i] iszbarrier())
         targets[i] delete();
     }
@@ -82,13 +82,13 @@ busaddopening(tag_name, script_noteworthy) {
     return;
   }
 
-  for (i = 0; i < targets.size; i++) {
+  for(i = 0; i < targets.size; i++) {
     target = targets[i];
 
     if(target iszbarrier()) {
       hasbarriers = 1;
 
-      if(isdefined(script_noteworthy) && script_noteworthy == "front")
+      if(isDefined(script_noteworthy) && script_noteworthy == "front")
         hasbarriers = 0;
 
       opening.zbarrier = target;
@@ -99,7 +99,7 @@ busaddopening(tag_name, script_noteworthy) {
         opening.zbarrier setzbarriercolmodel("p6_anim_zm_barricade_board_bus_collision");
         maps\mp\zombies\_zm_powerups::register_carpenter_node(opening, ::post_carpenter_callback);
 
-        for (j = 0; j < opening.zbarrier getnumzbarrierpieces(); j++)
+        for(j = 0; j < opening.zbarrier getnumzbarrierpieces(); j++)
           opening.zbarrier.chunk_health[j] = 0;
       }
 
@@ -130,7 +130,7 @@ busaddopening(tag_name, script_noteworthy) {
     target linkto(self, "", self worldtolocalcoords(target.origin), target.angles - self.angles);
   }
 
-  if(isdefined(opening.zbarrier))
+  if(isDefined(opening.zbarrier))
     opening blocker_attack_spots();
 
   opening notify("opening_init_complete");
@@ -138,15 +138,15 @@ busaddopening(tag_name, script_noteworthy) {
 }
 
 post_carpenter_callback() {
-  if(isdefined(self.rebuildtrigger))
+  if(isDefined(self.rebuildtrigger))
     self.rebuildtrigger setinvisibletoall();
 }
 
 businitmantle() {
   mantlebrush = getentarray("window_mantle", "targetname");
 
-  if(isdefined(mantlebrush) && mantlebrush.size > 0) {
-    for (i = 0; i < mantlebrush.size; i++)
+  if(isDefined(mantlebrush) && mantlebrush.size > 0) {
+    for(i = 0; i < mantlebrush.size; i++)
       mantlebrush[i] delete();
   }
 }
@@ -160,10 +160,10 @@ busattachjumpent(ent, opening) {
 }
 
 busopeningbyname(name) {
-  for (i = 0; i < self.openings.size; i++) {
+  for(i = 0; i < self.openings.size; i++) {
     opening = self.openings[i];
 
-    if(isdefined(opening.name) && opening.name == name)
+    if(isDefined(opening.name) && opening.name == name)
       return opening;
   }
 
@@ -171,10 +171,10 @@ busopeningbyname(name) {
 }
 
 busopeningsetenabled(name, enabled) {
-  for (i = 0; i < self.openings.size; i++) {
+  for(i = 0; i < self.openings.size; i++) {
     opening = self.openings[i];
 
-    if(isdefined(opening.name) && opening.name == name)
+    if(isDefined(opening.name) && opening.name == name)
       opening.enabled = enabled;
   }
 }
@@ -196,21 +196,22 @@ _businittags() {
   self.openingtags[self.openingtags.size] = "window_left_3_jnt";
   self.openingtags[self.openingtags.size] = "window_left_4_jnt";
   self.openingtags[self.openingtags.size] = "window_left_5_jnt";
-  for (i = 0; i < self.openingtags.size; i++)
+
+  for(i = 0; i < self.openingtags.size; i++)
     adddebugcommand("devgui_cmd \"Zombies:1/Bus:14/Window Openings:3/Select Tag:1/" + self.openingtags[i] + ":" + self.openingtags.size + "\" \"zombie_devgui attach_tag " + self.openingtags[i] + "\"\n");
 }
 
 _busfindclosesttag(checkpos) {
   closest = undefined;
   closestdist = -1.0;
-  assert(isdefined(self.openingtags));
+  assert(isDefined(self.openingtags));
 
-  for (i = 0; i < self.openingtags.size; i++) {
+  for(i = 0; i < self.openingtags.size; i++) {
     tag = self.openingtags[i];
     pos = self gettagorigin(tag);
     dist2 = distancesquared(checkpos, pos);
 
-    if(!isdefined(closest) || dist2 < closestdist) {
+    if(!isDefined(closest) || dist2 < closestdist) {
       closest = tag;
       closestdist = dist2;
     }
@@ -312,7 +313,7 @@ _setupnumattachtable() {
 }
 
 busgetopeningfortag(tagname) {
-  for (i = 0; i < self.openings.size; i++) {
+  for(i = 0; i < self.openings.size; i++) {
     if(self.openings[i].bindtag == tagname)
       return self.openings[i];
   }
@@ -323,7 +324,7 @@ busgetopeningfortag(tagname) {
 zombieanimnotetrackthink(notifystring, chunk, node) {
   self endon("death");
 
-  while (true) {
+  while(true) {
     self waittill(notifystring, notetrack);
 
     if(notetrack == "end")
@@ -331,13 +332,13 @@ zombieanimnotetrackthink(notifystring, chunk, node) {
     else if(notetrack == "board" || notetrack == "destroy_piece") {
       node.zbarrier setzbarrierpiecestate(chunk, "opening");
 
-      if(isdefined(node.rebuildtrigger))
+      if(isDefined(node.rebuildtrigger))
         node.rebuildtrigger setvisibletoall();
     } else if(notetrack == "fire") {
       attackplayers = self zombiegetplayerstoattack();
 
       if(attackplayers.size) {
-        for (i = 0; i < attackplayers.size; i++)
+        for(i = 0; i < attackplayers.size; i++)
           attackplayers[i] dodamage(self.meleedamage, self.origin, self, self, "none", "MOD_MELEE");
       }
     }
@@ -347,10 +348,10 @@ zombieanimnotetrackthink(notifystring, chunk, node) {
 busopeningblockerthink(opening) {
   self endon("intermission");
 
-  while (true) {
+  while(true) {
     opening.blockertrigger waittill("trigger", player);
 
-    if(isdefined(opening.zombie)) {
+    if(isDefined(opening.zombie)) {
       continue;
     }
     break;
@@ -363,17 +364,17 @@ buswatchtriggervisibility(opening) {
   self endon("intermission");
   opening waittill("opening_init_complete");
 
-  if(!isdefined(opening.zbarrier) || opening.zbarrier getnumzbarrierpieces() < 1) {
+  if(!isDefined(opening.zbarrier) || opening.zbarrier getnumzbarrierpieces() < 1) {
     return;
   }
-  if(!isdefined(level.buswatchtriggervisibility_spread))
+  if(!isDefined(level.buswatchtriggervisibility_spread))
     level.buswatchtriggervisibility_spread = 0;
   else {
     level.buswatchtriggervisibility_spread++;
     wait(0.05 * level.buswatchtriggervisibility_spread);
   }
 
-  while (true) {
+  while(true) {
     if(no_valid_repairable_boards(opening))
       opening.rebuildtrigger setinvisibletoall();
     else
@@ -388,10 +389,10 @@ busopeningrebuildthink(opening) {
   self thread buswatchtriggervisibility(opening);
   cost = 10;
 
-  if(isdefined(opening.rebuildtrigger.zombie_cost))
+  if(isDefined(opening.rebuildtrigger.zombie_cost))
     cost = opening.rebuildtrigger.zombie_cost;
 
-  while (true) {
+  while(true) {
     opening.rebuildtrigger waittill("trigger", player);
     players = get_players();
     has_perk = player has_blocker_affecting_perk();
@@ -406,7 +407,7 @@ busopeningrebuildthink(opening) {
       continue;
     }
     chunk = get_random_destroyed_chunk(opening);
-    self thread replace_chunk(opening, chunk, has_perk, isdefined(player.pers_upgrades_awarded["board"]) && player.pers_upgrades_awarded["board"]);
+    self thread replace_chunk(opening, chunk, has_perk, isDefined(player.pers_upgrades_awarded["board"]) && player.pers_upgrades_awarded["board"]);
     opening do_post_chunk_repair_delay(has_perk);
 
     if(!is_player_valid(player)) {
@@ -467,16 +468,16 @@ busopeningzombiethink(opening) {
     return;
   }
 
-  while (true) {
+  while(true) {
     opening.zombietrigger waittill("trigger", zombie);
 
     if(zombie.isdog) {
       continue;
     }
-    if(isdefined(zombie.isscreecher) && zombie.isscreecher) {
+    if(isDefined(zombie.isscreecher) && zombie.isscreecher) {
       continue;
     }
-    if(isdefined(zombie.is_avogadro) && zombie.is_avogadro) {
+    if(isDefined(zombie.is_avogadro) && zombie.is_avogadro) {
       continue;
     }
     if(!isalive(zombie)) {
@@ -488,35 +489,35 @@ busopeningzombiethink(opening) {
     if(_isopeningdoor(opening.bindtag) && self.doorsclosed) {
       continue;
     }
-    enemy_on_roof = isdefined(zombie.favoriteenemy) && zombie.favoriteenemy.isonbusroof;
+    enemy_on_roof = isDefined(zombie.favoriteenemy) && zombie.favoriteenemy.isonbusroof;
 
-    if((!self.ismoving || isdefined(self.disabled_by_emp) && self.disabled_by_emp) && !self.doorsclosed && !enemy_on_roof) {
+    if((!self.ismoving || isDefined(self.disabled_by_emp) && self.disabled_by_emp) && !self.doorsclosed && !enemy_on_roof) {
       continue;
     }
     monkey = undefined;
 
-    if(isdefined(zombie.enemyoverride))
+    if(isDefined(zombie.enemyoverride))
       monkey = zombie.enemyoverride[1];
 
-    if(isdefined(monkey) && !monkey maps\mp\zm_transit_bus::entity_is_on_bus(1)) {
+    if(isDefined(monkey) && !monkey maps\mp\zm_transit_bus::entity_is_on_bus(1)) {
       continue;
     }
-    if(!isdefined(zombie.favoriteenemy) || !zombie.favoriteenemy.isonbus) {
+    if(!isDefined(zombie.favoriteenemy) || !zombie.favoriteenemy.isonbus) {
       continue;
     }
-    if(isdefined(zombie.isonbus) && zombie.isonbus) {
+    if(isDefined(zombie.isonbus) && zombie.isonbus) {
       continue;
     }
-    if(isdefined(zombie.opening)) {
+    if(isDefined(zombie.opening)) {
       continue;
     }
-    if(isdefined(opening.zombie)) {
+    if(isDefined(opening.zombie)) {
       continue;
     }
-    if(isdefined(zombie.is_inert) && zombie.is_inert) {
+    if(isDefined(zombie.is_inert) && zombie.is_inert) {
       continue;
     }
-    if(isdefined(zombie.cannotattachtobus) && zombie.cannotattachtobus) {
+    if(isDefined(zombie.cannotattachtobus) && zombie.cannotattachtobus) {
       continue;
     }
     if(!level.the_bus.ismoving) {
@@ -527,7 +528,7 @@ busopeningzombiethink(opening) {
         continue;
     }
 
-    if(isdefined(zombie.dismount_start) && zombie.dismount_start) {
+    if(isDefined(zombie.dismount_start) && zombie.dismount_start) {
       continue;
     }
     zombie thread zombieattachtobus(self, opening);
@@ -537,8 +538,8 @@ busopeningzombiethink(opening) {
 _buscanzombieattach(zombie) {
   currentlyattached = 0;
 
-  for (i = 0; i < self.openings.size; i++) {
-    if(isdefined(self.openings[i].zombie))
+  for(i = 0; i < self.openings.size; i++) {
+    if(isDefined(self.openings[i].zombie))
       currentlyattached++;
   }
 
@@ -560,17 +561,19 @@ zombieplayattachedanim(animname) {
 }
 
 debugline(frompoint, color, durationframes) {
-  for (i = 0; i < durationframes; i++) {
+  for(i = 0; i < durationframes; i++) {
     line(frompoint, (frompoint[0], frompoint[1], frompoint[2] + 50), color);
     wait 0.05;
   }
+
 }
 
 debugbox(frompoint, color, durationframes) {
-  for (i = 0; i < durationframes; i++) {
+  for(i = 0; i < durationframes; i++) {
     box(frompoint, (-1, -1, -1), (1, 1, 1), 0, color);
     wait 0.05;
   }
+
 }
 
 _isopeningdoor(opening_tag) {
@@ -589,28 +592,28 @@ _isopeningdoor(opening_tag) {
 }
 
 busexitthink(trigger) {
-  while (true) {
+  while(true) {
     trigger waittill("trigger", zombie);
 
-    if(isdefined(zombie.is_inert) && zombie.is_inert) {
+    if(isDefined(zombie.is_inert) && zombie.is_inert) {
       continue;
     }
-    if(!(isdefined(zombie.walk_to_exit) && zombie.walk_to_exit)) {
+    if(!(isDefined(zombie.walk_to_exit) && zombie.walk_to_exit)) {
       continue;
     }
-    if(isdefined(zombie.exiting_window) && zombie.exiting_window) {
+    if(isDefined(zombie.exiting_window) && zombie.exiting_window) {
       continue;
     }
     going_to_roof = 0;
 
-    if(isdefined(zombie.favoriteenemy) && zombie.favoriteenemy.isonbusroof == 1) {
+    if(isDefined(zombie.favoriteenemy) && zombie.favoriteenemy.isonbusroof == 1) {
       going_to_roof = 1;
 
       if(trigger.substate == 2)
         continue;
     }
 
-    if(!going_to_roof && !(isdefined(level.the_bus.doorsclosed) && level.the_bus.doorsclosed) && zombie.ai_state != "zombieWindowToRoof") {
+    if(!going_to_roof && !(isDefined(level.the_bus.doorsclosed) && level.the_bus.doorsclosed) && zombie.ai_state != "zombieWindowToRoof") {
       continue;
     }
     zombie thread zombieexitwindow(self, trigger, going_to_roof);
@@ -651,10 +654,10 @@ zombieexitwindow(bus, trigger, going_to_roof) {
 zombieexitwindowdelay() {
   self endon("death");
 
-  while (isdefined(self.exiting_window) && self.exiting_window)
+  while(isDefined(self.exiting_window) && self.exiting_window)
     wait 0.1;
 
-  while (true) {
+  while(true) {
     if(self.ai_state == "find_flesh") {
       break;
     }
@@ -677,7 +680,7 @@ teleportthreadex(verticaloffset, delay, frames) {
 
   offset = (0, 0, amount);
 
-  for (i = 0; i < frames; i++) {
+  for(i = 0; i < frames; i++) {
     self teleport(self.origin + offset);
     wait 0.05;
   }
@@ -687,9 +690,9 @@ zombieopeningdelay() {
   self endon("death");
   self maps\mp\zombies\_zm_spawner::zombie_history("opening delay detach " + gettime());
 
-  if(isdefined(self.jumpingtowindow) && self.jumpingtowindow) {
-    while (true) {
-      if(!(isdefined(self.jumpingtowindow) && self.jumpingtowindow)) {
+  if(isDefined(self.jumpingtowindow) && self.jumpingtowindow) {
+    while(true) {
+      if(!(isDefined(self.jumpingtowindow) && self.jumpingtowindow)) {
         break;
       }
 
@@ -699,7 +702,7 @@ zombieopeningdelay() {
 
   self zombiedetachfrombus(self.left_or_right);
 
-  while (true) {
+  while(true) {
     if(self.ai_state == "find_flesh") {
       break;
     }
@@ -747,7 +750,7 @@ zombieattachtobus(thebus, opening, removeafterdone) {
     asd_name = "zm_zbarrier_jump_on_bus";
     side = _getsideofbusopeningison(opening.bindtag);
 
-    if(isdefined(side) && side == "front")
+    if(isDefined(side) && side == "front")
       asd_name = "zm_zbarrier_jump_on_bus_front";
 
     animstate = maps\mp\animscripts\zm_utility::append_missing_legs_suffix(asd_name);
@@ -761,7 +764,7 @@ zombieattachtobus(thebus, opening, removeafterdone) {
   self animmode("gravity");
   self.jumpingtowindow = 0;
 
-  if(isdefined(self.a.gib_ref) && (self.a.gib_ref == "left_arm" || self.a.gib_ref == "right_arm")) {
+  if(isDefined(self.a.gib_ref) && (self.a.gib_ref == "left_arm" || self.a.gib_ref == "right_arm")) {
     self dodamage(self.health + 666, self.origin);
     self startragdoll();
     self launchragdoll((0, 0, -1));
@@ -786,17 +789,18 @@ zombieattachtobus(thebus, opening, removeafterdone) {
     if(!self.isdog)
       self maps\mp\animscripts\zm_run::moverun();
   } else {
-    while (true) {
-      if(!isdefined(opening.zbarrier) || maps\mp\zombies\_zm_spawner::get_attack_spot(opening)) {
+    while(true) {
+      if(!isDefined(opening.zbarrier) || maps\mp\zombies\_zm_spawner::get_attack_spot(opening)) {
         break;
       }
 
       println("Zombie failed to get bus attack spot");
+
       wait 0.5;
       continue;
     }
 
-    while (!all_chunks_destroyed(opening)) {
+    while(!all_chunks_destroyed(opening)) {
       if(zombieshoulddetachfromwindow()) {
         zombiedetachfrombus(self.left_or_right);
         return;
@@ -806,7 +810,7 @@ zombieattachtobus(thebus, opening, removeafterdone) {
       chunk = get_closest_non_destroyed_chunk(self.origin, opening);
       waited = 0;
 
-      if(isdefined(chunk)) {
+      if(isDefined(chunk)) {
         waited = 1;
         opening.zbarrier setzbarrierpiecestate(chunk, "targetted_by_zombie");
         opening thread check_zbarrier_piece_for_zombie_death(chunk, opening.zbarrier, self);
@@ -819,7 +823,7 @@ zombieattachtobus(thebus, opening, removeafterdone) {
         self animscripted(tag_origin, tag_angles, maps\mp\animscripts\zm_utility::append_missing_legs_suffix(animstatebase + "_in"), anim_sub_index);
         self zombieanimnotetrackthink("board_tear_bus_anim", chunk, opening);
 
-        while (0 < opening.zbarrier.chunk_health[chunk]) {
+        while(0 < opening.zbarrier.chunk_health[chunk]) {
           tag_origin = self.attachent gettagorigin(self.attachtag);
           tag_angles = self.attachent gettagangles(self.attachtag);
           self animscripted(tag_origin, tag_angles, maps\mp\animscripts\zm_utility::append_missing_legs_suffix(animstatebase + "_loop"), anim_sub_index);
@@ -895,7 +899,7 @@ zombieattachtobus(thebus, opening, removeafterdone) {
   self reset_attack_spot();
   self.climbing_into_bus = 0;
 
-  if(isdefined(removeafterdone) && removeafterdone) {
+  if(isDefined(removeafterdone) && removeafterdone) {
     self delete();
     return;
   }
@@ -906,7 +910,7 @@ zombieattachtobus(thebus, opening, removeafterdone) {
 zombieattachleftorright(bus) {
   tag = self.opening.bindtag;
 
-  if(!(isdefined(bus.doorsclosed) && bus.doorsclosed)) {
+  if(!(isDefined(bus.doorsclosed) && bus.doorsclosed)) {
     if(tag == "window_right_1_jnt" || tag == "window_right_2_jnt" || tag == "window_right_3_jnt")
       return "_r";
     else if(tag == "window_right_4_jnt")
@@ -915,7 +919,7 @@ zombieattachleftorright(bus) {
 
   side = getopeningside(tag);
 
-  if(isdefined(side)) {
+  if(isDefined(side)) {
     if(side == "right")
       openings = bus.openingright;
     else if(side == "left")
@@ -925,7 +929,7 @@ zombieattachleftorright(bus) {
       if(opening == self.opening) {
         continue;
       }
-      if(isdefined(opening.zombie))
+      if(isDefined(opening.zombie))
         return opening.zombie.left_or_right;
     }
   }
@@ -945,7 +949,7 @@ businitrightandleft() {
   foreach(opening in self.openings) {
     side = getopeningside(opening.bindtag);
 
-    if(isdefined(side)) {
+    if(isDefined(side)) {
       if(side == "right") {
         self.openingright[self.openingright.size] = opening;
         continue;
@@ -958,14 +962,14 @@ businitrightandleft() {
 }
 
 getopeningside(tag) {
-  for (i = 1; i <= 4; i++) {
+  for(i = 1; i <= 4; i++) {
     window_tag = "window_right_" + i + "_jnt";
 
     if(tag == window_tag)
       return "right";
   }
 
-  for (i = 1; i <= 5; i++) {
+  for(i = 1; i <= 5; i++) {
     window_tag = "window_left_" + i + "_jnt";
 
     if(tag == window_tag)
@@ -996,10 +1000,10 @@ zombiegetwindowanimrate() {
 }
 
 zombiedetachfrombus(postfix) {
-  if(!isdefined(self.opening)) {
+  if(!isDefined(self.opening)) {
     return;
   }
-  if(isdefined(self.opening.zombie) && self.opening.zombie == self)
+  if(isDefined(self.opening.zombie) && self.opening.zombie == self)
     self.opening.zombie = undefined;
 
   is_right = 0;
@@ -1019,7 +1023,7 @@ zombiedetachfrombus(postfix) {
   self.isonbus = 0;
   asd_name = "zm_window_dismount";
 
-  if(isdefined(side) && side == "front")
+  if(isDefined(side) && side == "front")
     asd_name = "zm_front_window_dismount";
 
   animstate = maps\mp\animscripts\zm_utility::append_missing_legs_suffix(asd_name);
@@ -1043,7 +1047,7 @@ dismount_timer() {
 }
 
 zombiegetcymbalmonkey() {
-  if(isdefined(self.monkey_time) && gettime() < self.monkey_time)
+  if(isDefined(self.monkey_time) && gettime() < self.monkey_time)
     return self.monkey;
 
   poi = undefined;
@@ -1051,7 +1055,7 @@ zombiegetcymbalmonkey() {
   if(level.cymbal_monkeys.size > 0)
     poi = self get_zombie_point_of_interest(self.origin, level.cymbal_monkeys);
 
-  if(isdefined(poi)) {
+  if(isDefined(poi)) {
     self.monkey = poi[1];
     self.monkey_time = gettime() + 250;
     return poi[1];
@@ -1063,7 +1067,7 @@ zombiegetcymbalmonkey() {
 zombieshoulddetachfromwindow() {
   monkey = self zombiegetcymbalmonkey();
 
-  if(isdefined(monkey)) {
+  if(isDefined(monkey)) {
     if(monkey maps\mp\zm_transit_bus::entity_is_on_bus(1))
       return false;
     else
@@ -1072,7 +1076,7 @@ zombieshoulddetachfromwindow() {
 
   enemy = self.favoriteenemy;
 
-  if(isdefined(enemy) && !self.favoriteenemy.isonbus)
+  if(isDefined(enemy) && !self.favoriteenemy.isonbus)
     return true;
 
   return false;
@@ -1083,7 +1087,7 @@ zombiecanjumponroof(opening) {
     if(all_chunks_destroyed(opening))
       return false;
 
-    if(isdefined(level.bus_zombie_on_roof))
+    if(isDefined(level.bus_zombie_on_roof))
       return false;
 
     if(level.bus_roof_next_time > gettime())
@@ -1143,7 +1147,7 @@ zombiejumponroof(thebus, opening, removeafterdone, postfix) {
 bussetupladder() {
   trigger = getent("bus_ladder_trigger", "targetname");
 
-  if(!isdefined(trigger)) {
+  if(!isDefined(trigger)) {
     return;
   }
   trigger enablelinkto();
@@ -1152,8 +1156,8 @@ bussetupladder() {
   trigger setinvisibletoall();
   mantlebrush = getentarray("ladder_mantle", "targetname");
 
-  if(isdefined(mantlebrush) && mantlebrush.size > 0) {
-    for (i = 0; i < mantlebrush.size; i++)
+  if(isDefined(mantlebrush) && mantlebrush.size > 0) {
+    for(i = 0; i < mantlebrush.size; i++)
       self thread busdeferredinitladdermantle(mantlebrush[i]);
   }
 
@@ -1194,7 +1198,7 @@ bussetuproofopening() {
   level.bus_roof_max_interval_time = 20000;
   trigger = getent("bus_hatch_bottom_trigger", "targetname");
 
-  if(!isdefined(trigger)) {
+  if(!isDefined(trigger)) {
     return;
   }
   trigger enablelinkto();
@@ -1204,15 +1208,15 @@ bussetuproofopening() {
   self thread bus_hatch_tearin_wait();
   clipbrush = getentarray("hatch_clip", "targetname");
 
-  if(isdefined(clipbrush) && clipbrush.size > 0) {
-    for (i = 0; i < clipbrush.size; i++)
+  if(isDefined(clipbrush) && clipbrush.size > 0) {
+    for(i = 0; i < clipbrush.size; i++)
       self thread businithatchclip(clipbrush[i]);
   }
 
   mantlebrush = getentarray("hatch_mantle", "targetname");
 
-  if(isdefined(mantlebrush) && mantlebrush.size > 0) {
-    for (i = 0; i < mantlebrush.size; i++)
+  if(isDefined(mantlebrush) && mantlebrush.size > 0) {
+    for(i = 0; i < mantlebrush.size; i++)
       self thread busdeferredinithatchmantle(mantlebrush[i]);
   }
 
@@ -1221,6 +1225,7 @@ bussetuproofopening() {
   hatch_location linkto(level.the_bus);
   hatch_location setmovingplatformenabled(1);
   level.the_bus.hatch_location = hatch_location;
+
   adddebugcommand("devgui_cmd \"Zombies:1/Bus:14/Hatch:4/Allow Traverse:1\" \"zombie_devgui hatch_available\"\n");
   self thread wait_open_sesame();
 }
@@ -1229,7 +1234,7 @@ wait_open_sesame() {
   level waittill("open_sesame");
   self notify("hatch_mantle_allowed");
 
-  if(isdefined(level.bus_tearin_roof))
+  if(isDefined(level.bus_tearin_roof))
     level.bus_tearin_roof hide();
 
   level.the_bus showpart("tag_hatch_attach_ladder");
@@ -1281,11 +1286,11 @@ busdeferredinithatchmantle(mantle) {
 zombieonbusenemy() {
   new_enemy = undefined;
 
-  if(isdefined(level.the_bus.bus_riders_alive) && level.the_bus.bus_riders_alive.size > 0)
+  if(isDefined(level.the_bus.bus_riders_alive) && level.the_bus.bus_riders_alive.size > 0)
     new_enemy = getclosest(self.origin, level.the_bus.bus_riders_alive);
 
-  if(isdefined(new_enemy) && isdefined(self.favoriteenemy) && isdefined(new_enemy) && self.favoriteenemy != new_enemy) {
-    if(!(isdefined(self.favoriteenemy.isonbus) && self.favoriteenemy.isonbus))
+  if(isDefined(new_enemy) && isDefined(self.favoriteenemy) && isDefined(new_enemy) && self.favoriteenemy != new_enemy) {
+    if(!(isDefined(self.favoriteenemy.isonbus) && self.favoriteenemy.isonbus))
       self.favoriteenemy = new_enemy;
     else if(self.isonbusroof == new_enemy.isonbusroof)
       self.favoriteenemy = new_enemy;
@@ -1308,24 +1313,24 @@ zombiemoveonbus() {
   self maps\mp\zombies\_zm_spawner::zombie_history("zombieMoveOnBus " + gettime());
   bus_nodes = getnodearray("the_bus", "target");
 
-  while (true) {
+  while(true) {
     self zombieonbusenemy();
 
-    if(!isdefined(self.favoriteenemy)) {
+    if(!isDefined(self.favoriteenemy)) {
       break;
     }
 
-    self_on_bus = isdefined(self.isonbus) && self.isonbus;
-    self_is_on_bus_roof = isdefined(self.isonbusroof) && self.isonbusroof;
+    self_on_bus = isDefined(self.isonbus) && self.isonbus;
+    self_is_on_bus_roof = isDefined(self.isonbusroof) && self.isonbusroof;
 
     if(!self_on_bus) {
       break;
     }
 
-    if(isdefined(self.is_inert) && self.is_inert) {
+    if(isDefined(self.is_inert) && self.is_inert) {
       self.ignoreall = 1;
 
-      while (isdefined(self.is_inert) && self.is_inert)
+      while(isDefined(self.is_inert) && self.is_inert)
         wait 0.1;
 
       self.ignoreall = 0;
@@ -1336,7 +1341,7 @@ zombiemoveonbus() {
     if(self.forcemovementscriptstate) {
       monkey = self zombiegetcymbalmonkey();
 
-      if(isdefined(monkey)) {
+      if(isDefined(monkey)) {
         poi_override = 1;
         self.ignoreall = 1;
         self animmode("normal");
@@ -1351,7 +1356,7 @@ zombiemoveonbus() {
         self animmode("gravity");
         self orientmode("face enemy");
 
-        if(!(isdefined(level.the_bus.doorsclosed) && level.the_bus.doorsclosed)) {
+        if(!(isDefined(level.the_bus.doorsclosed) && level.the_bus.doorsclosed)) {
           doorstrigger = getentarray("bus_door_trigger", "targetname");
 
           foreach(trigger in doorstrigger) {
@@ -1365,7 +1370,7 @@ zombiemoveonbus() {
         dist_sq = distancesquared(self.favoriteenemy.origin, bus_nodes[0].origin);
         goal_node = bus_nodes[0];
 
-        for (i = 1; i < bus_nodes.size; i++) {
+        for(i = 1; i < bus_nodes.size; i++) {
           bus_sq = distancesquared(self.favoriteenemy.origin, bus_nodes[i].origin);
 
           if(bus_sq < dist_sq) {
@@ -1384,13 +1389,13 @@ zombiemoveonbus() {
     }
 
     enemy = self.favoriteenemy;
-    enemy_on_bus = isdefined(enemy) && enemy.isonbus;
-    enemy_on_roof = enemy_on_bus && isdefined(enemy.isonbusroof) && enemy.isonbusroof;
+    enemy_on_bus = isDefined(enemy) && enemy.isonbus;
+    enemy_on_roof = enemy_on_bus && isDefined(enemy.isonbusroof) && enemy.isonbusroof;
 
     if(!enemy_on_bus && !self_is_on_bus_roof) {
       monkey = self zombiegetcymbalmonkey();
 
-      if(!isdefined(monkey) || !monkey maps\mp\zm_transit_bus::entity_is_on_bus(1)) {
+      if(!isDefined(monkey) || !monkey maps\mp\zm_transit_bus::entity_is_on_bus(1)) {
         self thread zombieexitbus();
         return;
       }
@@ -1400,7 +1405,7 @@ zombiemoveonbus() {
     } else if(self_is_on_bus_roof && !enemy_on_bus) {
       self thread zombiejumpoffroof();
       return;
-    } else if(!(isdefined(poi_override) && poi_override)) {
+    } else if(!(isDefined(poi_override) && poi_override)) {
       disttoenemy = distance2d(self.origin, self.favoriteenemy.origin);
       shouldbeinforcemovement = disttoenemy > 32.0;
 
@@ -1433,7 +1438,7 @@ zombiewalktoexit() {
   check_pos = self.origin;
   enemy = self.favoriteenemy;
 
-  if(isdefined(enemy))
+  if(isDefined(enemy))
     check_pos = enemy.origin;
 
   if(!level.the_bus.doorsclosed) {
@@ -1456,21 +1461,21 @@ zombiewalktoexit() {
         door_node = level.the_bus.back_door;
     }
 
-    if(isdefined(door_node)) {
-      if(isdefined(door_node.links)) {
-        if(isdefined(door_node.links[0]))
+    if(isDefined(door_node)) {
+      if(isDefined(door_node.links)) {
+        if(isDefined(door_node.links[0]))
           link_one = door_node.links[0];
 
-        if(isdefined(door_node.links[1]))
+        if(isDefined(door_node.links[1]))
           link_two = door_node.links[1];
       }
 
       link_goal = undefined;
 
-      if(isdefined(link_one))
+      if(isDefined(link_one))
         link_goal = link_one;
 
-      if(isdefined(link_one) && isdefined(link_two)) {
+      if(isDefined(link_one) && isDefined(link_two)) {
         link_one_dist = distance2dsquared(check_pos, link_one.origin);
         link_two_dist = distance2dsquared(check_pos, link_two.origin);
         link_goal = link_one;
@@ -1479,7 +1484,7 @@ zombiewalktoexit() {
           link_goal = link_two;
       }
 
-      if(isdefined(link_goal)) {
+      if(isDefined(link_goal)) {
         self setgoalnode(link_goal);
         return;
       }
@@ -1514,20 +1519,20 @@ zombiewindowtoroof() {
   self.ai_state = "zombieWindowToRoof";
   self maps\mp\zombies\_zm_spawner::zombie_history("zombieWindowToRoof " + gettime());
 
-  while (true) {
+  while(true) {
     self zombiewalktowindow();
 
-    if(isdefined(self.exiting_window) && self.exiting_window) {
+    if(isDefined(self.exiting_window) && self.exiting_window) {
       break;
     }
 
-    if(!(isdefined(self.isonbus) && self.isonbus) || isdefined(self.ai_state == "find_flesh") && self.ai_state == "find_flesh") {
+    if(!(isDefined(self.isonbus) && self.isonbus) || isDefined(self.ai_state == "find_flesh") && self.ai_state == "find_flesh") {
       return;
     }
     wait 0.1;
   }
 
-  while (isdefined(self.exiting_window) && self.exiting_window)
+  while(isDefined(self.exiting_window) && self.exiting_window)
     wait 0.1;
 }
 
@@ -1552,7 +1557,7 @@ zombieattackplayerclinging(player) {
   self.goalradius = 15;
   enemy_clinging = 1;
 
-  while (enemy_clinging) {
+  while(enemy_clinging) {
     best_attack_pos = maps\mp\zm_transit_cling::_getbusattackposition(player);
     dist_from_pos2 = distance2dsquared(best_attack_pos, self.origin);
     enemy_origin = player _playergetorigin();
@@ -1577,7 +1582,7 @@ zombieattackplayeronturret(player) {
   self endon("death");
   level endon("intermission");
 
-  for (enemy_on_turret = 1; enemy_on_turret; enemy_on_turret = isdefined(self.favoriteenemy.onbusturret) && isdefined(self.favoriteenemy.busturret) && self.favoriteenemy.onbusturret) {
+  for(enemy_on_turret = 1; enemy_on_turret; enemy_on_turret = isDefined(self.favoriteenemy.onbusturret) && isDefined(self.favoriteenemy.busturret) && self.favoriteenemy.onbusturret) {
     enemy_origin = self.favoriteenemy _playergetorigin();
     dist_from_turret2 = distance2dsquared(enemy_origin, self.origin);
     direction = enemy_origin - self.origin;
@@ -1598,13 +1603,13 @@ zombiescriptedattack(player, direction_angles, damage_func) {
   zombie_attack_anim = self zombiepickunmovingattackanim();
   self thread maps\mp\zombies\_zm_audio::do_zombies_playvocals("attack", self.animname);
 
-  while (true) {
+  while(true) {
     self waittill("meleeanim", note);
 
     if(note == "end" || note == "stop") {
       break;
     } else if(note == "fire") {
-      if(isdefined(damage_func))
+      if(isDefined(damage_func))
         [[damage_func]](player);
     }
   }
@@ -1621,7 +1626,7 @@ zombiedamageplayercling(player) {
 }
 
 _playergetorigin() {
-  if(isdefined(self.onbusturret) && isdefined(self.busturret) && self.onbusturret) {
+  if(isDefined(self.onbusturret) && isDefined(self.busturret) && self.onbusturret) {
     turret = self.busturret;
     turret_exit = getent(turret.target, "targetname");
     return turret_exit.origin;
@@ -1652,31 +1657,31 @@ zombieexitbus() {
   self orientmode("face motion");
   self maps\mp\zombies\_zm_spawner::zombie_history("zombieExitBus " + gettime());
 
-  while (true) {
-    if(isdefined(self.exiting_window) && self.exiting_window) {
+  while(true) {
+    if(isDefined(self.exiting_window) && self.exiting_window) {
       break;
     }
 
-    if(!(isdefined(self.isonbus) && self.isonbus)) {
+    if(!(isDefined(self.isonbus) && self.isonbus)) {
       self.walk_to_exit = 0;
       return;
     }
 
-    if(!(isdefined(self.solo_revive_exit) && self.solo_revive_exit)) {
+    if(!(isDefined(self.solo_revive_exit) && self.solo_revive_exit)) {
       monkey = undefined;
 
-      if(isdefined(self.enemyoverride))
+      if(isDefined(self.enemyoverride))
         monkey = self.enemyoverride[1];
 
       ignore_enemy = 0;
 
-      if(isdefined(monkey) && !monkey maps\mp\zm_transit_bus::entity_is_on_bus(1))
+      if(isDefined(monkey) && !monkey maps\mp\zm_transit_bus::entity_is_on_bus(1))
         ignore_enemy = 1;
 
       if(!ignore_enemy) {
         enemy = self.favoriteenemy;
 
-        if(isdefined(enemy)) {
+        if(isDefined(enemy)) {
           if(enemy.isonbus) {
             self.walk_to_exit = 0;
             self thread zombiemoveonbus();
@@ -1690,7 +1695,7 @@ zombieexitbus() {
     wait 0.1;
   }
 
-  while (isdefined(self.exiting_window) && self.exiting_window)
+  while(isDefined(self.exiting_window) && self.exiting_window)
     wait 0.1;
 
   self.dont_throw_gib = undefined;
@@ -1707,11 +1712,11 @@ zombiejumpoffroof() {
   self orientmode("face goal");
   self maps\mp\zombies\_zm_spawner::zombie_history("zombieJumpOffRoof " + gettime());
 
-  while (true) {
+  while(true) {
     enemy = self.favoriteenemy;
-    enemy_on_bus = isdefined(enemy) && enemy.isonbus;
+    enemy_on_bus = isDefined(enemy) && enemy.isonbus;
     enemiesonbus = level.the_bus.numaliveplayersridingbus > 0;
-    selfisonbus = isdefined(self.isonbus) && self.isonbus;
+    selfisonbus = isDefined(self.isonbus) && self.isonbus;
 
     if(enemy_on_bus) {
       self thread zombiemoveonbus();
@@ -1755,7 +1760,7 @@ zombieheighttraverse() {
   self.goal_local_angles = vectorscale((0, -1, 0), 90.0);
   self maps\mp\zombies\_zm_spawner::zombie_history("zombieHeightTraverse " + gettime());
 
-  if(!isdefined(self.isonbusroof) || !self.isonbusroof) {
+  if(!isDefined(self.isonbusroof) || !self.isonbusroof) {
     bus = level.the_bus;
     hatch_dist = distancesquared(self.origin, bus.hatch_location.origin);
     front_dist = distancesquared(self.origin, bus.front_door_inside.origin);
@@ -1765,7 +1770,7 @@ zombieheighttraverse() {
     if(front_dist < hatch_dist || back_dist < hatch_dist)
       closer_to_hatch = 0;
 
-    if(!(isdefined(level.bus_roof_open) && level.bus_roof_open) || isdefined(level.bus_roof_tearing) && level.bus_roof_tearing || !closer_to_hatch)
+    if(!(isDefined(level.bus_roof_open) && level.bus_roof_open) || isDefined(level.bus_roof_tearing) && level.bus_roof_tearing || !closer_to_hatch)
       self zombiewindowtoroof();
     else if(self zombiepathtoladder())
       self zombieclimbtoroof();
@@ -1774,20 +1779,20 @@ zombieheighttraverse() {
   else {
     enemy = self.favoriteenemy;
 
-    if(isdefined(enemy) && !(isdefined(enemy.isonbus) && enemy.isonbus)) {
+    if(isDefined(enemy) && !(isDefined(enemy.isonbus) && enemy.isonbus)) {
       self thread zombiejumpoffroof();
       return;
     }
   }
 
-  if(isdefined(self.isonbus) && self.isonbus)
+  if(isDefined(self.isonbus) && self.isonbus)
     self thread zombiemoveonbus();
 }
 
 zombiepathtoladder() {
   self.goalradius = 2;
 
-  while (isdefined(self.enemy) && self.enemy.isonbusroof) {
+  while(isDefined(self.enemy) && self.enemy.isonbusroof) {
     if(!self.isonbus) {
       self.goalradius = 32;
       return false;
@@ -1815,15 +1820,15 @@ zombiepathtoroofopening() {
   self.goalradius = 2;
   goal_tag = self zombiegetclosestroofopeningjumptag();
 
-  while (true) {
+  while(true) {
     self zombieonbusenemy();
     enemy = self.favoriteenemy;
 
-    if(isdefined(enemy) && (isdefined(enemy.isonbusroof) && enemy.isonbusroof)) {
+    if(isDefined(enemy) && (isDefined(enemy.isonbusroof) && enemy.isonbusroof)) {
       break;
     }
 
-    if(isdefined(enemy) && !(isdefined(enemy.isonbus) && enemy.isonbus)) {
+    if(isDefined(enemy) && !(isDefined(enemy.isonbus) && enemy.isonbus)) {
       break;
     }
 
@@ -1853,12 +1858,12 @@ zombiejumpdownhatch() {
   self thread zombiejumpdownhatchkilled();
   enemy = self.favoriteenemy;
 
-  if(isdefined(enemy) && (isdefined(enemy.isonbusroof) && enemy.isonbusroof)) {
+  if(isDefined(enemy) && (isDefined(enemy.isonbusroof) && enemy.isonbusroof)) {
     self unlink();
     return;
   }
 
-  while (isdefined(level.bus_roof_tearing) && level.bus_roof_tearing)
+  while(isDefined(level.bus_roof_tearing) && level.bus_roof_tearing)
     wait 0.1;
 
   roof_tag = self zombiegetclosestroofopeningjumptag();
@@ -1907,7 +1912,7 @@ zombiejumpdownhatch() {
 zombiehatchjumpdelay() {
   iprintln("hatch delay");
 
-  while (isdefined(self.hatch_jump) && self.hatch_jump)
+  while(isDefined(self.hatch_jump) && self.hatch_jump)
     wait 0.1;
 }
 
@@ -1927,8 +1932,8 @@ zombierooftearwakeup() {
 }
 
 zombiejumpdownhatchkilled() {
-  while (isdefined(level.bus_roof_tearing) && level.bus_roof_tearing) {
-    if(!isdefined(self)) {
+  while(isDefined(level.bus_roof_tearing) && level.bus_roof_tearing) {
+    if(!isDefined(self)) {
       level.bus_roof_tearing = 0;
       break;
     }
@@ -1965,7 +1970,7 @@ zombiegetclosestroofjumptag() {
   best_pos = level.the_bus gettagorigin(best);
   best_pos_dist2 = distance2dsquared(self.origin, best_pos);
 
-  for (i = 1; i <= 4; i++) {
+  for(i = 1; i <= 4; i++) {
     next_pos = level.the_bus gettagorigin(root + i);
     next_pos_dist2 = distance2dsquared(self.origin, next_pos);
 
@@ -2006,7 +2011,7 @@ zombiegetclosestdoortag() {
 }
 
 zombiekeepattackingthroughwindow(left_or_right) {
-  while (self zombietryattackthroughwindow(0, left_or_right)) {
+  while(self zombietryattackthroughwindow(0, left_or_right)) {
     tag_origin = self.attachent gettagorigin(self.attachtag);
     tag_angles = self.attachent gettagangles(self.attachtag);
     asd_name = "zm_zbarrier_window_idle";
@@ -2040,7 +2045,7 @@ zombietryattackthroughwindow(is_random, postfix) {
     asd_name = "zm_zbarrier_window_attack";
     side = _getsideofbusopeningison(self.attachtag);
 
-    if(isdefined(side) && side == "front")
+    if(isDefined(side) && side == "front")
       asd_name = "zm_zbarrier_front_window_attack";
 
     self animscripted(tag_origin, tag_angles, asd_name, "window_attack" + postfix);
@@ -2059,8 +2064,8 @@ zombiegetplayerstoattack() {
   attackheight = 37;
   attackheight = attackheight * attackheight;
 
-  for (i = 0; i < players.size; i++) {
-    if(isdefined(self.opening) && isdefined(self.opening.rebuildtrigger)) {
+  for(i = 0; i < players.size; i++) {
+    if(isDefined(self.opening) && isDefined(self.opening.rebuildtrigger)) {
       if(players[i] istouching(self.opening.rebuildtrigger))
         playerstoattack[playerstoattack.size] = players[i];
 

@@ -48,10 +48,10 @@ stage_vo_ric() {
   richtofensay("vox_zmba_sidequest_ip_2", 8);
   richtofensay("vox_zmba_sidequest_ip_3", 11);
 
-  if(!isdefined(level.rich_sq_player)) {
+  if(!isDefined(level.rich_sq_player)) {
     return;
   }
-  while (!level.rich_sq_player maps\mp\zombies\_zm_zonemgr::entity_in_zone("zone_maze"))
+  while(!level.rich_sq_player maps\mp\zombies\_zm_zonemgr::entity_in_zone("zone_maze"))
     wait 1;
 
   richtofensay("vox_zmba_sidequest_ip_4", 8);
@@ -66,7 +66,7 @@ stage_logic() {
     m_lightboard = getent("sq_bp_board", "targetname");
     m_lightboard setclientfield("buried_sq_bp_set_lightboard", 1);
 
-    while (!flag("sq_ip_puzzle_complete")) {
+    while(!flag("sq_ip_puzzle_complete")) {
       sq_bp_start_puzzle_lights();
       sq_bp_delete_green_lights();
       wait_network_frame();
@@ -88,7 +88,6 @@ stage_logic() {
 }
 
 exit_stage(success) {
-
 }
 
 sq_bp_spawn_trigger() {
@@ -99,7 +98,7 @@ sq_bp_spawn_trigger() {
   self.trig triggerignoreteam();
   self.trig usetriggerrequirelookat();
 
-  while (true) {
+  while(true) {
     self.trig waittill("trigger");
     self.trig sethintstring("");
     level thread sq_bp_button_pressed(self.script_string, self.trig);
@@ -116,7 +115,7 @@ sq_bp_spawn_board() {
 }
 
 sq_bp_button_pressed(str_tag, trig) {
-  if(isdefined(level.str_sq_bp_active_light)) {
+  if(isDefined(level.str_sq_bp_active_light)) {
     if(level.str_sq_bp_active_light == str_tag) {
       trig playsound("zmb_sq_bell_yes");
       sq_bp_light_on(str_tag, "green");
@@ -133,7 +132,7 @@ sq_bp_button_pressed(str_tag, trig) {
 
   wait 1;
 
-  if(isdefined(m_light))
+  if(isDefined(m_light))
     level setclientfield(m_light, 0);
 }
 
@@ -149,7 +148,7 @@ sq_bp_start_puzzle_lights() {
   a_tags = array_randomize(a_tags);
   m_lightboard = getent("sq_bp_board", "targetname");
 
-  if(!isdefined(level.t_start))
+  if(!isDefined(level.t_start))
     level.t_start = spawn("trigger_radius_use", m_lightboard.origin, 0, 16, 16);
 
   level.t_start setcursorhint("HINT_NOICON");
@@ -170,7 +169,7 @@ sq_bp_start_puzzle_lights() {
   a_button_structs = getstructarray("sq_bp_button", "targetname");
 
   foreach(s_button in a_button_structs) {
-    if(isdefined(s_button.trig))
+    if(isDefined(s_button.trig))
       s_button.trig delete();
   }
 }
@@ -180,7 +179,7 @@ sq_bp_set_current_bulb(str_tag) {
   level endon("sq_bp_wrong_button");
   level endon("sq_bp_timeout");
 
-  if(isdefined(level.m_sq_bp_active_light))
+  if(isDefined(level.m_sq_bp_active_light))
     level.str_sq_bp_active_light = "";
 
   level.m_sq_bp_active_light = sq_bp_light_on(str_tag, "yellow");
@@ -197,7 +196,7 @@ sq_bp_delete_green_lights() {
     level setclientfield(str_clientfield, 0);
   }
 
-  if(isdefined(level.m_sq_bp_active_light))
+  if(isDefined(level.m_sq_bp_active_light))
     level.str_sq_bp_active_light = "";
 }
 
@@ -217,10 +216,11 @@ sq_bp_light_on(str_tag, str_color) {
 debug_tag(str_tag) {
   self endon("death");
 
-  while (true) {
+  while(true) {
     debugstar(self gettagorigin(str_tag), 1, (1, 0, 0));
     wait 0.05;
   }
+
 }
 
 sq_ml_spawn_lever(n_index) {
@@ -228,11 +228,11 @@ sq_ml_spawn_lever(n_index) {
   m_lever setmodel(self.model);
   m_lever.targetname = "sq_ml_lever";
 
-  while (true) {
+  while(true) {
     v_spot = self.origin;
     v_angles = self.angles;
 
-    if(isdefined(level._maze._active_perm_list[n_index])) {
+    if(isDefined(level._maze._active_perm_list[n_index])) {
       is_flip = randomint(2);
       s_spot = getstruct(level._maze._active_perm_list[n_index], "script_noteworthy");
       v_right = anglestoright(s_spot.angles);
@@ -250,18 +250,22 @@ sq_ml_spawn_lever(n_index) {
 
     m_lever.origin = v_spot;
     m_lever.angles = v_angles;
+
     m_lever thread sq_ml_show_lever_debug(v_spot, n_index);
+
     level waittill("zm_buried_maze_changed");
   }
 }
 
 sq_ml_show_lever_debug(v_spot, n_index) {
   level endon("zm_buried_maze_changed");
-  while (true) {
+
+  while(true) {
     line(self.origin, v_spot, (0, 0, 1));
     print3d(self.origin, "" + n_index, (0, 1, 0), 1, 2);
     wait 0.05;
   }
+
 }
 
 #using_animtree("fxanim_props_dlc3");
@@ -279,7 +283,7 @@ sq_ml_spawn_trigger() {
   self.is_flipped = 0;
   self useanimtree(#animtree);
 
-  while (true) {
+  while(true) {
     self.trig waittill("trigger");
     self setanim(level.maze_switch_anim["switch_down"]);
     self.trig sethintstring("");
@@ -300,7 +304,7 @@ sq_ml_spawn_levers() {
 
   a_lever_structs = getstructarray("sq_maze_lever", "targetname");
 
-  for (i = 0; i < a_lever_structs.size; i++)
+  for(i = 0; i < a_lever_structs.size; i++)
     a_lever_structs[i] thread sq_ml_spawn_lever(i);
 }
 
@@ -309,10 +313,10 @@ sq_ml_puzzle_logic() {
   level.sq_ml_curr_lever = 0;
   a_levers = array_randomize(a_levers);
 
-  for (i = 0; i < a_levers.size; i++)
+  for(i = 0; i < a_levers.size; i++)
     a_levers[i].n_lever_order = i;
 
-  while (true) {
+  while(true) {
     level.sq_ml_curr_lever = 0;
     sq_ml_puzzle_wait_for_levers();
     n_correct = 0;
@@ -340,7 +344,7 @@ sq_ml_puzzle_wait_for_levers() {
   a_levers = getentarray("sq_ml_lever", "targetname");
   are_all_flipped = 0;
 
-  while (!are_all_flipped) {
+  while(!are_all_flipped) {
     are_all_flipped = 1;
 
     foreach(m_lever in a_levers) {

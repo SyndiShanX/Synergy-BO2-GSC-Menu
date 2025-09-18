@@ -1,7 +1,7 @@
-/*********************************************************
+/*************************************************************
  * Decompiled and Edited by SyndiShanX
  * Script: clientscripts\mp\zombies\_zm_weap_slowgun.csc
-*********************************************************/
+*************************************************************/
 
 #include clientscripts\mp\_utility;
 #include clientscripts\mp\_fx;
@@ -29,6 +29,7 @@ init() {
   level._effect["zombie_slowgun_sizzle"] = loadfx("weapon/paralyzer/fx_paralyzer_hit_dmg");
   level._effect["zombie_slowgun_sizzle_ug"] = loadfx("weapon/paralyzer/fx_paralyzer_hit_dmg_ug");
   level._effect["player_slowgun_sizzle_1st"] = loadfx("weapon/paralyzer/fx_paralyzer_hit_noharm_view");
+
   level thread show_anim_rates();
 }
 
@@ -39,7 +40,7 @@ slowgun_dial_sounds(localclientnum) {
   self endon("entityshutdown");
   self.slowgun_digit1 = 0;
 
-  while (true) {
+  while(true) {
     overheating = isweaponoverheating(localclientnum, 0);
     heat = isweaponoverheating(localclientnum, 1);
     digit1 = int(heat) % 10;
@@ -54,13 +55,13 @@ slowgun_dial_sounds(localclientnum) {
 
 sndparalyzerloop(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump) {
   if(newval == 1) {
-    if(!isdefined(self.sndparalyzerloopent))
+    if(!isDefined(self.sndparalyzerloopent))
       self.sndparalyzerloopent = spawn(0, self.origin, "script_origin");
 
     self.sndparalyzerloopent playloopsound("fly_paralyzer_loop", 1);
     self thread slowgun_dial_sounds(localclientnum);
   } else {
-    if(isdefined(self.sndparalyzerloopent)) {
+    if(isDefined(self.sndparalyzerloopent)) {
       self.sndparalyzerloopent delete();
       self.sndparalyzerloopent = undefined;
     }
@@ -81,10 +82,10 @@ play_sizzle_player(localclientnum, upgraded) {
   self endon("end_sizzle");
   followed = playerbeingspectated(localclientnum);
 
-  while (isdefined(self) && followed == playerbeingspectated(localclientnum)) {
+  while(isDefined(self) && followed == playerbeingspectated(localclientnum)) {
     sizzle = "player_slowgun_sizzle_1st";
 
-    if(isdefined(level._effect[sizzle]))
+    if(isDefined(level._effect[sizzle]))
       playviewmodelfx(localclientnum, level._effect[sizzle], "tag_camera");
 
     wait 0.1;
@@ -114,7 +115,7 @@ slowgun_actor_fx(localclientnum, oldval, newval, bnewent, binitialsnap, fieldnam
     if(upgraded)
       effect = "zombie_slowgun_explosion_ug";
 
-    if(isdefined(level._effect[effect])) {
+    if(isDefined(level._effect[effect])) {
       angles = self.angles;
       forward = anglestoforward(angles);
       right = anglestoforward(angles);
@@ -166,16 +167,16 @@ play_sizzle(localclientnum, upgraded) {
   self notify("end_sizzle");
   self endon("end_sizzle");
 
-  while (isdefined(self)) {
+  while(isDefined(self)) {
     sizzle = "zombie_slowgun_sizzle";
 
     if(upgraded)
       sizzle = "zombie_slowgun_sizzle_ug";
 
-    if(!isdefined(self.slowgun_sizzle_bone) || randomint(4) == 0)
+    if(!isDefined(self.slowgun_sizzle_bone) || randomint(4) == 0)
       self pick_slowgun_sizzle_bone();
 
-    if(isdefined(level._effect[sizzle]))
+    if(isDefined(level._effect[sizzle]))
       playfxontag(localclientnum, level._effect[sizzle], self, self.slowgun_sizzle_bone);
 
     wait 0.1;
@@ -193,17 +194,18 @@ show_anim_rate(pos, dsquared) {
 }
 
 show_anim_rates() {
-  while (true) {
+  while(true) {
     if(getdvarint(#"_id_61A711C2") == 3) {
       lp = getlocalplayers()[0];
       ents = getentarray(0);
 
       foreach(ent in ents) {
-        if(isdefined(ent) && (ent isplayer() || isdefined(ent._eyearray) && isdefined(ent._eyearray[0])) && ent isalive())
+        if(isDefined(ent) && (ent isplayer() || isDefined(ent._eyearray) && isDefined(ent._eyearray[0])) && ent isalive())
           ent show_anim_rate(lp.origin, 360000);
       }
     }
 
     wait 0.05;
   }
+
 }

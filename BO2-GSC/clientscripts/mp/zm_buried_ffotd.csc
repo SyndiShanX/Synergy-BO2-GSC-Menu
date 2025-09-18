@@ -15,15 +15,11 @@ main_start() {
   level thread buried_watch_for_fov_change();
 }
 
-main_end() {
-
-}
-
 buried_watch_for_fov_change() {
   self endon("disconnect");
   previous_fov = getdvarfloat(#"cg_fov");
 
-  while (true) {
+  while(true) {
     current_fov = getdvarfloat(#"cg_fov");
 
     if(current_fov != previous_fov) {

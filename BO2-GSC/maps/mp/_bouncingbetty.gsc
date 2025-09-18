@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\_bouncingbetty.gsc
-***************************************/
+**************************************/
 
 #include maps\mp\_utility;
 #include common_scripts\utility;
@@ -77,8 +77,8 @@ killminemoveronpickup() {
 }
 
 killminemover() {
-  if(isdefined(self.minemover)) {
-    if(isdefined(self.minemover.killcament))
+  if(isDefined(self.minemover)) {
+    if(isDefined(self.minemover.killcament))
       self.minemover.killcament delete();
 
     self.minemover delete();
@@ -86,8 +86,8 @@ killminemover() {
 }
 
 bouncingbettydetonate(attacker, weaponname) {
-  if(isdefined(weaponname)) {
-    if(isdefined(attacker)) {
+  if(isDefined(weaponname)) {
+    if(isDefined(attacker)) {
       if(self.owner isenemyplayer(attacker)) {
         attacker maps\mp\_challenges::destroyedexplosive(weaponname);
         maps\mp\_scoreevents::processscoreevent("destroyed_bouncingbetty", attacker, self.owner, weaponname);
@@ -95,7 +95,7 @@ bouncingbettydetonate(attacker, weaponname) {
     }
 
     self bouncingbettydestroyed();
-  } else if(isdefined(self.minemover)) {
+  } else if(isDefined(self.minemover)) {
     self.minemover setmodel(self.model);
     self.minemover thread bouncingbettyjumpandexplode();
     self delete();
@@ -107,11 +107,11 @@ bouncingbettydestroyed() {
   playfx(level.bettydestroyedfx, self.origin);
   playsoundatposition("dst_equipment_destroy", self.origin);
 
-  if(isdefined(self.trigger))
+  if(isDefined(self.trigger))
     self.trigger delete();
 
-  if(isdefined(self.minemover)) {
-    if(isdefined(self.minemover.killcament))
+  if(isDefined(self.minemover)) {
+    if(isDefined(self.minemover.killcament))
       self.minemover.killcament delete();
 
     self.minemover delete();
@@ -133,13 +133,13 @@ bouncingbettyjumpandexplode() {
 }
 
 mineexplode() {
-  if(!isdefined(self) || !isdefined(self.owner)) {
+  if(!isDefined(self) || !isDefined(self.owner)) {
     return;
   }
   self playsound("fly_betty_explo");
   wait 0.05;
 
-  if(!isdefined(self) || !isdefined(self.owner)) {
+  if(!isDefined(self) || !isDefined(self.owner)) {
     return;
   }
   self hide();
@@ -147,10 +147,10 @@ mineexplode() {
   playfx(level.bettyexplosionfx, self.origin);
   wait 0.2;
 
-  if(!isdefined(self) || !isdefined(self.owner)) {
+  if(!isDefined(self) || !isDefined(self.owner)) {
     return;
   }
-  if(isdefined(self.trigger))
+  if(isDefined(self.trigger))
     self.trigger delete();
 
   self.killcament delete();

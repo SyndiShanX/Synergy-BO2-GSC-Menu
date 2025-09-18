@@ -20,5 +20,6 @@ main() {
   thread clientscripts\mp\mp_slums_amb::main();
   setsaveddvar("compassmaxrange", "2100");
   waitforclient(0);
+
   println("*** Client : mp_slums running...");
 }

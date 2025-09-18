@@ -62,7 +62,7 @@ watchforexplode(owner) {
 }
 
 checkfortracking(origin) {
-  if(isdefined(self.owner) == 0) {
+  if(isDefined(self.owner) == 0) {
     return;
   }
   players = level.players;
@@ -82,17 +82,17 @@ checkfortracking(origin) {
 }
 
 tracksensorgrenadevictim(victim) {
-  if(!isdefined(self.sensorgrenadedata))
+  if(!isDefined(self.sensorgrenadedata))
     self.sensorgrenadedata = [];
 
-  if(!isdefined(self.sensorgrenadedata[victim.clientid]))
+  if(!isDefined(self.sensorgrenadedata[victim.clientid]))
     self.sensorgrenadedata[victim.clientid] = gettime();
 }
 
 isplayertracked(player, time) {
   playertracked = 0;
 
-  if(isdefined(self.sensorgrenadedata) && isdefined(self.sensorgrenadedata[player.clientid])) {
+  if(isDefined(self.sensorgrenadedata) && isDefined(self.sensorgrenadedata[player.clientid])) {
     if(self.sensorgrenadedata[player.clientid] + 10000 > time)
       playertracked = 1;
   }
@@ -106,7 +106,7 @@ sensorgrenadedestroyed(attacker, weaponname) {
   if(!from_emp)
     playfx(level._equipment_explode_fx, self.origin);
 
-  if(isdefined(attacker)) {
+  if(isDefined(attacker)) {
     if(self.owner isenemyplayer(attacker)) {
       attacker maps\mp\_challenges::destroyedequipment(weaponname);
       maps\mp\_scoreevents::processscoreevent("destroyed_motion_sensor", attacker, self.owner, weaponname);
@@ -126,12 +126,12 @@ watchsensorgrenadedamage(watcher) {
   if(!self maps\mp\_utility::ishacked())
     self.damagetaken = 0;
 
-  while (true) {
+  while(true) {
     self.maxhealth = 100000;
     self.health = self.maxhealth;
     self waittill("damage", damage, attacker, direction, point, type, tagname, modelname, partname, weaponname, idflags);
 
-    if(!isdefined(attacker) || !isplayer(attacker)) {
+    if(!isDefined(attacker) || !isplayer(attacker)) {
       continue;
     }
     if(level.teambased && isplayer(attacker)) {
@@ -139,7 +139,7 @@ watchsensorgrenadedamage(watcher) {
         continue;
     }
 
-    if(isdefined(weaponname)) {
+    if(isDefined(weaponname)) {
       switch (weaponname) {
         case "concussion_grenade_mp":
         case "flash_grenade_mp":

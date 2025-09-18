@@ -1,7 +1,7 @@
-/**********************************************************
+/***************************************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\gametypes_zm\_globallogic_defaults.gsc
-**********************************************************/
+***************************************************************/
 
 #include common_scripts\utility;
 #include maps\mp\_utility;
@@ -32,16 +32,16 @@ default_onforfeit(team) {
   wait 10.0;
   endreason = & "";
 
-  if(!isdefined(team)) {
+  if(!isDefined(team)) {
     setdvar("ui_text_endreason", game["strings"]["players_forfeited"]);
     endreason = game["strings"]["players_forfeited"];
     winner = level.players[0];
-  } else if(isdefined(level.teams[team])) {
+  } else if(isDefined(level.teams[team])) {
     endreason = game["strings"][team + "_forfeited"];
     setdvar("ui_text_endreason", endreason);
     winner = getwinningteamfromloser(team);
   } else {
-    assert(isdefined(team), "Forfeited team is not defined");
+    assert(isDefined(team), "Forfeited team is not defined");
     assert(0, "Forfeited team " + team + " is not allies or axis");
     winner = "tie";
   }
@@ -57,7 +57,7 @@ default_onforfeit(team) {
 }
 
 default_ondeadevent(team) {
-  if(isdefined(level.teams[team])) {
+  if(isDefined(level.teams[team])) {
     eliminatedstring = game["strings"][team + "_eliminated"];
     iprintln(eliminatedstring);
     makedvarserverinfo("ui_text_endreason", eliminatedstring);
@@ -78,7 +78,6 @@ default_ondeadevent(team) {
 }
 
 default_onalivecountchange(team) {
-
 }
 
 default_onroundendgame(winner) {
@@ -89,20 +88,20 @@ default_ononeleftevent(team) {
   if(!level.teambased) {
     winner = maps\mp\gametypes_zm\_globallogic_score::gethighestscoringplayer();
 
-    if(isdefined(winner))
+    if(isDefined(winner))
       logstring("last one alive, win: " + winner.name);
     else
       logstring("last one alive, win: unknown");
 
     thread maps\mp\gametypes_zm\_globallogic::endgame(winner, & "MP_ENEMIES_ELIMINATED");
   } else {
-    for (index = 0; index < level.players.size; index++) {
+    for(index = 0; index < level.players.size; index++) {
       player = level.players[index];
 
       if(!isalive(player)) {
         continue;
       }
-      if(!isdefined(player.pers["team"]) || player.pers["team"] != team) {
+      if(!isDefined(player.pers["team"]) || player.pers["team"] != team) {
         continue;
       }
       player maps\mp\gametypes_zm\_globallogic_audio::leaderdialogonplayer("sudden_death");
@@ -119,7 +118,7 @@ default_ontimelimit() {
   } else {
     winner = maps\mp\gametypes_zm\_globallogic_score::gethighestscoringplayer();
 
-    if(isdefined(winner))
+    if(isDefined(winner))
       logstring("time limit, win: " + winner.name);
     else
       logstring("time limit, tie");
@@ -142,7 +141,7 @@ default_onscorelimit() {
   } else {
     winner = maps\mp\gametypes_zm\_globallogic_score::gethighestscoringplayer();
 
-    if(isdefined(winner))
+    if(isDefined(winner))
       logstring("scorelimit, win: " + winner.name);
     else
       logstring("scorelimit, tie");
@@ -155,7 +154,7 @@ default_onscorelimit() {
 }
 
 default_onspawnspectator(origin, angles) {
-  if(isdefined(origin) && isdefined(angles)) {
+  if(isDefined(origin) && isDefined(angles)) {
     self spawn(origin, angles);
     return;
   }
@@ -172,10 +171,11 @@ default_onspawnintermission() {
   spawnpoints = getentarray(spawnpointname, "classname");
   spawnpoint = spawnpoints[0];
 
-  if(isdefined(spawnpoint))
+  if(isDefined(spawnpoint))
     self spawn(spawnpoint.origin, spawnpoint.angles);
   else {
     maps\mp\_utility::error("NO " + spawnpointname + " SPAWNPOINTS IN MAP");
+
   }
 }
 

@@ -33,8 +33,8 @@ createsatchelwatcher() {
 satcheldetonate(attacker, weaponname) {
   from_emp = maps\mp\killstreaks\_emp::isempkillstreakweapon(weaponname);
 
-  if(!isdefined(from_emp) || !from_emp) {
-    if(isdefined(attacker)) {
+  if(!isDefined(from_emp) || !from_emp) {
+    if(isDefined(attacker)) {
       if(self.owner isenemyplayer(attacker)) {
         attacker maps\mp\_challenges::destroyedexplosive(weaponname);
         maps\mp\_scoreevents::processscoreevent("destroyed_c4", attacker, self.owner, weaponname);

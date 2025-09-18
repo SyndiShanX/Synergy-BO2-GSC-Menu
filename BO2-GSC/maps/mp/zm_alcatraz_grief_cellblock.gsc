@@ -17,10 +17,6 @@
 #include maps\mp\zm_alcatraz_traps;
 #include maps\mp\gametypes_zm\zmeat;
 
-precache() {
-
-}
-
 zgrief_preinit() {
   registerclientfield("toplayer", "meat_stink", 1, 1, "int");
   level.givecustomloadout = maps\mp\zm_prison::givecustomloadout;
@@ -47,7 +43,7 @@ alcatraz_grief_laststand_weapon_save(einflictor, attacker, idamage, smeansofdeat
     primary_weapons_that_can_be_taken = [];
     primaryweapons = self getweaponslistprimaries();
 
-    for (i = 0; i < primaryweapons.size; i++) {
+    for(i = 0; i < primaryweapons.size; i++) {
       if(maps\mp\zombies\_zm_weapons::is_weapon_included(primaryweapons[i]) || maps\mp\zombies\_zm_weapons::is_weapon_upgraded(primaryweapons[i]))
         primary_weapons_that_can_be_taken[primary_weapons_that_can_be_taken.size] = primaryweapons[i];
     }
@@ -65,20 +61,20 @@ alcatraz_grief_laststand_weapon_save(einflictor, attacker, idamage, smeansofdeat
   self.grief_savedweapon_currentweapon = self getcurrentweapon();
   self.grief_savedweapon_grenades = self get_player_lethal_grenade();
 
-  if(isdefined(self.grief_savedweapon_grenades))
+  if(isDefined(self.grief_savedweapon_grenades))
     self.grief_savedweapon_grenades_clip = self getweaponammoclip(self.grief_savedweapon_grenades);
 
   self.grief_savedweapon_tactical = self get_player_tactical_grenade();
 
-  if(isdefined(self.grief_savedweapon_tactical))
+  if(isDefined(self.grief_savedweapon_tactical))
     self.grief_savedweapon_tactical_clip = self getweaponammoclip(self.grief_savedweapon_tactical);
 
-  for (i = 0; i < self.grief_savedweapon_weapons.size; i++) {
+  for(i = 0; i < self.grief_savedweapon_weapons.size; i++) {
     self.grief_savedweapon_weaponsammo_clip[i] = self getweaponammoclip(self.grief_savedweapon_weapons[i]);
     self.grief_savedweapon_weaponsammo_stock[i] = self getweaponammostock(self.grief_savedweapon_weapons[i]);
   }
 
-  if(isdefined(self.hasriotshield) && self.hasriotshield)
+  if(isDefined(self.hasriotshield) && self.hasriotshield)
     self.grief_hasriotshield = 1;
 
   if(self hasweapon("claymore_zm")) {
@@ -98,7 +94,7 @@ give_team_characters() {
   self detachall();
   self set_player_is_female(0);
 
-  if(!isdefined(self.characterindex)) {
+  if(!isDefined(self.characterindex)) {
     self.characterindex = 1;
 
     if(self.team == "axis")
@@ -156,7 +152,7 @@ main() {
   a_t_door_triggers = getentarray("zombie_door", "targetname");
 
   foreach(trigger in a_t_door_triggers) {
-    if(isdefined(trigger.script_flag)) {
+    if(isDefined(trigger.script_flag)) {
       if(trigger.script_flag == "activate_cellblock_citadel" || trigger.script_flag == "activate_shower_room" || trigger.script_flag == "activate_cellblock_infirmary" || trigger.script_flag == "activate_infirmary") {
         trigger delete();
         continue;
@@ -165,7 +161,7 @@ main() {
       if(trigger.script_flag == "activate_cafeteria" || trigger.script_flag == "activate_cellblock_east" || trigger.script_flag == "activate_cellblock_west" || trigger.script_flag == "activate_cellblock_barber" || trigger.script_flag == "activate_cellblock_gondola" || trigger.script_flag == "activate_cellblock_east_west" || trigger.script_flag == "activate_warden_office")
         continue;
       else {
-        if(isdefined(trigger.target)) {
+        if(isDefined(trigger.target)) {
           str_target = trigger.target;
           a_door_and_clip = getentarray(str_target, "targetname");
 
@@ -181,7 +177,7 @@ main() {
   a_t_doors = getentarray("zombie_door", "targetname");
 
   foreach(t_door in a_t_doors) {
-    if(isdefined(t_door.script_flag)) {
+    if(isDefined(t_door.script_flag)) {
       if(t_door.script_flag == "activate_cellblock_east_west" || t_door.script_flag == "activate_cellblock_barber")
         t_door maps\mp\zombies\_zm_blockers::door_opened(self.zombie_cost);
     }
@@ -201,15 +197,15 @@ main() {
   a_str_zones[9] = "zone_cellblock_west_gondola";
 
   foreach(barrier in zbarriers) {
-    if(isdefined(barrier.script_noteworthy)) {
+    if(isDefined(barrier.script_noteworthy)) {
       if(barrier.script_noteworthy == "cafe_chest_zbarrier" || barrier.script_noteworthy == "start_chest_zbarrier")
         continue;
     }
 
     b_delete_barrier = 1;
 
-    if(isdefined(barrier.script_string)) {
-      for (i = 0; i < a_str_zones.size; i++) {
+    if(isDefined(barrier.script_string)) {
+      for(i = 0; i < a_str_zones.size; i++) {
         if(barrier.script_string == a_str_zones[i]) {
           b_delete_barrier = 0;
           break;
@@ -298,7 +294,7 @@ main() {
   m_plane_craftable = getent("plane_craftable", "targetname");
   m_plane_craftable delete();
 
-  for (i = 1; i <= 5; i++) {
+  for(i = 1; i <= 5; i++) {
     m_key_lock = getent("masterkey_lock_" + i, "targetname");
     m_key_lock delete();
   }
@@ -312,7 +308,7 @@ main() {
   m_nixie_brush = getent("nixie_tube_weaponclip", "targetname");
   m_nixie_brush delete();
 
-  for (i = 1; i <= 3; i++) {
+  for(i = 1; i <= 3; i++) {
     m_nixie_tube = getent("nixie_tube_" + i, "targetname");
     m_nixie_tube delete();
   }
@@ -336,7 +332,7 @@ main() {
   fake_plane_part = getent("fake_veh_t6_dlc_zombie_part_control", "targetname");
   fake_plane_part delete();
 
-  for (i = 1; i <= 3; i++) {
+  for(i = 1; i <= 3; i++) {
     m_generator = getent("generator_panel_" + i, "targetname");
     m_generator delete();
   }
@@ -349,7 +345,7 @@ main() {
   e_playerclip = getent("electric_chair_playerclip", "targetname");
   e_playerclip delete();
 
-  for (i = 1; i <= 4; i++) {
+  for(i = 1; i <= 4; i++) {
     t_use = getent("trigger_electric_chair_" + i, "targetname");
     t_use delete();
     m_chair = getent("electric_chair_" + i, "targetname");
@@ -385,6 +381,7 @@ main() {
   wait_network_frame();
   level notify("Pack_A_Punch_on");
   wait_network_frame();
+
   level thread maps\mp\gametypes_zm\zmeat::spawn_level_meat_manager();
 }
 
@@ -396,7 +393,7 @@ enemy_location_override(zombie, enemy) {
   location = enemy.origin;
 
   if(is_true(self.reroute)) {
-    if(isdefined(self.reroute_origin))
+    if(isDefined(self.reroute_origin))
       location = self.reroute_origin;
   }
 
@@ -409,7 +406,7 @@ magicbox_face_spawn() {
   if(!is_gametype_active("zgrief")) {
     return;
   }
-  while (true) {
+  while(true) {
     self waittill("user_grabbed_weapon");
 
     if(randomint(50000) == 115) {
@@ -437,7 +434,7 @@ turn_afterlife_interact_on() {
     return;
   }
   if(self.script_string == "electric_cherry_on" || self.script_string == "sleight_on" || self.script_string == "wires_admin_door") {
-    if(!isdefined(level.shockbox_anim)) {
+    if(!isDefined(level.shockbox_anim)) {
       level.shockbox_anim["on"] = % fxanim_zom_al_shock_box_on_anim;
       level.shockbox_anim["off"] = % fxanim_zom_al_shock_box_off_anim;
     }

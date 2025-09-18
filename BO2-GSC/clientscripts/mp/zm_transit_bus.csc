@@ -7,13 +7,8 @@
 #include clientscripts\mp\zombies\_zm_utility;
 #include clientscripts\mp\_music;
 
-main() {
-
-}
-
 bus_spawned(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump) {
   if(newval) {
-
   }
 }
 
@@ -30,56 +25,55 @@ init_animtree() {
 }
 
 bus_interior_lights(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump) {
-
 }
 
 bus_flashing_lights(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump) {
-  if(!isdefined(self.flashinglights))
+  if(!isDefined(self.flashinglights))
     self.flashinglights = [];
 
   if(newval) {
-    if(isdefined(self.flashinglights[localclientnum]))
+    if(isDefined(self.flashinglights[localclientnum]))
       stopfx(localclientnum, self.flashinglights[localclientnum]);
 
     self.flashinglights[localclientnum] = playfxontag(localclientnum, level._effect["fx_emergencylight"], self, "tag_flashing_lights");
-  } else if(isdefined(self.flashinglights[localclientnum])) {
+  } else if(isDefined(self.flashinglights[localclientnum])) {
     stopfx(localclientnum, self.flashinglights[localclientnum]);
     self.flashinglights[localclientnum] = undefined;
   }
 }
 
 bus_head_lights(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump) {
-  if(!isdefined(self.headlights))
+  if(!isDefined(self.headlights))
     self.headlights = [];
 
-  if(!isdefined(self.headlights[localclientnum]))
+  if(!isDefined(self.headlights[localclientnum]))
     self.headlights[localclientnum] = spawnstruct();
 
   if(newval) {
-    if(isdefined(self.headlights[localclientnum].headlight))
+    if(isDefined(self.headlights[localclientnum].headlight))
       stopfx(localclientnum, self.headlights[localclientnum].headlight);
 
-    if(isdefined(self.headlights[localclientnum].headlightslensflare_l))
+    if(isDefined(self.headlights[localclientnum].headlightslensflare_l))
       stopfx(localclientnum, self.headlights[localclientnum].headlightslensflare_l);
 
-    if(isdefined(self.headlights[localclientnum].headlightslensflare_r))
+    if(isDefined(self.headlights[localclientnum].headlightslensflare_r))
       stopfx(localclientnum, self.headlights[localclientnum].headlightslensflare_r);
 
     self.headlights[localclientnum].headlight = playfxontag(localclientnum, level._effect["fx_headlight"], self, "tag_headlights");
     self.headlights[localclientnum].headlightslensflare_l = playfxontag(localclientnum, level._effect["fx_headlight_lenflares"], self, "Tag_headlight_left");
     self.headlights[localclientnum].headlightslensflare_r = playfxontag(localclientnum, level._effect["fx_headlight_lenflares"], self, "Tag_headlight_right");
   } else {
-    if(isdefined(self.headlights[localclientnum].headlight)) {
+    if(isDefined(self.headlights[localclientnum].headlight)) {
       stopfx(localclientnum, self.headlights[localclientnum].headlight);
       self.headlights[localclientnum].headlight = undefined;
     }
 
-    if(isdefined(self.headlights[localclientnum].headlightslensflare_l)) {
+    if(isDefined(self.headlights[localclientnum].headlightslensflare_l)) {
       stopfx(localclientnum, self.headlights[localclientnum].headlightslensflare_l);
       self.headlights[localclientnum].headlightslensflare_l = undefined;
     }
 
-    if(isdefined(self.headlights[localclientnum].headlightslensflare_r)) {
+    if(isDefined(self.headlights[localclientnum].headlightslensflare_r)) {
       stopfx(localclientnum, self.headlights[localclientnum].headlightslensflare_r);
       self.headlights[localclientnum].headlightslensflare_r = undefined;
     }
@@ -87,45 +81,45 @@ bus_head_lights(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname
 }
 
 bus_brake_lights(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump) {
-  if(!isdefined(self.brakelights))
+  if(!isDefined(self.brakelights))
     self.brakelights = [];
 
   if(newval) {
-    if(isdefined(self.brakelights[localclientnum]))
+    if(isDefined(self.brakelights[localclientnum]))
       stopfx(localclientnum, self.brakelights[localclientnum]);
 
     self.brakelights[localclientnum] = playfxontag(localclientnum, level._effect["fx_brakelight"], self, "tag_brakelights");
-  } else if(isdefined(self.brakelights[localclientnum])) {
+  } else if(isDefined(self.brakelights[localclientnum])) {
     stopfx(localclientnum, self.brakelights[localclientnum]);
     self.brakelights[localclientnum] = undefined;
   }
 }
 
 bus_turnal_signal_right_lights(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump) {
-  if(!isdefined(self.rightlights))
+  if(!isDefined(self.rightlights))
     self.rightlights = [];
 
   if(newval) {
-    if(isdefined(self.rightlights[localclientnum]))
+    if(isDefined(self.rightlights[localclientnum]))
       stopfx(localclientnum, self.rightlights[localclientnum]);
 
     self.rightlights[localclientnum] = playfxontag(localclientnum, level._effect["fx_turn_signal_right"], self, "tag_turnsignal_right");
-  } else if(isdefined(self.rightlights[localclientnum])) {
+  } else if(isDefined(self.rightlights[localclientnum])) {
     stopfx(localclientnum, self.rightlights[localclientnum]);
     self.rightlights[localclientnum] = undefined;
   }
 }
 
 bus_turnal_signal_left_lights(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump) {
-  if(!isdefined(self.leftlights))
+  if(!isDefined(self.leftlights))
     self.leftlights = [];
 
   if(newval) {
-    if(isdefined(self.leftlights[localclientnum]))
+    if(isDefined(self.leftlights[localclientnum]))
       stopfx(localclientnum, self.leftlights[localclientnum]);
 
     self.leftlights[localclientnum] = playfxontag(localclientnum, level._effect["fx_turn_signal_left"], self, "tag_turnsignal_left");
-  } else if(isdefined(self.leftlights[localclientnum])) {
+  } else if(isDefined(self.leftlights[localclientnum])) {
     stopfx(localclientnum, self.leftlights[localclientnum]);
     self.leftlights[localclientnum] = undefined;
   }

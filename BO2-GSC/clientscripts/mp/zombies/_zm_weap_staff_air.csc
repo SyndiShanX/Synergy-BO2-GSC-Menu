@@ -1,7 +1,7 @@
-/***********************************************************
+/*****************************************************************
  * Decompiled and Edited by SyndiShanX
  * Script: clientscripts\mp\zombies\_zm_weap_staff_air.csc
-***********************************************************/
+*****************************************************************/
 
 #include clientscripts\mp\_utility;
 #include clientscripts\mp\_fx;
@@ -38,12 +38,12 @@ ragdoll_impact_watch(localclientnum) {
   waitrealtime(waittime);
   firstloop = 1;
 
-  while (true) {
+  while(true) {
     vel = self.origin - prevorigin;
     speed = length(vel);
 
     if(speed < prevspeed * 0.5 && prevspeed > gibspeed * waittime) {
-      if(isdefined(level._effect["zombie_guts_explosion"]) && is_mature()) {
+      if(isDefined(level._effect["zombie_guts_explosion"]) && is_mature()) {
         where = self gettagorigin("J_SpineLower");
         playfx(localclientnum, level._effect["zombie_guts_explosion"], where);
       }
@@ -68,7 +68,7 @@ air_staff_launch(localclientnum, oldval, newval, bnewent, binitialsnap, fieldnam
   n_verticality = randomfloatrange(0.05, 0.35);
   v_whirlwind = level.whirlwind_pos[localclientnum];
 
-  if(isdefined(v_whirlwind)) {
+  if(isDefined(v_whirlwind)) {
     dist_sq = distancesquared(v_whirlwind, self.origin);
 
     if(dist_sq < 22500) {
@@ -95,19 +95,19 @@ whirlwind_fx(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, b
     level.whirlwind_pos[localclientnum] = self.origin;
     level.whirlwind_fx = playfxontag(localclientnum, level._effect["whirlwind"], self, "tag_origin");
 
-    if(!isdefined(self.sndent)) {
+    if(!isDefined(self.sndent)) {
       self.sndent = spawn(0, self.origin, "script_origin");
       self.sndent playloopsound("wpn_airstaff_tornado", 1);
       self.sndent thread clientscripts\mp\zm_tomb::snddemojumpmonitor();
     }
   } else {
-    if(isdefined(level.whirlwind_fx)) {
+    if(isDefined(level.whirlwind_fx)) {
       self.is_active = 0;
       level.whirlwind_pos[localclientnum] = undefined;
       stopfx(localclientnum, level.whirlwind_fx);
     }
 
-    if(isdefined(self.sndent)) {
+    if(isDefined(self.sndent)) {
       self.sndent stoploopsound(1.5);
       self.sndent delete();
       self.sndent = undefined;

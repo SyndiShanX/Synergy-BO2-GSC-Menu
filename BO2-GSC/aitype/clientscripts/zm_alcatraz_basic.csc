@@ -1,7 +1,7 @@
-/******************************************************
+/*******************************************************
  * Decompiled and Edited by SyndiShanX
  * Script: aitype\clientscripts\zm_alcatraz_basic.csc
-******************************************************/
+*******************************************************/
 
 #include character\clientscripts\c_zom_guard;
 #include character\clientscripts\c_zom_inmate1;

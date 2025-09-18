@@ -25,7 +25,6 @@ init_animtree() {
 }
 
 onprecachegametype() {
-
 }
 
 onstartgametype() {
@@ -38,9 +37,9 @@ play_meat_glow(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname,
     return;
   }
   if(newval) {
-    if(!isdefined(self._meat_fx))
+    if(!isDefined(self._meat_fx))
       self._meat_fx = playfxontag(localclientnum, level._effect["meat_glow3p"], self, "tag_weapon_right");
-  } else if(isdefined(self._meat_fx)) {
+  } else if(isDefined(self._meat_fx)) {
     deletefx(localclientnum, self._meat_fx);
     self._meat_fx = undefined;
   }
@@ -48,9 +47,9 @@ play_meat_glow(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname,
 
 play_ring_meatglow(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump) {
   if(newval) {
-    if(!isdefined(self._glow_fx))
+    if(!isDefined(self._glow_fx))
       self._glow_fx = playfxontag(localclientnum, level._effect["meat_glow"], self, "tag_origin");
-  } else if(isdefined(self._glow_fx)) {
+  } else if(isDefined(self._glow_fx)) {
     deletefx(localclientnum, self._glow_fx);
     self._glow_fx = undefined;
   }
@@ -58,9 +57,9 @@ play_ring_meatglow(localclientnum, oldval, newval, bnewent, binitialsnap, fieldn
 
 play_ring_glow(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump) {
   if(newval) {
-    if(!isdefined(self._glow_fx))
+    if(!isDefined(self._glow_fx))
       self._glow_fx = playfxontag(localclientnum, level._effect["ring_glow"], self, "tag_origin");
-  } else if(isdefined(self._glow_fx)) {
+  } else if(isDefined(self._glow_fx)) {
     deletefx(localclientnum, self._glow_fx);
     self._glow_fx = undefined;
   }

@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\_empgrenade.gsc
-***************************************/
+**************************************/
 
 #include maps\mp\_utility;
 #include common_scripts\utility;
@@ -13,7 +13,7 @@ init() {
 }
 
 onplayerconnect() {
-  for (;;) {
+  for(;;) {
     level waittill("connected", player);
     player thread onplayerspawned();
   }
@@ -22,7 +22,7 @@ onplayerconnect() {
 onplayerspawned() {
   self endon("disconnect");
 
-  for (;;) {
+  for(;;) {
     self waittill("spawned_player");
     self thread monitorempgrenade();
   }
@@ -33,7 +33,7 @@ monitorempgrenade() {
   self endon("death");
   self.empendtime = 0;
 
-  while (true) {
+  while(true) {
     self waittill("emp_grenaded", attacker);
 
     if(!isalive(self) || self hasperk("specialty_immuneemp")) {
@@ -41,9 +41,9 @@ monitorempgrenade() {
     }
     hurtvictim = 1;
     hurtattacker = 0;
-    assert(isdefined(self.team));
+    assert(isDefined(self.team));
 
-    if(level.teambased && isdefined(attacker) && isdefined(attacker.team) && attacker.team == self.team && attacker != self) {
+    if(level.teambased && isDefined(attacker) && isDefined(attacker.team) && attacker.team == self.team && attacker != self) {
       if(level.friendlyfire == 0)
         continue;
       else if(level.friendlyfire == 1) {
@@ -58,10 +58,10 @@ monitorempgrenade() {
       }
     }
 
-    if(hurtvictim && isdefined(self))
+    if(hurtvictim && isDefined(self))
       self thread applyemp(attacker);
 
-    if(hurtattacker && isdefined(attacker))
+    if(hurtattacker && isDefined(attacker))
       attacker thread applyemp(attacker);
   }
 }
@@ -74,7 +74,7 @@ applyemp(attacker) {
   wait 0.05;
 
   if(self == attacker) {
-    if(isdefined(self.empendtime)) {
+    if(isDefined(self.empendtime)) {
       emp_time_left_ms = self.empendtime - gettime();
 
       if(emp_time_left_ms > 1000)
@@ -108,7 +108,7 @@ empgrenadedeathwaiter() {
 checktoturnoffemp() {
   self.empgrenaded = 0;
 
-  if(level.teambased && maps\mp\killstreaks\_emp::emp_isteamemped(self.team) || !level.teambased && isdefined(level.empplayer) && level.empplayer != self) {
+  if(level.teambased && maps\mp\killstreaks\_emp::emp_isteamemped(self.team) || !level.teambased && isDefined(level.empplayer) && level.empplayer != self) {
     return;
   }
   self setempjammed(0);
@@ -119,7 +119,7 @@ emprumbleloop(duration) {
   self notify("emp_rumble_loop");
   goaltime = gettime() + duration * 1000;
 
-  while (gettime() < goaltime) {
+  while(gettime() < goaltime) {
     self playrumbleonentity("damage_heavy");
     wait 0.05;
   }

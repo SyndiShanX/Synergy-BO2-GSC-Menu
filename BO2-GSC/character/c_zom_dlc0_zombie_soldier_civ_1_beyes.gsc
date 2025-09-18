@@ -1,7 +1,7 @@
-/***************************************************************
+/*************************************************************************
  * Decompiled and Edited by SyndiShanX
  * Script: character\c_zom_dlc0_zombie_soldier_civ_1_beyes.gsc
-***************************************************************/
+*************************************************************************/
 
 #include codescripts\character;
 #include xmodelalias\c_zom_dlc0_zom_head_blueeyes_als;

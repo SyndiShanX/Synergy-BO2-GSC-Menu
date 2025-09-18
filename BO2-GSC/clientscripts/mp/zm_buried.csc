@@ -175,8 +175,8 @@ player_flashlight_flicker_update(life_left_frac) {
 
 flashlight_toggle(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump) {
   if(is_true(0)) {
-    if(self isplayer() && self islocalplayer() && !isdemoplaying() && isdefined(self getlocalclientnumber()) && localclientnum == self getlocalclientnumber()) {
-      if(!isdefined(self.sndlightent)) {
+    if(self isplayer() && self islocalplayer() && !isdemoplaying() && isDefined(self getlocalclientnumber()) && localclientnum == self getlocalclientnumber()) {
+      if(!isDefined(self.sndlightent)) {
         self.sndlightent = spawn(0, self.origin, "script_origin");
         self.sndlightent linkto(self, "tag_origin");
         self thread snddeletelightent(self.sndlightent);
@@ -202,7 +202,7 @@ flashlight_toggle(localclientnum, oldval, newval, bnewent, binitialsnap, fieldna
 snddeletelightent(ent) {
   self waittill_any("disconnect", "player_remove_flashlight");
 
-  if(isdefined(self)) {
+  if(isDefined(self)) {
     self.sndlightent delete();
     self.sndlightent = undefined;
   } else
@@ -212,7 +212,7 @@ snddeletelightent(ent) {
 kill_3rd_person_flashlight(localclientnum) {
   sgen = self getentitynumber();
 
-  if(isdefined(level.flashlight_fx[sgen])) {
+  if(isDefined(level.flashlight_fx[sgen])) {
     stopfx(localclientnum, level.flashlight_fx[sgen]);
     level.flashlight_fx[sgen] = undefined;
   }
@@ -270,7 +270,7 @@ start_3rd_person_flashlight(localclientnum, power_frac) {
 set_flashlight_fx(localclientnum, flashlight_fx) {
   sgen = self getentitynumber();
 
-  if(isdefined(level.flashlight_fx[sgen])) {
+  if(isDefined(level.flashlight_fx[sgen])) {
     stopfx(localclientnum, level.flashlight_fx[sgen]);
     level.flashlight_fx[sgen] = undefined;
   }
@@ -283,15 +283,15 @@ grab_generator_light_array() {
   level.generator_lights_array = [];
 
   foreach(light in lights) {
-    if(isdefined(light.script_mixer_event) && light.script_mixer_event == "generator_light") {
+    if(isDefined(light.script_mixer_event) && light.script_mixer_event == "generator_light") {
       level.generator_lights_array[level.generator_lights_array.size] = light;
 
-      if(isdefined(light.script_light2_intensity))
+      if(isDefined(light.script_light2_intensity))
         light.original_rhs_intensity = light.script_light2_intensity;
       else
         light.original_rhs_intensity = light.lights[0] getlightintensity();
 
-      if(isdefined(light.script_light2_color)) {
+      if(isDefined(light.script_light2_color)) {
         light.original_rhs_color = light.script_light2_color;
         continue;
       }
@@ -305,14 +305,14 @@ make_generator_lights_flicker_lights() {
   splitscreenhost = 0;
   players = getlocalplayers();
 
-  for (i = 0; i < players.size; i++) {
+  for(i = 0; i < players.size; i++) {
     if(issplitscreenhost(i)) {
       splitscreenhost = i;
       break;
     }
   }
 
-  if(!isdefined(level.generator_lights_array))
+  if(!isDefined(level.generator_lights_array))
     grab_generator_light_array();
 
   foreach(light in level.generator_lights_array) {
@@ -338,14 +338,14 @@ restore_generator_lights_to_original_params() {
   splitscreenhost = 0;
   players = getlocalplayers();
 
-  for (i = 0; i < players.size; i++) {
+  for(i = 0; i < players.size; i++) {
     if(issplitscreenhost(i)) {
       splitscreenhost = i;
       break;
     }
   }
 
-  if(!isdefined(level.generator_lights_array))
+  if(!isDefined(level.generator_lights_array))
     grab_generator_light_array();
 
   foreach(light in level.generator_lights_array) {
@@ -389,7 +389,7 @@ generator_light_callback(localclientnum, oldval, newval, bnewent, binitialsnap, 
 }
 
 generator_light_color_callback(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump) {
-  if(!isdefined(level.generator_lights_array))
+  if(!isDefined(level.generator_lights_array))
     grab_generator_light_array();
 
   foreach(light in level.generator_lights_array) {
@@ -403,7 +403,7 @@ generator_light_color_callback(localclientnum, oldval, newval, bnewent, binitial
 }
 
 generator_light_lerp_callback(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump) {
-  if(!isdefined(level.generator_lights_array))
+  if(!isDefined(level.generator_lights_array))
     grab_generator_light_array();
 
   foreach(light in level.generator_lights_array) {
@@ -473,11 +473,9 @@ start_zombie_stuff() {
 }
 
 init_clientflag_variables() {
-
 }
 
 register_clientflag_callbacks() {
-
 }
 
 init_level_specific_wall_buy_fx() {
@@ -578,7 +576,6 @@ include_powerups() {
 }
 
 include_equipment_for_level() {
-
 }
 
 setup_personality_character_exerts() {
@@ -724,7 +721,7 @@ buried_watch_for_power() {
   if(is_true(level.createfx_enabled)) {
     return;
   }
-  for (looped_once = 0; 1; looped_once = 1) {
+  for(looped_once = 0; 1; looped_once = 1) {
     if(!level getclientfield("zombie_power_on")) {
       level.power_on = 0;
 
@@ -737,7 +734,7 @@ buried_watch_for_power() {
     level notify("power_controlled_light");
     players = getlocalplayers();
 
-    for (i = 0; i < players.size; i++)
+    for(i = 0; i < players.size; i++)
       level.current_fog = 2;
 
     level waittill_any("pwo", "ZPOff");
@@ -751,7 +748,7 @@ init_fog_vol_to_visionset() {
 }
 
 sndlightsfx(num) {
-  while (!isdefined(level.generator_lights_array))
+  while(!isDefined(level.generator_lights_array))
     wait 0.1;
 
   generator_origin = (-579, 32, 69);
@@ -789,7 +786,7 @@ sndlightsfx(num) {
 underground_lighting_callback(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump) {
   a_players = getlocalplayers();
 
-  if(isdefined(a_players) && a_players.size > 1) {
+  if(isDefined(a_players) && a_players.size > 1) {
     return;
   }
   if(newval) {
@@ -813,7 +810,7 @@ buried_sq_richtofen_player_eyes_stuhlinger(localclientnum, oldval, newval, bnewe
       return;
   }
 
-  if(isdefined(self.model) && issubstr(self.model, "reporter")) {
+  if(isDefined(self.model) && issubstr(self.model, "reporter")) {
     self.special_eyes = newval;
     self._eyeglow_fx_override = level._effect["player_possessed_eyes"];
     self._eyeglow_tag_override = "J_Head";

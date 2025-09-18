@@ -22,7 +22,7 @@ init() {
   level.usingscorestreaks = getdvarint(#"scr_scorestreaks") != 0;
   level.scorestreaksmaxstacking = getdvarint(#"scr_scorestreaks_maxstacking");
   level.maxinventoryscorestreaks = getdvarintdefault("scr_maxinventory_scorestreaks", 3);
-  level.usingrampage = !isdefined(level.usingscorestreaks) || !level.usingscorestreaks;
+  level.usingrampage = !isDefined(level.usingscorestreaks) || !level.usingscorestreaks;
   level.rampagebonusscale = getdvarfloat(#"scr_rampagebonusscale");
   level.ranktable = [];
   precacheshader("white");
@@ -42,16 +42,16 @@ init() {
   pid = 0;
   rid = 0;
 
-  for (pid = 0; pid <= level.maxprestige; pid++) {
-    for (rid = 0; rid <= level.maxrank; rid++)
+  for(pid = 0; pid <= level.maxprestige; pid++) {
+    for(rid = 0; rid <= level.maxrank; rid++)
       precacheshader(tablelookup("mp/rankIconTable.csv", 0, rid, pid + 1));
   }
 
   rankid = 0;
   rankname = tablelookup("mp/ranktable.csv", 0, rankid, 1);
-  assert(isdefined(rankname) && rankname != "");
+  assert(isDefined(rankname) && rankname != "");
 
-  while (isdefined(rankname) && rankname != "") {
+  while(isDefined(rankname) && rankname != "") {
     level.ranktable[rankid][1] = tablelookup("mp/ranktable.csv", 0, rankid, 1);
     level.ranktable[rankid][2] = tablelookup("mp/ranktable.csv", 0, rankid, 2);
     level.ranktable[rankid][3] = tablelookup("mp/ranktable.csv", 0, rankid, 3);
@@ -67,9 +67,9 @@ init() {
 
 initscoreinfo() {
   scoreinfotableid = getscoreeventtableid();
-  assert(isdefined(scoreinfotableid));
+  assert(isDefined(scoreinfotableid));
 
-  if(!isdefined(scoreinfotableid)) {
+  if(!isDefined(scoreinfotableid)) {
     return;
   }
   scorecolumn = getscoreeventcolumn(level.gametype);
@@ -84,7 +84,7 @@ initscoreinfo() {
   if(xpcolumn < 0) {
     return;
   }
-  for (row = 1; row < 512; row++) {
+  for(row = 1; row < 512; row++) {
     type = tablelookupcolumnforrow(scoreinfotableid, row, 0);
 
     if(type != "") {
@@ -108,12 +108,12 @@ initscoreinfo() {
         ismedal = 0;
         istring = tablelookupistring(scoreinfotableid, 0, type, 2);
 
-        if(isdefined(istring) && istring != & "")
+        if(isDefined(istring) && istring != & "")
           ismedal = 1;
 
         demobookmarkpriority = int(tablelookupcolumnforrow(scoreinfotableid, row, 6));
 
-        if(!isdefined(demobookmarkpriority))
+        if(!isDefined(demobookmarkpriority))
           demobookmarkpriority = 0;
 
         registerxp(type, xpvalue, addplayerstat, ismedal, demobookmarkpriority, row);
@@ -128,14 +128,14 @@ initscoreinfo() {
 }
 
 getrankxpcapped(inrankxp) {
-  if(isdefined(level.rankxpcap) && level.rankxpcap && level.rankxpcap <= inrankxp)
+  if(isDefined(level.rankxpcap) && level.rankxpcap && level.rankxpcap <= inrankxp)
     return level.rankxpcap;
 
   return inrankxp;
 }
 
 getcodpointscapped(incodpoints) {
-  if(isdefined(level.codpointscap) && level.codpointscap && level.codpointscap <= incodpoints)
+  if(isDefined(level.codpointscap) && level.codpointscap && level.codpointscap <= incodpoints)
     return level.codpointscap;
 
   return incodpoints;
@@ -153,14 +153,14 @@ registerscoreinfo(type, value, label) {
   } else
     level.scoreinfo[type]["value"] = value;
 
-  if(isdefined(label)) {
+  if(isDefined(label)) {
     precachestring(label);
     level.scoreinfo[type]["label"] = label;
   }
 }
 
 getscoreinfovalue(type) {
-  if(isdefined(level.scoreinfo[type]))
+  if(isDefined(level.scoreinfo[type]))
     return level.scoreinfo[type]["value"];
 }
 
@@ -169,14 +169,14 @@ getscoreinfolabel(type) {
 }
 
 killstreakweaponsallowedscore(type) {
-  if(isdefined(level.scoreinfo[type]["allowKillstreakWeapons"]) && level.scoreinfo[type]["allowKillstreakWeapons"] == 1)
+  if(isDefined(level.scoreinfo[type]["allowKillstreakWeapons"]) && level.scoreinfo[type]["allowKillstreakWeapons"] == 1)
     return true;
   else
     return false;
 }
 
 doesscoreinfocounttowardrampage(type) {
-  return isdefined(level.scoreinfo[type]["rampage"]) && level.scoreinfo[type]["rampage"];
+  return isDefined(level.scoreinfo[type]["rampage"]) && level.scoreinfo[type]["rampage"];
 }
 
 getrankinfominxp(rankid) {
@@ -248,7 +248,7 @@ getrankxpstat() {
 }
 
 onplayerconnect() {
-  for (;;) {
+  for(;;) {
     level waittill("connected", player);
     player.pers["rankxp"] = player getrankxpstat();
     player.pers["codpoints"] = player getcodpointsstat();
@@ -262,17 +262,17 @@ onplayerconnect() {
       continue;
     }
 
-    if(!isdefined(player.pers["participation"]) || !(level.gametype == "twar" && 0 < game["roundsplayed"] && 0 < player.pers["participation"]))
+    if(!isDefined(player.pers["participation"]) || !(level.gametype == "twar" && 0 < game["roundsplayed"] && 0 < player.pers["participation"]))
       player.pers["participation"] = 0;
 
     player.rankupdatetotal = 0;
     player.cur_ranknum = rankid;
-    assert(isdefined(player.cur_ranknum), "rank: " + rankid + " does not have an index, check mp/ranktable.csv");
+    assert(isDefined(player.cur_ranknum), "rank: " + rankid + " does not have an index, check mp/ranktable.csv");
     prestige = player getdstat("playerstatslist", "plevel", "StatValue");
     player setrank(rankid, prestige);
     player.pers["prestige"] = prestige;
 
-    if(!isdefined(player.pers["summary"])) {
+    if(!isDefined(player.pers["summary"])) {
       player.pers["summary"] = [];
       player.pers["summary"]["xp"] = 0;
       player.pers["summary"]["score"] = 0;
@@ -302,7 +302,7 @@ onplayerconnect() {
 onjoinedteam() {
   self endon("disconnect");
 
-  for (;;) {
+  for(;;) {
     self waittill("joined_team");
     self thread removerankhud();
   }
@@ -311,7 +311,7 @@ onjoinedteam() {
 onjoinedspectators() {
   self endon("disconnect");
 
-  for (;;) {
+  for(;;) {
     self waittill("joined_spectators");
     self thread removerankhud();
   }
@@ -320,10 +320,10 @@ onjoinedspectators() {
 onplayerspawned() {
   self endon("disconnect");
 
-  for (;;) {
+  for(;;) {
     self waittill("spawned_player");
 
-    if(!isdefined(self.hud_rankscroreupdate)) {
+    if(!isDefined(self.hud_rankscroreupdate)) {
       self.hud_rankscroreupdate = newscorehudelem(self);
       self.hud_rankscroreupdate.horzalign = "center";
       self.hud_rankscroreupdate.vertalign = "middle";
@@ -378,9 +378,9 @@ giverankxp(type, value, devadd) {
   if(sessionmodeiszombiesgame()) {
     return;
   }
-  if(level.teambased && !atleastoneplayeroneachteam() && !isdefined(devadd))
+  if(level.teambased && !atleastoneplayeroneachteam() && !isDefined(devadd))
     return;
-  else if(!level.teambased && maps\mp\gametypes\_globallogic::totalplayercount() < 2 && !isdefined(devadd)) {
+  else if(!level.teambased && maps\mp\gametypes\_globallogic::totalplayercount() < 2 && !isDefined(devadd)) {
     return;
   }
   if(!isrankenabled()) {
@@ -388,7 +388,7 @@ giverankxp(type, value, devadd) {
   }
   pixbeginevent("giveRankXP");
 
-  if(!isdefined(value))
+  if(!isDefined(value))
     value = getscoreinfovalue(type);
 
   if(level.rankedmatch)
@@ -439,7 +439,7 @@ giverankxp(type, value, devadd) {
   if(value != 0)
     self syncxpstat();
 
-  if(isdefined(self.enabletext) && self.enabletext && !level.hardcoremode) {
+  if(isDefined(self.enabletext) && self.enabletext && !level.hardcoremode) {
     if(type == "teamkill")
       self thread updaterankscorehud(0 - getscoreinfovalue("kill"));
     else
@@ -505,7 +505,7 @@ updaterank() {
   rankid = self.pers["rank"];
   self.pers["rank"] = newrankid;
 
-  while (rankid <= newrankid) {
+  while(rankid <= newrankid) {
     self setdstat("playerstatslist", "rank", "StatValue", rankid);
     self setdstat("playerstatslist", "minxp", "StatValue", int(level.ranktable[rankid][2]));
     self setdstat("playerstatslist", "maxxp", "StatValue", int(level.ranktable[rankid][7]));
@@ -518,7 +518,7 @@ updaterank() {
       codpointsearnedforrank = getrankinfocodpointsearned(rankid);
       inccodpoints(codpointsearnedforrank);
 
-      if(!isdefined(self.pers["rankcp"]))
+      if(!isDefined(self.pers["rankcp"]))
         self.pers["rankcp"] = 0;
 
       self.pers["rankcp"] = self.pers["rankcp"] + codpointsearnedforrank;
@@ -555,7 +555,7 @@ updaterankscorehud(amount) {
   self endon("joined_team");
   self endon("joined_spectators");
 
-  if(isdefined(level.usingmomentum) && level.usingmomentum) {
+  if(isDefined(level.usingmomentum) && level.usingmomentum) {
     return;
   }
   if(amount == 0) {
@@ -566,7 +566,7 @@ updaterankscorehud(amount) {
   self.rankupdatetotal = self.rankupdatetotal + amount;
   wait 0.05;
 
-  if(isdefined(self.hud_rankscroreupdate)) {
+  if(isDefined(self.hud_rankscroreupdate)) {
     if(self.rankupdatetotal < 0) {
       self.hud_rankscroreupdate.label = & "";
       self.hud_rankscroreupdate.color = (0.73, 0.19, 0.19);
@@ -597,7 +597,7 @@ updatemomentumhud(amount, reason, reasonvalue) {
   self endon("update_score");
   self.rankupdatetotal = self.rankupdatetotal + amount;
 
-  if(isdefined(self.hud_rankscroreupdate)) {
+  if(isDefined(self.hud_rankscroreupdate)) {
     if(self.rankupdatetotal < 0) {
       self.hud_rankscroreupdate.label = & "";
       self.hud_rankscroreupdate.color = (0.73, 0.19, 0.19);
@@ -610,9 +610,9 @@ updatemomentumhud(amount, reason, reasonvalue) {
     self.hud_rankscroreupdate.alpha = 0.85;
     self.hud_rankscroreupdate thread maps\mp\gametypes\_hud::fontpulse(self);
 
-    if(isdefined(self.hud_momentumreason)) {
-      if(isdefined(reason)) {
-        if(isdefined(reasonvalue)) {
+    if(isDefined(self.hud_momentumreason)) {
+      if(isDefined(reason)) {
+        if(isDefined(reasonvalue)) {
           self.hud_momentumreason.label = reason;
           self.hud_momentumreason setvalue(reasonvalue);
         } else {
@@ -632,7 +632,7 @@ updatemomentumhud(amount, reason, reasonvalue) {
     self.hud_rankscroreupdate fadeovertime(0.75);
     self.hud_rankscroreupdate.alpha = 0;
 
-    if(isdefined(self.hud_momentumreason) && isdefined(reason)) {
+    if(isDefined(self.hud_momentumreason) && isDefined(reason)) {
       self.hud_momentumreason fadeovertime(0.75);
       self.hud_momentumreason.alpha = 0;
     }
@@ -643,10 +643,10 @@ updatemomentumhud(amount, reason, reasonvalue) {
 }
 
 removerankhud() {
-  if(isdefined(self.hud_rankscroreupdate))
+  if(isDefined(self.hud_rankscroreupdate))
     self.hud_rankscroreupdate.alpha = 0;
 
-  if(isdefined(self.hud_momentumreason))
+  if(isDefined(self.hud_momentumreason))
     self.hud_momentumreason.alpha = 0;
 }
 
@@ -663,15 +663,15 @@ getrank() {
 getrankforxp(xpval) {
   rankid = 0;
   rankname = level.ranktable[rankid][1];
-  assert(isdefined(rankname));
+  assert(isDefined(rankname));
 
-  while (isdefined(rankname) && rankname != "") {
+  while(isDefined(rankname) && rankname != "") {
     if(xpval < getrankinfominxp(rankid) + getrankinfoxpamt(rankid))
       return rankid;
 
     rankid++;
 
-    if(isdefined(level.ranktable[rankid]))
+    if(isDefined(level.ranktable[rankid]))
       rankname = level.ranktable[rankid][1];
     else
       rankname = undefined;

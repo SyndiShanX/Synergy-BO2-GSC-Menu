@@ -6,12 +6,13 @@
 #include clientscripts\mp\_utility;
 
 deactivateambientpackage(client, package, priority) {
-  if(!isdefined(level.ambientpackages[package])) {
+  if(!isDefined(level.ambientpackages[package])) {
     assertmsg("deactivateAmbientPackage: must declare ambient package \"" + package + "\" in level_amb main before it can be deactivated");
+
     return;
   }
 
-  for (i = 0; i < level.ambientpackages[package].priority.size; i++) {
+  for(i = 0; i < level.ambientpackages[package].priority.size; i++) {
     if(level.ambientpackages[package].priority[i] == priority && level.ambientpackages[package].refcount[i]) {
       level.ambientpackages[package].refcount[i]--;
       level notify("updateActiveAmbientPackage");
@@ -22,12 +23,13 @@ deactivateambientpackage(client, package, priority) {
 
 deactivateambientroom(client, room, priority) {
   if(level.usecodetriggers == 0) {
-    if(!isdefined(level.ambientrooms[room])) {
+    if(!isDefined(level.ambientrooms[room])) {
       assertmsg("deactivateAmbientRoom: must declare ambient room \"" + room + "\" in level_amb main before it can be deactivated");
+
       return;
     }
 
-    for (i = 0; i < level.ambientrooms[room].priority.size; i++) {
+    for(i = 0; i < level.ambientrooms[room].priority.size; i++) {
       if(level.ambientrooms[room].priority[i] == priority && level.ambientrooms[room].refcount[i]) {
         level.ambientrooms[room].refcount[i]--;
         level notify("updateActiveAmbientRoom");
@@ -40,29 +42,32 @@ deactivateambientroom(client, room, priority) {
 
 ambientpackagetrigger() {
   wait 1.0;
-  hasambientroom = isdefined(self.script_ambientroom);
-  useambientroom = hasambientroom && isdefined(level.ambientrooms[self.script_ambientroom]);
-  hasambientpackage = isdefined(self.script_ambientpackage);
-  useambientpackage = hasambientpackage && isdefined(level.ambientpackages[self.script_ambientpackage]);
+  hasambientroom = isDefined(self.script_ambientroom);
+  useambientroom = hasambientroom && isDefined(level.ambientrooms[self.script_ambientroom]);
+  hasambientpackage = isDefined(self.script_ambientpackage);
+  useambientpackage = hasambientpackage && isDefined(level.ambientpackages[self.script_ambientpackage]);
   self.useambientroom = useambientroom;
   self.useambientpackage = useambientpackage;
 
   if(hasambientroom && !useambientroom) {
     iprintlnbold("Trigger at " + self.origin + " references ambient room '" + self.script_ambientroom + "', but no such room has been declared");
+
     return;
   }
 
   if(hasambientpackage && !useambientpackage) {
     iprintlnbold("Trigger at " + self.origin + " references ambient package '" + self.script_ambientpackage + "', but no such package has been declared");
+
     return;
   }
 
   if(!useambientpackage && !useambientroom) {
     iprintlnbold("Trigger at " + self.origin + " is an ambient trigger but has no room or package");
+
     return;
   }
 
-  if(!isdefined(self.script_ambientpriority))
+  if(!isDefined(self.script_ambientpriority))
     self.script_ambientpriority = 1;
 }
 
@@ -71,6 +76,7 @@ init_ambient_package_triggers() {
   init_trigger_data();
   trigs = getentarray(0, "ambient_package", "targetname");
   array_thread(trigs, ::ambientpackagetrigger);
+
   println("Client : " + trigs.size + " ambient package triggers.");
 }
 
@@ -83,7 +89,7 @@ init() {
   thread updateactiveambientpackage();
   level.ambientpackagescriptoriginpool = [];
 
-  for (i = 0; i < 5; i++) {
+  for(i = 0; i < 5; i++) {
     level.ambientpackagescriptoriginpool[i] = spawnstruct();
     level.ambientpackagescriptoriginpool[i].org = spawnfakeent(0);
     level.ambientpackagescriptoriginpool[i].inuse = 0;
@@ -105,7 +111,7 @@ init() {
 }
 
 declareambientpackage(package, defaultpackage) {
-  if(isdefined(level.ambientpackages[package])) {
+  if(isDefined(level.ambientpackages[package])) {
     return;
   }
   level.ambientpackages[package] = spawnstruct();
@@ -113,15 +119,16 @@ declareambientpackage(package, defaultpackage) {
   level.ambientpackages[package].refcount = [];
   level.ambientpackages[package].elements = [];
 
-  if(isdefined(defaultpackage))
+  if(isDefined(defaultpackage))
     level.ambientpackages[package].defaultpackage = defaultpackage;
   else
     level.ambientpackages[package].defaultpackage = 0;
 }
 
 addambientelement(package, alias, spawnmin, spawnmax, distmin, distmax, anglemin, anglemax) {
-  if(!isdefined(level.ambientpackages[package])) {
+  if(!isDefined(level.ambientpackages[package])) {
     assertmsg("addAmbientElement: must declare ambient package \"" + package + "\" in level_amb main before it can have elements added to it");
+
     return;
   }
 
@@ -140,7 +147,7 @@ addambientelement(package, alias, spawnmin, spawnmax, distmin, distmax, anglemin
   level.ambientpackages[package].elements[index].distmin = -1;
   level.ambientpackages[package].elements[index].distmax = -1;
 
-  if(isdefined(distmin) && isdefined(distmax) && distmin >= 0 && distmin < distmax) {
+  if(isDefined(distmin) && isDefined(distmax) && distmin >= 0 && distmin < distmax) {
     level.ambientpackages[package].elements[index].distmin = distmin;
     level.ambientpackages[package].elements[index].distmax = distmax;
   }
@@ -148,14 +155,14 @@ addambientelement(package, alias, spawnmin, spawnmax, distmin, distmax, anglemin
   level.ambientpackages[package].elements[index].anglemin = 0;
   level.ambientpackages[package].elements[index].anglemax = 359;
 
-  if(isdefined(anglemin) && isdefined(anglemax) && anglemin >= 0 && anglemin < anglemax && anglemax <= 720) {
+  if(isDefined(anglemin) && isDefined(anglemax) && anglemin >= 0 && anglemin < anglemax && anglemax <= 720) {
     level.ambientpackages[package].elements[index].anglemin = anglemin;
     level.ambientpackages[package].elements[index].anglemax = anglemax;
   }
 }
 
 declareambientroom(room, defaultroom) {
-  if(isdefined(level.ambientrooms[room])) {
+  if(isDefined(level.ambientrooms[room])) {
     return;
   }
   level.ambientrooms[room] = spawnstruct();
@@ -163,7 +170,7 @@ declareambientroom(room, defaultroom) {
   level.ambientrooms[room].refcount = [];
   level.ambientrooms[room].ent = spawnfakeent(0);
 
-  if(isdefined(defaultroom))
+  if(isDefined(defaultroom))
     level.ambientrooms[room].defaultroom = defaultroom;
   else
     level.ambientrooms[room].defaultroom = 0;
@@ -175,7 +182,7 @@ gettriggers(name) {
   triggerentnums = [];
   num = 0;
 
-  for (i = 0; i < trigkeys.size; i++) {
+  for(i = 0; i < trigkeys.size; i++) {
     trigger = trigs[i];
 
     if(trigger.script_ambientroom == name) {
@@ -194,7 +201,7 @@ gettriggerpriorities(name) {
   triggerpriorities = [];
   num = 0;
 
-  for (i = 0; i < trigkeys.size; i++) {
+  for(i = 0; i < trigkeys.size; i++) {
     trigger = trigs[i];
 
     if(trigger.script_ambientroom == name) {
@@ -208,26 +215,28 @@ gettriggerpriorities(name) {
 }
 
 setambientroomtone(room, alias, fadein, fadeout) {
-  if(!isdefined(level.ambientrooms[room])) {
+  if(!isDefined(level.ambientrooms[room])) {
     assertmsg("setAmbientRoomTone: must declare ambient room \"" + room + "\" in level_amb main before it can have a room tone set");
+
     return;
   }
 
   level.ambientrooms[room].tone = alias;
   level.ambientrooms[room].fadein = 2;
 
-  if(isdefined(fadein) && fadein >= 0)
+  if(isDefined(fadein) && fadein >= 0)
     level.ambientrooms[room].fadein = fadein;
 
   level.ambientrooms[room].fadeout = 2;
 
-  if(isdefined(fadeout) && fadeout >= 0)
+  if(isDefined(fadeout) && fadeout >= 0)
     level.ambientrooms[room].fadeout = fadeout;
 }
 
 setambientroomsnapshot(room, snapshot) {
-  if(!isdefined(level.ambientrooms[room])) {
+  if(!isDefined(level.ambientrooms[room])) {
     assertmsg("setAmbientRoomSnapshot: must declare ambient room \"" + room + "\" in level_amb main before it can have a room snapshot set");
+
     return;
   }
 
@@ -235,8 +244,9 @@ setambientroomsnapshot(room, snapshot) {
 }
 
 setambientroomsidechainduck(room, sidechainduck) {
-  if(!isdefined(level.ambientrooms[room])) {
+  if(!isDefined(level.ambientrooms[room])) {
     assertmsg("setAmbientRoomSnapshot: must declare ambient room \"" + room + "\" in level_amb main before it can have a room side chain duck set");
+
     return;
   }
 
@@ -244,25 +254,27 @@ setambientroomsidechainduck(room, sidechainduck) {
 }
 
 setambientroomcontext(room, type, value) {
-  if(!isdefined(level.ambientrooms[room])) {
+  if(!isDefined(level.ambientrooms[room])) {
     assertmsg("setAmbientRoomContext: must declare ambient room \"" + room + "\" in level_amb main before it can have a room context set");
+
     return;
   }
 
-  if(!isdefined(level.ambientrooms[room].context))
+  if(!isDefined(level.ambientrooms[room].context))
     level.ambientrooms[room].context = [];
 
   level.ambientrooms[room].context[type] = value;
 
-  if(!isdefined(level.ambientcontexts))
+  if(!isDefined(level.ambientcontexts))
     level.ambientcontexts = [];
 
   level.ambientcontexts[type] = type;
 }
 
 setambientroomreverb(room, reverbroomtype, dry, wet, fade) {
-  if(!isdefined(level.ambientrooms[room])) {
+  if(!isDefined(level.ambientrooms[room])) {
     assertmsg("setAmbientRoomReverb: must declare ambient room \"" + room + "\" in level_amb main before it can have a room reverb set");
+
     return;
   }
 
@@ -272,17 +284,18 @@ setambientroomreverb(room, reverbroomtype, dry, wet, fade) {
   level.ambientrooms[room].reverb.wet = wet;
   level.ambientrooms[room].reverb.fade = 2;
 
-  if(isdefined(fade) && fade >= 0)
+  if(isDefined(fade) && fade >= 0)
     level.ambientrooms[room].reverb.fade = fade;
 }
 
 activateambientpackage(clientnum, package, priority) {
-  if(!isdefined(level.ambientpackages[package])) {
+  if(!isDefined(level.ambientpackages[package])) {
     assertmsg("activateAmbientPackage: must declare ambient package \"" + package + "\" in level_amb.csc main before it can be activated");
+
     return;
   }
 
-  for (i = 0; i < level.ambientpackages[package].priority.size; i++) {
+  for(i = 0; i < level.ambientpackages[package].priority.size; i++) {
     if(level.ambientpackages[package].priority[i] == priority) {
       level.ambientpackages[package].refcount[i]++;
       break;
@@ -299,12 +312,13 @@ activateambientpackage(clientnum, package, priority) {
 
 activateambientroom(clientnum, room, priority) {
   if(level.usecodetriggers == 0) {
-    if(!isdefined(level.ambientrooms[room])) {
+    if(!isDefined(level.ambientrooms[room])) {
       assertmsg("activateAmbientRoom: must declare ambient room \"" + room + "\" in level_amb.csc main before it can be activated");
+
       return;
     }
 
-    for (i = 0; i < level.ambientrooms[room].priority.size; i++) {
+    for(i = 0; i < level.ambientrooms[room].priority.size; i++) {
       if(level.ambientrooms[room].priority[i] == priority) {
         level.ambientrooms[room].refcount[i]++;
         break;
@@ -321,14 +335,14 @@ activateambientroom(clientnum, room, priority) {
     defaultroom = finddefaultroom();
     roomkeys = getarraykeys(level.ambientrooms);
 
-    for (i = 0; i < roomkeys.size; i++) {
+    for(i = 0; i < roomkeys.size; i++) {
       ambientroom = level.ambientrooms[roomkeys[i]];
 
-      if(!isdefined(ambientroom)) {
+      if(!isDefined(ambientroom)) {
         continue;
       }
       if(roomkeys[i] == room) {
-        if(isdefined(defaultroom) && defaultroom == room) {
+        if(isDefined(defaultroom) && defaultroom == room) {
           forceambientroom(1, 1, room);
           return;
         }
@@ -338,7 +352,7 @@ activateambientroom(clientnum, room, priority) {
       }
     }
 
-    if(isdefined(defaultroom)) {
+    if(isDefined(defaultroom)) {
       if(defaultroom == room)
         forceambientroom(1, 1, room);
     }
@@ -351,19 +365,22 @@ ambientpackagecmdhandler(clientnum, state, oldstate) {
 
     if(split_state.size != 3) {
       println("*** Client : Malformed arguements to ambient packages " + state);
+
     } else {
       command = split_state[0];
       package = split_state[1];
       priority = int(split_state[2]);
+
       println("### APC : " + command + " " + package + " " + priority);
 
       if(command == "A") {
-        if(!isdefined(level.ambientpackages[package])) {
+        if(!isDefined(level.ambientpackages[package])) {
           assertmsg("activateAmbientPackage: must declare ambient package \"" + package + "\" in level_amb.csc main before it can be activated");
+
           return;
         }
 
-        for (i = 0; i < level.ambientpackages[package].priority.size; i++) {
+        for(i = 0; i < level.ambientpackages[package].priority.size; i++) {
           if(level.ambientpackages[package].priority[i] == priority) {
             level.ambientpackages[package].refcount[i]++;
             break;
@@ -377,12 +394,13 @@ ambientpackagecmdhandler(clientnum, state, oldstate) {
 
         level notify("updateActiveAmbientPackage");
       } else if(command == "D") {
-        if(!isdefined(level.ambientpackages[package])) {
+        if(!isDefined(level.ambientpackages[package])) {
           assertmsg("deactivateAmbientPackage: must declare ambient package \"" + package + "\" in level_amb.csc main before it can be deactivated");
+
           return;
         }
 
-        for (i = 0; i < level.ambientpackages[package].priority.size; i++) {
+        for(i = 0; i < level.ambientpackages[package].priority.size; i++) {
           if(level.ambientpackages[package].priority[i] == priority && level.ambientpackages[package].refcount[i]) {
             level.ambientpackages[package].refcount[i]--;
 
@@ -392,6 +410,7 @@ ambientpackagecmdhandler(clientnum, state, oldstate) {
         }
       } else {
         assertmsg("Unknown command in ambientPackageCmdHandler " + state);
+
         return;
       }
     }
@@ -404,18 +423,20 @@ ambientroomcmdhandler(clientnum, state, oldstate) {
 
     if(split_state.size != 3) {
       println("*** Client : Malformed arguements to ambient packages " + state);
+
     } else {
       command = split_state[0];
       room = split_state[1];
       priority = int(split_state[2]);
 
       if(command == "A") {
-        if(!isdefined(level.ambientrooms[room])) {
+        if(!isDefined(level.ambientrooms[room])) {
           assertmsg("activateAmbientRoom: must declare ambient room \"" + room + "\" in level_amb.csc main before it can be activated");
+
           return;
         }
 
-        for (i = 0; i < level.ambientrooms[room].priority.size; i++) {
+        for(i = 0; i < level.ambientrooms[room].priority.size; i++) {
           if(level.ambientrooms[room].priority[i] == priority) {
             level.ambientrooms[room].refcount[i]++;
             break;
@@ -429,12 +450,13 @@ ambientroomcmdhandler(clientnum, state, oldstate) {
 
         level notify("updateActiveAmbientRoom");
       } else if(command == "D") {
-        if(!isdefined(level.ambientrooms[room])) {
+        if(!isDefined(level.ambientrooms[room])) {
           assertmsg("deactivateAmbientRoom: must declare ambient room \"" + room + "\" in level_amb.csc main before it can be deactivated");
+
           return;
         }
 
-        for (i = 0; i < level.ambientrooms[room].priority.size; i++) {
+        for(i = 0; i < level.ambientrooms[room].priority.size; i++) {
           if(level.ambientrooms[room].priority[i] == priority && level.ambientrooms[room].refcount[i]) {
             level.ambientrooms[room].refcount[i]--;
 
@@ -444,6 +466,7 @@ ambientroomcmdhandler(clientnum, state, oldstate) {
         }
       } else {
         assertmsg("Unknown command in ambientRoomCmdHandler " + state);
+
         return;
       }
     }
@@ -455,11 +478,13 @@ ambientelementthread() {
   timer = 0;
 
   if(self.distmin < 0) {
-    for (;;) {
+    for(;;) {
       timer = randomfloatrange(self.spawnmin, self.spawnmax);
       wait(timer);
+
       if(getdvarint(#"_id_0AEB127D") > 0)
         iprintlnbold("AP : playing2d: " + self.alias);
+
       playsound(0, self.alias);
     }
   } else {
@@ -468,7 +493,7 @@ ambientelementthread() {
     offset = (0, 0, 0);
     index = -1;
 
-    for (;;) {
+    for(;;) {
       timer = randomfloatrange(self.spawnmin, self.spawnmax);
       wait(timer);
       index = getscriptoriginpoolindex();
@@ -482,6 +507,7 @@ ambientelementthread() {
         pos = getlocalclienteyepos(0) + offset;
         setfakeentorg(0, level.ambientpackagescriptoriginpool[index].org, pos);
         level.ambientpackagescriptoriginpool[index].soundid = playsound(0, self.alias, pos);
+
         if(getdvarint(#"_id_0AEB127D") > 0) {
           if(level.ambientpackagescriptoriginpool[index].soundid == -1)
             col = vectorscale((1, 0, 0), 0.8);
@@ -491,7 +517,7 @@ ambientelementthread() {
           print3d(pos, "AP : " + self.alias, col, 1, 3, 30);
         }
 
-        while (level.ambientpackagescriptoriginpool[index].soundid != -1)
+        while(level.ambientpackagescriptoriginpool[index].soundid != -1)
           wait 0.01;
       }
     }
@@ -499,7 +525,7 @@ ambientelementthread() {
 }
 
 getscriptoriginpoolindex() {
-  for (index = 0; index < level.ambientpackagescriptoriginpool.size; index++) {
+  for(index = 0; index < level.ambientpackagescriptoriginpool.size; index++) {
     if(!level.ambientpackagescriptoriginpool[index].inuse) {
       level.ambientpackagescriptoriginpool[index].inuse = 1;
       level.ambientnumseqmissedsounds = 0;
@@ -509,15 +535,17 @@ getscriptoriginpoolindex() {
 
   level.ambientnummissedsounds++;
   level.ambientnumseqmissedsounds++;
+
   if(getdvarint(#"_id_0AEB127D") > 0)
     iprintlnbold("No free origins " + level.ambientnumseqmissedsounds + " ( " + level.ambientnummissedsounds + " )");
+
   return -1;
 }
 
 scriptoriginpoolthread() {
-  for (;;) {
+  for(;;) {
     if(self.inuse == 1) {
-      if(isdefined(self.soundid)) {
+      if(isDefined(self.soundid)) {
         if(self.soundid != -1) {
           if(!soundplaying(self.soundid)) {
             self.inuse = 0;
@@ -537,8 +565,8 @@ findhighestpriorityambientpackage() {
   priority = -1;
   packagearray = getarraykeys(level.ambientpackages);
 
-  for (i = 0; i < packagearray.size; i++) {
-    for (j = 0; j < level.ambientpackages[packagearray[i]].priority.size; j++) {
+  for(i = 0; i < packagearray.size; i++) {
+    for(j = 0; j < level.ambientpackages[packagearray[i]].priority.size; j++) {
       if(level.ambientpackages[packagearray[i]].refcount[j] && level.ambientpackages[packagearray[i]].priority[j] > priority) {
         package = packagearray[i];
         priority = level.ambientpackages[packagearray[i]].priority[j];
@@ -553,9 +581,10 @@ updateactiveambientpackage() {
   if(level.usecodetriggers == 1) {
     return;
   }
-  for (;;) {
+  for(;;) {
     level waittill("updateActiveAmbientPackage");
     newambientpackage = findhighestpriorityambientpackage();
+
     println("*** nap " + newambientpackage + " " + level.activeambientpackage);
 
     if(newambientpackage != "" && level.activeambientpackage != newambientpackage) {
@@ -577,11 +606,10 @@ findhighestpriorityambientroom() {
   priority = -1;
   roomarray = getarraykeys(level.ambientrooms);
 
-  if(isdefined(roomarray)) {
-    for (i = 0; i < roomarray.size; i++) {
-      for (j = 0; j < level.ambientrooms[roomarray[i]].priority.size; j++) {
+  if(isDefined(roomarray)) {
+    for(i = 0; i < roomarray.size; i++) {
+      for(j = 0; j < level.ambientrooms[roomarray[i]].priority.size; j++) {
         if(level.ambientrooms[roomarray[i]].refcount[j]) {
-
         }
 
         if(level.ambientrooms[roomarray[i]].refcount[j] && level.ambientrooms[roomarray[i]].priority[j] > priority) {
@@ -599,7 +627,7 @@ updateactiveambientroom() {
   if(level.usecodetriggers == 1) {
     return;
   }
-  for (;;) {
+  for(;;) {
     newambientroom = findhighestpriorityambientroom();
 
     if(newambientroom == level.activeambientroomname)
@@ -613,35 +641,34 @@ updateactiveambientroom() {
     oldroom = level.ambientrooms[level.activeambientroomname];
     newroom = level.ambientrooms[newambientroom];
 
-    if(isdefined(oldroom) && isdefined(newroom) && isdefined(oldroom.tone) && isdefined(newroom.tone) && oldroom.tone == newroom.tone) {
+    if(isDefined(oldroom) && isDefined(newroom) && isDefined(oldroom.tone) && isDefined(newroom.tone) && oldroom.tone == newroom.tone) {
       tmp = newroom.ent;
       newroom.ent = oldroom.ent;
       oldroom.ent = tmp;
     } else {
-      if(isdefined(newroom) && isdefined(newroom.tone))
+      if(isDefined(newroom) && isDefined(newroom.tone))
         newroom.id = playloopsound(0, newroom.ent, newroom.tone, newroom.fadein);
       else {
-
       }
 
-      if(isdefined(oldroom) && isdefined(oldroom.tone))
+      if(isDefined(oldroom) && isDefined(oldroom.tone))
         stoploopsound(0, oldroom.ent, oldroom.fadeout);
     }
 
-    if(!isdefined(newroom) || !isdefined(newroom.reverb))
+    if(!isDefined(newroom) || !isDefined(newroom.reverb))
       deactivatereverb("snd_enveffectsprio_level", 2);
     else
       setreverb("snd_enveffectsprio_level", newroom.reverb.reverbroomtype, newroom.reverb.dry, newroom.reverb.wet, newroom.reverb.fade);
 
     snapshot = "default";
 
-    if(isdefined(newroom) && isdefined(newroom.snapshot))
+    if(isDefined(newroom) && isDefined(newroom.snapshot))
       snapshot = newroom.snapshot;
 
     setambientsnapshot(snapshot);
     sidechainduck = "default";
 
-    if(isdefined(newroom) && isdefined(newroom.sidechainduck))
+    if(isDefined(newroom) && isDefined(newroom.sidechainduck))
       sidechainduck = newroom.sidechainduck;
 
     setambientsidechainduck(sidechainduck);
@@ -650,20 +677,20 @@ updateactiveambientroom() {
 }
 
 init_trigger_data() {
-  if(isdefined(level.ambientrooms)) {
+  if(isDefined(level.ambientrooms)) {
     defaultroom = undefined;
     roomname = "";
     roomkeys = getarraykeys(level.ambientrooms);
 
-    for (i = 0; i < roomkeys.size; i++) {
+    for(i = 0; i < roomkeys.size; i++) {
       room = level.ambientrooms[roomkeys[i]];
       roomname = roomkeys[i];
 
-      if(!isdefined(room)) {
+      if(!isDefined(room)) {
         continue;
       }
-      hasambientroom = isdefined(level.ambientrooms[roomname]);
-      hasambientpackage = isdefined(level.ambientpackages[roomname]);
+      hasambientroom = isDefined(level.ambientrooms[roomname]);
+      hasambientpackage = isDefined(level.ambientpackages[roomname]);
       triggerentnums = gettriggers(roomname);
       triggerpriorities = gettriggerpriorities(roomname);
       entnumkeys = getarraykeys(triggerentnums);
@@ -671,16 +698,17 @@ init_trigger_data() {
 
       if(entnumkeys.size >= 16 || prioritykeys.size >= 16) {
         println("Ambient room problem. Room " + roomname + " exceeded limit of 8 triggers. Create a new room and lower the number of triggers. Number of triggers in room = " + entnumkeys.size);
+
         continue;
       }
 
       setambientpackage(hasambientroom, hasambientpackage, 0, room.defaultroom, roomname, triggerentnums, triggerpriorities);
 
-      if(isdefined(room.context)) {
+      if(isDefined(room.context)) {
         keys = getarraykeys(room.context);
 
-        if(isdefined(keys)) {
-          for (j = 0; j < keys.size; j++)
+        if(isDefined(keys)) {
+          for(j = 0; j < keys.size; j++)
             setambientroomcontextengine(roomname, keys[j], room.context[keys[j]], 0);
         }
       }
@@ -690,7 +718,7 @@ init_trigger_data() {
   trigs = getentarray(0, "ambient_package", "targetname");
   trigkeys = getarraykeys(trigs);
 
-  for (i = 0; i < trigkeys.size; i++) {
+  for(i = 0; i < trigkeys.size; i++) {
     trigger = trigs[i];
     trigger setambienttrigger();
   }
@@ -699,8 +727,8 @@ init_trigger_data() {
 finddefaultroom() {
   roomarray = getarraykeys(level.ambientrooms);
 
-  if(isdefined(roomarray)) {
-    for (i = 0; i < roomarray.size; i++) {
+  if(isDefined(roomarray)) {
+    for(i = 0; i < roomarray.size; i++) {
       if(level.ambientrooms[roomarray[i]].defaultroom == 1)
         return roomarray[i];
     }
@@ -712,8 +740,8 @@ finddefaultroom() {
 finddefaultpackage() {
   packagearray = getarraykeys(level.ambientpackages);
 
-  if(isdefined(packagearray)) {
-    for (i = 0; i < packagearray.size; i++) {
+  if(isDefined(packagearray)) {
+    for(i = 0; i < packagearray.size; i++) {
       if(level.ambientpackages[packagearray[i]].defaultpackage == 1)
         return packagearray[i];
     }
@@ -723,72 +751,71 @@ finddefaultpackage() {
 }
 
 switchactiveambientroom(ambientroom, roomcollidercent) {
-  if(isdefined(level.activeambientroom))
+  if(isDefined(level.activeambientroom))
     oldroom = level.activeambientroom;
 
-  if(isdefined(ambientroom) && ambientroom != "")
+  if(isDefined(ambientroom) && ambientroom != "")
     newroom = level.ambientrooms[ambientroom];
   else {
     newroom = undefined;
     defaultroom = finddefaultroom();
 
-    if(isdefined(defaultroom)) {
+    if(isDefined(defaultroom)) {
       newroom = level.ambientrooms[defaultroom];
       ambientroom = newroom;
     }
   }
 
-  if(isdefined(oldroom) && isdefined(newroom) && isdefined(oldroom.tone) && isdefined(newroom.tone) && oldroom.tone == newroom.tone) {
+  if(isDefined(oldroom) && isDefined(newroom) && isDefined(oldroom.tone) && isDefined(newroom.tone) && oldroom.tone == newroom.tone) {
     tmp = newroom.ent;
     newroom.ent = oldroom.ent;
     oldroom.ent = tmp;
   } else {
-    if(isdefined(newroom) && isdefined(newroom.tone))
+    if(isDefined(newroom) && isDefined(newroom.tone))
       newroom.id = playloopsound(0, newroom.ent, newroom.tone, newroom.fadein);
     else {
-
     }
 
-    if(isdefined(oldroom) && isdefined(oldroom.tone))
+    if(isDefined(oldroom) && isDefined(oldroom.tone))
       stoploopsound(0, oldroom.ent, oldroom.fadeout);
   }
 
-  if(!isdefined(newroom) || !isdefined(newroom.reverb))
+  if(!isDefined(newroom) || !isDefined(newroom.reverb))
     deactivatereverb("snd_enveffectsprio_level", 2);
   else
     setreverb("snd_enveffectsprio_level", newroom.reverb.reverbroomtype, newroom.reverb.dry, newroom.reverb.wet, newroom.reverb.fade);
 
   snapshot = "default";
 
-  if(isdefined(newroom) && isdefined(newroom.snapshot))
+  if(isDefined(newroom) && isDefined(newroom.snapshot))
     snapshot = newroom.snapshot;
 
   setambientsnapshot(snapshot);
   sidechainduck = "default";
 
-  if(isdefined(newroom) && isdefined(newroom.sidechainduck))
+  if(isDefined(newroom) && isDefined(newroom.sidechainduck))
     sidechainduck = newroom.sidechainduck;
 
   setambientsidechainduck(sidechainduck);
 
-  if(isdefined(newroom))
+  if(isDefined(newroom))
     level.activeambientroom = newroom;
 
-  if(isdefined(level.sndambientcontextonplayer))
+  if(isDefined(level.sndambientcontextonplayer))
     level thread[[level.sndambientcontextonplayer]](ambientroom, roomcollidercent);
 }
 
 switchactiveambientpackage(ambientpackage, packagecollidercent) {
   packagename = "";
 
-  if(isdefined(ambientpackage) && ambientpackage != "") {
+  if(isDefined(ambientpackage) && ambientpackage != "") {
     newpackage = level.ambientpackages[ambientpackage];
     packagename = ambientpackage;
   } else {
     newpackage = undefined;
     defaultpackage = finddefaultpackage();
 
-    if(isdefined(defaultpackage) && isdefined(defaultpackage)) {
+    if(isDefined(defaultpackage) && isDefined(defaultpackage)) {
       if(defaultpackage) {
         newpackage = level.ambientpackages[defaultpackage];
         packagename = defaultpackage;
@@ -796,10 +823,10 @@ switchactiveambientpackage(ambientpackage, packagecollidercent) {
     }
   }
 
-  if(isdefined(level.activeambientpackage) && level.activeambientpackage != "")
+  if(isDefined(level.activeambientpackage) && level.activeambientpackage != "")
     level notify("killambientElementThread" + level.activeambientpackage);
 
-  if(isdefined(newpackage)) {
+  if(isDefined(newpackage)) {
     level.activeambientpackage = packagename;
     array_thread(newpackage.elements, ::ambientelementthread);
   }
@@ -819,11 +846,11 @@ setcurrentaiambientstate(triggers, actors, numtriggers) {
   }
   wait 0.25;
 
-  for (i = 0; i < actors.size; i++) {
+  for(i = 0; i < actors.size; i++) {
     ambientroom = triggers[i];
     actorent = actors[i];
 
-    if(isdefined(ambientroom) && isdefined(ambientroom.script_ambientroom)) {
+    if(isDefined(ambientroom) && isDefined(ambientroom.script_ambientroom)) {
       newroom = level.ambientrooms[ambientroom.script_ambientroom];
       continue;
     }
@@ -831,7 +858,7 @@ setcurrentaiambientstate(triggers, actors, numtriggers) {
     newroom = undefined;
     defaultroom = finddefaultroom();
 
-    if(isdefined(defaultroom)) {
+    if(isDefined(defaultroom)) {
       newroom = level.ambientrooms[defaultroom];
       ambientroom = newroom;
     }

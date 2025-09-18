@@ -91,7 +91,7 @@ lightning_randoms() {
   place[8] = (2117, 422, 209);
   place[9] = (1066, 316, 329);
 
-  while (true) {
+  while(true) {
     wait(randomintrange(3, 11));
     playsound(0, "amb_thunder", place[randomintrange(0, 10)]);
   }

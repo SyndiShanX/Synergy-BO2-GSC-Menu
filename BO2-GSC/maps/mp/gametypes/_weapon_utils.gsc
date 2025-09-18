@@ -74,11 +74,11 @@ ishackweapon(weapon) {
 }
 
 ispistol(weapon) {
-  return isdefined(level.side_arm_array[weapon]);
+  return isDefined(level.side_arm_array[weapon]);
 }
 
 isflashorstunweapon(weapon) {
-  if(isdefined(weapon)) {
+  if(isDefined(weapon)) {
     switch (weapon) {
       case "concussion_grenade_mp":
       case "flash_grenade_mp":

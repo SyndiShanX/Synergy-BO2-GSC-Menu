@@ -56,7 +56,7 @@ checkforplayerswitch(localclientnum, fxhandle) {
   level waittill("player_switch");
   self notify("player_switch");
 
-  if(isdefined(fxhandle))
+  if(isDefined(fxhandle))
     stopfx(localclientnum, fxhandle);
 
   waittillframeend;

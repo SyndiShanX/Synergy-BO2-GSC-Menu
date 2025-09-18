@@ -15,7 +15,6 @@ main() {
 }
 
 onprecachegametype() {
-
 }
 
 hardpoint(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump) {
@@ -28,11 +27,11 @@ hardpoint(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bwas
     foreach(point in level.hardpoints)
     level.visuals[point.script_index] = getstructarray(point.target, "targetname");
 
-    if(isdefined(level.overridemapdefinedhardpointsfunc))
+    if(isDefined(level.overridemapdefinedhardpointsfunc))
       level[[level.overridemapdefinedhardpointsfunc]]();
   }
 
-  if(isdefined(level.hardpointfx[localclientnum])) {
+  if(isDefined(level.hardpointfx[localclientnum])) {
     foreach(fx in level.hardpointfx[localclientnum])
     stopfx(localclientnum, fx);
   }
@@ -40,12 +39,12 @@ hardpoint(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bwas
   level.hardpointfx[localclientnum] = [];
 
   if(newval) {
-    if(isdefined(level.visuals[newval])) {
+    if(isDefined(level.visuals[newval])) {
       foreach(visual in level.visuals[newval]) {
-        if(!isdefined(visual.script_fxid)) {
+        if(!isDefined(visual.script_fxid)) {
           continue;
         }
-        if(isdefined(visual.angles))
+        if(isDefined(visual.angles))
           forward = anglestoforward(visual.angles);
         else
           forward = (0, 0, 0);

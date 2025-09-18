@@ -9,7 +9,6 @@
 #include clientscripts\mp\_fx;
 
 precache_scripted_fx() {
-
 }
 
 precache_createfx_fx() {
@@ -83,7 +82,7 @@ precache_fxanim_props_dlc4() {
 }
 
 fxanim_init(localclientnum) {
-  for (;;) {
+  for(;;) {
     level waittill("snap_processed", snapshotlocalclientnum);
 
     if(snapshotlocalclientnum == localclientnum) {
@@ -94,11 +93,11 @@ fxanim_init(localclientnum) {
   level thread clientscripts\mp\_fxanim_dlc4::fxanim_init_dlc(localclientnum);
   radar = getent(localclientnum, "fxanim_dlc4_radar", "targetname");
 
-  if(isdefined(radar)) {
-    if(!isdefined(level.radar_waits)) {
+  if(isDefined(radar)) {
+    if(!isDefined(level.radar_waits)) {
       level.radar_waits = [];
 
-      for (i = 1; i < 6; i++)
+      for(i = 1; i < 6; i++)
         level.radar_waits[i] = randomfloatrange(5, 10);
     }
 
@@ -107,12 +106,12 @@ fxanim_init(localclientnum) {
 
   decont_blasters = getent(localclientnum, "fxanim_dlc4_blasters", "targetname");
 
-  if(isdefined(decont_blasters))
+  if(isDefined(decont_blasters))
     decont_blasters thread fxanim_decontamination_think(localclientnum);
 
   planets_candidates = getentarray(localclientnum, "fxanim_dlc4", "targetname");
 
-  if(isdefined(planets_candidates) && planets_candidates.size > 0) {
+  if(isDefined(planets_candidates) && planets_candidates.size > 0) {
     foreach(planets_candidate in planets_candidates) {
       if(planets_candidate.model == "fxanim_mp_takeoff_planets_mod")
         planets_candidate thread fxanim_planets_think(localclientnum);
@@ -143,10 +142,10 @@ fxanim_radar_think(localclientnum) {
   self useanimtree(#animtree);
   anim_index = 1;
 
-  for (;;) {
+  for(;;) {
     self setflaggedanimrestart("radar_done" + anim_index, level.scr_anim["fxanim_props_dlc4"]["radar0" + anim_index], 1.0, 0.0, 1.0);
 
-    for (;;) {
+    for(;;) {
       self waittill("radar_done" + anim_index, note);
 
       if(note == "end") {
@@ -174,7 +173,7 @@ fxanim_decontamination_think(localclientnum) {
   self.nozzletags["four"] = "nozzle_04_tag_jnt";
   self.nozzlefxid = [];
 
-  for (;;) {
+  for(;;) {
     self waittill("nozzle", note);
 
     if(note == "end") {
@@ -196,7 +195,7 @@ fxanim_decontamination_think(localclientnum) {
       continue;
     }
     foreach(token in tokens) {
-      if(isdefined(self.nozzletags[token])) {
+      if(isDefined(self.nozzletags[token])) {
         if(change == "on") {
           self.nozzlefxid[token] = playfxontag(localclientnum, level._effect["fx_mp_tak_steam_nozzle"], self, self.nozzletags[token]);
           continue;
@@ -217,7 +216,7 @@ main() {
   precache_fxanim_props_dlc4();
   disablefx = getdvarint(#"_id_C9B177D6");
 
-  if(!isdefined(disablefx) || disablefx <= 0)
+  if(!isDefined(disablefx) || disablefx <= 0)
     precache_scripted_fx();
 }
 

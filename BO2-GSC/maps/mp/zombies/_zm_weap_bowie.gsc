@@ -10,7 +10,7 @@
 #include maps\mp\zombies\_zm_weapons;
 
 init() {
-  if(isdefined(level.bowie_cost))
+  if(isDefined(level.bowie_cost))
     cost = level.bowie_cost;
   else
     cost = 3000;

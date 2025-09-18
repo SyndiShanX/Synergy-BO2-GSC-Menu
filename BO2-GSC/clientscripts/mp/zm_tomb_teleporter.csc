@@ -7,11 +7,6 @@
 #include clientscripts\mp\zombies\_zm_weapons;
 #include clientscripts\mp\zombies\_zm_utility;
 #include clientscripts\mp\_filter;
-
-main() {
-
-}
-
 #using_animtree("fxanim_props_dlc4");
 
 init_animtree() {
@@ -22,9 +17,9 @@ teleporter_fx_play(localclientnum, oldval, newval, bnewent, binitialsnap, fieldn
   self endon("disconnect");
 
   if(newval == 1) {
-    if(!isdefined(self.fx_teleport))
+    if(!isDefined(self.fx_teleport))
       self.fx_teleport = playfxontag(localclientnum, level._effect["teleport_1p"], self, "tag_origin");
-  } else if(isdefined(self.fx_teleport)) {
+  } else if(isDefined(self.fx_teleport)) {
     stopfx(localclientnum, self.fx_teleport);
     self.fx_teleport = undefined;
   }

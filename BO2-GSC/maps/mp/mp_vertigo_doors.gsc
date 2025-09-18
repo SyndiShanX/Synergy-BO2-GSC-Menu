@@ -11,12 +11,12 @@
 init() {
   triggers = getentarray("trigger_multiple", "classname");
 
-  for (i = 0; i < 2; i++) {
+  for(i = 0; i < 2; i++) {
     door = getent("vertigo_door" + i, "targetname");
     o = (i + 1) % 2;
     otherdoor = getent("vertigo_door" + o, "targetname");
 
-    if(!isdefined(door)) {
+    if(!isDefined(door)) {
       continue;
     }
     right = anglestoforward(door.angles);
@@ -25,7 +25,7 @@ init() {
     door.origin_opened = door.origin;
     door.force_open_time = 0;
 
-    if(isdefined(door.script_noteworthy) && door.script_noteworthy == "flip")
+    if(isDefined(door.script_noteworthy) && door.script_noteworthy == "flip")
       door.origin_closed = door.origin - right;
     else
       door.origin_closed = door.origin + right;
@@ -40,7 +40,7 @@ init() {
     door.triggers = [];
 
     foreach(trigger in triggers) {
-      if(isdefined(trigger.target)) {
+      if(isDefined(trigger.target)) {
         if(trigger.target == door.targetname) {
           trigger.mins = trigger getmins();
           trigger.maxs = trigger getmaxs();
@@ -66,7 +66,7 @@ getminpoint(pointa, pointb) {
   point[1] = pointa[1];
   point[2] = pointa[2];
 
-  for (i = 0; i < 3; i++) {
+  for(i = 0; i < 3; i++) {
     if(point[i] > pointb[i])
       point[i] = pointb[i];
   }
@@ -80,7 +80,7 @@ getmaxpoint(pointa, pointb) {
   point[1] = pointa[1];
   point[2] = pointa[2];
 
-  for (i = 0; i < 3; i++) {
+  for(i = 0; i < 3; i++) {
     if(point[i] < pointb[i])
       point[i] = pointb[i];
   }
@@ -92,7 +92,7 @@ door_think(index) {
   wait(0.05 * index);
   self door_close();
 
-  for (;;) {
+  for(;;) {
     wait 0.25;
 
     if(self door_should_open()) {
@@ -111,10 +111,10 @@ door_notify_think(index) {
   wait(0.05 * index);
   self door_close();
 
-  for (;;) {
+  for(;;) {
     event = level waittill_any_return("dooropen", "doorclose");
 
-    if(!isdefined(event)) {
+    if(!isDefined(event)) {
       continue;
     }
     if(event == "dooropen")
@@ -175,16 +175,16 @@ movement_process() {
     entities = gettouchingvolume(self.origin, self.mins, self.maxs);
 
     foreach(entity in entities) {
-      if(isdefined(entity.classname) && entity.classname == "grenade") {
-        if(!isdefined(entity.name)) {
+      if(isDefined(entity.classname) && entity.classname == "grenade") {
+        if(!isDefined(entity.name)) {
           continue;
         }
-        if(!isdefined(entity.owner)) {
+        if(!isDefined(entity.owner)) {
           continue;
         }
         watcher = entity.owner getwatcherforweapon(entity.name);
 
-        if(!isdefined(watcher)) {
+        if(!isDefined(watcher)) {
           continue;
         }
         watcher thread maps\mp\gametypes\_weaponobjects::waitanddetonate(entity, 0.0, undefined);
@@ -193,14 +193,14 @@ movement_process() {
       if(self.opened) {
         continue;
       }
-      if(isdefined(entity.classname) && entity.classname == "auto_turret") {
-        if(!isdefined(entity.damagedtodeath) || !entity.damagedtodeath)
+      if(isDefined(entity.classname) && entity.classname == "auto_turret") {
+        if(!isDefined(entity.damagedtodeath) || !entity.damagedtodeath)
           entity domaxdamage(self.origin + (0, 0, 1), self, self, 0, "MOD_CRUSH");
 
         continue;
       }
 
-      if(isdefined(entity.model) && entity.model == "t6_wpn_tac_insert_world")
+      if(isDefined(entity.model) && entity.model == "t6_wpn_tac_insert_world")
         entity maps\mp\_tacticalinsertion::destroy_tactical_insertion();
     }
   }
@@ -220,13 +220,13 @@ trigger_is_occupied() {
 }
 
 getwatcherforweapon(weapname) {
-  if(!isdefined(self))
+  if(!isDefined(self))
     return undefined;
 
   if(!isplayer(self))
     return undefined;
 
-  for (i = 0; i < self.weaponobjectwatcherarray.size; i++) {
+  for(i = 0; i < self.weaponobjectwatcherarray.size; i++) {
     if(self.weaponobjectwatcherarray[i].weapon != weapname) {
       continue;
     }
@@ -240,7 +240,7 @@ door_damage_think(otherdoor) {
   self.maxhealth = 99999;
   self.health = self.maxhealth;
 
-  for (;;) {
+  for(;;) {
     self waittill("damage", damage, attacker, dir, point, mod, model, tag, part, weapon, flags);
     self.maxhealth = 99999;
     self.health = self.maxhealth;

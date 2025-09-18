@@ -83,7 +83,7 @@ init() {
 }
 
 onplayerconnect() {
-  for (;;) {
+  for(;;) {
     level waittill("connected", player);
     player.entnum = player getentitynumber();
     level.activeuavs[player.entnum] = 0;
@@ -98,7 +98,7 @@ onplayerconnect() {
 watchffaandmultiteamspawn() {
   self endon("disconnect");
 
-  for (;;) {
+  for(;;) {
     self waittill("spawned_player");
     level notify("uav_update");
   }
@@ -110,7 +110,7 @@ rotateuavrig(clockwise) {
   if(clockwise)
     turn = -360;
 
-  for (;;) {
+  for(;;) {
     if(!clockwise) {
       self rotateyaw(turn, 40);
       wait 40;
@@ -125,7 +125,7 @@ rotateuavrig(clockwise) {
 swayuavrig() {
   centerorigin = self.origin;
 
-  for (;;) {
+  for(;;) {
     z = randomintrange(-200, -100);
     time = randomintrange(3, 6);
     self moveto(centerorigin + (0, 0, z), time, 1, 1);
@@ -142,7 +142,7 @@ callcounteruav(type, displaymessage, killstreak_id) {
   iscounter = 1;
   counteruavplane = generateplane(self, timeinair, iscounter);
 
-  if(!isdefined(counteruavplane))
+  if(!isDefined(counteruavplane))
     return false;
 
   counteruavplane thread counteruav_watchfor_gamerules_destruction(self);
@@ -165,7 +165,7 @@ callspyplane(type, displaymessage, killstreak_id) {
   iscounter = 0;
   spyplane = generateplane(self, timeinair, iscounter);
 
-  if(!isdefined(spyplane))
+  if(!isDefined(spyplane))
     return false;
 
   spyplane thread spyplane_watchfor_gamerules_destruction(self);
@@ -245,15 +245,15 @@ addactivecounteruav() {
         self.owner maps\mp\_challenges::blockedsatellite();
     }
   } else {
-    assert(isdefined(self.owner.entnum));
+    assert(isDefined(self.owner.entnum));
 
-    if(!isdefined(self.owner.entnum))
+    if(!isDefined(self.owner.entnum))
       self.owner.entnum = self.owner getentitynumber();
 
     level.activecounteruavs[self.owner.entnum]++;
     keys = getarraykeys(level.activecounteruavs);
 
-    for (i = 0; i < keys.size; i++) {
+    for(i = 0; i < keys.size; i++) {
       if(keys[i] == self.owner.entnum) {
         continue;
       }
@@ -272,9 +272,9 @@ addactiveuav() {
     self.owner.activeuavs++;
     level.activeuavs[self.team]++;
   } else {
-    assert(isdefined(self.owner.entnum));
+    assert(isDefined(self.owner.entnum));
 
-    if(!isdefined(self.owner.entnum))
+    if(!isDefined(self.owner.entnum))
       self.owner.entnum = self.owner getentitynumber();
 
     level.activeuavs[self.owner.entnum]++;
@@ -288,9 +288,9 @@ addactivesatellite() {
     self.owner.activesatellites++;
     level.activesatellites[self.team]++;
   } else {
-    assert(isdefined(self.owner.entnum));
+    assert(isDefined(self.owner.entnum));
 
-    if(!isdefined(self.owner.entnum))
+    if(!isDefined(self.owner.entnum))
       self.owner.entnum = self.owner getentitynumber();
 
     level.activesatellites[self.owner.entnum]++;
@@ -301,7 +301,7 @@ addactivesatellite() {
 
 removeactiveuav() {
   if(level.teambased) {
-    if(isdefined(self.owner) && self.owner.spawntime < self.birthtime) {
+    if(isDefined(self.owner) && self.owner.spawntime < self.birthtime) {
       self.owner.activeuavs--;
       assert(self.owner.activeuavs >= 0);
 
@@ -314,10 +314,10 @@ removeactiveuav() {
 
     if(level.activeuavs[self.team] < 0)
       level.activeuavs[self.team] = 0;
-  } else if(isdefined(self.owner)) {
-    assert(isdefined(self.owner.entnum));
+  } else if(isDefined(self.owner)) {
+    assert(isDefined(self.owner.entnum));
 
-    if(!isdefined(self.owner.entnum))
+    if(!isDefined(self.owner.entnum))
       self.owner.entnum = self.owner getentitynumber();
 
     level.activeuavs[self.owner.entnum]--;
@@ -333,7 +333,7 @@ removeactiveuav() {
 
 removeactivecounteruav() {
   if(level.teambased) {
-    if(isdefined(self.owner) && self.owner.spawntime < self.birthtime) {
+    if(isDefined(self.owner) && self.owner.spawntime < self.birthtime) {
       self.owner.activecounteruavs--;
       assert(self.owner.activecounteruavs >= 0);
 
@@ -346,10 +346,10 @@ removeactivecounteruav() {
 
     if(level.activecounteruavs[self.team] < 0)
       level.activecounteruavs[self.team] = 0;
-  } else if(isdefined(self.owner)) {
-    assert(isdefined(self.owner.entnum));
+  } else if(isDefined(self.owner)) {
+    assert(isDefined(self.owner.entnum));
 
-    if(!isdefined(self.owner.entnum))
+    if(!isDefined(self.owner.entnum))
       self.owner.entnum = self.owner getentitynumber();
 
     level.activecounteruavs[self.owner.entnum]--;
@@ -365,7 +365,7 @@ removeactivecounteruav() {
 
 removeactivesatellite() {
   if(level.teambased) {
-    if(self.owner.spawntime < self.birthtime && isdefined(self.owner)) {
+    if(self.owner.spawntime < self.birthtime && isDefined(self.owner)) {
       self.owner.activesatellites--;
       assert(self.owner.activesatellites >= 0);
 
@@ -378,10 +378,10 @@ removeactivesatellite() {
 
     if(level.activesatellites[self.team] < 0)
       level.activesatellites[self.team] = 0;
-  } else if(isdefined(self.owner)) {
-    assert(isdefined(self.owner.entnum));
+  } else if(isDefined(self.owner)) {
+    assert(isDefined(self.owner.entnum));
 
-    if(!isdefined(self.owner.entnum))
+    if(!isDefined(self.owner.entnum))
       self.owner.entnum = self.owner getentitynumber();
 
     level.activesatellites[self.owner.entnum]--;
@@ -409,7 +409,7 @@ playspyplaneafterburnerfx() {
 playcounterspyplanefx() {
   wait 0.1;
 
-  if(isdefined(self))
+  if(isDefined(self))
     playfxontag(level.fx_cuav_burner, self, "tag_origin");
 }
 
@@ -420,20 +420,20 @@ playcounterspyplaneafterburnerfx() {
 }
 
 playuavpilotdialog(dialog, owner, delaytime) {
-  if(isdefined(delaytime))
+  if(isDefined(delaytime))
     wait(delaytime);
 
   self.pilotvoicenumber = owner.bcvoicenumber + 1;
   soundalias = level.teamprefix[owner.team] + self.pilotvoicenumber + "_" + dialog;
 
-  if(isdefined(owner.pilotisspeaking)) {
+  if(isDefined(owner.pilotisspeaking)) {
     if(owner.pilotisspeaking) {
-      while (owner.pilotisspeaking)
+      while(owner.pilotisspeaking)
         wait 0.2;
     }
   }
 
-  if(isdefined(owner)) {
+  if(isDefined(owner)) {
     owner playlocalsound(soundalias);
     owner.pilotisspeaking = 1;
     owner thread waitplaybacktime(soundalias);
@@ -510,7 +510,7 @@ play_light_fx(iscounter) {
 updatevisibility() {
   self endon("death");
 
-  for (;;) {
+  for(;;) {
     if(level.teambased)
       self setvisibletoallexceptteam(self.team);
     else {
@@ -523,10 +523,11 @@ updatevisibility() {
 }
 
 debugline(frompoint, topoint, color, durationframes) {
-  for (i = 0; i < durationframes * 20; i++) {
+  for(i = 0; i < durationframes * 20; i++) {
     line(frompoint, topoint, color);
     wait 0.05;
   }
+
 }
 
 plane_damage_monitor(isspyplane) {
@@ -536,10 +537,10 @@ plane_damage_monitor(isspyplane) {
   self setcandamage(1);
   self.damagetaken = 0;
 
-  for (;;) {
+  for(;;) {
     self waittill("damage", damage, attacker, direction, point, type, tagname, modelname, partname, weapon);
 
-    if(!isdefined(attacker) || !isplayer(attacker)) {
+    if(!isDefined(attacker) || !isplayer(attacker)) {
       continue;
     }
     friendlyfire = maps\mp\gametypes\_weaponobjects::friendlyfirecheck(self.owner, attacker);
@@ -547,13 +548,13 @@ plane_damage_monitor(isspyplane) {
     if(!friendlyfire) {
       continue;
     }
-    if(isdefined(self.owner) && attacker == self.owner) {
+    if(isDefined(self.owner) && attacker == self.owner) {
       continue;
     }
     isvalidattacker = 1;
 
     if(level.teambased)
-      isvalidattacker = isdefined(attacker.team) && attacker.team != self.team;
+      isvalidattacker = isDefined(attacker.team) && attacker.team != self.team;
 
     if(!isvalidattacker) {
       continue;
@@ -607,28 +608,26 @@ plane_damage_monitor(isspyplane) {
       if(isspyplane) {
         level thread maps\mp\_popups::displayteammessagetoall(&"KILLSTREAK_DESTROYED_UAV", attacker);
 
-        if(isdefined(self.owner))
+        if(isDefined(self.owner))
           self.owner maps\mp\gametypes\_globallogic_audio::leaderdialogonplayer("uav_destroyed", "item_destroyed");
 
-        if(!isdefined(self.owner) || self.owner isenemyplayer(attacker)) {
+        if(!isDefined(self.owner) || self.owner isenemyplayer(attacker)) {
           thread maps\mp\_scoreevents::processscoreevent("destroyed_uav", attacker, self.owner, weapon);
           attacker maps\mp\_challenges::addflyswatterstat(weapon, self);
         } else {
-
         }
 
         spyplane_death();
       } else {
         level thread maps\mp\_popups::displayteammessagetoall(&"KILLSTREAK_DESTROYED_COUNTERUAV", attacker);
 
-        if(isdefined(self.owner))
+        if(isDefined(self.owner))
           self.owner maps\mp\gametypes\_globallogic_audio::leaderdialogonplayer("cuav_destroyed", "item_destroyed");
 
-        if(!isdefined(self.owner) || self.owner isenemyplayer(attacker)) {
+        if(!isDefined(self.owner) || self.owner isenemyplayer(attacker)) {
           thread maps\mp\_scoreevents::processscoreevent("destroyed_counter_uav", attacker, self.owner, weapon);
           attacker maps\mp\_challenges::addflyswatterstat(weapon, self);
         } else {
-
         }
 
         counteruavplane_death();
@@ -645,7 +644,7 @@ plane_health() {
   self.currentstate = "ok";
   self.laststate = "ok";
 
-  while (self.currentstate != "leaving") {
+  while(self.currentstate != "leaving") {
     if(self.damagetaken >= self.health_low)
       self.currentstate = "damaged";
 
@@ -655,6 +654,7 @@ plane_health() {
     }
 
     debug_print3d_simple("Health: " + (self.maxhealth - self.damagetaken), self, vectorscale((0, 0, 1), 100.0), 20);
+
     wait 1;
   }
 }
@@ -761,7 +761,7 @@ spyplane_timeout(timeinair, owner) {
 waittilltimeoutmigrationaware(timeremaining, owner) {
   owner endon("disconnect");
 
-  for (;;) {
+  for(;;) {
     self.endtime = gettime() + timeremaining;
     event = level waittill_any_timeout(timeremaining / 1000, "game_ended", "host_migration_begin");
 
@@ -788,7 +788,7 @@ planestoploop(time) {
 plane_leave() {
   self unlink();
 
-  if(isdefined(self.iscounter) && self.iscounter) {
+  if(isDefined(self.iscounter) && self.iscounter) {
     self thread playcounterspyplaneafterburnerfx();
     self playsound("veh_kls_uav_afterburner");
     self thread play_light_fx(1);
@@ -809,10 +809,10 @@ plane_leave() {
   tries = 10;
   yaw = 0;
 
-  while (tries > 0) {
+  while(tries > 0) {
     exitvector = anglestoforward(self.angles + (0, yaw, 0)) * 20000;
 
-    if(isdefined(self.iscounter) && self.iscounter) {
+    if(isDefined(self.iscounter) && self.iscounter) {
       self thread playcounterspyplanefx();
       exitvector = exitvector * 1.0;
     }
@@ -821,7 +821,7 @@ plane_leave() {
     exitpoint = self.origin + exitvector;
     nfz = crossesnoflyzone(self.origin, exitpoint);
 
-    if(isdefined(nfz)) {
+    if(isDefined(nfz)) {
       if(tries != 1) {
         if(tries % 2 == 1)
           yaw = yaw * -1;
@@ -848,7 +848,7 @@ plane_leave() {
 flattenroll() {
   self endon("death");
 
-  while (self.angles[2] < 0) {
+  while(self.angles[2] < 0) {
     self.angles = (self.angles[0], self.angles[1], self.angles[2] + 2.5);
     wait 0.05;
   }
@@ -861,7 +861,7 @@ flattenyaw(goal) {
   if(self.angles[1] > goal)
     increment = increment * -1;
 
-  while (abs(self.angles[1] - goal) > 3) {
+  while(abs(self.angles[1] - goal) > 3) {
     self.angles = (self.angles[0], self.angles[1] + increment, self.angles[2]);
     wait 0.05;
   }
@@ -870,7 +870,7 @@ flattenyaw(goal) {
 uavtracker() {
   level endon("game_ended");
 
-  for (;;) {
+  for(;;) {
     level waittill("uav_update");
 
     if(level.teambased) {
@@ -909,11 +909,11 @@ updateteamuavstatus(team) {
 }
 
 updateplayersuavstatus() {
-  for (i = 0; i < level.players.size; i++) {
+  for(i = 0; i < level.players.size; i++) {
     player = level.players[i];
-    assert(isdefined(player.entnum));
+    assert(isDefined(player.entnum));
 
-    if(!isdefined(player.entnum))
+    if(!isDefined(player.entnum))
       player.entnum = player getentitynumber();
 
     activeuavs = level.activeuavs[player.entnum];
@@ -928,7 +928,7 @@ updateplayersuavstatus() {
 
     player.hassatellite = 0;
 
-    if(activeuavs == 0 && !(isdefined(player.pers["hasRadar"]) && player.pers["hasRadar"])) {
+    if(activeuavs == 0 && !(isDefined(player.pers["hasRadar"]) && player.pers["hasRadar"])) {
       player.hasspyplane = 0;
       player setclientuivisibilityflag("radar_client", 0);
       continue;

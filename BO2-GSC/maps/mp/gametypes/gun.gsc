@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\gametypes\gun.gsc
-***************************************/
+**************************************/
 
 #include maps\mp\_utility;
 #include maps\mp\gametypes\_hud_util;
@@ -123,14 +123,14 @@ main() {
 }
 
 addguntoprogression(gunname, altname) {
-  if(!isdefined(level.gunprogression))
+  if(!isDefined(level.gunprogression))
     level.gunprogression = [];
 
   newweapon = spawnstruct();
   newweapon.names = [];
   newweapon.names[newweapon.names.size] = gunname;
 
-  if(isdefined(altname))
+  if(isDefined(altname))
     newweapon.names[newweapon.names.size] = altname;
 
   level.gunprogression[level.gunprogression.size] = newweapon;
@@ -139,10 +139,10 @@ addguntoprogression(gunname, altname) {
 givecustomloadout(takeallweapons, alreadyspawned) {
   chooserandombody = 0;
 
-  if(!isdefined(alreadyspawned) || !alreadyspawned)
+  if(!isDefined(alreadyspawned) || !alreadyspawned)
     chooserandombody = 1;
 
-  if(!isdefined(self.gunprogress))
+  if(!isDefined(self.gunprogress))
     self.gunprogress = 0;
 
   currentweapon = level.gunprogression[self.gunprogress].names[0];
@@ -152,10 +152,10 @@ givecustomloadout(takeallweapons, alreadyspawned) {
   self switchtoweapon(currentweapon);
   self giveweapon("knife_mp");
 
-  if(!isdefined(alreadyspawned) || !alreadyspawned)
+  if(!isDefined(alreadyspawned) || !alreadyspawned)
     self setspawnweapon(currentweapon);
 
-  if(isdefined(takeallweapons) && !takeallweapons)
+  if(isDefined(takeallweapons) && !takeallweapons)
     self thread takeoldweapons(currentweapon);
   else
     self enableweaponcycling();
@@ -167,7 +167,7 @@ takeoldweapons(currentweapon) {
   self endon("disconnect");
   self endon("death");
 
-  for (;;) {
+  for(;;) {
     self waittill("weapon_change", newweapon);
 
     if(newweapon != "none") {
@@ -177,7 +177,7 @@ takeoldweapons(currentweapon) {
 
   weaponslist = self getweaponslist();
 
-  for (i = 0; i < weaponslist.size; i++) {
+  for(i = 0; i < weaponslist.size; i++) {
     if(weaponslist[i] != currentweapon && weaponslist[i] != "knife_mp")
       self takeweapon(weaponslist[i]);
   }
@@ -191,7 +191,7 @@ promoteplayer(weaponused) {
   level endon("game_ended");
   wait 0.05;
 
-  for (i = 0; i < level.gunprogression[self.gunprogress].names.size; i++) {
+  for(i = 0; i < level.gunprogression[self.gunprogress].names.size; i++) {
     if(weaponused == level.gunprogression[self.gunprogress].names[i] || weaponused == "explosive_bolt_mp" && (level.gunprogression[self.gunprogress].names[i] == "crossbow_mp" || level.gunprogression[self.gunprogress].names[i] == "crossbow_mp+reflex" || level.gunprogression[self.gunprogress].names[i] == "crossbow_mp+acog")) {
       if(self.gunprogress < level.gunprogression.size - 1) {
         self.gunprogress++;
@@ -220,7 +220,7 @@ demoteplayer() {
   self notify("cancel_promotion");
   startinggunprogress = self.gunprogress;
 
-  for (i = 0; i < level.setbacksperdemotion; i++) {
+  for(i = 0; i < level.setbacksperdemotion; i++) {
     if(self.gunprogress <= 0) {
       break;
     }
@@ -245,13 +245,13 @@ onplayerkilled(einflictor, attacker, idamage, smeansofdeath, sweapon, vdir, shit
     return;
   }
 
-  if(isdefined(attacker) && isplayer(attacker)) {
+  if(isDefined(attacker) && isplayer(attacker)) {
     if(attacker == self) {
       self thread demoteplayer();
       return;
     }
 
-    if(isdefined(attacker.lastpromotiontime) && attacker.lastpromotiontime + 3000 > gettime())
+    if(isDefined(attacker.lastpromotiontime) && attacker.lastpromotiontime + 3000 > gettime())
       maps\mp\_scoreevents::processscoreevent("kill_in_3_seconds_gun", attacker, self, sweapon);
 
     if(smeansofdeath == "MOD_MELEE") {
@@ -333,7 +333,7 @@ infiniteammo() {
   self endon("death");
   self endon("disconnect");
 
-  for (;;) {
+  for(;;) {
     wait 0.1;
     weapon = self getcurrentweapon();
     self givemaxammo(weapon);
@@ -343,26 +343,26 @@ infiniteammo() {
 onwagerawards() {
   stabs = self maps\mp\gametypes\_globallogic_score::getpersstat("stabs");
 
-  if(!isdefined(stabs))
+  if(!isDefined(stabs))
     stabs = 0;
 
   self maps\mp\gametypes\_persistence::setafteractionreportstat("wagerAwards", stabs, 0);
   headshots = self maps\mp\gametypes\_globallogic_score::getpersstat("headshots");
 
-  if(!isdefined(headshots))
+  if(!isDefined(headshots))
     headshots = 0;
 
   self maps\mp\gametypes\_persistence::setafteractionreportstat("wagerAwards", headshots, 1);
   bestkillstreak = self maps\mp\gametypes\_globallogic_score::getpersstat("best_kill_streak");
 
-  if(!isdefined(bestkillstreak))
+  if(!isDefined(bestkillstreak))
     bestkillstreak = 0;
 
   self maps\mp\gametypes\_persistence::setafteractionreportstat("wagerAwards", bestkillstreak, 2);
 }
 
 onendgame(winningplayer) {
-  if(isdefined(winningplayer) && isplayer(winningplayer))
+  if(isDefined(winningplayer) && isplayer(winningplayer))
     [[level._setplayerscore]](winningplayer, [
       [level._getplayerscore]
     ](winningplayer) + level.gungamekillscore);

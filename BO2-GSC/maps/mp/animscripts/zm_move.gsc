@@ -26,10 +26,10 @@ movemainloop() {
   self sidestepinit();
   self thread trysidestepthread();
 
-  for (;;) {
+  for(;;) {
     self maps\mp\animscripts\zm_run::moverun();
 
-    if(isdefined(self.zombie_can_sidestep) && self.zombie_can_sidestep)
+    if(isDefined(self.zombie_can_sidestep) && self.zombie_can_sidestep)
       self trysidestep();
   }
 }
@@ -44,26 +44,26 @@ trysidestepthread() {
   self notify("new_trySideStepThread");
   self endon("new_trySideStepThread");
 
-  if(!isdefined(self.zombie_can_sidestep))
+  if(!isDefined(self.zombie_can_sidestep))
     return false;
 
-  if(isdefined(self.zombie_can_sidestep) && !self.zombie_can_sidestep)
+  if(isDefined(self.zombie_can_sidestep) && !self.zombie_can_sidestep)
     return false;
 
-  while (true) {
+  while(true) {
     self trysidestep();
     wait 0.05;
   }
 }
 
 trysidestep() {
-  if(isdefined(self.shouldsidestepfunc))
+  if(isDefined(self.shouldsidestepfunc))
     self.sidesteptype = self[[self.shouldsidestepfunc]]();
   else
     self.sidesteptype = shouldsidestep();
 
   if(self.sidesteptype == "none") {
-    if(isdefined(self.zombie_can_forwardstep) && self.zombie_can_forwardstep)
+    if(isDefined(self.zombie_can_forwardstep) && self.zombie_can_forwardstep)
       self.sidesteptype = shouldforwardstep();
   }
 
@@ -124,13 +124,13 @@ shouldsidestep() {
 }
 
 cansidestep() {
-  if(!isdefined(self.zombie_can_sidestep) || !self.zombie_can_sidestep)
+  if(!isDefined(self.zombie_can_sidestep) || !self.zombie_can_sidestep)
     return false;
 
   if(gettime() - self.a.lastsidesteptime < 2000)
     return false;
 
-  if(!isdefined(self.enemy))
+  if(!isDefined(self.enemy))
     return false;
 
   if(self.a.pose != "stand")
@@ -144,7 +144,7 @@ cansidestep() {
   if(distsqfromenemy > 1000000)
     return false;
 
-  if(!isdefined(self.pathgoalpos) || distancesquared(self.origin, self.pathgoalpos) < 4096)
+  if(!isDefined(self.pathgoalpos) || distancesquared(self.origin, self.pathgoalpos) < 4096)
     return false;
 
   if(abs(self getmotionangle()) > 15)
@@ -166,10 +166,10 @@ shouldforwardstep() {
 }
 
 canforwardstep() {
-  if(isdefined(self.a.lastsidesteptime) && gettime() - self.a.lastsidesteptime < 2000)
+  if(isDefined(self.a.lastsidesteptime) && gettime() - self.a.lastsidesteptime < 2000)
     return false;
 
-  if(!isdefined(self.enemy))
+  if(!isDefined(self.enemy))
     return false;
 
   if(self.a.pose != "stand")
@@ -183,7 +183,7 @@ canforwardstep() {
   if(distsqfromenemy > 5760000)
     return false;
 
-  if(!isdefined(self.pathgoalpos) || distancesquared(self.origin, self.pathgoalpos) < 4096)
+  if(!isDefined(self.pathgoalpos) || distancesquared(self.origin, self.pathgoalpos) < 4096)
     return false;
 
   if(abs(self getmotionangle()) > 15)
@@ -216,7 +216,7 @@ playsidestepanim(stepanim, sidesteptype) {
   self orientmode("face angle", self.angles[1]);
   runblendouttime = 0.2;
 
-  if(isdefined(self.sidestepfunc))
+  if(isDefined(self.sidestepfunc))
     self thread[[self.sidestepfunc]]("step_anim", stepanim);
 
   self setanimstatefromasd(self.asd_name, self.substate_index);

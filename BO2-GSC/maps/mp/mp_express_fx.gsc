@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\mp_express_fx.gsc
-***************************************/
+**************************************/
 
 #include maps\mp\_utility;
 #include maps\mp\createfx\mp_express_fx;
@@ -52,7 +52,6 @@ precache_scripted_fx() {
 }
 
 precache_createfx_fx() {
-
 }
 
 #using_animtree("fxanim_props");

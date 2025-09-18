@@ -56,7 +56,7 @@ init() {
   if(level.mechz_spawners.size == 0) {
     return;
   }
-  for (i = 0; i < level.mechz_spawners.size; i++) {
+  for(i = 0; i < level.mechz_spawners.size; i++) {
     level.mechz_spawners[i].is_enabled = 1;
     level.mechz_spawners[i].script_forcespawn = 1;
   }
@@ -121,13 +121,15 @@ init() {
   registerclientfield("toplayer", "mechz_grab", 14000, 1, "int");
   level thread init_flamethrower_triggers();
 
-  if(isdefined(level.mechz_spawning_logic_override_func))
+  if(isDefined(level.mechz_spawning_logic_override_func))
     level thread[[level.mechz_spawning_logic_override_func]]();
   else
     level thread mechz_spawning_logic();
 
   scriptmodelsuseanimtree(#animtree);
+
   setup_devgui();
+
   maps\mp\zombies\_zm_ai_mechz_ffotd::mechz_init_end();
 }
 
@@ -150,8 +152,8 @@ mechz_setup_armor_pieces() {
   level.mechz_armor_info[5] = spawnstruct();
   level.mechz_armor_info[5].tag = "J_Root_Attach_RI";
 
-  for (i = 0; i < level.mechz_armor_info.size; i++) {
-    if(isdefined(level.mechz_armor_info[i].model))
+  for(i = 0; i < level.mechz_armor_info.size; i++) {
+    if(isDefined(level.mechz_armor_info[i].model))
       precachemodel(level.mechz_armor_info[i].model);
   }
 }
@@ -172,7 +174,7 @@ clear_one_off_fx(fx_id) {
 traversal_booster_fx_watcher() {
   self endon("death");
 
-  while (true) {
+  while(true) {
     self waittill("traverse_anim", notetrack);
 
     if(notetrack == "booster_on") {
@@ -193,10 +195,10 @@ booster_fx_watcher() {
   self endon("death");
   self thread traversal_booster_fx_watcher();
 
-  while (true) {
+  while(true) {
     self waittill("jump_anim", notetrack);
 
-    if(isdefined(self.mechz_hidden) && self.mechz_hidden) {
+    if(isDefined(self.mechz_hidden) && self.mechz_hidden) {
       continue;
     }
     if(notetrack == "booster_on") {
@@ -210,7 +212,7 @@ booster_fx_watcher() {
     } else if(notetrack == "impact") {
       self.fx_field = self.fx_field | 512;
 
-      if(isdefined(self.has_helmet) && self.has_helmet)
+      if(isDefined(self.has_helmet) && self.has_helmet)
         self.fx_field = self.fx_field | 2048;
 
       self thread clear_one_off_fx(512);
@@ -223,7 +225,7 @@ booster_fx_watcher() {
 flamethrower_fx_watcher() {
   self endon("death");
 
-  while (true) {
+  while(true) {
     self waittill("flamethrower_anim", notetrack);
 
     if(notetrack == "start_ft")
@@ -244,7 +246,7 @@ fx_cleanup() {
 mechz_setup_snd() {
   self.audio_type = "mechz";
 
-  if(!isdefined(self.sndloopent)) {
+  if(!isDefined(self.sndloopent)) {
     self.sndloopent = spawn("script_origin", self.origin);
     self.sndloopent linkto(self, "tag_origin");
     self thread snddeleteentondeath(self.sndloopent);
@@ -262,10 +264,9 @@ play_ambient_mechz_vocals() {
   self endon("death");
   wait(randomintrange(2, 4));
 
-  while (true) {
-    if(isdefined(self)) {
-      if(isdefined(self.favoriteenemy) && distance(self.origin, self.favoriteenemy.origin) <= 150) {
-
+  while(true) {
+    if(isDefined(self)) {
+      if(isDefined(self.favoriteenemy) && distance(self.origin, self.favoriteenemy.origin) <= 150) {
       } else
         self playsound("zmb_ai_mechz_vox_ambient");
     }
@@ -275,8 +276,9 @@ play_ambient_mechz_vocals() {
 }
 
 enable_mechz_rounds() {
-  if(getdvarint(#"_id_FA81816F") >= 2)
+  if(getdvarint(#"_id_FA81816F") >= 2) {
     return;
+  }
   level.mechz_rounds_enabled = 1;
   flag_init("mechz_round");
   level thread mechz_round_tracker();
@@ -288,22 +290,22 @@ mechz_round_tracker() {
   old_spawn_func = level.round_spawn_func;
   old_wait_func = level.round_wait_func;
 
-  while (!isdefined(level.zombie_mechz_locations))
+  while(!isDefined(level.zombie_mechz_locations))
     wait 0.05;
 
   flag_wait("activate_zone_nml");
   mech_start_round_num = 8;
 
-  if(isdefined(level.is_forever_solo_game) && level.is_forever_solo_game)
+  if(isDefined(level.is_forever_solo_game) && level.is_forever_solo_game)
     mech_start_round_num = 8;
 
-  while (level.round_number < mech_start_round_num)
+  while(level.round_number < mech_start_round_num)
     level waittill("between_round_over");
 
   level.next_mechz_round = level.round_number;
   level thread debug_print_mechz_round();
 
-  while (true) {
+  while(true) {
     maps\mp\zombies\_zm_ai_mechz_ffotd::mechz_round_tracker_loop_start();
 
     if(level.num_mechz_spawned > 0)
@@ -313,7 +315,7 @@ mechz_round_tracker() {
       a_zombies = getaispeciesarray(level.zombie_team, "all");
 
       foreach(zombie in a_zombies) {
-        if(isdefined(zombie.is_mechz) && zombie.is_mechz && isalive(zombie)) {
+        if(isDefined(zombie.is_mechz) && zombie.is_mechz && isalive(zombie)) {
           level.next_mechz_round++;
           break;
         }
@@ -323,7 +325,7 @@ mechz_round_tracker() {
     if(level.mechz_left_to_spawn == 0 && level.next_mechz_round <= level.round_number) {
       mechz_health_increases();
 
-      if(isdefined(level.is_forever_solo_game) && level.is_forever_solo_game)
+      if(isDefined(level.is_forever_solo_game) && level.is_forever_solo_game)
         level.mechz_zombie_per_round = 1;
       else if(level.mechz_round_count < 2)
         level.mechz_zombie_per_round = 1;
@@ -337,7 +339,7 @@ mechz_round_tracker() {
       wait(randomfloatrange(10.0, 15.0));
       level notify("spawn_mechz");
 
-      if(isdefined(level.is_forever_solo_game) && level.is_forever_solo_game)
+      if(isDefined(level.is_forever_solo_game) && level.is_forever_solo_game)
         n_round_gap = randomintrange(level.mechz_min_round_fq_solo, level.mechz_max_round_fq_solo);
       else
         n_round_gap = randomintrange(level.mechz_min_round_fq, level.mechz_max_round_fq);
@@ -356,17 +358,18 @@ mechz_round_tracker() {
 
 debug_print_mechz_round() {
   flag_wait("start_zombie_round_logic");
+
   iprintln("Next mechz Round = " + level.next_mechz_round);
 }
 
 mechz_spawning_logic() {
   level thread enable_mechz_rounds();
 
-  while (true) {
+  while(true) {
     level waittill("spawn_mechz");
 
-    while (level.mechz_left_to_spawn) {
-      while (level.zombie_mechz_locations.size < 1)
+    while(level.mechz_left_to_spawn) {
+      while(level.zombie_mechz_locations.size < 1)
         wait(randomfloatrange(5.0, 10.0));
 
       ai = spawn_zombie(level.mechz_spawners[0]);
@@ -383,25 +386,24 @@ mechz_spawning_logic() {
 }
 
 mechz_prespawn() {
-
 }
 
 mechz_attach_objects() {
   self detachall();
   self.armor_state = [];
 
-  for (i = 0; i < level.mechz_armor_info.size; i++) {
+  for(i = 0; i < level.mechz_armor_info.size; i++) {
     self.armor_state[i] = spawnstruct();
     self.armor_state[i].index = i;
     self.armor_state[i].tag = level.mechz_armor_info[i].tag;
 
-    if(isdefined(level.mechz_armor_info[i].model)) {
+    if(isDefined(level.mechz_armor_info[i].model)) {
       self attach(level.mechz_armor_info[i].model, level.mechz_armor_info[i].tag, 1);
       self.armor_state[i].model = level.mechz_armor_info[i].model;
     }
   }
 
-  if(isdefined(self.m_claw)) {
+  if(isDefined(self.m_claw)) {
     self.m_claw delete();
     self.m_claw = undefined;
   }
@@ -414,7 +416,7 @@ mechz_attach_objects() {
   self.m_claw linkto(self, "tag_claw");
   self.m_claw useanimtree(#animtree);
 
-  if(isdefined(self.m_claw_damage_trigger)) {
+  if(isDefined(self.m_claw_damage_trigger)) {
     self.m_claw_damage_trigger unlink();
     self.m_claw_damage_trigger delete();
     self.m_claw_damage_trigger = undefined;
@@ -445,12 +447,14 @@ mechz_set_starting_health() {
   self.powerplant_dmg = 0;
   self.powerplant_dmg_for_destroy = self.maxhealth * level.mechz_powerplant_destroyed_health_percentage;
   level.mechz_explosive_dmg_to_cancel_claw = self.maxhealth * level.mechz_explosive_dmg_to_cancel_claw_percentage;
+
   if(getdvarint(#"_id_E7121222") > 0) {
     println("\\nMZ: MechZ Starting Health: " + self.maxhealth);
     println("\\nMZ: MechZ Required Helmet Dmg: " + self.helmet_dmg_for_removal);
     println("\\nMZ: MechZ Required Powerplant Cover Dmg: " + self.powerplant_cover_dmg_for_removal);
     println("\\nMZ: MechZ Required Powerplant Dmg: " + self.powerplant_dmg_for_destroy);
   }
+
   self.health = level.mechz_health;
   self.non_attacker_func = ::mechz_non_attacker_damage_override;
   self.non_attack_func_takes_attacker = 1;
@@ -500,26 +504,27 @@ mechz_spawn() {
   if(level.zombie_mechz_locations.size)
     spawn_pos = self get_best_mechz_spawn_pos();
 
-  if(!isdefined(spawn_pos)) {
+  if(!isDefined(spawn_pos)) {
     println("ERROR: Tried to spawn mechz with no mechz spawn_positions!\\n");
     iprintln("ERROR: Tried to spawn mechz with no mechz spawn_positions!");
+
     self delete();
     return;
   }
 
-  if(isdefined(level.mechz_force_spawn_pos)) {
+  if(isDefined(level.mechz_force_spawn_pos)) {
     spawn_pos = level.mechz_force_spawn_pos;
     level.mechz_force_spawn_pos = undefined;
   }
 
-  if(!isdefined(spawn_pos.angles))
+  if(!isDefined(spawn_pos.angles))
     spawn_pos.angles = (0, 0, 0);
 
   self thread mechz_death();
   self forceteleport(spawn_pos.origin, spawn_pos.angles);
   self playsound("zmb_ai_mechz_incoming_alarm");
 
-  if(!isdefined(spawn_pos.angles))
+  if(!isDefined(spawn_pos.angles))
     spawn_pos.angles = (0, 0, 0);
 
   self animscripted(spawn_pos.origin, spawn_pos.angles, "zm_spawn");
@@ -528,7 +533,7 @@ mechz_spawn() {
   self solid();
   self set_zombie_run_cycle("walk");
 
-  if(isdefined(level.mechz_find_flesh_override_func))
+  if(isDefined(level.mechz_find_flesh_override_func))
     level thread[[level.mechz_find_flesh_override_func]]();
   else
     self thread mechz_find_flesh();
@@ -544,7 +549,7 @@ get_closest_mechz_spawn_pos(org) {
   best_pos = undefined;
   players = get_players();
 
-  for (i = 0; i < level.zombie_mechz_locations.size; i++) {
+  for(i = 0; i < level.zombie_mechz_locations.size; i++) {
     dist = distancesquared(org, level.zombie_mechz_locations[i].origin);
 
     if(dist < best_dist || best_dist < 0) {
@@ -553,27 +558,28 @@ get_closest_mechz_spawn_pos(org) {
     }
   }
 
-  if(!isdefined(best_pos))
+  if(!isDefined(best_pos))
     println("Error: Mechz could not find a valid jump pos from position ( " + self.origin[0] + ", " + self.origin[1] + ", " + self.origin[2] + " )");
+
   return best_pos;
 }
 
 get_best_mechz_spawn_pos(ignore_used_positions) {
-  if(!isdefined(ignore_used_positions))
+  if(!isDefined(ignore_used_positions))
     ignore_used_positions = 0;
 
   best_dist = -1;
   best_pos = undefined;
   players = get_players();
 
-  for (i = 0; i < level.zombie_mechz_locations.size; i++) {
-    if(!ignore_used_positions && (isdefined(level.zombie_mechz_locations[i].has_been_used) && level.zombie_mechz_locations[i].has_been_used)) {
+  for(i = 0; i < level.zombie_mechz_locations.size; i++) {
+    if(!ignore_used_positions && (isDefined(level.zombie_mechz_locations[i].has_been_used) && level.zombie_mechz_locations[i].has_been_used)) {
       continue;
     }
-    if(ignore_used_positions == 1 && (isdefined(level.zombie_mechz_locations[i].used_cooldown) && level.zombie_mechz_locations[i].used_cooldown)) {
+    if(ignore_used_positions == 1 && (isDefined(level.zombie_mechz_locations[i].used_cooldown) && level.zombie_mechz_locations[i].used_cooldown)) {
       continue;
     }
-    for (j = 0; j < players.size; j++) {
+    for(j = 0; j < players.size; j++) {
       if(is_player_valid(players[j], 1, 1)) {
         dist = distancesquared(level.zombie_mechz_locations[i].origin, players[j].origin);
 
@@ -585,10 +591,10 @@ get_best_mechz_spawn_pos(ignore_used_positions) {
     }
   }
 
-  if(ignore_used_positions && isdefined(best_pos))
+  if(ignore_used_positions && isDefined(best_pos))
     best_pos thread jump_pos_used_cooldown();
 
-  if(isdefined(best_pos))
+  if(isDefined(best_pos))
     best_pos.has_been_used = 1;
   else if(level.zombie_mechz_locations.size > 0)
     return level.zombie_mechz_locations[randomint(level.zombie_mechz_locations.size)];
@@ -597,7 +603,7 @@ get_best_mechz_spawn_pos(ignore_used_positions) {
 }
 
 mechz_clear_spawns() {
-  for (i = 0; i < level.zombie_mechz_locations.size; i++)
+  for(i = 0; i < level.zombie_mechz_locations.size; i++)
     level.zombie_mechz_locations[i].has_been_used = 0;
 }
 
@@ -608,7 +614,7 @@ jump_pos_used_cooldown() {
 }
 
 mechz_health_increases() {
-  if(!isdefined(level.mechz_last_spawn_round) || level.round_number > level.mechz_last_spawn_round) {
+  if(!isDefined(level.mechz_last_spawn_round) || level.round_number > level.mechz_last_spawn_round) {
     a_players = getplayers();
     n_player_modifier = 1;
 
@@ -630,7 +636,7 @@ mechz_death() {
   self waittill("death");
   death_origin = self.origin;
 
-  if(isdefined(self.robot_stomped) && self.robot_stomped)
+  if(isDefined(self.robot_stomped) && self.robot_stomped)
     death_origin = death_origin + vectorscale((0, 0, 1), 90.0);
 
   self mechz_claw_detach();
@@ -640,8 +646,8 @@ mechz_death() {
   self thread maps\mp\zombies\_zm_spawner::zombie_eye_glow_stop();
   self mechz_interrupt();
 
-  if(isdefined(self.favoriteenemy)) {
-    if(isdefined(self.favoriteenemy.hunted_by))
+  if(isDefined(self.favoriteenemy)) {
+    if(isDefined(self.favoriteenemy.hunted_by))
       self.favoriteenemy.hunted_by--;
   }
 
@@ -663,7 +669,7 @@ mechz_death() {
     self.attacker maps\mp\zombies\_zm_stats::increment_client_stat("tomb_mechz_killed", 0);
     self.attacker maps\mp\zombies\_zm_stats::increment_player_stat("tomb_mechz_killed");
 
-    if(isdefined(level.mechz_should_drop_powerup) && level.mechz_should_drop_powerup) {
+    if(isDefined(level.mechz_should_drop_powerup) && level.mechz_should_drop_powerup) {
       wait_network_frame();
       wait_network_frame();
       level.mechz_should_drop_powerup = 0;
@@ -694,13 +700,13 @@ mechz_cleanup() {
   self mechz_interrupt();
   level.sndmechzistalking = 0;
 
-  if(isdefined(self.sndmechzmusicent)) {
+  if(isDefined(self.sndmechzmusicent)) {
     self.sndmechzmusicent delete();
     self.sndmechzmusicent = undefined;
   }
 
-  if(isdefined(self.favoriteenemy)) {
-    if(isdefined(self.favoriteenemy.hunted_by))
+  if(isDefined(self.favoriteenemy)) {
+    if(isDefined(self.favoriteenemy.hunted_by))
       self.favoriteenemy.hunted_by--;
   }
 }
@@ -714,7 +720,7 @@ mechz_interrupt() {
 mechz_stun(time) {
   self endon("death");
 
-  if(!isalive(self) || isdefined(self.not_interruptable) && self.not_interruptable || isdefined(self.is_traversing) && self.is_traversing) {
+  if(!isalive(self) || isDefined(self.not_interruptable) && self.not_interruptable || isDefined(self.is_traversing) && self.is_traversing) {
     return;
   }
   curr_time = 0;
@@ -723,10 +729,11 @@ mechz_stun(time) {
   self mechz_claw_detach();
   wait 0.05;
   self.not_interruptable = 1;
+
   if(getdvarint(#"_id_E7121222") > 1)
     println("\\nMZ: Stun setting not interruptable\\n");
 
-  while (curr_time < time) {
+  while(curr_time < time) {
     self animscripted(self.origin, self.angles, "zm_stun");
     self maps\mp\animscripts\zm_shared::donotetracks("stun_anim");
     self clearanim( % root, 0);
@@ -734,6 +741,7 @@ mechz_stun(time) {
   }
 
   self.not_interruptable = 0;
+
   if(getdvarint(#"_id_E7121222") > 1)
     println("\\nMZ: Stun clearing not interruptable\\n");
 }
@@ -741,11 +749,12 @@ mechz_stun(time) {
 mechz_tank_hit_callback() {
   self endon("death");
 
-  if(isdefined(self.mechz_hit_by_tank) && self.mechz_hit_by_tank) {
+  if(isDefined(self.mechz_hit_by_tank) && self.mechz_hit_by_tank) {
     return;
   }
   if(getdvarint(#"_id_E7121222") > 1)
     println("\\nMZ: Tank damage setting not interruptable\\n");
+
   self.not_interruptable = 1;
   self.mechz_hit_by_tank = 1;
   self mechz_interrupt();
@@ -758,7 +767,7 @@ mechz_tank_hit_callback() {
   self maps\mp\animscripts\zm_shared::donotetracks("pain_anim");
   anim_length = self getanimlengthfromasd("zm_tank_hit_loop", 0);
 
-  while (timer < level.mechz_tank_knockdown_time) {
+  while(timer < level.mechz_tank_knockdown_time) {
     timer = timer + anim_length;
     self animscripted(self.origin, self.angles, "zm_tank_hit_loop");
     self maps\mp\animscripts\zm_shared::donotetracks("pain_anim");
@@ -766,8 +775,10 @@ mechz_tank_hit_callback() {
 
   self animscripted(self.origin, self.angles, "zm_tank_hit_out");
   self maps\mp\animscripts\zm_shared::donotetracks("pain_anim");
+
   if(getdvarint(#"_id_E7121222") > 1)
     println("\\nMZ: Tank damage clearing not interruptable\\n");
+
   self.not_interruptable = 0;
   self.mechz_hit_by_tank = 0;
 
@@ -776,7 +787,7 @@ mechz_tank_hit_callback() {
     self ghost();
     self.mechz_hidden = 1;
 
-    if(isdefined(self.m_claw))
+    if(isDefined(self.m_claw))
       self.m_claw ghost();
 
     self.fx_field_old = self.fx_field;
@@ -791,14 +802,16 @@ mechz_tank_hit_callback() {
 mechz_robot_stomp_callback() {
   self endon("death");
 
-  if(isdefined(self.robot_stomped) && self.robot_stomped) {
+  if(isDefined(self.robot_stomped) && self.robot_stomped) {
     return;
   }
   self.not_interruptable = 1;
   self.robot_stomped = 1;
   self mechz_interrupt();
+
   if(getdvarint(#"_id_E7121222") > 1)
     println("\\nMZ: Robot stomp setting not interruptable\\n");
+
   self thread mechz_stomped_by_giant_robot_vo();
   v_trace_start = self.origin + vectorscale((0, 0, 1), 100.0);
   v_trace_end = self.origin - vectorscale((0, 0, 1), 500.0);
@@ -809,7 +822,7 @@ mechz_robot_stomp_callback() {
   self maps\mp\animscripts\zm_shared::donotetracks("pain_anim");
   anim_length = self getanimlengthfromasd("zm_robot_hit_loop", 0);
 
-  while (timer < level.mechz_robot_knockdown_time) {
+  while(timer < level.mechz_robot_knockdown_time) {
     timer = timer + anim_length;
     self animscripted(self.origin, self.angles, "zm_robot_hit_loop");
     self maps\mp\animscripts\zm_shared::donotetracks("pain_anim");
@@ -817,8 +830,10 @@ mechz_robot_stomp_callback() {
 
   self animscripted(self.origin, self.angles, "zm_robot_hit_out");
   self maps\mp\animscripts\zm_shared::donotetracks("jump_anim");
+
   if(getdvarint(#"_id_E7121222") > 1)
     println("\\nMZ: Robot stomp clearing not interruptable\\n");
+
   self.not_interruptable = 0;
   self.robot_stomped = 0;
 }
@@ -831,13 +846,13 @@ mechz_delayed_item_delete() {
 mechz_get_closest_valid_player() {
   players = get_players();
 
-  if(isdefined(self.ignore_player)) {
-    for (i = 0; i < self.ignore_player.size; i++)
+  if(isDefined(self.ignore_player)) {
+    for(i = 0; i < self.ignore_player.size; i++)
       arrayremovevalue(players, self.ignore_player[i]);
   }
 
-  for (i = 0; i < players.size; i++) {
-    if(isdefined(level._zombie_using_humangun) && level._zombie_using_humangun && isai(players[i]))
+  for(i = 0; i < players.size; i++) {
+    if(isDefined(level._zombie_using_humangun) && level._zombie_using_humangun && isai(players[i]))
       return players[i];
 
     if(!is_player_valid(players[i], 1, 1)) {
@@ -852,11 +867,11 @@ mechz_get_closest_valid_player() {
     case 1:
       return players[0];
     default:
-      if(isdefined(level.closest_player_override))
+      if(isDefined(level.closest_player_override))
         player = [
           [level.closest_player_override]
         ](self.origin, players);
-      else if(isdefined(level.calc_closest_player_using_paths) && level.calc_closest_player_using_paths)
+      else if(isDefined(level.calc_closest_player_using_paths) && level.calc_closest_player_using_paths)
         player = get_closest_player_using_paths(self.origin, players);
       else
         player = getclosest(self.origin, players);
@@ -872,14 +887,14 @@ get_favorite_enemy(origin, players) {
   best_dist = -1;
   distances = [];
 
-  if(isdefined(self.favoriteenemy) && is_player_valid(self.favoriteenemy, 1, 1) && !isdefined(self.favoriteenemy.in_giant_robot_head) && !self.favoriteenemy maps\mp\zm_tomb_chamber::is_player_in_chamber()) {
-    assert(isdefined(self.favoriteenemy.hunted_by));
+  if(isDefined(self.favoriteenemy) && is_player_valid(self.favoriteenemy, 1, 1) && !isDefined(self.favoriteenemy.in_giant_robot_head) && !self.favoriteenemy maps\mp\zm_tomb_chamber::is_player_in_chamber()) {
+    assert(isDefined(self.favoriteenemy.hunted_by));
     self.favoriteenemy.hunted_by--;
     least_hunted = self.favoriteenemy;
   }
 
-  for (i = 0; i < mechz_targets.size; i++) {
-    if(!isdefined(mechz_targets[i].hunted_by) || mechz_targets[i].hunted_by < 0)
+  for(i = 0; i < mechz_targets.size; i++) {
+    if(!isDefined(mechz_targets[i].hunted_by) || mechz_targets[i].hunted_by < 0)
       mechz_targets[i].hunted_by = 0;
 
     if(!is_player_valid(mechz_targets[i], 1, 1)) {
@@ -892,13 +907,13 @@ get_favorite_enemy(origin, players) {
 
   found_weapon_target = 0;
 
-  for (i = 0; i < mechz_targets.size; i++) {
+  for(i = 0; i < mechz_targets.size; i++) {
     if(abs(mechz_targets[i].origin[2] - self.origin[2]) > 60) {
       continue;
     }
     dist = distances[i];
 
-    if(!isdefined(dist)) {
+    if(!isDefined(dist)) {
       continue;
     }
     if(dist < 50000 && (dist < best_dist || best_dist < 0)) {
@@ -913,28 +928,28 @@ get_favorite_enemy(origin, players) {
     return least_hunted;
   }
 
-  if(isdefined(self.favoriteenemy) && is_player_valid(self.favoriteenemy, 1, 1)) {
+  if(isDefined(self.favoriteenemy) && is_player_valid(self.favoriteenemy, 1, 1)) {
     if(distancesquared(self.origin, self.favoriteenemy.origin) <= level.mechz_sticky_dist_sq) {
       self.favoriteenemy.hunted_by++;
       return self.favoriteenemy;
     }
   }
 
-  for (i = 0; i < mechz_targets.size; i++) {
-    if(isdefined(mechz_targets[i].in_giant_robot_head)) {
+  for(i = 0; i < mechz_targets.size; i++) {
+    if(isDefined(mechz_targets[i].in_giant_robot_head)) {
       continue;
     }
     if(mechz_targets[i] maps\mp\zm_tomb_chamber::is_player_in_chamber()) {
       continue;
     }
-    if(isdefined(distances[i]))
+    if(isDefined(distances[i]))
       dist = distances[i];
     else
       continue;
 
     hunted = mechz_targets[i].hunted_by;
 
-    if(!isdefined(least_hunted) || hunted <= least_hunted.hunted_by) {
+    if(!isDefined(least_hunted) || hunted <= least_hunted.hunted_by) {
       if(dist < best_dist || best_dist < 0) {
         least_hunted = mechz_targets[i];
         best_dist = dist;
@@ -942,7 +957,7 @@ get_favorite_enemy(origin, players) {
     }
   }
 
-  if(isdefined(least_hunted))
+  if(isDefined(least_hunted))
     least_hunted.hunted_by++;
 
   return least_hunted;
@@ -951,7 +966,7 @@ get_favorite_enemy(origin, players) {
 mechz_check_in_arc(right_offset) {
   origin = self.origin;
 
-  if(isdefined(right_offset)) {
+  if(isDefined(right_offset)) {
     right_angle = anglestoright(self.angles);
     origin = origin + right_angle * right_offset;
   }
@@ -983,7 +998,7 @@ mechz_get_aim_anim(anim_prefix, target_pos, right_offset) {
 
   origin = self.origin;
 
-  if(isdefined(right_offset)) {
+  if(isDefined(right_offset)) {
     right_angle = anglestoright(self.angles);
     origin = origin + right_angle * right_offset;
   }
@@ -1020,14 +1035,14 @@ mechz_start_basic_find_flesh() {
   self.goalradius = level.mechz_custom_goalradius;
   self.custom_goalradius_override = level.mechz_custom_goalradius;
 
-  if(!isdefined(self.ai_state) || self.ai_state != "find_flesh") {
+  if(!isDefined(self.ai_state) || self.ai_state != "find_flesh") {
     self.ai_state = "find_flesh";
     self thread maps\mp\zombies\_zm_ai_basic::find_flesh();
   }
 }
 
 mechz_stop_basic_find_flesh() {
-  if(isdefined(self.ai_state) && self.ai_state == "find_flesh") {
+  if(isDefined(self.ai_state) && self.ai_state == "find_flesh") {
     self.ai_state = undefined;
     self notify("stop_find_flesh");
     self notify("zombie_acquire_enemy");
@@ -1037,15 +1052,15 @@ mechz_stop_basic_find_flesh() {
 watch_for_player_dist() {
   self endon("death");
 
-  while (true) {
+  while(true) {
     player = mechz_get_closest_valid_player();
 
-    if(isdefined(player) && (isdefined(player.is_player_slowed) && player.is_player_slowed))
+    if(isDefined(player) && (isDefined(player.is_player_slowed) && player.is_player_slowed))
       reset_dist = level.mechz_reset_dist_sq / 2;
     else
       reset_dist = level.mechz_reset_dist_sq;
 
-    if(!isdefined(player) || distancesquared(player.origin, self.origin) > reset_dist)
+    if(!isDefined(player) || distancesquared(player.origin, self.origin) > reset_dist)
       self.disable_complex_behaviors = 0;
 
     wait 0.5;
@@ -1067,22 +1082,24 @@ mechz_find_flesh() {
   self.ai_state = "spawning";
   self thread watch_for_player_dist();
 
-  while (true) {
-    if(isdefined(self.force_behavior) && self.force_behavior) {
+  while(true) {
+    if(isDefined(self.force_behavior) && self.force_behavior) {
       wait 0.05;
       continue;
     }
 
-    if(isdefined(self.not_interruptable) && self.not_interruptable) {
+    if(isDefined(self.not_interruptable) && self.not_interruptable) {
       if(getdvarint(#"_id_E7121222") > 1)
         println("\\nMZ: Not thinking since a behavior has set not_interruptable\\n");
+
       wait 0.05;
       continue;
     }
 
-    if(isdefined(self.is_traversing) && self.is_traversing) {
+    if(isDefined(self.is_traversing) && self.is_traversing) {
       if(getdvarint(#"_id_E7121222") > 1)
         println("\\nMZ: Not thinking since mech is traversing\\n");
+
       wait 0.05;
       continue;
     }
@@ -1091,13 +1108,16 @@ mechz_find_flesh() {
       [self.closest_player_override]
     ]();
     self mechz_set_locomotion_speed();
+
     if(getdvarint(#"_id_E7121222") > 1)
       println("\\nMZ: Doing think\\n");
+
     self.favoriteenemy = player;
 
-    if(!isdefined(player)) {
+    if(!isDefined(player)) {
       if(getdvarint(#"_id_E7121222") > 1)
         println("\\n\\tMZ: No Enemy, idling\\n");
+
       self.goal_pos = self.origin;
       self setgoalpos(self.goal_pos);
       self.ai_state = "idle";
@@ -1108,18 +1128,19 @@ mechz_find_flesh() {
 
     if(player entity_on_tank()) {
       if(level.vh_tank ent_flag("tank_moving")) {
-        if(isdefined(self.jump_pos) && self mechz_in_range_for_jump()) {
+        if(isDefined(self.jump_pos) && self mechz_in_range_for_jump()) {
           if(getdvarint(#"_id_E7121222") > 1)
             println("\\n\\tMZ: Enemy on moving tank, do jump out and jump in when tank is stationary\\n");
+
           self mechz_do_jump(1);
         } else {
           if(getdvarint(#"_id_E7121222") > 1)
             println("\\n\\tMZ: Enemy on moving tank, Jump Requested, going to jump pos\\n");
 
-          if(!isdefined(self.jump_pos))
+          if(!isDefined(self.jump_pos))
             self.jump_pos = get_closest_mechz_spawn_pos(self.origin);
 
-          if(isdefined(self.jump_pos)) {
+          if(isDefined(self.jump_pos)) {
             self.goal_pos = self.jump_pos.origin;
             self setgoalpos(self.goal_pos);
           }
@@ -1130,6 +1151,7 @@ mechz_find_flesh() {
       } else {
         if(getdvarint(#"_id_E7121222") > 1)
           println("\\n\\tMZ: Enemy on tank, targetting a tank pos\\n");
+
         self.disable_complex_behaviors = 0;
         self mechz_stop_basic_find_flesh();
         self.ai_state = "tracking_tank";
@@ -1137,9 +1159,10 @@ mechz_find_flesh() {
         self.custom_goalradius_override = level.mechz_custom_goalradius;
         closest_tank_tag = level.vh_tank get_closest_mechz_tag_on_tank(self, self.origin);
 
-        if(!isdefined(closest_tank_tag)) {
+        if(!isDefined(closest_tank_tag)) {
           if(getdvarint(#"_id_E7121222") > 1)
             println("\\n\\tMZ: Enemy on tank, no closest tank pos found, continuing\\n");
+
           wait 0.5;
           continue;
         }
@@ -1149,6 +1172,7 @@ mechz_find_flesh() {
         if(abs(self.origin[2] - closest_tank_tag_pos[2]) >= level.mechz_custom_goalradius || distance2dsquared(self.origin, closest_tank_tag_pos) >= level.mechz_custom_goalradius_sq) {
           if(getdvarint(#"_id_E7121222") > 1)
             println("\\n\\tMZ: Enemy on tank, setting tank pos as goal\\n");
+
           self.goal_pos = closest_tank_tag_pos;
           self setgoalpos(self.goal_pos);
           self waittill_any_or_timeout(0.5, "goal", "bad_path");
@@ -1156,6 +1180,7 @@ mechz_find_flesh() {
           if(!player entity_on_tank()) {
             if(getdvarint(#"_id_E7121222") > 1)
               println("\\n\\tMZ: Enemy got off tank by the time we reached our goal, continuing\\n");
+
             continue;
           }
         }
@@ -1163,6 +1188,7 @@ mechz_find_flesh() {
         if(abs(self.origin[2] - closest_tank_tag_pos[2]) < level.mechz_custom_goalradius && distance2dsquared(self.origin, closest_tank_tag_pos) < level.mechz_custom_goalradius_sq) {
           if(getdvarint(#"_id_E7121222") > 1)
             println("\\n\\tMZ: Enemy on tank, reached tank pos, doing flamethrower sweep\\n");
+
           self.angles = vectortoangles(level.vh_tank.origin - self.origin);
           self mechz_do_flamethrower_attack(1);
           self notify("tank_flamethrower_attack_complete");
@@ -1170,20 +1196,22 @@ mechz_find_flesh() {
       }
 
       continue;
-    } else if(isdefined(self.jump_requested) && self.jump_requested || isdefined(self.force_jump) && self.force_jump) {
+    } else if(isDefined(self.jump_requested) && self.jump_requested || isDefined(self.force_jump) && self.force_jump) {
       if(self mechz_in_range_for_jump())
         self mechz_do_jump();
       else {
         if(getdvarint(#"_id_E7121222") > 1)
           println("\\n\\tMZ: Jump Requested, going to jump pos\\n");
+
         self.goal_pos = self.jump_pos.origin;
         self setgoalpos(self.goal_pos);
         wait 0.5;
         continue;
       }
-    } else if(self.zombie_move_speed == "sprint" && isdefined(player)) {
+    } else if(self.zombie_move_speed == "sprint" && isDefined(player)) {
       if(getdvarint(#"_id_E7121222") > 1)
         println("\\n\\tMZ: Sprinting\\n");
+
       self.goal_pos = player.origin;
       self setgoalpos(self.goal_pos);
       wait 0.5;
@@ -1191,6 +1219,7 @@ mechz_find_flesh() {
     } else if(distancesquared(self.origin, player.origin) < level.mechz_aggro_dist_sq) {
       if(getdvarint(#"_id_E7121222") > 1)
         println("\\n\\tMZ: Player very close, switching to melee only\\n");
+
       self.disable_complex_behaviors = 1;
     } else if(self should_do_claw_attack()) {
       self mechz_do_claw_grab();
@@ -1202,9 +1231,10 @@ mechz_find_flesh() {
 
     if(getdvarint(#"_id_E7121222") > 1)
       println("\\n\\tMZ: No special behavior valid, heading after player\\n");
+
     self.goal_pos = player.origin;
 
-    if(isdefined(level.damage_prone_players_override_func))
+    if(isDefined(level.damage_prone_players_override_func))
       level thread[[level.damage_prone_players_override_func]]();
     else
       self thread damage_prone_players();
@@ -1219,7 +1249,7 @@ damage_prone_players() {
   a_players = getplayers();
 
   foreach(player in a_players) {
-    if(isdefined(self.favoriteenemy) && self.favoriteenemy == player) {
+    if(isDefined(self.favoriteenemy) && self.favoriteenemy == player) {
       n_dist = distance2dsquared(player.origin, self.origin);
 
       if(n_dist < 2025) {
@@ -1227,7 +1257,7 @@ damage_prone_players() {
         mechz_z = self.origin[2];
 
         if(player_z < mechz_z && mechz_z - player_z <= 75) {
-          if(isdefined(self.meleedamage))
+          if(isDefined(self.meleedamage))
             idamage = self.meleedamage;
           else
             idamage = 50;
@@ -1244,15 +1274,16 @@ melee_anim_func() {
 }
 
 mechz_launch_armor_piece() {
-  if(!isdefined(self.next_armor_piece))
+  if(!isDefined(self.next_armor_piece))
     self.next_armor_piece = 0;
 
-  if(!isdefined(self.armor_state) || self.next_armor_piece >= self.armor_state.size) {
+  if(!isDefined(self.armor_state) || self.next_armor_piece >= self.armor_state.size) {
     println("Trying to launch armor piece after all pieces have already been launched!");
+
     return;
   }
 
-  if(isdefined(self.armor_state[self.next_armor_piece].model))
+  if(isDefined(self.armor_state[self.next_armor_piece].model))
     self detach(self.armor_state[self.next_armor_piece].model, self.armor_state[self.next_armor_piece].tag);
 
   self.fx_field = self.fx_field | 1 << self.armor_state[self.next_armor_piece].index;
@@ -1269,7 +1300,7 @@ mechz_damage_override(inflictor, attacker, damage, flags, meansofdeath, weapon, 
   old_health_tier = int(num_tiers * self.health / self.maxhealth);
   bonename = getpartname("c_zom_mech_body", boneindex);
 
-  if(isdefined(attacker) && isalive(attacker) && isplayer(attacker) && (level.zombie_vars[attacker.team]["zombie_insta_kill"] || isdefined(attacker.personal_instakill) && attacker.personal_instakill)) {
+  if(isDefined(attacker) && isalive(attacker) && isplayer(attacker) && (level.zombie_vars[attacker.team]["zombie_insta_kill"] || isDefined(attacker.personal_instakill) && attacker.personal_instakill)) {
     n_mechz_damage_percent = 1.0;
     n_mechz_headshot_modifier = 2.0;
   } else {
@@ -1277,7 +1308,7 @@ mechz_damage_override(inflictor, attacker, damage, flags, meansofdeath, weapon, 
     n_mechz_headshot_modifier = 1.0;
   }
 
-  if(isdefined(weapon) && is_weapon_shotgun(weapon)) {
+  if(isDefined(weapon) && is_weapon_shotgun(weapon)) {
     n_mechz_damage_percent = n_mechz_damage_percent * level.mechz_shotgun_damage_mod;
     n_mechz_headshot_modifier = n_mechz_headshot_modifier * level.mechz_shotgun_damage_mod;
   }
@@ -1289,20 +1320,20 @@ mechz_damage_override(inflictor, attacker, damage, flags, meansofdeath, weapon, 
     if(n_mechz_damage_percent < 0.5)
       n_mechz_damage_percent = 0.5;
 
-    if(!(isdefined(self.has_helmet) && self.has_helmet) && issubstr(weapon, "staff") && n_mechz_damage_percent < 1.0)
+    if(!(isDefined(self.has_helmet) && self.has_helmet) && issubstr(weapon, "staff") && n_mechz_damage_percent < 1.0)
       n_mechz_damage_percent = 1.0;
 
     final_damage = damage * n_mechz_damage_percent;
 
-    if(!isdefined(self.explosive_dmg_taken))
+    if(!isDefined(self.explosive_dmg_taken))
       self.explosive_dmg_taken = 0;
 
     self.explosive_dmg_taken = self.explosive_dmg_taken + final_damage;
     self.helmet_dmg = self.helmet_dmg + final_damage;
 
-    if(isdefined(self.explosive_dmg_taken_on_grab_start)) {
-      if(isdefined(self.e_grabbed) && self.explosive_dmg_taken - self.explosive_dmg_taken_on_grab_start > level.mechz_explosive_dmg_to_cancel_claw) {
-        if(isdefined(self.has_helmet) && self.has_helmet && self.helmet_dmg < self.helmet_dmg_for_removal || !(isdefined(self.has_helmet) && self.has_helmet))
+    if(isDefined(self.explosive_dmg_taken_on_grab_start)) {
+      if(isDefined(self.e_grabbed) && self.explosive_dmg_taken - self.explosive_dmg_taken_on_grab_start > level.mechz_explosive_dmg_to_cancel_claw) {
+        if(isDefined(self.has_helmet) && self.has_helmet && self.helmet_dmg < self.helmet_dmg_for_removal || !(isDefined(self.has_helmet) && self.has_helmet))
           self thread mechz_claw_shot_pain_reaction();
 
         self thread ent_released_from_claw_grab_achievement(attacker, self.e_grabbed);
@@ -1313,14 +1344,14 @@ mechz_damage_override(inflictor, attacker, damage, flags, meansofdeath, weapon, 
     if(bonename == "tag_powersupply") {
       final_damage = damage * n_mechz_damage_percent;
 
-      if(!(isdefined(self.powerplant_covered) && self.powerplant_covered))
+      if(!(isDefined(self.powerplant_covered) && self.powerplant_covered))
         self.powerplant_dmg = self.powerplant_dmg + final_damage;
       else
         self.powerplant_cover_dmg = self.powerplant_cover_dmg + final_damage;
     }
 
-    if(isdefined(self.e_grabbed) && (shitloc == "left_hand" || shitloc == "left_arm_lower" || shitloc == "left_arm_upper")) {
-      if(isdefined(self.e_grabbed))
+    if(isDefined(self.e_grabbed) && (shitloc == "left_hand" || shitloc == "left_arm_lower" || shitloc == "left_arm_upper")) {
+      if(isDefined(self.e_grabbed))
         self thread mechz_claw_shot_pain_reaction();
 
       self thread ent_released_from_claw_grab_achievement(attacker, self.e_grabbed);
@@ -1328,14 +1359,14 @@ mechz_damage_override(inflictor, attacker, damage, flags, meansofdeath, weapon, 
     }
 
     final_damage = damage * n_mechz_damage_percent;
-  } else if(!(isdefined(self.has_helmet) && self.has_helmet))
+  } else if(!(isDefined(self.has_helmet) && self.has_helmet))
     final_damage = damage * n_mechz_headshot_modifier;
   else {
     final_damage = damage * n_mechz_damage_percent;
     self.helmet_dmg = self.helmet_dmg + final_damage;
   }
 
-  if(!isdefined(weapon) || weapon == "none") {
+  if(!isDefined(weapon) || weapon == "none") {
     if(!isplayer(attacker))
       final_damage = 0;
   }
@@ -1343,7 +1374,7 @@ mechz_damage_override(inflictor, attacker, damage, flags, meansofdeath, weapon, 
   new_health_tier = int(num_tiers * (self.health - final_damage) / self.maxhealth);
 
   if(old_health_tier > new_health_tier) {
-    while (old_health_tier > new_health_tier) {
+    while(old_health_tier > new_health_tier) {
       if(getdvarint(#"_id_E7121222") > 0)
         println("\\nMZ: Old tier: " + old_health_tier + " New Health Tier: " + new_health_tier + " Launching armor piece");
 
@@ -1354,7 +1385,7 @@ mechz_damage_override(inflictor, attacker, damage, flags, meansofdeath, weapon, 
     }
   }
 
-  if(isdefined(self.has_helmet) && self.has_helmet && self.helmet_dmg >= self.helmet_dmg_for_removal) {
+  if(isDefined(self.has_helmet) && self.has_helmet && self.helmet_dmg >= self.helmet_dmg_for_removal) {
     self.has_helmet = 0;
     self detach("c_zom_mech_faceplate", "J_Helmet");
 
@@ -1368,7 +1399,7 @@ mechz_damage_override(inflictor, attacker, damage, flags, meansofdeath, weapon, 
     self.fx_field = self.fx_field & ~2048;
     self setclientfield("mechz_fx", self.fx_field);
 
-    if(!(isdefined(self.not_interruptable) && self.not_interruptable) && !(isdefined(self.is_traversing) && self.is_traversing)) {
+    if(!(isDefined(self.not_interruptable) && self.not_interruptable) && !(isDefined(self.is_traversing) && self.is_traversing)) {
       self mechz_interrupt();
       self animscripted(self.origin, self.angles, "zm_pain_faceplate");
       self maps\mp\animscripts\zm_shared::donotetracks("pain_anim_faceplate");
@@ -1377,7 +1408,7 @@ mechz_damage_override(inflictor, attacker, damage, flags, meansofdeath, weapon, 
     self thread shoot_mechz_head_vo();
   }
 
-  if(isdefined(self.powerplant_covered) && self.powerplant_covered && self.powerplant_cover_dmg >= self.powerplant_cover_dmg_for_removal) {
+  if(isDefined(self.powerplant_covered) && self.powerplant_covered && self.powerplant_cover_dmg >= self.powerplant_cover_dmg_for_removal) {
     self.powerplant_covered = 0;
     self detach("c_zom_mech_powersupply_cap", "tag_powersupply");
     cap_model = spawn("script_model", self gettagorigin("tag_powersupply"));
@@ -1389,12 +1420,12 @@ mechz_damage_override(inflictor, attacker, damage, flags, meansofdeath, weapon, 
     if(sndmechzisnetworksafe("destruction"))
       self playsound("zmb_ai_mechz_destruction");
 
-    if(!(isdefined(self.not_interruptable) && self.not_interruptable) && !(isdefined(self.is_traversing) && self.is_traversing)) {
+    if(!(isDefined(self.not_interruptable) && self.not_interruptable) && !(isDefined(self.is_traversing) && self.is_traversing)) {
       self mechz_interrupt();
       self animscripted(self.origin, self.angles, "zm_pain_powercore");
       self maps\mp\animscripts\zm_shared::donotetracks("pain_anim_powercore");
     }
-  } else if(!(isdefined(self.powerplant_covered) && self.powerplant_covered) && (isdefined(self.has_powerplant) && self.has_powerplant) && self.powerplant_dmg >= self.powerplant_dmg_for_destroy) {
+  } else if(!(isDefined(self.powerplant_covered) && self.powerplant_covered) && (isDefined(self.has_powerplant) && self.has_powerplant) && self.powerplant_dmg >= self.powerplant_dmg_for_destroy) {
     self.has_powerplant = 0;
     self thread mechz_stun(level.mechz_powerplant_stun_time);
 
@@ -1408,6 +1439,7 @@ mechz_damage_override(inflictor, attacker, damage, flags, meansofdeath, weapon, 
     if(self.helmet_dmg < self.helmet_dmg_for_removal)
       println("\\nMZ: Current helmet dmg: " + self.helmet_dmg + "Required helmet dmg: " + self.helmet_dmg_for_removal);
   }
+
   return final_damage;
 }
 
@@ -1419,7 +1451,6 @@ mechz_non_attacker_damage_override(damage, weapon, attacker) {
 }
 
 mechz_instakill_override() {
-
 }
 
 mechz_nuke_override() {
@@ -1433,17 +1464,17 @@ mechz_set_locomotion_speed() {
   self endon("death");
   self.prev_move_speed = self.zombie_move_speed;
 
-  if(!isdefined(self.favoriteenemy))
+  if(!isDefined(self.favoriteenemy))
     self.zombie_move_speed = "walk";
-  else if(isdefined(self.force_run) && self.force_run)
+  else if(isDefined(self.force_run) && self.force_run)
     self.zombie_move_speed = "run";
-  else if(isdefined(self.force_sprint) && self.force_sprint)
+  else if(isDefined(self.force_sprint) && self.force_sprint)
     self.zombie_move_speed = "sprint";
-  else if(isdefined(self.favoriteenemy) && self.favoriteenemy entity_on_tank() && isdefined(level.vh_tank) && level.vh_tank ent_flag("tank_activated"))
+  else if(isDefined(self.favoriteenemy) && self.favoriteenemy entity_on_tank() && isDefined(level.vh_tank) && level.vh_tank ent_flag("tank_activated"))
     self.zombie_move_speed = "run";
-  else if(isdefined(self.favoriteenemy) && distancesquared(self.origin, self.favoriteenemy.origin) > level.mechz_dist_for_sprint)
+  else if(isDefined(self.favoriteenemy) && distancesquared(self.origin, self.favoriteenemy.origin) > level.mechz_dist_for_sprint)
     self.zombie_move_speed = "run";
-  else if(!(isdefined(self.has_powerplant) && self.has_powerplant))
+  else if(!(isDefined(self.has_powerplant) && self.has_powerplant))
     self.zombie_move_speed = "walk";
   else
     self.zombie_move_speed = "walk";
@@ -1471,12 +1502,12 @@ response_to_air_raid_siren_vo() {
 
   foreach(player in a_players) {
     if(is_player_valid(player)) {
-      if(!(isdefined(player.dontspeak) && player.dontspeak)) {
-        if(!isdefined(level.air_raid_siren_count)) {
+      if(!(isDefined(player.dontspeak) && player.dontspeak)) {
+        if(!isDefined(level.air_raid_siren_count)) {
           player maps\mp\zombies\_zm_audio::create_and_play_dialog("general", "siren_1st_time");
           level.air_raid_siren_count = 1;
 
-          while (isdefined(player) && (isdefined(player.isspeaking) && player.isspeaking))
+          while(isDefined(player) && (isDefined(player.isspeaking) && player.isspeaking))
             wait 0.1;
 
           level thread start_see_mech_zombie_vo();
@@ -1498,7 +1529,7 @@ start_see_mech_zombie_vo() {
   a_zombies = getaispeciesarray(level.zombie_team, "all");
 
   foreach(zombie in a_zombies) {
-    if(isdefined(zombie.is_mechz) && zombie.is_mechz)
+    if(isDefined(zombie.is_mechz) && zombie.is_mechz)
       ai_mechz = zombie;
   }
 
@@ -1518,10 +1549,10 @@ player_looking_at_mechz_watcher(ai_mechz) {
   ai_mechz endon("death");
   level endon("first_mech_zombie_seen");
 
-  while (true) {
+  while(true) {
     if(distancesquared(self.origin, ai_mechz.origin) < 1000000) {
       if(self is_player_looking_at(ai_mechz.origin + vectorscale((0, 0, 1), 60.0), 0.75)) {
-        if(!(isdefined(self.dontspeak) && self.dontspeak)) {
+        if(!(isDefined(self.dontspeak) && self.dontspeak)) {
           self maps\mp\zombies\_zm_audio::create_and_play_dialog("general", "discover_mech");
           level notify("first_mech_zombie_seen");
           break;
@@ -1537,20 +1568,20 @@ mechz_grabbed_played_vo(ai_mechz) {
   self endon("disconnect");
   self maps\mp\zombies\_zm_audio::create_and_play_dialog("general", "mech_grab");
 
-  while (isdefined(self) && (isdefined(self.isspeaking) && self.isspeaking))
+  while(isDefined(self) && (isDefined(self.isspeaking) && self.isspeaking))
     wait 0.1;
 
   wait 1.0;
 
-  if(isalive(ai_mechz) && isdefined(ai_mechz.e_grabbed))
+  if(isalive(ai_mechz) && isDefined(ai_mechz.e_grabbed))
     ai_mechz thread play_shoot_arm_hint_vo();
 }
 
 play_shoot_arm_hint_vo() {
   self endon("death");
 
-  while (true) {
-    if(!isdefined(self.e_grabbed)) {
+  while(true) {
+    if(!isDefined(self.e_grabbed)) {
       return;
     }
     a_players = getplayers();
@@ -1561,7 +1592,7 @@ play_shoot_arm_hint_vo() {
       }
       if(distancesquared(self.origin, player.origin) < 1000000) {
         if(player is_player_looking_at(self.origin + vectorscale((0, 0, 1), 60.0), 0.75)) {
-          if(!(isdefined(player.dontspeak) && player.dontspeak)) {
+          if(!(isDefined(player.dontspeak) && player.dontspeak)) {
             player maps\mp\zombies\_zm_audio::create_and_play_dialog("general", "shoot_mech_arm");
             return;
           }
@@ -1577,13 +1608,13 @@ mechz_hint_vo() {
   self endon("death");
   wait 30.0;
 
-  while (true) {
+  while(true) {
     if(self.health > self.maxhealth * 0.5) {
       wait 1.0;
       continue;
     }
 
-    if(!(isdefined(self.powerplant_covered) && self.powerplant_covered)) {
+    if(!(isDefined(self.powerplant_covered) && self.powerplant_covered)) {
       wait 1.0;
       continue;
     }
@@ -1591,12 +1622,12 @@ mechz_hint_vo() {
     a_players = getplayers();
 
     foreach(player in a_players) {
-      if(isdefined(self.e_grabbed) && self.e_grabbed == player) {
+      if(isDefined(self.e_grabbed) && self.e_grabbed == player) {
         continue;
       }
       if(distancesquared(self.origin, player.origin) < 1000000) {
         if(player is_player_looking_at(self.origin + vectorscale((0, 0, 1), 60.0), 0.75)) {
-          if(!(isdefined(player.dontspeak) && player.dontspeak)) {
+          if(!(isDefined(player.dontspeak) && player.dontspeak)) {
             player maps\mp\zombies\_zm_audio::create_and_play_dialog("general", "shoot_mech_power");
             return;
           }
@@ -1613,12 +1644,12 @@ shoot_mechz_head_vo() {
   a_players = getplayers();
 
   foreach(player in a_players) {
-    if(isdefined(self.e_grabbed) && self.e_grabbed == player) {
+    if(isDefined(self.e_grabbed) && self.e_grabbed == player) {
       continue;
     }
     if(distancesquared(self.origin, player.origin) < 1000000) {
       if(player is_player_looking_at(self.origin + vectorscale((0, 0, 1), 60.0), 0.75)) {
-        if(!(isdefined(player.dontspeak) && player.dontspeak)) {
+        if(!(isDefined(player.dontspeak) && player.dontspeak)) {
           player maps\mp\zombies\_zm_audio::create_and_play_dialog("general", "shoot_mech_head");
           return;
         }
@@ -1633,7 +1664,7 @@ mechz_jump_vo() {
   foreach(player in a_players) {
     if(distancesquared(self.origin, player.origin) < 1000000) {
       if(player is_player_looking_at(self.origin + vectorscale((0, 0, 1), 60.0), 0.5)) {
-        if(!(isdefined(player.dontspeak) && player.dontspeak)) {
+        if(!(isDefined(player.dontspeak) && player.dontspeak)) {
           player delay_thread(3.0, maps\mp\zombies\_zm_audio::create_and_play_dialog, "general", "rspnd_mech_jump");
           return;
         }
@@ -1650,7 +1681,7 @@ mechz_stomped_by_giant_robot_vo() {
   foreach(player in a_players) {
     if(distancesquared(self.origin, player.origin) < 1000000) {
       if(player is_player_looking_at(self.origin + vectorscale((0, 0, 1), 60.0), 0.75)) {
-        if(!(isdefined(player.dontspeak) && player.dontspeak)) {
+        if(!(isDefined(player.dontspeak) && player.dontspeak)) {
           player thread maps\mp\zombies\_zm_audio::create_and_play_dialog("general", "robot_crush_mech");
           return;
         }
@@ -1666,10 +1697,10 @@ init_anim_rate() {
 }
 
 sndmechzisnetworksafe(type) {
-  if(!isdefined(level.sndmechz))
+  if(!isDefined(level.sndmechz))
     level.sndmechz = [];
 
-  if(!isdefined(level.sndmechz[type]))
+  if(!isDefined(level.sndmechz[type]))
     level thread sndmechznetworkchoke(type);
 
   if(level.sndmechz[type] > 1)
@@ -1680,7 +1711,7 @@ sndmechzisnetworksafe(type) {
 }
 
 sndmechznetworkchoke(type) {
-  while (true) {
+  while(true) {
     level.sndmechz[type] = 0;
     wait_network_frame();
   }

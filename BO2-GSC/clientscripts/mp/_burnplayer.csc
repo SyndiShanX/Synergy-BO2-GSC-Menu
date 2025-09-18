@@ -6,13 +6,12 @@
 #include clientscripts\mp\_utility;
 
 initflamefx() {
-
 }
 
 corpseflamefx(localclientnum) {
   self waittill_dobj(localclientnum);
 
-  if(!isdefined(level._effect["character_fire_death_torso"]))
+  if(!isDefined(level._effect["character_fire_death_torso"]))
     initflamefx();
 
   tagarray = [];
@@ -25,8 +24,8 @@ corpseflamefx(localclientnum) {
   tagarray[tagarray.size] = "J_Ankle_RI";
   tagarray[tagarray.size] = "J_Ankle_LE";
 
-  if(isdefined(level._effect["character_fire_death_sm"])) {
-    for (arrayindex = 0; arrayindex < tagarray.size; arrayindex++)
+  if(isDefined(level._effect["character_fire_death_sm"])) {
+    for(arrayindex = 0; arrayindex < tagarray.size; arrayindex++)
       playfxontag(localclientnum, level._effect["character_fire_death_sm"], self, tagarray[arrayindex]);
   }
 

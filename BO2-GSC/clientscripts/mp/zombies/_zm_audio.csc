@@ -21,7 +21,7 @@ init() {
   level.exert_sounds[0]["meleeswipesoundplayer"] = "vox_exert_generic_knifeswipe";
   level.exert_sounds[0]["dtplandsoundplayer"] = "vox_exert_generic_pain";
 
-  if(isdefined(level.setupcustomcharacterexerts))
+  if(isDefined(level.setupcustomcharacterexerts))
     [[level.setupcustomcharacterexerts]]();
 
   level thread gameover_snapshot();
@@ -37,7 +37,7 @@ charindex_cb(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, b
   if(!bnewent) {
     self.player_exert_id = newval;
     self._first_frame_exert_id_recieved = 1;
-  } else if(!isdefined(self._first_frame_exert_id_recieved)) {
+  } else if(!isDefined(self._first_frame_exert_id_recieved)) {
     self._first_frame_exert_id_recieved = 1;
     self thread delay_set_exert_id(newval);
   }
@@ -73,7 +73,7 @@ playerfalldamagesound(client_num, firstperson) {
 clientvoicesetup() {
   players = getlocalplayers();
 
-  for (i = 0; i < players.size; i++)
+  for(i = 0; i < players.size; i++)
     thread audio_player_connect(i);
 }
 
@@ -88,7 +88,7 @@ audio_player_connect(localclientnum) {
 }
 
 playerexert(localclientnum, exert) {
-  if(isdefined(self.isspeaking) && self.isspeaking == 1) {
+  if(isDefined(self.isspeaking) && self.isspeaking == 1) {
     return;
   }
   id = level.exert_sounds[0][exert];
@@ -96,7 +96,7 @@ playerexert(localclientnum, exert) {
   if(isarray(level.exert_sounds[0][exert]))
     id = random(level.exert_sounds[0][exert]);
 
-  if(isdefined(self.player_exert_id)) {
+  if(isDefined(self.player_exert_id)) {
     if(isarray(level.exert_sounds[self.player_exert_id][exert]))
       id = random(level.exert_sounds[self.player_exert_id][exert]);
     else
@@ -109,14 +109,14 @@ playerexert(localclientnum, exert) {
 sndvonotifydtp(localclientnum, notifystring) {
   player = undefined;
 
-  while (!isdefined(player)) {
+  while(!isDefined(player)) {
     player = getnonpredictedlocalplayer(localclientnum);
     wait 0.05;
   }
 
   player endon("disconnect");
 
-  for (;;) {
+  for(;;) {
     player waittill(notifystring, surfacetype);
     player playerexert(localclientnum, notifystring);
   }
@@ -125,14 +125,14 @@ sndvonotifydtp(localclientnum, notifystring) {
 sndmeleeswipe(localclientnum, notifystring) {
   player = undefined;
 
-  while (!isdefined(player)) {
+  while(!isDefined(player)) {
     player = getnonpredictedlocalplayer(localclientnum);
     wait 0.05;
   }
 
   player endon("disconnect");
 
-  for (;;) {
+  for(;;) {
     player waittill(notifystring);
     currentweapon = getcurrentweapon(localclientnum);
 
@@ -166,14 +166,14 @@ sndmeleeswipe(localclientnum, notifystring) {
 sndvonotifyplain(localclientnum, notifystring) {
   player = undefined;
 
-  while (!isdefined(player)) {
+  while(!isDefined(player)) {
     player = getnonpredictedlocalplayer(localclientnum);
     wait 0.05;
   }
 
   player endon("disconnect");
 
-  for (;;) {
+  for(;;) {
     player waittill(notifystring);
 
     if(is_true(player.is_player_zombie)) {

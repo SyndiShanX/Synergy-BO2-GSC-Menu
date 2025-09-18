@@ -1,7 +1,7 @@
-/************************************************************
+/*******************************************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\animscripts\traverse\zm_traverse_car.gsc
-************************************************************/
+*******************************************************************/
 
 #include maps\mp\animscripts\traverse\shared;
 #include maps\mp\animscripts\traverse\zm_shared;
@@ -9,7 +9,7 @@
 main() {
   speed = "";
 
-  if(!isdefined(self.isdog) || !self.isdog) {
+  if(!isDefined(self.isdog) || !self.isdog) {
     switch (self.zombie_move_speed) {
       case "walk":
       case "walk_slide":

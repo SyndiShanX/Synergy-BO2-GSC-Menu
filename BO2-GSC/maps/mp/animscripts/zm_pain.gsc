@@ -11,7 +11,7 @@
 main() {
   self setflashbanged(0);
 
-  if(isdefined(self.longdeathstarting)) {
+  if(isDefined(self.longdeathstarting)) {
     self waittill("killanimscript");
     return;
   }

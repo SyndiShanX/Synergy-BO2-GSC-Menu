@@ -1,7 +1,7 @@
-/******************************************************
+/*******************************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\zombies\_zm_equip_electrictrap.gsc
-******************************************************/
+*******************************************************/
 
 #include common_scripts\utility;
 #include maps\mp\_utility;
@@ -28,14 +28,14 @@ init() {
 }
 
 wait_init_damage() {
-  while (!isdefined(level.zombie_vars) || !isdefined(level.zombie_vars["zombie_health_start"]))
+  while(!isDefined(level.zombie_vars) || !isDefined(level.zombie_vars["zombie_health_start"]))
     wait 1;
 
   level.etrap_damage = maps\mp\zombies\_zm::ai_zombie_health(50);
 }
 
 onplayerconnect() {
-  for (;;) {
+  for(;;) {
     level waittill("connecting", player);
     player thread onplayerspawned();
   }
@@ -45,7 +45,7 @@ onplayerspawned() {
   self endon("disconnect");
   self thread setupwatchers();
 
-  for (;;) {
+  for(;;) {
     self waittill("spawned_player");
     self thread watchelectrictrapuse();
   }
@@ -63,7 +63,7 @@ watchelectrictrapuse() {
   self endon("death");
   self endon("disconnect");
 
-  for (;;) {
+  for(;;) {
     self waittill("equipment_placed", weapon, weapname);
 
     if(weapname == level.electrictrap_name) {
@@ -75,8 +75,8 @@ watchelectrictrapuse() {
 }
 
 cleanupoldtrap() {
-  if(isdefined(self.buildableelectrictrap)) {
-    if(isdefined(self.buildableelectrictrap.stub)) {
+  if(isDefined(self.buildableelectrictrap)) {
+    if(isDefined(self.buildableelectrictrap.stub)) {
       thread maps\mp\zombies\_zm_unitrigger::unregister_unitrigger(self.buildableelectrictrap.stub);
       self.buildableelectrictrap.stub = undefined;
     }
@@ -84,7 +84,7 @@ cleanupoldtrap() {
     self.buildableelectrictrap delete();
   }
 
-  if(isdefined(level.electrap_sound_ent)) {
+  if(isDefined(level.electrap_sound_ent)) {
     level.electrap_sound_ent delete();
     level.electrap_sound_ent = undefined;
   }
@@ -100,7 +100,7 @@ watchforcleanup() {
 placetrap(origin, angles) {
   item = self maps\mp\zombies\_zm_equipment::placed_equipment_think("p6_anim_zm_buildable_etrap", "equip_electrictrap_zm", origin, angles);
 
-  if(isdefined(item)) {
+  if(isDefined(item)) {
     item.owner = self;
     item.zombie_attack_callback = ::zombie_attacked_trap;
   }
@@ -111,7 +111,7 @@ placetrap(origin, angles) {
 droptrap() {
   item = self maps\mp\zombies\_zm_equipment::dropped_equipment_think("p6_anim_zm_buildable_etrap", "equip_electrictrap_zm", self.origin, self.angles);
 
-  if(isdefined(item))
+  if(isDefined(item))
     item.electrictrap_health = self.electrictrap_health;
 
   self.electrictrap_health = undefined;
@@ -135,7 +135,7 @@ transfertrap(fromplayer, toplayer) {
   fromplayer.buildableelectrictrap = buildableelectrictrap;
   fromplayer notify("equip_electrictrap_zm_taken");
 
-  if(isdefined(fromplayer.buildableelectrictrap)) {
+  if(isDefined(fromplayer.buildableelectrictrap)) {
     fromplayer thread startelectrictrapdeploy(fromplayer.buildableelectrictrap);
     fromplayer.buildableelectrictrap.original_owner = fromplayer;
     fromplayer.buildableelectrictrap.owner = fromplayer;
@@ -152,13 +152,13 @@ startelectrictrapdeploy(weapon) {
   self thread watchforcleanup();
   electricradius = 45;
 
-  if(!isdefined(self.electrictrap_health))
+  if(!isDefined(self.electrictrap_health))
     self.electrictrap_health = 60;
 
-  if(isdefined(weapon)) {
+  if(isDefined(weapon)) {
     weapon thread debugelectrictrap(electricradius);
 
-    if(isdefined(level.equipment_etrap_needs_power) && level.equipment_etrap_needs_power) {
+    if(isDefined(level.equipment_etrap_needs_power) && level.equipment_etrap_needs_power) {
       weapon.power_on = 0;
       maps\mp\zombies\_zm_power::add_temp_powered_item(::trap_power_on, ::trap_power_off, ::trap_in_range, maps\mp\zombies\_zm_power::cost_high, 1, weapon.power_on, weapon);
     } else
@@ -169,13 +169,13 @@ startelectrictrapdeploy(weapon) {
 
     self thread electrictrapthink(weapon, electricradius);
 
-    if(!(isdefined(level.equipment_etrap_needs_power) && level.equipment_etrap_needs_power))
+    if(!(isDefined(level.equipment_etrap_needs_power) && level.equipment_etrap_needs_power))
       self thread electrictrapdecay(weapon);
 
     self thread maps\mp\zombies\_zm_buildables::delete_on_disconnect(weapon);
     weapon waittill("death");
 
-    if(isdefined(level.electrap_sound_ent)) {
+    if(isDefined(level.electrap_sound_ent)) {
       level.electrap_sound_ent playsound("wpn_zmb_electrap_stop");
       level.electrap_sound_ent delete();
       level.electrap_sound_ent = undefined;
@@ -195,14 +195,14 @@ trap_in_range(delta, origin, radius) {
 trap_power_on(origin, radius) {
   println("^1ZM POWER: trap on\\n");
 
-  if(!isdefined(self.target)) {
+  if(!isDefined(self.target)) {
     return;
   }
   self.target.power_on = 1;
   self.target.power_on_time = gettime();
   self.target notify("stop_attracting_zombies");
 
-  if(!isdefined(level.electrap_sound_ent))
+  if(!isDefined(level.electrap_sound_ent))
     level.electrap_sound_ent = spawn("script_origin", self.target.origin);
 
   level.electrap_sound_ent playsound("wpn_zmb_electrap_start");
@@ -213,13 +213,13 @@ trap_power_on(origin, radius) {
 trap_power_off(origin, radius) {
   println("^1ZM POWER: trap off\\n");
 
-  if(!isdefined(self.target)) {
+  if(!isDefined(self.target)) {
     return;
   }
   self.target.power_on = 0;
   self.target thread item_attract_zombies();
 
-  if(isdefined(level.electrap_sound_ent)) {
+  if(isDefined(level.electrap_sound_ent)) {
     level.electrap_sound_ent playsound("wpn_zmb_electrap_stop");
     level.electrap_sound_ent delete();
     level.electrap_sound_ent = undefined;
@@ -229,14 +229,14 @@ trap_power_off(origin, radius) {
 trapfx() {
   self endon("disconnect");
 
-  while (isdefined(self) && (isdefined(self.power_on) && self.power_on)) {
+  while(isDefined(self) && (isDefined(self.power_on) && self.power_on)) {
     playfxontag(level._effect["etrap_on"], self, "tag_origin");
     wait 0.3;
   }
 }
 
 zombie_attacked_trap(zombie) {
-  if(isdefined(self.power_on) && self.power_on)
+  if(isDefined(self.power_on) && self.power_on)
     self zap_zombie(zombie);
 }
 
@@ -247,7 +247,7 @@ electrocution_lockout(time) {
 }
 
 zap_zombie(zombie) {
-  if(isdefined(zombie.ignore_electric_trap) && zombie.ignore_electric_trap) {
+  if(isDefined(zombie.ignore_electric_trap) && zombie.ignore_electric_trap) {
     return;
   }
   if(zombie.health > level.etrap_damage) {
@@ -258,7 +258,7 @@ zap_zombie(zombie) {
 
   self playsound("wpn_zmb_electrap_zap");
 
-  if(!(isdefined(level.electrocuting_zombie) && level.electrocuting_zombie)) {
+  if(!(isDefined(level.electrocuting_zombie) && level.electrocuting_zombie)) {
     thread electrocution_lockout(2);
     zombie thread play_elec_vocals();
     zombie thread maps\mp\zombies\_zm_traps::electroctute_death_fx();
@@ -270,7 +270,7 @@ zap_zombie(zombie) {
 }
 
 etrap_choke() {
-  if(!isdefined(level.etrap_choke_count))
+  if(!isDefined(level.etrap_choke_count))
     level.etrap_choke_count = 0;
 
   level.etrap_choke_count++;
@@ -285,15 +285,15 @@ electrictrapthink(weapon, electricradius) {
   weapon endon("death");
   radiussquared = electricradius * electricradius;
 
-  while (isdefined(weapon)) {
+  while(isDefined(weapon)) {
     if(weapon.power_on && gettime() - weapon.power_on_time > 2000) {
       zombies = getaiarray(level.zombie_team);
 
       foreach(zombie in zombies) {
-        if(!isdefined(zombie) || !isalive(zombie)) {
+        if(!isDefined(zombie) || !isalive(zombie)) {
           continue;
         }
-        if(isdefined(zombie.ignore_electric_trap) && zombie.ignore_electric_trap) {
+        if(isDefined(zombie.ignore_electric_trap) && zombie.ignore_electric_trap) {
           continue;
         }
         if(distancesquared(weapon.origin, zombie.origin) < radiussquared) {
@@ -331,7 +331,7 @@ electrictrapdecay(weapon) {
   self endon("disconnect");
   self endon("equip_electrictrap_zm_taken");
 
-  while (isdefined(weapon)) {
+  while(isDefined(weapon)) {
     if(weapon.power_on) {
       self.electrictrap_health--;
 
@@ -348,10 +348,11 @@ electrictrapdecay(weapon) {
 }
 
 debugelectrictrap(radius) {
-  while (isdefined(self)) {
+  while(isDefined(self)) {
     if(getdvarint(#"_id_EB512CB7"))
       circle(self.origin, radius, (1, 1, 1), 0, 1, 1);
 
     wait 0.05;
   }
+
 }

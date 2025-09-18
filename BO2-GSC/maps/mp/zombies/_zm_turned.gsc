@@ -18,12 +18,12 @@ init() {
   precacheitem(level.turnedmeleeweapon);
   precacheitem(level.turnedmeleeweapon_dw);
 
-  if(!(isdefined(level.custom_zombie_player_loadout_init) && level.custom_zombie_player_loadout_init)) {
+  if(!(isDefined(level.custom_zombie_player_loadout_init) && level.custom_zombie_player_loadout_init)) {
     precachemodel("c_zom_player_zombie_fb");
     precachemodel("c_zom_zombie_viewhands");
   }
 
-  if(!isdefined(level.vsmgr_prio_visionset_zombie_turned))
+  if(!isDefined(level.vsmgr_prio_visionset_zombie_turned))
     level.vsmgr_prio_visionset_zombie_turned = 123;
 
   maps\mp\_visionset_mgr::vsmgr_register_info("visionset", "zm_turned", 3000, level.vsmgr_prio_visionset_zombie_turned, 1, 1);
@@ -51,13 +51,13 @@ delay_turning_on_eyes() {
 }
 
 turn_to_zombie() {
-  if(self.sessionstate == "playing" && (isdefined(self.is_zombie) && self.is_zombie) && !(isdefined(self.laststand) && self.laststand)) {
+  if(self.sessionstate == "playing" && (isDefined(self.is_zombie) && self.is_zombie) && !(isDefined(self.laststand) && self.laststand)) {
     return;
   }
-  if(isdefined(self.is_in_process_of_zombify) && self.is_in_process_of_zombify) {
+  if(isDefined(self.is_in_process_of_zombify) && self.is_in_process_of_zombify) {
     return;
   }
-  while (isdefined(self.is_in_process_of_humanify) && self.is_in_process_of_humanify)
+  while(isDefined(self.is_in_process_of_humanify) && self.is_in_process_of_humanify)
     wait 0.1;
 
   if(!flag("pregame")) {
@@ -84,12 +84,12 @@ turn_to_zombie() {
   self.is_zombie = 1;
   self setburn(0);
 
-  if(isdefined(self.turned_visionset) && self.turned_visionset) {
+  if(isDefined(self.turned_visionset) && self.turned_visionset) {
     maps\mp\_visionset_mgr::vsmgr_deactivate("visionset", "zm_turned", self);
     wait_network_frame();
     wait_network_frame();
 
-    if(!isdefined(self))
+    if(!isDefined(self))
       return;
   }
 
@@ -100,7 +100,7 @@ turn_to_zombie() {
   self.laststand = undefined;
   wait_network_frame();
 
-  if(!isdefined(self)) {
+  if(!isDefined(self)) {
     return;
   }
   self enableweapons();
@@ -131,7 +131,7 @@ turn_to_zombie() {
   self.meleedamage = 1000;
   self detachall();
 
-  if(isdefined(level.custom_zombie_player_loadout))
+  if(isDefined(level.custom_zombie_player_loadout))
     self[[level.custom_zombie_player_loadout]]();
   else {
     self setmodel("c_zom_player_zombie_fb");
@@ -143,22 +143,22 @@ turn_to_zombie() {
   self.shock_onpain = 0;
   self disableinvulnerability();
 
-  if(isdefined(level.player_movement_suppressed))
+  if(isDefined(level.player_movement_suppressed))
     self freezecontrols(level.player_movement_suppressed);
-  else if(!(isdefined(self.hostmigrationcontrolsfrozen) && self.hostmigrationcontrolsfrozen))
+  else if(!(isDefined(self.hostmigrationcontrolsfrozen) && self.hostmigrationcontrolsfrozen))
     self freezecontrols(0);
 
   self.is_in_process_of_zombify = 0;
 }
 
 turn_to_human() {
-  if(self.sessionstate == "playing" && !(isdefined(self.is_zombie) && self.is_zombie) && !(isdefined(self.laststand) && self.laststand)) {
+  if(self.sessionstate == "playing" && !(isDefined(self.is_zombie) && self.is_zombie) && !(isDefined(self.laststand) && self.laststand)) {
     return;
   }
-  if(isdefined(self.is_in_process_of_humanify) && self.is_in_process_of_humanify) {
+  if(isDefined(self.is_in_process_of_humanify) && self.is_in_process_of_humanify) {
     return;
   }
-  while (isdefined(self.is_in_process_of_zombify) && self.is_in_process_of_zombify)
+  while(isDefined(self.is_in_process_of_zombify) && self.is_in_process_of_zombify)
     wait 0.1;
 
   self playsoundtoplayer("evt_spawn", self);
@@ -212,14 +212,14 @@ turn_to_human() {
 
   wait_network_frame();
 
-  if(!isdefined(self)) {
+  if(!isDefined(self)) {
     return;
   }
   self disableinvulnerability();
 
-  if(isdefined(level.player_movement_suppressed))
+  if(isDefined(level.player_movement_suppressed))
     self freezecontrols(level.player_movement_suppressed);
-  else if(!(isdefined(self.hostmigrationcontrolsfrozen) && self.hostmigrationcontrolsfrozen))
+  else if(!(isDefined(self.hostmigrationcontrolsfrozen) && self.hostmigrationcontrolsfrozen))
     self freezecontrols(0);
 
   self show();
@@ -232,7 +232,7 @@ deletezombiesinradius(origin) {
   maxradius = 128;
 
   foreach(zombie in zombies) {
-    if(isdefined(zombie) && isalive(zombie) && !(isdefined(zombie.is_being_used_as_spawner) && zombie.is_being_used_as_spawner)) {
+    if(isDefined(zombie) && isalive(zombie) && !(isDefined(zombie.is_being_used_as_spawner) && zombie.is_being_used_as_spawner)) {
       if(distancesquared(zombie.origin, origin) < maxradius * maxradius) {
         playfx(level._effect["wood_chunk_destory"], zombie.origin);
         zombie thread silentlyremovezombie();
@@ -244,11 +244,11 @@ deletezombiesinradius(origin) {
 }
 
 turned_give_melee_weapon() {
-  assert(isdefined(self.turnedmeleeweapon));
+  assert(isDefined(self.turnedmeleeweapon));
   assert(self.turnedmeleeweapon != "none");
   self.turned_had_knife = self hasweapon("knife_zm");
 
-  if(isdefined(self.turned_had_knife) && self.turned_had_knife)
+  if(isDefined(self.turned_had_knife) && self.turned_had_knife)
     self takeweapon("knife_zm");
 
   self giveweapon(self.turnedmeleeweapon_dw);
@@ -264,24 +264,24 @@ turned_player_buttons() {
   self endon("humanify");
   level endon("end_game");
 
-  while (isdefined(self.is_zombie) && self.is_zombie) {
+  while(isDefined(self.is_zombie) && self.is_zombie) {
     if(self attackbuttonpressed() || self adsbuttonpressed() || self meleebuttonpressed()) {
       if(cointoss())
         self thread maps\mp\zombies\_zm_audio::do_zombies_playvocals("attack", undefined);
 
-      while (self attackbuttonpressed() || self adsbuttonpressed() || self meleebuttonpressed())
+      while(self attackbuttonpressed() || self adsbuttonpressed() || self meleebuttonpressed())
         wait 0.05;
     }
 
     if(self usebuttonpressed()) {
       self thread maps\mp\zombies\_zm_audio::do_zombies_playvocals("taunt", undefined);
 
-      while (self usebuttonpressed())
+      while(self usebuttonpressed())
         wait 0.05;
     }
 
     if(self issprinting()) {
-      while (self issprinting()) {
+      while(self issprinting()) {
         self thread maps\mp\zombies\_zm_audio::do_zombies_playvocals("sprint", undefined);
         wait 0.05;
       }
@@ -292,7 +292,7 @@ turned_player_buttons() {
 }
 
 turned_disable_player_weapons() {
-  if(isdefined(self.is_zombie) && self.is_zombie) {
+  if(isDefined(self.is_zombie) && self.is_zombie) {
     return;
   }
   weaponinventory = self getweaponslist();
@@ -301,10 +301,10 @@ turned_disable_player_weapons() {
   self.laststandpistol = undefined;
   self.hadpistol = 0;
 
-  if(!isdefined(self.turnedmeleeweapon))
+  if(!isDefined(self.turnedmeleeweapon))
     self.turnedmeleeweapon = level.turnedmeleeweapon;
 
-  if(!isdefined(self.turnedmeleeweapon_dw))
+  if(!isDefined(self.turnedmeleeweapon_dw))
     self.turnedmeleeweapon_dw = level.turnedmeleeweapon_dw;
 
   self takeallweapons();
@@ -317,7 +317,7 @@ turned_enable_player_weapons() {
   self enableoffhandweapons();
   self.turned_had_knife = undefined;
 
-  if(isdefined(level.humanify_custom_loadout)) {
+  if(isDefined(level.humanify_custom_loadout)) {
     self thread[[level.humanify_custom_loadout]]();
     return;
   } else if(!self hasweapon("rottweil72_zm")) {
@@ -325,7 +325,7 @@ turned_enable_player_weapons() {
     self switchtoweapon("rottweil72_zm");
   }
 
-  if(!(isdefined(self.is_zombie) && self.is_zombie) && !self hasweapon(level.start_weapon)) {
+  if(!(isDefined(self.is_zombie) && self.is_zombie) && !self hasweapon(level.start_weapon)) {
     if(!self hasweapon("knife_zm"))
       self giveweapon("knife_zm");
 
@@ -349,13 +349,13 @@ turned_enable_player_weapons() {
 }
 
 get_farthest_available_zombie(player) {
-  while (true) {
+  while(true) {
     zombies = get_array_of_closest(player.origin, getaiarray(level.zombie_team));
 
-    for (x = 0; x < zombies.size; x++) {
+    for(x = 0; x < zombies.size; x++) {
       zombie = zombies[x];
 
-      if(isdefined(zombie) && isalive(zombie) && !(isdefined(zombie.in_the_ground) && zombie.in_the_ground) && !(isdefined(zombie.gibbed) && zombie.gibbed) && !(isdefined(zombie.head_gibbed) && zombie.head_gibbed) && !(isdefined(zombie.is_being_used_as_spawnpoint) && zombie.is_being_used_as_spawnpoint) && zombie in_playable_area()) {
+      if(isDefined(zombie) && isalive(zombie) && !(isDefined(zombie.in_the_ground) && zombie.in_the_ground) && !(isDefined(zombie.gibbed) && zombie.gibbed) && !(isDefined(zombie.head_gibbed) && zombie.head_gibbed) && !(isDefined(zombie.is_being_used_as_spawnpoint) && zombie.is_being_used_as_spawnpoint) && zombie in_playable_area()) {
         zombie.is_being_used_as_spawnpoint = 1;
         return zombie;
       }
@@ -369,7 +369,7 @@ get_available_human() {
   players = get_players();
 
   foreach(player in players) {
-    if(!(isdefined(player.is_zombie) && player.is_zombie))
+    if(!(isDefined(player.is_zombie) && player.is_zombie))
       return player;
   }
 }

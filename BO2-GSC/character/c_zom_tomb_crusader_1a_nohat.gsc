@@ -1,7 +1,7 @@
-/******************************************************
+/*******************************************************
  * Decompiled and Edited by SyndiShanX
  * Script: character\c_zom_tomb_crusader_1a_nohat.gsc
-******************************************************/
+*******************************************************/
 
 #include codescripts\character;
 #include xmodelalias\c_zom_tomb_crusader_head_als;

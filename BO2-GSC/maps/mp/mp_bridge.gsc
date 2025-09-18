@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\mp_bridge.gsc
-***************************************/
+**************************************/
 
 #include maps\mp\_utility;
 #include common_scripts\utility;
@@ -109,13 +109,13 @@ ragdoll_override(idamage, smeansofdeath, sweapon, shitloc, vdir, vattackerorigin
     if(animhasnotetrack(deathanim, "start_ragdoll")) {
       times = getnotetracktimes(deathanim, "start_ragdoll");
 
-      if(isdefined(times))
+      if(isDefined(times))
         startfrac = times[0];
     }
 
     self.body = body;
 
-    if(!isdefined(self.switching_teams))
+    if(!isDefined(self.switching_teams))
       thread maps\mp\gametypes\_deathicons::adddeathicon(body, self, self.team, 5.0);
 
     self thread water_spash();
@@ -133,7 +133,7 @@ water_spash() {
   trace = groundtrace(self.origin, self.origin - vectorscale((0, 0, 1), 2048.0), 0, self.body);
 
   if(trace["surfacetype"] == "water") {
-    while (self.origin[2] > trace["position"][2] + 5)
+    while(self.origin[2] > trace["position"][2] + 5)
       wait 0.05;
 
     bone = self gettagorigin("j_spinelower");

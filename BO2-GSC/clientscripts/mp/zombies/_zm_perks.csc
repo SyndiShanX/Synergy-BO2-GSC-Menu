@@ -50,8 +50,8 @@ perks_register_clientfield() {
   if(level._custom_perks.size > 0) {
     a_keys = getarraykeys(level._custom_perks);
 
-    for (i = 0; i < a_keys.size; i++) {
-      if(isdefined(level._custom_perks[a_keys[i]].clientfield_register))
+    for(i = 0; i < a_keys.size; i++) {
+      if(isDefined(level._custom_perks[a_keys[i]].clientfield_register))
         level[[level._custom_perks[a_keys[i]].clientfield_register]]();
     }
   }
@@ -92,32 +92,32 @@ perk_init_code_callbacks() {
   if(level._custom_perks.size > 0) {
     a_keys = getarraykeys(level._custom_perks);
 
-    for (i = 0; i < a_keys.size; i++) {
-      if(isdefined(level._custom_perks[a_keys[i]].clientfield_code_callback))
+    for(i = 0; i < a_keys.size; i++) {
+      if(isDefined(level._custom_perks[a_keys[i]].clientfield_code_callback))
         level[[level._custom_perks[a_keys[i]].clientfield_code_callback]]();
     }
   }
 }
 
 init_custom_perks() {
-  if(!isdefined(level._custom_perks))
+  if(!isDefined(level._custom_perks))
     level._custom_perks = [];
 }
 
 register_perk_clientfields(str_perk, func_clientfield_register, func_code_callback) {
   _register_undefined_perk(str_perk);
 
-  if(!isdefined(level._custom_perks[str_perk].clientfield_register))
+  if(!isDefined(level._custom_perks[str_perk].clientfield_register))
     level._custom_perks[str_perk].clientfield_register = func_clientfield_register;
 
-  if(!isdefined(level._custom_perks[str_perk].clientfield_code_callback))
+  if(!isDefined(level._custom_perks[str_perk].clientfield_code_callback))
     level._custom_perks[str_perk].clientfield_code_callback = func_code_callback;
 }
 
 register_perk_init_thread(str_perk, func_init_thread) {
   _register_undefined_perk(str_perk);
 
-  if(!isdefined(level._custom_perks[str_perk].init_thread))
+  if(!isDefined(level._custom_perks[str_perk].init_thread))
     level._custom_perks[str_perk].init_thread = func_init_thread;
 }
 
@@ -125,25 +125,25 @@ init_perk_custom_threads() {
   if(level._custom_perks.size > 0) {
     a_keys = getarraykeys(level._custom_perks);
 
-    for (i = 0; i < a_keys.size; i++) {
-      if(isdefined(level._custom_perks[a_keys[i]].init_thread))
+    for(i = 0; i < a_keys.size; i++) {
+      if(isDefined(level._custom_perks[a_keys[i]].init_thread))
         level thread[[level._custom_perks[a_keys[i]].init_thread]]();
     }
   }
 }
 
 _register_undefined_perk(str_perk) {
-  if(!isdefined(level._custom_perks))
+  if(!isDefined(level._custom_perks))
     level._custom_perks = [];
 
-  if(!isdefined(level._custom_perks[str_perk]))
+  if(!isDefined(level._custom_perks[str_perk]))
     level._custom_perks[str_perk] = spawnstruct();
 }
 
 perk_meteor_fx(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump) {
   if(newval)
     self.meteor_fx = playfxontag(localclientnum, level._effect["perk_meteor"], self, "tag_origin");
-  else if(isdefined(self.meteor_fx))
+  else if(isDefined(self.meteor_fx))
     stopfx(localclientnum, self.meteor_fx);
 }
 
@@ -163,7 +163,7 @@ chugabud_setup_afterlife_filters() {
   wait 1.0;
   players = getlocalplayers();
 
-  for (i = 0; i < players.size; i++)
+  for(i = 0; i < players.size; i++)
     init_filter_afterlife(players[i]);
 }
 

@@ -13,10 +13,10 @@
 #include maps\mp\zombies\_zm_buildables;
 
 init(hint, howto) {
-  if(!isdefined(hint))
+  if(!isDefined(hint))
     hint = & "ZOMBIE_EQUIP_TURBINE_PICKUP_HINT_STRING";
 
-  if(!isdefined(howto))
+  if(!isDefined(howto))
     howto = & "ZOMBIE_EQUIP_TURBINE_HOWTO";
 
   if(!maps\mp\zombies\_zm_equipment::is_equipment_included("equip_turbine_zm")) {
@@ -35,7 +35,7 @@ init(hint, howto) {
 }
 
 onplayerconnect() {
-  for (;;) {
+  for(;;) {
     level waittill("connecting", player);
     player thread onplayerspawned();
   }
@@ -45,7 +45,7 @@ onplayerspawned() {
   self endon("disconnect");
   self thread setupwatchers();
 
-  for (;;) {
+  for(;;) {
     self waittill("spawned_player");
     self thread watchturbineuse();
   }
@@ -63,7 +63,7 @@ watchturbineuse() {
   self endon("death");
   self endon("disconnect");
 
-  for (;;) {
+  for(;;) {
     self waittill("equipment_placed", weapon, weapname);
 
     if(weapname == level.turbine_name) {
@@ -76,7 +76,7 @@ watchturbineuse() {
 }
 
 cleanupoldturbine(preserve_state) {
-  if(isdefined(self.localpower)) {
+  if(isDefined(self.localpower)) {
     maps\mp\zombies\_zm_power::end_local_power(self.localpower);
     self notify("depower_on_disconnect");
     self.localpower = undefined;
@@ -85,8 +85,8 @@ cleanupoldturbine(preserve_state) {
 
   self.turbine_is_powering_on = 0;
 
-  if(isdefined(self.buildableturbine)) {
-    if(isdefined(self.buildableturbine.stub)) {
+  if(isDefined(self.buildableturbine)) {
+    if(isDefined(self.buildableturbine.stub)) {
       thread maps\mp\zombies\_zm_unitrigger::unregister_unitrigger(self.buildableturbine.stub);
       self.buildableturbine.stub = undefined;
     }
@@ -94,7 +94,7 @@ cleanupoldturbine(preserve_state) {
     self.buildableturbine stoploopsound();
     self.buildableturbine delete();
 
-    if(!(isdefined(preserve_state) && preserve_state)) {
+    if(!(isDefined(preserve_state) && preserve_state)) {
       self.turbine_health = undefined;
       self.turbine_emped = undefined;
       self.turbine_emp_time = undefined;
@@ -107,7 +107,7 @@ watchforcleanup() {
   self endon("turbine_cleanup");
   evt = self waittill_any_return("death_or_disconnect", "equip_turbine_zm_taken", "equip_turbine_zm_pickup");
 
-  if(isdefined(self))
+  if(isDefined(self))
     self cleanupoldturbine(evt == "equip_turbine_zm_pickup");
 }
 
@@ -116,7 +116,7 @@ depower_on_disconnect(localpower) {
   self endon("depower_on_disconnect");
   self waittill("disconnect");
 
-  if(isdefined(localpower))
+  if(isDefined(localpower))
     maps\mp\zombies\_zm_power::end_local_power(localpower);
 }
 
@@ -128,7 +128,7 @@ placeturbine(origin, angles) {
 dropturbine() {
   item = thread maps\mp\zombies\_zm_equipment::dropped_equipment_think("p6_anim_zm_buildable_turbine", "equip_turbine_zm", self.origin, self.angles);
 
-  if(isdefined(item)) {
+  if(isDefined(item)) {
     item.turbine_power_on = self.turbine_power_on;
     item.turbine_power_level = self.turbine_power_level;
     item.turbine_round_start = self.turbine_round_start;
@@ -165,13 +165,13 @@ pickupturbine(item) {
 }
 
 transferturbine(fromplayer, toplayer) {
-  while (isdefined(toplayer.turbine_is_powering_on) && toplayer.turbine_is_powering_on || isdefined(fromplayer.turbine_is_powering_on) && fromplayer.turbine_is_powering_on)
+  while(isDefined(toplayer.turbine_is_powering_on) && toplayer.turbine_is_powering_on || isDefined(fromplayer.turbine_is_powering_on) && fromplayer.turbine_is_powering_on)
     wait 0.05;
 
-  if(isdefined(fromplayer.buildableturbine) && (isdefined(fromplayer.buildableturbine.dying) && fromplayer.buildableturbine.dying))
+  if(isDefined(fromplayer.buildableturbine) && (isDefined(fromplayer.buildableturbine.dying) && fromplayer.buildableturbine.dying))
     fromplayer cleanupoldturbine(0);
 
-  if(isdefined(toplayer.buildableturbine) && (isdefined(toplayer.buildableturbine.dying) && toplayer.buildableturbine.dying))
+  if(isDefined(toplayer.buildableturbine) && (isDefined(toplayer.buildableturbine.dying) && toplayer.buildableturbine.dying))
     toplayer cleanupoldturbine(0);
 
   buildableturbine = toplayer.buildableturbine;
@@ -208,7 +208,7 @@ transferturbine(fromplayer, toplayer) {
   toplayer thread startturbinedeploy(toplayer.buildableturbine);
   fromplayer notify("equip_turbine_zm_taken");
 
-  if(isdefined(fromplayer.buildableturbine)) {
+  if(isDefined(fromplayer.buildableturbine)) {
     fromplayer thread startturbinedeploy(fromplayer.buildableturbine);
     fromplayer.buildableturbine.original_owner = fromplayer;
     fromplayer.buildableturbine.owner = fromplayer;
@@ -224,14 +224,14 @@ startturbinedeploy(weapon) {
   origin = weapon.origin;
   powerradius = 335;
 
-  if(!isdefined(self.turbine_health)) {
+  if(!isDefined(self.turbine_health)) {
     self.turbine_health = 1200;
     self.turbine_power_level = 4;
     self.turbine_power_on = 1;
     self.turbine_is_powering_on = undefined;
   }
 
-  if(!isdefined(self.turbine_round_start)) {
+  if(!isDefined(self.turbine_round_start)) {
     self.turbine_round_start = level.round_number;
     self.turbine_power_on = 1;
   }
@@ -239,13 +239,14 @@ startturbinedeploy(weapon) {
   self thread turbinedecay();
   self thread turbinepowerdiminish(origin, powerradius);
 
-  if(isdefined(weapon)) {
+  if(isDefined(weapon)) {
     self thread debugturbine(powerradius);
+
     self thread turbineaudio();
     self thread turbineanim();
     self thread turbinepowerthink(weapon, powerradius);
 
-    if(isdefined(weapon.equipment_can_move) && weapon.equipment_can_move)
+    if(isDefined(weapon.equipment_can_move) && weapon.equipment_can_move)
       self thread turbinepowermove(weapon);
 
     self thread maps\mp\zombies\_zm_buildables::delete_on_disconnect(weapon);
@@ -264,7 +265,7 @@ turbine_watch_for_emp(weapon, powerradius) {
   if(!should_watch_for_emp()) {
     return;
   }
-  while (true) {
+  while(true) {
     level waittill("emp_detonate", origin, radius);
 
     if(distancesquared(origin, self.buildableturbine.origin) < radius * radius) {
@@ -285,23 +286,23 @@ turbinepowerthink(weapon, powerradius) {
   origin = weapon.origin;
   self thread turbine_watch_for_emp(weapon, powerradius);
 
-  if(isdefined(self.turbine_power_on) && self.turbine_power_on || isdefined(self.turbine_emped) && self.turbine_emped)
+  if(isDefined(self.turbine_power_on) && self.turbine_power_on || isDefined(self.turbine_emped) && self.turbine_emped)
     self thread turbinepoweron(origin, powerradius);
 
-  while (isdefined(self.buildableturbine)) {
+  while(isDefined(self.buildableturbine)) {
     self waittill("turbine_power_change");
 
-    if(isdefined(self.turbine_emped) && self.turbine_emped) {
+    if(isDefined(self.turbine_emped) && self.turbine_emped) {
       self thread turbinepoweroff(origin, powerradius);
 
-      if(isdefined(weapon))
+      if(isDefined(weapon))
         origin = weapon.origin;
 
       self thread turbinepoweron(origin, powerradius);
-    } else if(!(isdefined(self.turbine_power_is_on) && self.turbine_power_is_on))
+    } else if(!(isDefined(self.turbine_power_is_on) && self.turbine_power_is_on))
       self thread turbinepoweroff(origin, powerradius);
     else {
-      if(isdefined(weapon))
+      if(isDefined(weapon))
         origin = weapon.origin;
 
       self thread turbinepoweron(origin, powerradius);
@@ -316,9 +317,9 @@ turbinepowermove(weapon) {
   self.buildableturbine endon("death");
   origin = weapon.origin;
 
-  while (true) {
+  while(true) {
     if(origin != weapon.origin) {
-      if(isdefined(self.localpower))
+      if(isDefined(self.localpower))
         self.localpower = maps\mp\zombies\_zm_power::move_local_power(self.localpower, origin);
 
       origin = weapon.origin;
@@ -329,7 +330,7 @@ turbinepowermove(weapon) {
 }
 
 turbinewarmup() {
-  if(isdefined(self.turbine_emped) && self.turbine_emped) {
+  if(isDefined(self.turbine_emped) && self.turbine_emped) {
     emp_time = level.zombie_vars["emp_perk_off_time"];
     now = gettime();
     emp_time_left = emp_time - (now - self.turbine_emp_time) / 1000;
@@ -355,18 +356,18 @@ turbinepoweron(origin, powerradius) {
   self endon("equip_turbine_zm_taken");
   self.buildableturbine endon("death");
 
-  if(!(isdefined(self.turbine_power_is_on) && self.turbine_power_is_on) && !(isdefined(self.turbine_is_powering_on) && self.turbine_is_powering_on) && !(isdefined(self.buildableturbine.dying) && self.buildableturbine.dying)) {
+  if(!(isDefined(self.turbine_power_is_on) && self.turbine_power_is_on) && !(isDefined(self.turbine_is_powering_on) && self.turbine_is_powering_on) && !(isDefined(self.buildableturbine.dying) && self.buildableturbine.dying)) {
     self.turbine_is_powering_on = 1;
     self.buildableturbine playloopsound("zmb_turbine_loop", 2);
     self turbinewarmup();
 
-    if(isdefined(self.localpower))
+    if(isDefined(self.localpower))
       maps\mp\zombies\_zm_power::end_local_power(self.localpower);
 
     self.localpower = undefined;
     self.turbine_power_is_on = 0;
 
-    if(!(isdefined(self.turbine_emped) && self.turbine_emped)) {
+    if(!(isDefined(self.turbine_emped) && self.turbine_emped)) {
       self.localpower = maps\mp\zombies\_zm_power::add_local_power(origin, powerradius);
       self thread depower_on_disconnect(self.localpower);
       self.turbine_power_is_on = 1;
@@ -380,8 +381,8 @@ turbinepoweron(origin, powerradius) {
 }
 
 turbinepoweroff(origin, powerradius) {
-  if(isdefined(self.turbine_power_is_on) && self.turbine_power_is_on) {
-    if(isdefined(self.localpower))
+  if(isDefined(self.turbine_power_is_on) && self.turbine_power_is_on) {
+    if(isDefined(self.localpower))
       maps\mp\zombies\_zm_power::end_local_power(self.localpower);
 
     self notify("depower_on_disconnect");
@@ -389,23 +390,23 @@ turbinepoweroff(origin, powerradius) {
     self.turbine_power_is_on = 0;
     self thread turbineaudio();
 
-    if(!(isdefined(self.buildableturbine.dying) && self.buildableturbine.dying))
+    if(!(isDefined(self.buildableturbine.dying) && self.buildableturbine.dying))
       self thread turbineanim();
   }
 }
 
 turbine_disappear_fx(origin, waittime) {
-  if(isdefined(waittime) && waittime > 0)
+  if(isDefined(waittime) && waittime > 0)
     wait(waittime);
 
   playfx(level._turbine_disappear_fx, origin);
 
-  if(isdefined(self.buildableturbine))
+  if(isDefined(self.buildableturbine))
     playsoundatposition("zmb_turbine_explo", self.buildableturbine.origin);
 }
 
 turbinefxonce(withaoe) {
-  if(isdefined(self) && isdefined(self.buildableturbine) && (isdefined(self.turbine_power_is_on) && self.turbine_power_is_on)) {
+  if(isDefined(self) && isDefined(self.buildableturbine) && (isDefined(self.turbine_power_is_on) && self.turbine_power_is_on)) {
     value = 0;
 
     switch (self.turbine_power_level) {
@@ -422,13 +423,13 @@ turbinefxonce(withaoe) {
     }
 
     if(withaoe) {
-      if(isdefined(self.buildableturbine.equipment_can_move) && self.buildableturbine.equipment_can_move && (isdefined(self.buildableturbine.move_parent.ismoving) && self.buildableturbine.move_parent.ismoving))
+      if(isDefined(self.buildableturbine.equipment_can_move) && self.buildableturbine.equipment_can_move && (isDefined(self.buildableturbine.move_parent.ismoving) && self.buildableturbine.move_parent.ismoving))
         value = value | 4;
       else
         value = value | 8;
     }
 
-    if(value && isdefined(self.buildableturbine) && (isdefined(self.turbine_power_is_on) && self.turbine_power_is_on))
+    if(value && isDefined(self.buildableturbine) && (isDefined(self.turbine_power_is_on) && self.turbine_power_is_on))
       self.buildableturbine thread maps\mp\zombies\_zm_equipment::signal_equipment_activated(value);
   }
 }
@@ -437,7 +438,7 @@ turbinefx() {
   self endon("disconnect");
   self endon("equip_turbine_zm_taken");
 
-  while (isdefined(self) && isdefined(self.buildableturbine) && (isdefined(self.turbine_power_is_on) && self.turbine_power_is_on)) {
+  while(isDefined(self) && isDefined(self.buildableturbine) && (isDefined(self.turbine_power_is_on) && self.turbine_power_is_on)) {
     self turbinefxonce(1);
     wait 0.5;
     self turbinefxonce(0);
@@ -446,10 +447,10 @@ turbinefx() {
 }
 
 turbineaudio() {
-  if(!isdefined(self.buildableturbine)) {
+  if(!isDefined(self.buildableturbine)) {
     return;
   }
-  if(!(isdefined(self.turbine_power_is_on) && self.turbine_power_is_on) || isdefined(self.turbine_emped) && self.turbine_emped) {
+  if(!(isDefined(self.turbine_power_is_on) && self.turbine_power_is_on) || isDefined(self.turbine_emped) && self.turbine_emped) {
     self.buildableturbine stoploopsound();
     return;
   }
@@ -464,16 +465,16 @@ init_animtree() {
 }
 
 turbineanim(wait_for_end) {
-  if(!isdefined(self.buildableturbine)) {
+  if(!isDefined(self.buildableturbine)) {
     return;
   }
   animlength = 0;
   self.buildableturbine useanimtree(#animtree);
 
-  if(isdefined(self.buildableturbine.dying) && self.buildableturbine.dying) {
+  if(isDefined(self.buildableturbine.dying) && self.buildableturbine.dying) {
     animlength = getanimlength( % o_zombie_buildable_turbine_death);
     self.buildableturbine setanim( % o_zombie_buildable_turbine_death);
-  } else if(isdefined(self.turbine_emped) && self.turbine_emped) {
+  } else if(isDefined(self.turbine_emped) && self.turbine_emped) {
     self.buildableturbine clearanim( % o_zombie_buildable_turbine_fullpower, 0);
     return;
   } else {
@@ -494,7 +495,7 @@ turbineanim(wait_for_end) {
     }
   }
 
-  if(isdefined(wait_for_end) && wait_for_end)
+  if(isDefined(wait_for_end) && wait_for_end)
     wait(animlength);
 }
 
@@ -507,13 +508,13 @@ turbinedecay() {
   self.buildableturbine endon("death");
   roundlives = 4;
 
-  if(!isdefined(self.turbine_power_level))
+  if(!isDefined(self.turbine_power_level))
     self.turbine_power_level = roundlives;
 
-  while (self.turbine_health > 0) {
+  while(self.turbine_health > 0) {
     old_power_level = self.turbine_power_level;
 
-    if(isdefined(self.turbine_emped) && self.turbine_emped && !!(isdefined(self.turbine_is_powering_on) && self.turbine_is_powering_on)) {
+    if(isDefined(self.turbine_emped) && self.turbine_emped && !!(isDefined(self.turbine_is_powering_on) && self.turbine_is_powering_on)) {
       emp_time = level.zombie_vars["emp_perk_off_time"];
       now = gettime();
       emp_time_left = emp_time - (now - self.turbine_emp_time) / 1000;
@@ -526,12 +527,12 @@ turbinedecay() {
       }
     }
 
-    if(isdefined(self.turbine_emped) && self.turbine_emped)
+    if(isDefined(self.turbine_emped) && self.turbine_emped)
       self.turbine_power_level = 0;
-    else if(isdefined(self.turbine_power_is_on) && self.turbine_power_is_on) {
+    else if(isDefined(self.turbine_power_is_on) && self.turbine_power_is_on) {
       cost = 1;
 
-      if(isdefined(self.localpower))
+      if(isDefined(self.localpower))
         cost = cost + maps\mp\zombies\_zm_power::get_local_power_cost(self.localpower);
 
       self.turbine_health = self.turbine_health - cost;
@@ -548,7 +549,7 @@ turbinedecay() {
       self notify("turbine_power_change");
       self thread turbineaudio();
 
-      if(!(isdefined(self.buildableturbine.dying) && self.buildableturbine.dying))
+      if(!(isDefined(self.buildableturbine.dying) && self.buildableturbine.dying))
         self thread turbineanim();
     }
 
@@ -557,7 +558,7 @@ turbinedecay() {
 
   self destroy_placed_turbine();
 
-  if(isdefined(self.buildableturbine))
+  if(isDefined(self.buildableturbine))
     turbine_disappear_fx(self.buildableturbine.origin);
 
   self thread wait_and_take_equipment();
@@ -571,15 +572,15 @@ turbinedecay() {
 }
 
 destroy_placed_turbine() {
-  if(isdefined(self.buildableturbine)) {
-    if(isdefined(self.buildableturbine.dying) && self.buildableturbine.dying) {
-      while (isdefined(self.buildableturbine))
+  if(isDefined(self.buildableturbine)) {
+    if(isDefined(self.buildableturbine.dying) && self.buildableturbine.dying) {
+      while(isDefined(self.buildableturbine))
         wait 0.05;
 
       return;
     }
 
-    if(isdefined(self.buildableturbine.stub))
+    if(isDefined(self.buildableturbine.stub))
       thread maps\mp\zombies\_zm_unitrigger::unregister_unitrigger(self.buildableturbine.stub);
 
     thread turbine_disappear_fx(self.buildableturbine.origin, 0.75);
@@ -599,8 +600,8 @@ turbinepowerdiminish(origin, powerradius) {
   self endon("equip_turbine_zm_taken");
   self.buildableturbine endon("death");
 
-  while (!(isdefined(self.buildableturbine.dying) && self.buildableturbine.dying)) {
-    if(isdefined(self.turbine_power_level) && isdefined(self.buildableturbine)) {
+  while(!(isDefined(self.buildableturbine.dying) && self.buildableturbine.dying)) {
+    if(isDefined(self.turbine_power_level) && isDefined(self.buildableturbine)) {
       switch (self.turbine_power_level) {
         case 4:
           break;
@@ -635,26 +636,26 @@ debugturbine(radius) {
   self endon("equip_turbine_zm_taken");
   self.buildableturbine endon("death");
 
-  while (isdefined(self.buildableturbine)) {
+  while(isDefined(self.buildableturbine)) {
     if(getdvarint(#"_id_EB512CB7")) {
       color = (0, 1, 0);
       text = "";
 
-      if(isdefined(self.turbine_health))
+      if(isDefined(self.turbine_health))
         text = "" + self.turbine_health + "";
 
-      if(isdefined(self.buildableturbine.dying) && self.buildableturbine.dying) {
+      if(isDefined(self.buildableturbine.dying) && self.buildableturbine.dying) {
         text = "dying";
         color = (0, 0, 0);
-      } else if(isdefined(self.turbine_emped) && self.turbine_emped) {
+      } else if(isDefined(self.turbine_emped) && self.turbine_emped) {
         color = (0, 0, 1);
         emp_time = level.zombie_vars["emp_perk_off_time"];
         now = gettime();
         emp_time_left = int(emp_time - (now - self.turbine_emp_time) / 1000);
         text = text + " emp(" + emp_time_left + ")";
-      } else if(isdefined(self.turbine_is_powering_on) && self.turbine_is_powering_on)
+      } else if(isDefined(self.turbine_is_powering_on) && self.turbine_is_powering_on)
         text = text + " warmup";
-      else if(isdefined(self.turbine_power_is_on) && self.turbine_power_is_on) {
+      else if(isDefined(self.turbine_power_is_on) && self.turbine_power_is_on) {
         if(self.turbine_health < 200)
           color = (1, 0, 0);
         else if(self.turbine_health < 600)
@@ -668,4 +669,5 @@ debugturbine(radius) {
 
     wait 0.05;
   }
+
 }

@@ -33,7 +33,7 @@ init_zeppelin(str_script_noteworthy, str_ender) {
     m_zeppelin setmodel("veh_t6_dlc_zm_zeppelin");
     m_zeppelin setforcenocull();
 
-    while (true)
+    while(true)
       m_zeppelin move_zeppelin_down_new_path(a_path_structs);
   }
 }
@@ -46,10 +46,10 @@ move_zeppelin_down_new_path(a_structs) {
   self waittill("movedone");
   self show();
 
-  if(!isdefined(s_path_start.goal_struct)) {
-    assert(isdefined(s_path_start.target), "move_zeppelin_down_new_path found start struct at " + s_path_start.origin + " without a target! These are needed for zeppelin splines!");
+  if(!isDefined(s_path_start.goal_struct)) {
+    assert(isDefined(s_path_start.target), "move_zeppelin_down_new_path found start struct at " + s_path_start.origin + " without a target! These are needed for zeppelin splines!");
     s_path_start.goal_struct = getstruct(s_path_start.target, "targetname");
-    assert(isdefined(s_path_start.goal_struct), "move_zeppelin_down_new_path couldn't find goal for path start struct at " + s_path_start.origin);
+    assert(isDefined(s_path_start.goal_struct), "move_zeppelin_down_new_path couldn't find goal for path start struct at " + s_path_start.origin);
   }
 
   n_move_time = randomfloatrange(120.0, 150.0);
@@ -61,9 +61,9 @@ get_unused_struct(a_structs) {
   a_valid_structs = [];
   b_no_unused_structs = 0;
 
-  while (!a_valid_structs.size) {
+  while(!a_valid_structs.size) {
     foreach(struct in a_structs) {
-      if(!isdefined(struct.used) || b_no_unused_structs)
+      if(!isDefined(struct.used) || b_no_unused_structs)
         struct.used = 0;
 
       if(!struct.used)
@@ -90,8 +90,8 @@ vista_robot_pose() {
   flag_wait("start_zombie_round_logic");
   a_robots = getstructarray("trench_downed_robot_struct", "targetname");
 
-  for (i = 0; i < a_robots.size; i++) {
-    if(!isdefined(a_robots[i].angles))
+  for(i = 0; i < a_robots.size; i++) {
+    if(!isDefined(a_robots[i].angles))
       a_robots[i].angles = (0, 0, 0);
 
     v_origin = getstartorigin(a_robots[i].origin, a_robots[i].angles, % ai_zombie_giant_robot_vista);

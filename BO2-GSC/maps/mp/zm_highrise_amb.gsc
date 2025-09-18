@@ -21,7 +21,7 @@ sndmusicegg() {
   level.meteor_counter = 0;
   level.music_override = 0;
 
-  for (i = 0; i < origins.size; i++)
+  for(i = 0; i < origins.size; i++)
     level thread sndmusicegg_wait(origins[i]);
 }
 

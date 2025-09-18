@@ -38,10 +38,10 @@ init() {
   game["dialog"]["last_alive"] = "lastalive";
   game["dialog"]["boost"] = "generic_boost";
 
-  if(!isdefined(game["dialog"]["offense_obj"]))
+  if(!isDefined(game["dialog"]["offense_obj"]))
     game["dialog"]["offense_obj"] = "generic_boost";
 
-  if(!isdefined(game["dialog"]["defense_obj"]))
+  if(!isDefined(game["dialog"]["defense_obj"]))
     game["dialog"]["defense_obj"] = "generic_boost";
 
   game["dialog"]["hardcore"] = "hardcore";
@@ -154,10 +154,11 @@ init() {
 }
 
 registerdialoggroup(group, skipifcurrentlyplayinggroup) {
-  if(!isdefined(level.dialoggroups))
+  if(!isDefined(level.dialoggroups))
     level.dialoggroups = [];
-  else if(isdefined(level.dialoggroup[group])) {
+  else if(isDefined(level.dialoggroup[group])) {
     error("registerDialogGroup:Dialog group " + group + " already registered.");
+
     return;
   }
 
@@ -176,17 +177,19 @@ sndstartmusicsystem() {
   if(game["state"] == "pregame") {
     if(getdvarint(#"_id_0BC4784C") > 0)
       println("Music System - music state is undefined Waiting 15 seconds to set music state");
+
     wait 45;
 
-    if(!isdefined(level.nextmusicstate)) {
+    if(!isDefined(level.nextmusicstate)) {
       self.pers["music"].currentstate = "UNDERSCORE";
       self thread suspensemusic();
     }
   }
 
-  if(!isdefined(level.nextmusicstate)) {
+  if(!isDefined(level.nextmusicstate)) {
     if(getdvarint(#"_id_0BC4784C") > 0)
       println("Music System - music state is undefined Waiting 15 seconds to set music state");
+
     self.pers["music"].currentstate = "UNDERSCORE";
     self thread suspensemusic();
   }
@@ -195,6 +198,7 @@ sndstartmusicsystem() {
 suspensemusicforplayer() {
   self endon("disconnect");
   self thread set_music_on_player("UNDERSCORE", 0);
+
   if(getdvarint(#"_id_0BC4784C") > 0)
     println("Music System - Setting Music State Random Underscore " + self.pers["music"].returnstate + " On player " + self getentitynumber());
 }
@@ -203,31 +207,36 @@ suspensemusic(random) {
   level endon("game_ended");
   level endon("match_ending_soon");
   self endon("disconnect");
+
   if(getdvarint(#"_id_0BC4784C") > 0)
     println("Music System - Starting random underscore");
 
-  while (true) {
+  while(true) {
     wait(randomintrange(25, 60));
+
     if(getdvarint(#"_id_0BC4784C") > 0)
       println("Music System - Checking for random underscore");
 
-    if(!isdefined(self.pers["music"].inque))
+    if(!isDefined(self.pers["music"].inque))
       self.pers["music"].inque = 0;
 
     if(self.pers["music"].inque) {
       if(getdvarint(#"_id_0BC4784C") > 0)
         println("Music System - Inque no random underscore");
+
       continue;
     }
 
-    if(!isdefined(self.pers["music"].currentstate))
+    if(!isDefined(self.pers["music"].currentstate))
       self.pers["music"].currentstate = "SILENT";
 
     if(randomint(100) < self.underscorechance && self.pers["music"].currentstate != "ACTION" && self.pers["music"].currentstate != "TIME_OUT") {
       self thread suspensemusicforplayer();
       self.underscorechance = self.underscorechance - 20;
+
       if(getdvarint(#"_id_0BC4784C") > 0)
         println("Music System - Starting random underscore");
+
     }
   }
 }
@@ -243,10 +252,10 @@ announceroundwinner(winner, delay) {
   if(delay > 0)
     wait(delay);
 
-  if(!isdefined(winner) || isplayer(winner)) {
+  if(!isDefined(winner) || isplayer(winner)) {
     return;
   }
-  if(isdefined(level.teams[winner])) {
+  if(isDefined(level.teams[winner])) {
     leaderdialog("round_success", winner);
     leaderdialogforotherteams("round_failure", winner);
   } else {
@@ -261,10 +270,10 @@ announcegamewinner(winner, delay) {
   if(delay > 0)
     wait(delay);
 
-  if(!isdefined(winner) || isplayer(winner)) {
+  if(!isDefined(winner) || isplayer(winner)) {
     return;
   }
-  if(isdefined(level.teams[winner])) {
+  if(isDefined(level.teams[winner])) {
     leaderdialog("mission_success", winner);
     leaderdialogforotherteams("mission_failure", winner);
   } else
@@ -275,7 +284,7 @@ doflameaudio() {
   self endon("disconnect");
   waittillframeend;
 
-  if(!isdefined(self.lastflamehurtaudio))
+  if(!isDefined(self.lastflamehurtaudio))
     self.lastflamehurtaudio = 0;
 
   currenttime = gettime();
@@ -287,12 +296,12 @@ doflameaudio() {
 }
 
 leaderdialog(dialog, team, group, excludelist, squaddialog) {
-  assert(isdefined(level.players));
+  assert(isDefined(level.players));
 
   if(level.wagermatch) {
     return;
   }
-  if(!isdefined(team)) {
+  if(!isDefined(team)) {
     dialogs = [];
 
     foreach(team in level.teams)
@@ -302,37 +311,37 @@ leaderdialog(dialog, team, group, excludelist, squaddialog) {
     return;
   }
 
-  if(isdefined(excludelist)) {
-    for (i = 0; i < level.players.size; i++) {
+  if(isDefined(excludelist)) {
+    for(i = 0; i < level.players.size; i++) {
       player = level.players[i];
 
-      if(isdefined(player.pers["team"]) && player.pers["team"] == team && !maps\mp\gametypes\_globallogic_utils::isexcluded(player, excludelist))
+      if(isDefined(player.pers["team"]) && player.pers["team"] == team && !maps\mp\gametypes\_globallogic_utils::isexcluded(player, excludelist))
         player leaderdialogonplayer(dialog, group);
     }
   } else {
-    for (i = 0; i < level.players.size; i++) {
+    for(i = 0; i < level.players.size; i++) {
       player = level.players[i];
 
-      if(isdefined(player.pers["team"]) && player.pers["team"] == team)
+      if(isDefined(player.pers["team"]) && player.pers["team"] == team)
         player leaderdialogonplayer(dialog, group);
     }
   }
 }
 
 leaderdialogallteams(dialogs, group, excludelist) {
-  assert(isdefined(level.players));
+  assert(isDefined(level.players));
 
-  for (i = 0; i < level.players.size; i++) {
+  for(i = 0; i < level.players.size; i++) {
     player = level.players[i];
     team = player.pers["team"];
 
-    if(!isdefined(team)) {
+    if(!isDefined(team)) {
       continue;
     }
-    if(!isdefined(dialogs[team])) {
+    if(!isDefined(dialogs[team])) {
       continue;
     }
-    if(isdefined(excludelist) && maps\mp\gametypes\_globallogic_utils::isexcluded(player, excludelist)) {
+    if(isDefined(excludelist) && maps\mp\gametypes\_globallogic_utils::isexcluded(player, excludelist)) {
       continue;
     }
     player leaderdialogonplayer(dialogs[team], group);
@@ -366,14 +375,15 @@ flushgroupdialogonplayer(group) {
 }
 
 addgroupdialogtoplayer(dialog, group) {
-  if(!isdefined(level.dialoggroup[group])) {
+  if(!isDefined(level.dialoggroup[group])) {
     error("leaderDialogOnPlayer:Dialog group " + group + " is not registered");
+
     return 0;
   }
 
   addtoqueue = 0;
 
-  if(!isdefined(self.leaderdialoggroups[group]))
+  if(!isDefined(self.leaderdialoggroups[group]))
     addtoqueue = 1;
 
   if(!level.dialoggroup[group].skipifcurrentlyplayinggroup) {
@@ -394,16 +404,16 @@ addgroupdialogtoplayer(dialog, group) {
 }
 
 leaderdialogonplayer(dialog, group) {
-  assert(isdefined(dialog));
+  assert(isDefined(dialog));
   team = self.pers["team"];
 
-  if(!isdefined(team)) {
+  if(!isDefined(team)) {
     return;
   }
-  if(!isdefined(level.teams[team])) {
+  if(!isDefined(level.teams[team])) {
     return;
   }
-  if(isdefined(group)) {
+  if(isDefined(group)) {
     if(!addgroupdialogtoplayer(dialog, group)) {
       return;
     }
@@ -418,7 +428,7 @@ leaderdialogonplayer(dialog, group) {
 }
 
 waitforsound(sound, extratime) {
-  if(!isdefined(extratime))
+  if(!isDefined(extratime))
     extratime = 0.1;
 
   time = soundgetplaybacktime(sound);
@@ -433,18 +443,18 @@ playnextleaderdialog() {
   self endon("disconnect");
   self endon("flush_dialog");
 
-  if(isdefined(level.allowannouncer) && !level.allowannouncer) {
+  if(isDefined(level.allowannouncer) && !level.allowannouncer) {
     return;
   }
   self.leaderdialogactive = 1;
   waittillframeend;
   assert(self.leaderdialogqueue.size > 0);
   dialog = self.leaderdialogqueue[0];
-  assert(isdefined(dialog));
+  assert(isDefined(dialog));
   arrayremoveindex(self.leaderdialogqueue, 0);
   team = self.pers["team"];
 
-  if(isdefined(self.leaderdialoggroups[dialog])) {
+  if(isDefined(self.leaderdialoggroups[dialog])) {
     group = dialog;
     dialog = self.leaderdialoggroups[group];
     self.leaderdialoggroups[group] = undefined;
@@ -456,7 +466,7 @@ playnextleaderdialog() {
   else
     faction = game["voice"][team];
 
-  if(!isdefined(faction)) {
+  if(!isDefined(faction)) {
     return;
   }
   sound_name = faction + game["dialog"][dialog];
@@ -536,12 +546,12 @@ actionmusicset() {
 }
 
 play_2d_on_team(alias, team) {
-  assert(isdefined(level.players));
+  assert(isDefined(level.players));
 
-  for (i = 0; i < level.players.size; i++) {
+  for(i = 0; i < level.players.size; i++) {
     player = level.players[i];
 
-    if(isdefined(player.pers["team"]) && player.pers["team"] == team)
+    if(isDefined(player.pers["team"]) && player.pers["team"] == team)
       player playlocalsound(alias);
   }
 }
@@ -550,33 +560,41 @@ set_music_on_team(state, team, save_state, return_state, wait_time) {
   if(sessionmodeiszombiesgame()) {
     return;
   }
-  assert(isdefined(level.players));
+  assert(isDefined(level.players));
 
-  if(!isdefined(team)) {
+  if(!isDefined(team)) {
     team = "both";
+
     if(getdvarint(#"_id_0BC4784C") > 0)
       println("Music System - team undefined: Setting to both");
+
   }
 
-  if(!isdefined(save_state)) {
+  if(!isDefined(save_state)) {
     save_sate = 0;
+
     if(getdvarint(#"_id_0BC4784C") > 0)
       println("Music System - save_sate undefined: Setting to false");
+
   }
 
-  if(!isdefined(return_state)) {
+  if(!isDefined(return_state)) {
     return_state = 0;
+
     if(getdvarint(#"_id_0BC4784C") > 0)
       println("Music System - Music System - return_state undefined: Setting to false");
+
   }
 
-  if(!isdefined(wait_time)) {
+  if(!isDefined(wait_time)) {
     wait_time = 0;
+
     if(getdvarint(#"_id_0BC4784C") > 0)
       println("Music System - wait_time undefined: Setting to 0");
+
   }
 
-  for (i = 0; i < level.players.size; i++) {
+  for(i = 0; i < level.players.size; i++) {
     player = level.players[i];
 
     if(team == "both") {
@@ -584,10 +602,12 @@ set_music_on_team(state, team, save_state, return_state, wait_time) {
       continue;
     }
 
-    if(isdefined(player.pers["team"]) && player.pers["team"] == team) {
+    if(isDefined(player.pers["team"]) && player.pers["team"] == team) {
       player thread set_music_on_player(state, save_state, return_state, wait_time);
+
       if(getdvarint(#"_id_0BC4784C") > 0)
         println("Music System - Setting Music State " + state + " On player " + player getentitynumber());
+
     }
   }
 }
@@ -600,68 +620,84 @@ set_music_on_player(state, save_state, return_state, wait_time) {
   }
   assert(isplayer(self));
 
-  if(!isdefined(save_state)) {
+  if(!isDefined(save_state)) {
     save_state = 0;
+
     if(getdvarint(#"_id_0BC4784C") > 0)
       println("Music System - Music System - save_sate undefined: Setting to false");
+
   }
 
-  if(!isdefined(return_state)) {
+  if(!isDefined(return_state)) {
     return_state = 0;
+
     if(getdvarint(#"_id_0BC4784C") > 0)
       println("Music System - Music System - return_state undefined: Setting to false");
+
   }
 
-  if(!isdefined(wait_time)) {
+  if(!isDefined(wait_time)) {
     wait_time = 0;
+
     if(getdvarint(#"_id_0BC4784C") > 0)
       println("Music System - wait_time undefined: Setting to 0");
+
   }
 
-  if(!isdefined(state)) {
+  if(!isDefined(state)) {
     state = "UNDERSCORE";
+
     if(getdvarint(#"_id_0BC4784C") > 0)
       println("Music System - state undefined: Setting to UNDERSCORE");
+
   }
 
   maps\mp\_music::setmusicstate(state, self);
 
-  if(isdefined(self.pers["music"].currentstate) && save_state) {
+  if(isDefined(self.pers["music"].currentstate) && save_state) {
     self.pers["music"].returnstate = state;
+
     if(getdvarint(#"_id_0BC4784C") > 0)
       println("Music System - Saving Music State " + self.pers["music"].returnstate + " On " + self getentitynumber());
+
   }
 
   self.pers["music"].previousstate = self.pers["music"].currentstate;
   self.pers["music"].currentstate = state;
+
   if(getdvarint(#"_id_0BC4784C") > 0)
     println("Music System - Setting Music State " + state + " On player " + self getentitynumber());
 
-  if(isdefined(self.pers["music"].returnstate) && return_state) {
+  if(isDefined(self.pers["music"].returnstate) && return_state) {
     if(getdvarint(#"_id_0BC4784C") > 0)
       println("Music System - Starting Return State " + self.pers["music"].returnstate + " On " + self getentitynumber());
+
     self set_next_music_state(self.pers["music"].returnstate, wait_time);
   }
 }
 
 return_music_state_player(wait_time) {
-  if(!isdefined(wait_time)) {
+  if(!isDefined(wait_time)) {
     wait_time = 0;
+
     if(getdvarint(#"_id_0BC4784C") > 0)
       println("Music System - wait_time undefined: Setting to 0");
+
   }
 
   self set_next_music_state(self.pers["music"].returnstate, wait_time);
 }
 
 return_music_state_team(team, wait_time) {
-  if(!isdefined(wait_time)) {
+  if(!isDefined(wait_time)) {
     wait_time = 0;
+
     if(getdvarint(#"_id_0BC4784C") > 0)
       println("Music System - wait_time undefined: Setting to 0");
+
   }
 
-  for (i = 0; i < level.players.size; i++) {
+  for(i = 0; i < level.players.size; i++) {
     player = level.players[i];
 
     if(team == "both") {
@@ -669,10 +705,12 @@ return_music_state_team(team, wait_time) {
       continue;
     }
 
-    if(isdefined(player.pers["team"]) && player.pers["team"] == team) {
+    if(isDefined(player.pers["team"]) && player.pers["team"] == team) {
       player thread set_next_music_state(self.pers["music"].returnstate, wait_time);
+
       if(getdvarint(#"_id_0BC4784C") > 0)
         println("Music System - Setting Music State " + self.pers["music"].returnstate + " On player " + player getentitynumber());
+
     }
   }
 }
@@ -680,15 +718,18 @@ return_music_state_team(team, wait_time) {
 set_next_music_state(nextstate, wait_time) {
   self endon("disconnect");
   self.pers["music"].nextstate = nextstate;
+
   if(getdvarint(#"_id_0BC4784C") > 0)
     println("Music System - Setting next Music State " + self.pers["music"].nextstate + " On " + self getentitynumber());
 
-  if(!isdefined(self.pers["music"].inque))
+  if(!isDefined(self.pers["music"].inque))
     self.pers["music"].inque = 0;
 
   if(self.pers["music"].inque) {
     return;
+
     println("Music System - Music state in que");
+
   } else {
     self.pers["music"].inque = 1;
 

@@ -1,7 +1,7 @@
-/********************************************************
+/***********************************************************
  * Decompiled and Edited by SyndiShanX
  * Script: clientscripts\mp\zm_tomb_ambient_scripts.csc
-********************************************************/
+***********************************************************/
 
 #include clientscripts\mp\_utility;
 #include clientscripts\mp\zombies\_zm_weapons;
@@ -27,7 +27,7 @@ dogfights_callback(localclientnumber, oldval, newval, bnewent, binitialsnap, fie
 dogfights_start(localclientnumber) {
   disable_all_dogfight_planes(localclientnumber);
 
-  for (i = 0; i < 3; i++) {
+  for(i = 0; i < 3; i++) {
     if(i % 2 == 0)
       str_identifier = "dogfight_planes_1";
     else
@@ -40,21 +40,21 @@ dogfights_start(localclientnumber) {
 disable_all_dogfight_planes(localclientnumber) {
   level notify("dogfight_fx_disable");
 
-  if(isdefined(level.dogfight_planes)) {
+  if(isDefined(level.dogfight_planes)) {
     foreach(struct in level.dogfight_planes) {
-      if(isdefined(struct.plane_front_fx_smoke) && isdefined(struct.plane_front_fx_smoke[localclientnumber]))
+      if(isDefined(struct.plane_front_fx_smoke) && isDefined(struct.plane_front_fx_smoke[localclientnumber]))
         deletefx(localclientnumber, struct.plane_front_fx_smoke[localclientnumber]);
 
-      if(isdefined(struct.plane_rear_fx_tracer_left) && isdefined(struct.plane_rear_fx_tracer_left[localclientnumber]))
+      if(isDefined(struct.plane_rear_fx_tracer_left) && isDefined(struct.plane_rear_fx_tracer_left[localclientnumber]))
         deletefx(localclientnumber, struct.plane_rear_fx_tracer_left[localclientnumber]);
 
-      if(isdefined(struct.plane_rear_fx_tracer_right) && isdefined(struct.plane_rear_fx_tracer_right[localclientnumber]))
+      if(isDefined(struct.plane_rear_fx_tracer_right) && isDefined(struct.plane_rear_fx_tracer_right[localclientnumber]))
         deletefx(localclientnumber, struct.plane_rear_fx_tracer_right[localclientnumber]);
 
-      if(!isdefined(struct.in_use))
+      if(!isDefined(struct.in_use))
         struct.in_use = [];
 
-      if(isdefined(struct.in_use[localclientnumber]))
+      if(isDefined(struct.in_use[localclientnumber]))
         struct.in_use[localclientnumber] = 0;
     }
   }
@@ -63,14 +63,14 @@ disable_all_dogfight_planes(localclientnumber) {
 _dogfights_start(str_name, localclientnumber) {
   level endon("dogfight_fx_disable");
 
-  while (true) {
+  while(true) {
     play_fx_on_random_unused_dogfight_pair(str_name, localclientnumber);
     wait 3;
   }
 }
 
 add_dogfight_pair(str_plane_front_tag_smoke, str_plane_rear_tag_fire_right, str_plane_rear_tag_fire_left) {
-  if(!isdefined(level.dogfight_planes))
+  if(!isDefined(level.dogfight_planes))
     level.dogfight_planes = [];
 
   s_temp = spawnstruct();
@@ -89,7 +89,7 @@ play_fx_on_random_unused_dogfight_pair(str_model_name, localclientnumber) {
   n_loops = int(n_random_time / 2.5);
   m_planes plane_front_smoke_fx_start(localclientnumber, s_temp);
 
-  for (i = 0; i < n_loops; i++) {
+  for(i = 0; i < n_loops; i++) {
     m_planes plane_rear_tracer_fx_start(localclientnumber, s_temp);
     wait 2.5;
   }
@@ -105,10 +105,10 @@ plane_front_smoke_fx_start(localclientnumber, s_temp) {
 }
 
 plane_front_smoke_fx_end(localclientnumber, s_temp) {
-  if(!isdefined(s_temp.plane_front_fx_smoke))
+  if(!isDefined(s_temp.plane_front_fx_smoke))
     s_temp.plane_front_fx_smoke = [];
 
-  if(isdefined(s_temp.plane_front_fx_smoke[localclientnumber]))
+  if(isDefined(s_temp.plane_front_fx_smoke[localclientnumber]))
     deletefx(localclientnumber, s_temp.plane_front_fx_smoke[localclientnumber], 0);
 }
 
@@ -120,30 +120,30 @@ plane_rear_tracer_fx_start(localclientnumber, s_temp) {
 }
 
 plane_rear_tracer_fx_end(localclientnumber, s_temp) {
-  if(!isdefined(s_temp.plane_rear_fx_tracer_right))
+  if(!isDefined(s_temp.plane_rear_fx_tracer_right))
     s_temp.plane_rear_fx_tracer_right = [];
 
-  if(isdefined(s_temp.plane_rear_fx_tracer_right[localclientnumber]))
+  if(isDefined(s_temp.plane_rear_fx_tracer_right[localclientnumber]))
     deletefx(localclientnumber, s_temp.plane_rear_fx_tracer_right[localclientnumber], 0);
 
-  if(!isdefined(s_temp.plane_rear_fx_tracer_left))
+  if(!isDefined(s_temp.plane_rear_fx_tracer_left))
     s_temp.plane_rear_fx_tracer_left = [];
 
-  if(isdefined(s_temp.plane_rear_fx_tracer_left[localclientnumber]))
+  if(isDefined(s_temp.plane_rear_fx_tracer_left[localclientnumber]))
     deletefx(localclientnumber, s_temp.plane_rear_fx_tracer_left[localclientnumber], 0);
 }
 
 get_dogfight_plane_model(localclientnumber, str_identifier) {
-  if(!isdefined(level.dogfight_plane_models))
+  if(!isDefined(level.dogfight_plane_models))
     level.dogfight_plane_models = [];
 
-  if(!isdefined(level.dogfight_plane_models[str_identifier]))
+  if(!isDefined(level.dogfight_plane_models[str_identifier]))
     level.dogfight_plane_models[str_identifier] = [];
 
-  if(!isdefined(level.dogfight_plane_models[str_identifier][localclientnumber]))
+  if(!isDefined(level.dogfight_plane_models[str_identifier][localclientnumber]))
     level.dogfight_plane_models[str_identifier][localclientnumber] = get_fxanim_from_script_noteworthy(localclientnumber, str_identifier);
 
-  assert(isdefined(level.dogfight_plane_models[str_identifier][localclientnumber]), "tomb ambient scripts can't find dogfight plane model with script_noteworthy " + str_identifier);
+  assert(isDefined(level.dogfight_plane_models[str_identifier][localclientnumber]), "tomb ambient scripts can't find dogfight plane model with script_noteworthy " + str_identifier);
   level.dogfight_plane_models[str_identifier][localclientnumber] waittill_dobj(localclientnumber);
   return level.dogfight_plane_models[str_identifier][localclientnumber];
 }
@@ -152,7 +152,7 @@ get_fxanim_from_script_noteworthy(localclientnumber, str_identifier) {
   a_fxanims = getentarray(localclientnumber, "fxanim", "targetname");
 
   foreach(ent in a_fxanims) {
-    if(isdefined(ent.script_noteworthy) && ent.script_noteworthy == str_identifier)
+    if(isDefined(ent.script_noteworthy) && ent.script_noteworthy == str_identifier)
       return ent;
   }
 }
@@ -161,7 +161,7 @@ get_random_unused_plane_pair(localclientnumber) {
   a_unused = [];
 
   foreach(s_pair in level.dogfight_planes) {
-    if(!isdefined(s_pair.in_use[localclientnumber]))
+    if(!isDefined(s_pair.in_use[localclientnumber]))
       s_pair.in_use[localclientnumber] = 0;
 
     if(!s_pair.in_use[localclientnumber])

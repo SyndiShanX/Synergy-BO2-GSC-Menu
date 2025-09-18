@@ -11,14 +11,14 @@
 #include maps\mp\zombies\_zm;
 
 debug_script_structs() {
-  if(isdefined(level.struct)) {
+  if(isDefined(level.struct)) {
     println("*** Num structs " + level.struct.size);
     println("");
 
-    for (i = 0; i < level.struct.size; i++) {
+    for(i = 0; i < level.struct.size; i++) {
       struct = level.struct[i];
 
-      if(isdefined(struct.targetname)) {
+      if(isDefined(struct.targetname)) {
         println("---" + i + " : " + struct.targetname);
         continue;
       }
@@ -30,7 +30,7 @@ debug_script_structs() {
 }
 
 updatetimerpausedness() {
-  shouldbestopped = isdefined(level.hostmigrationtimer);
+  shouldbestopped = isDefined(level.hostmigrationtimer);
 
   if(!level.timerstopped && shouldbestopped) {
     level.timerstopped = 1;
@@ -42,7 +42,6 @@ updatetimerpausedness() {
 }
 
 callback_hostmigrationsave() {
-
 }
 
 callback_prehostmigrationsave() {
@@ -52,7 +51,7 @@ callback_prehostmigrationsave() {
   if(is_true(level._hm_should_pause_spawning))
     flag_set("spawn_zombies");
 
-  for (i = 0; i < level.players.size; i++)
+  for(i = 0; i < level.players.size; i++)
     level.players[i] enableinvulnerability();
 }
 
@@ -68,11 +67,11 @@ locktimer() {
   level endon("host_migration_begin");
   level endon("host_migration_end");
 
-  for (;;) {
+  for(;;) {
     currtime = gettime();
     wait 0.05;
 
-    if(!level.timerstopped && isdefined(level.discardtime))
+    if(!level.timerstopped && isDefined(level.discardtime))
       level.discardtime = level.discardtime + (gettime() - currtime);
   }
 }
@@ -85,15 +84,16 @@ callback_hostmigration() {
 
   if(level.gameended) {
     println("Migration starting at time " + gettime() + ", but game has ended, so no countdown.");
+
     return;
   }
 
   sethostmigrationstatus(1);
   level notify("host_migration_begin");
 
-  for (i = 0; i < level.players.size; i++) {
-    if(isdefined(level.hostmigration_link_entity_callback)) {
-      if(!isdefined(level.players[i]._host_migration_link_entity))
+  for(i = 0; i < level.players.size; i++) {
+    if(isDefined(level.hostmigration_link_entity_callback)) {
+      if(!isDefined(level.players[i]._host_migration_link_entity))
         level.players[i]._host_migration_link_entity = level.players[i][
           [level.hostmigration_link_entity_callback]
         ]();
@@ -102,12 +102,12 @@ callback_hostmigration() {
     level.players[i] thread hostmigrationtimerthink();
   }
 
-  if(isdefined(level.hostmigration_ai_link_entity_callback)) {
+  if(isDefined(level.hostmigration_ai_link_entity_callback)) {
     zombies = getaiarray(level.zombie_team);
 
-    if(isdefined(zombies) && zombies.size > 0) {
+    if(isDefined(zombies) && zombies.size > 0) {
       foreach(zombie in zombies) {
-        if(!isdefined(zombie._host_migration_link_entity))
+        if(!isDefined(zombie._host_migration_link_entity))
           zombie._host_migration_link_entity = zombie[[level.hostmigration_ai_link_entity_callback]]();
       }
     }
@@ -117,13 +117,14 @@ callback_hostmigration() {
     level waittill("prematch_over");
 
   println("Migration starting at time " + gettime());
+
   level.hostmigrationtimer = 1;
   thread locktimer();
   zombies = getaiarray(level.zombie_team);
 
-  if(isdefined(zombies) && zombies.size > 0) {
+  if(isDefined(zombies) && zombies.size > 0) {
     foreach(zombie in zombies) {
-      if(isdefined(zombie._host_migration_link_entity)) {
+      if(isDefined(zombie._host_migration_link_entity)) {
         ent = spawn("script_origin", zombie.origin);
         ent.angles = zombie.angles;
         zombie linkto(ent);
@@ -147,9 +148,9 @@ callback_hostmigration() {
 
   zombies = getaiarray(level.zombie_team);
 
-  if(isdefined(zombies) && zombies.size > 0) {
+  if(isDefined(zombies) && zombies.size > 0) {
     foreach(zombie in zombies) {
-      if(isdefined(zombie._host_migration_link_entity)) {
+      if(isDefined(zombie._host_migration_link_entity)) {
         zombie unlink();
         zombie._host_migration_link_helper delete();
         zombie._host_migration_link_helper = undefined;
@@ -166,7 +167,9 @@ callback_hostmigration() {
   level.hostmigrationtimer = undefined;
   level._hm_should_pause_spawning = undefined;
   sethostmigrationstatus(0);
+
   println("Migration finished at time " + gettime());
+
   level notify("host_migration_end");
 }
 
@@ -180,7 +183,7 @@ matchstarttimerconsole_internal(counttime, matchstarttimer) {
   waittillframeend;
   level endon("match_start_timer_beginning");
 
-  while (counttime > 0 && !level.gameended) {
+  while(counttime > 0 && !level.gameended) {
     matchstarttimer thread maps\mp\gametypes_zm\_hud::fontpulse(level);
     wait(matchstarttimer.inframes * 0.05);
     matchstarttimer setvalue(counttime);
@@ -211,7 +214,6 @@ matchstarttimerconsole(type, duration) {
   if(counttime >= 2)
     matchstarttimerconsole_internal(counttime, matchstarttimer);
   else {
-
   }
 
   matchstarttimer destroyelem();
@@ -240,16 +242,18 @@ hostmigrationtimerthink_internal() {
   level endon("host_migration_end");
   self.hostmigrationcontrolsfrozen = 0;
 
-  while (!isalive(self))
+  while(!isalive(self))
     self waittill("spawned");
 
-  if(isdefined(self._host_migration_link_entity)) {
+  if(isDefined(self._host_migration_link_entity)) {
     ent = spawn("script_origin", self.origin);
     ent.angles = self.angles;
     self linkto(ent);
     ent linkto(self._host_migration_link_entity, "tag_origin", self._host_migration_link_entity worldtolocalcoords(ent.origin), ent.angles + self._host_migration_link_entity.angles);
     self._host_migration_link_helper = ent;
+
     println("Linking player to ent " + self._host_migration_link_entity.targetname);
+
   }
 
   self.hostmigrationcontrolsfrozen = 1;
@@ -265,15 +269,17 @@ hostmigrationtimerthink() {
   if(self.hostmigrationcontrolsfrozen) {
     self freezecontrols(0);
     self.hostmigrationcontrolsfrozen = 0;
+
     println(" Host migration unfreeze controls");
+
   }
 
-  if(isdefined(self._host_migration_link_entity)) {
+  if(isDefined(self._host_migration_link_entity)) {
     self unlink();
     self._host_migration_link_helper delete();
     self._host_migration_link_helper = undefined;
 
-    if(isdefined(self._host_migration_link_entity._post_host_migration_thread))
+    if(isDefined(self._host_migration_link_entity._post_host_migration_thread))
       self thread[[self._host_migration_link_entity._post_host_migration_thread]](self._host_migration_link_entity);
 
     self._host_migration_link_entity = undefined;
@@ -281,7 +287,7 @@ hostmigrationtimerthink() {
 }
 
 waittillhostmigrationdone() {
-  if(!isdefined(level.hostmigrationtimer))
+  if(!isDefined(level.hostmigrationtimer))
     return 0;
 
   starttime = gettime();
@@ -290,7 +296,7 @@ waittillhostmigrationdone() {
 }
 
 waittillhostmigrationstarts(duration) {
-  if(isdefined(level.hostmigrationtimer)) {
+  if(isDefined(level.hostmigrationtimer)) {
     return;
   }
   level endon("host_migration_begin");
@@ -305,10 +311,10 @@ waitlongdurationwithhostmigrationpause(duration) {
   starttime = gettime();
   endtime = gettime() + duration * 1000;
 
-  while (gettime() < endtime) {
+  while(gettime() < endtime) {
     waittillhostmigrationstarts((endtime - gettime()) / 1000);
 
-    if(isdefined(level.hostmigrationtimer)) {
+    if(isDefined(level.hostmigrationtimer)) {
       timepassed = waittillhostmigrationdone();
       endtime = endtime + timepassed;
     }
@@ -316,6 +322,7 @@ waitlongdurationwithhostmigrationpause(duration) {
 
   if(gettime() != endtime) {
     println("SCRIPT WARNING: gettime() = " + gettime() + " NOT EQUAL TO endtime = " + endtime);
+
   }
 
   waittillhostmigrationdone();
@@ -330,10 +337,10 @@ waitlongdurationwithgameendtimeupdate(duration) {
   starttime = gettime();
   endtime = gettime() + duration * 1000;
 
-  while (gettime() < endtime) {
+  while(gettime() < endtime) {
     waittillhostmigrationstarts((endtime - gettime()) / 1000);
 
-    while (isdefined(level.hostmigrationtimer)) {
+    while(isDefined(level.hostmigrationtimer)) {
       endtime = endtime + 1000;
       setgameendtime(int(endtime));
       wait 1;
@@ -343,7 +350,7 @@ waitlongdurationwithgameendtimeupdate(duration) {
   if(gettime() != endtime)
     println("SCRIPT WARNING: gettime() = " + gettime() + " NOT EQUAL TO endtime = " + endtime);
 
-  while (isdefined(level.hostmigrationtimer)) {
+  while(isDefined(level.hostmigrationtimer)) {
     endtime = endtime + 1000;
     setgameendtime(int(endtime));
     wait 1;
@@ -356,15 +363,15 @@ find_alternate_player_place(v_origin, min_radius, max_radius, max_height, ignore
   found_node = undefined;
   a_nodes = getnodesinradiussorted(v_origin, max_radius, min_radius, max_height, "pathnodes");
 
-  if(isdefined(a_nodes) && a_nodes.size > 0) {
+  if(isDefined(a_nodes) && a_nodes.size > 0) {
     a_player_volumes = getentarray("player_volume", "script_noteworthy");
     index = a_nodes.size - 1;
 
-    for (i = index; i >= 0; i--) {
+    for(i = index; i >= 0; i--) {
       n_node = a_nodes[i];
 
       if(ignore_targetted_nodes == 1) {
-        if(isdefined(n_node.target))
+        if(isDefined(n_node.target))
           continue;
       }
 
@@ -377,7 +384,7 @@ find_alternate_player_place(v_origin, min_radius, max_radius, max_height, ignore
           if(trace["fraction"] < 1) {
             override_abort = 0;
 
-            if(isdefined(level._chugabud_reject_node_override_func))
+            if(isDefined(level._chugabud_reject_node_override_func))
               override_abort = [
                 [level._chugabud_reject_node_override_func]
               ](v_origin, n_node);
@@ -399,29 +406,29 @@ hostmigration_put_player_in_better_place() {
   spawnpoint = undefined;
   spawnpoint = find_alternate_player_place(self.origin, 50, 150, 64, 1);
 
-  if(!isdefined(spawnpoint))
+  if(!isDefined(spawnpoint))
     spawnpoint = find_alternate_player_place(self.origin, 150, 400, 64, 1);
 
-  if(!isdefined(spawnpoint))
+  if(!isDefined(spawnpoint))
     spawnpoint = find_alternate_player_place(self.origin, 50, 400, 256, 0);
 
-  if(!isdefined(spawnpoint))
+  if(!isDefined(spawnpoint))
     spawnpoint = maps\mp\zombies\_zm::check_for_valid_spawn_near_team(self, 1);
 
-  if(!isdefined(spawnpoint)) {
+  if(!isDefined(spawnpoint)) {
     match_string = "";
     location = level.scr_zm_map_start_location;
 
-    if((location == "default" || location == "") && isdefined(level.default_start_location))
+    if((location == "default" || location == "") && isDefined(level.default_start_location))
       location = level.default_start_location;
 
     match_string = level.scr_zm_ui_gametype + "_" + location;
     spawnpoints = [];
     structs = getstructarray("initial_spawn", "script_noteworthy");
 
-    if(isdefined(structs)) {
+    if(isDefined(structs)) {
       foreach(struct in structs) {
-        if(isdefined(struct.script_string)) {
+        if(isDefined(struct.script_string)) {
           tokens = strtok(struct.script_string, " ");
 
           foreach(token in tokens) {
@@ -432,13 +439,13 @@ hostmigration_put_player_in_better_place() {
       }
     }
 
-    if(!isdefined(spawnpoints) || spawnpoints.size == 0)
+    if(!isDefined(spawnpoints) || spawnpoints.size == 0)
       spawnpoints = getstructarray("initial_spawn_points", "targetname");
 
-    assert(isdefined(spawnpoints), "Could not find initial spawn points!");
+    assert(isDefined(spawnpoints), "Could not find initial spawn points!");
     spawnpoint = maps\mp\zombies\_zm::getfreespawnpoint(spawnpoints, self);
   }
 
-  if(isdefined(spawnpoint))
+  if(isDefined(spawnpoint))
     self setorigin(spawnpoint.origin);
 }

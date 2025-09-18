@@ -1,7 +1,7 @@
-/***********************************************************
+/*****************************************************************
  * Decompiled and Edited by SyndiShanX
  * Script: clientscripts\mp\zombies\_zm_weap_time_bomb.csc
-***********************************************************/
+*****************************************************************/
 
 #include clientscripts\mp\_visionset_mgr;
 #include clientscripts\mp\zombies\_zm_weapons;
@@ -25,16 +25,16 @@ init_time_bomb() {
 
 sndtimebombloop(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump) {
   if(newval == 1) {
-    if(!isdefined(self.sndtimebombloopent))
+    if(!isDefined(self.sndtimebombloopent))
       self.sndtimebombloopent = spawn(0, self.origin, "script_origin");
 
     self.sndtimebombloopent playloopsound("zmb_timebomb_hold_loop", 0.25);
   } else if(newval == 2) {
-    if(!isdefined(self.sndtimebombloopent))
+    if(!isDefined(self.sndtimebombloopent))
       self.sndtimebombloopent = spawn(0, self.origin, "script_origin");
 
     self.sndtimebombloopent playloopsound("zmb_timebomb_detonator_hold_loop", 0.25);
-  } else if(isdefined(self.sndtimebombloopent)) {
+  } else if(isDefined(self.sndtimebombloopent)) {
     self.sndtimebombloopent delete();
     self.sndtimebombloopent = undefined;
   }

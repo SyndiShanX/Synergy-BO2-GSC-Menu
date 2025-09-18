@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: clientscripts\mp\_load.csc
-***************************************/
+**************************************/
 
 #include clientscripts\mp\_utility;
 #include clientscripts\mp\_ambientpackage;
@@ -152,7 +152,9 @@ main() {
   }
 
   level thread clientscripts\mp\_destructible::init();
+
   level thread clientscripts\_radiant_live_update::main();
+
   level thread parse_structs();
 
   if(getdvar(#"r_reflectionProbeGenerate") == "1") {
@@ -166,8 +168,8 @@ main() {
 }
 
 parse_structs() {
-  for (i = 0; i < level.struct.size; i++) {
-    if(isdefined(level.struct[i].targetname)) {
+  for(i = 0; i < level.struct.size; i++) {
+    if(isDefined(level.struct[i].targetname)) {
       if(level.struct[i].targetname == "flak_fire_fx") {
         fx_id = "flak20_fire_fx";
         level._effect["flak20_fire_fx"] = loadfx("weapon/tracer/fx_tracer_flak_single_noExp");

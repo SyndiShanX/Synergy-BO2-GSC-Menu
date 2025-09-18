@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\zm_nuked.gsc
-***************************************/
+**************************************/
 
 #include common_scripts\utility;
 #include maps\mp\_utility;
@@ -56,7 +56,7 @@ zstandard_preinit() {
 createfx_callback() {
   ents = getentarray();
 
-  for (i = 0; i < ents.size; i++) {
+  for(i = 0; i < ents.size; i++) {
     if(ents[i].classname != "info_player_start")
       ents[i] delete();
   }
@@ -124,7 +124,6 @@ main() {
   maps\mp\zombies\_zm::init();
 
   if(level.splitscreen && getdvarint(#"splitscreen_playerCount") > 2) {
-
   } else
     level.custom_intermission = ::nuked_standard_intermission;
 
@@ -178,13 +177,13 @@ main() {
 }
 
 door_powerup_drop(powerup_name, drop_spot, powerup_team, powerup_location) {
-  if(isdefined(level.door_powerup))
+  if(isDefined(level.door_powerup))
     level.door_powerup powerup_delete();
 
   powerup = maps\mp\zombies\_zm_net::network_safe_spawn("powerup", 1, "script_model", drop_spot + vectorscale((0, 0, 1), 40.0));
   level notify("powerup_dropped", powerup);
 
-  if(isdefined(powerup)) {
+  if(isDefined(powerup)) {
     powerup.grabbed_level_notify = "magic_door_power_up_grabbed";
     powerup maps\mp\zombies\_zm_powerups::powerup_setup(powerup_name, powerup_team, powerup_location);
     powerup thread maps\mp\zombies\_zm_powerups::powerup_wobble();
@@ -195,7 +194,7 @@ door_powerup_drop(powerup_name, drop_spot, powerup_team, powerup_location) {
 }
 
 perks_behind_door() {
-  if(!(isdefined(level.enable_magic) && level.enable_magic)) {
+  if(!(isDefined(level.enable_magic) && level.enable_magic)) {
     return;
   }
   level endon("magic_door_power_up_grabbed");
@@ -212,7 +211,7 @@ perks_behind_door() {
   index++;
   door_powerup_drop(perk_type, ammodrop.origin);
 
-  while (true) {
+  while(true) {
     level waittill("nuke_clock_moved");
 
     if(index == door_perk_drop_list.size)
@@ -228,14 +227,14 @@ nuked_doomsday_clock_think() {
   min_hand_model = getent("clock_min_hand", "targetname");
   min_hand_model.position = 0;
 
-  while (true) {
+  while(true) {
     level waittill("update_doomsday_clock");
     level thread update_doomsday_clock(min_hand_model);
   }
 }
 
 update_doomsday_clock(min_hand_model) {
-  while (is_true(min_hand_model.is_updating))
+  while(is_true(min_hand_model.is_updating))
     wait 0.05;
 
   min_hand_model.is_updating = 1;
@@ -266,7 +265,7 @@ fall_down(vdir, stance) {
   angles = self getplayerangles();
   angles = (angles[0], angles[1], angles[2] + randomfloatrange(-5, 5));
 
-  if(isdefined(vdir) && length(vdir) > 0) {
+  if(isDefined(vdir) && length(vdir) > 0) {
     xyspeedmag = 40 + randomint(12) + randomint(12);
     xyspeed = xyspeedmag * vectornormalize((vdir[0], vdir[1], 0));
   }
@@ -315,7 +314,7 @@ fall_down(vdir, stance) {
 }
 
 nuked_player_fake_death_cleanup() {
-  if(isdefined(self._fall_down_anchor)) {
+  if(isDefined(self._fall_down_anchor)) {
     self._fall_down_anchor delete();
     self._fall_down_anchor = undefined;
   }
@@ -329,7 +328,7 @@ nuked_player_fake_death(vdir) {
   self enableinvulnerability();
   self takeallweapons();
 
-  if(isdefined(self.insta_killed) && self.insta_killed) {
+  if(isDefined(self.insta_killed) && self.insta_killed) {
     self maps\mp\zombies\_zm::player_fake_death();
     self allowprone(1);
     self allowcrouch(0);
@@ -348,7 +347,7 @@ initial_round_wait_func() {
 }
 
 melee_miss_func() {
-  if(isdefined(self.enemy)) {
+  if(isDefined(self.enemy)) {
     if(self.enemy maps\mp\zombies\_zm_laststand::is_reviving_any()) {
       dist_sq = distancesquared(self.enemy.origin, self.origin);
       melee_dist_sq = self.meleeattackdist * self.meleeattackdist;
@@ -362,7 +361,7 @@ melee_miss_func() {
 zombie_init_done() {
   self.allowpain = 0;
 
-  if(isdefined(self.script_parameters) && self.script_parameters == "crater")
+  if(isDefined(self.script_parameters) && self.script_parameters == "crater")
     self thread zombie_crater_locomotion();
 
   self setphysparams(15, 0, 48);
@@ -372,7 +371,7 @@ zombie_crater_locomotion() {
   self endon("death");
   stand_trigger = getentarray("zombie_crawler_standup", "targetname");
 
-  while (is_true(self.needs_run_update))
+  while(is_true(self.needs_run_update))
     wait 0.1;
 
   self allowpitchangle(1);
@@ -385,14 +384,14 @@ zombie_crater_locomotion() {
 
   touched = 0;
 
-  while (!touched) {
-    if(isdefined(self.completed_emerging_into_playable_area) && self.completed_emerging_into_playable_area) {
+  while(!touched) {
+    if(isDefined(self.completed_emerging_into_playable_area) && self.completed_emerging_into_playable_area) {
       self allowpitchangle(0);
       self clearpitchorient();
       return;
     }
 
-    for (i = 0; i < stand_trigger.size; i++) {
+    for(i = 0; i < stand_trigger.size; i++) {
       if(self istouching(stand_trigger[i])) {
         touched = 1;
         break;
@@ -423,7 +422,7 @@ nuked_update_traversals() {
   level.green_patio = 0;
   wait 5;
 
-  while (true) {
+  while(true) {
     level.yellow_backyard = 0;
     level.green_backyard = 0;
     level.culdesac = 0;
@@ -512,7 +511,7 @@ set_green_patio(enable) {
 nuked_update_player_zones() {
   players = get_players();
 
-  for (i = 0; i < players.size; i++) {
+  for(i = 0; i < players.size; i++) {
     if(is_player_valid(players[i])) {
       if(players[i] maps\mp\zombies\_zm_zonemgr::entity_in_zone("openhouse1_backyard_zone")) {
         level.green_backyard++;
@@ -535,7 +534,7 @@ nuked_update_player_zones() {
 }
 
 house_clip(clips, connect) {
-  for (i = 0; i < clips.size; i++) {
+  for(i = 0; i < clips.size; i++) {
     if(connect) {
       clips[i] notsolid();
       clips[i] connectpaths();
@@ -553,7 +552,6 @@ setup_rex_starts() {
 }
 
 dummy() {
-
 }
 
 precache_team_characters() {
@@ -564,7 +562,7 @@ precache_team_characters() {
 }
 
 give_team_characters() {
-  if(isdefined(level.hotjoin_player_setup) && [
+  if(isDefined(level.hotjoin_player_setup) && [
       [level.hotjoin_player_setup]
     ]("c_zom_suit_viewhands")) {
     return;
@@ -572,7 +570,7 @@ give_team_characters() {
   self detachall();
   self set_player_is_female(0);
 
-  if(isdefined(level.should_use_cia) && level.should_use_cia) {
+  if(isDefined(level.should_use_cia) && level.should_use_cia) {
     self setmodel("c_zom_player_cia_fb");
     self setviewmodel("c_zom_suit_viewhands");
     self.characterindex = 0;
@@ -634,11 +632,9 @@ include_powerups() {
 }
 
 include_perks() {
-
 }
 
 include_equipment_for_level() {
-
 }
 
 include_weapons() {
@@ -728,7 +724,7 @@ include_weapons() {
   add_limited_weapon("knife_ballistic_bowie_zm", 0);
   add_limited_weapon("knife_ballistic_bowie_upgraded_zm", 0);
 
-  if(isdefined(level.raygun2_included) && level.raygun2_included) {
+  if(isDefined(level.raygun2_included) && level.raygun2_included) {
     include_weapon("raygun_mark2_zm");
     include_weapon("raygun_mark2_upgraded_zm", 0);
     add_weapon_to_content("raygun_mark2_zm", "dlc3");
@@ -755,7 +751,7 @@ offhand_weapon_overrride() {
 offhand_weapon_give_override(str_weapon) {
   self endon("death");
 
-  if(is_tactical_grenade(str_weapon) && isdefined(self get_player_tactical_grenade()) && !self is_player_tactical_grenade(str_weapon)) {
+  if(is_tactical_grenade(str_weapon) && isDefined(self get_player_tactical_grenade()) && !self is_player_tactical_grenade(str_weapon)) {
     self setweaponammoclip(self get_player_tactical_grenade(), 0);
     self takeweapon(self get_player_tactical_grenade());
   }
@@ -804,7 +800,7 @@ custom_add_weapons() {
   add_zombie_weapon("hk416_zm", "hk416_upgraded_zm", & "ZOMBIE_WEAPON_HK416", 100, "", "", undefined);
   add_zombie_weapon("lsat_zm", "lsat_upgraded_zm", & "ZOMBIE_WEAPON_LSAT", 100, "", "", undefined);
 
-  if(isdefined(level.raygun2_included) && level.raygun2_included)
+  if(isDefined(level.raygun2_included) && level.raygun2_included)
     add_zombie_weapon("raygun_mark2_zm", "raygun_mark2_upgraded_zm", & "ZOMBIE_WEAPON_RAYGUN_MARK2", 10000, "raygun_mark2", "", undefined);
 }
 
@@ -818,7 +814,7 @@ nuked_population_sign_think() {
   tens_model rotateroll(step, 0.05);
   ones_model rotateroll(step, 0.05);
 
-  while (true) {
+  while(true) {
     if(local_zombies_killed < level.total_zombies_killed - level.zombie_total_subtract) {
       ones--;
       time = set_dvar_float_if_unset("scr_dial_rotate_time", "0.5");
@@ -861,7 +857,7 @@ assign_lowest_unused_character_index() {
     return charindexarray[0];
   } else if(players.size == 2) {
     foreach(player in players) {
-      if(isdefined(player.characterindex)) {
+      if(isDefined(player.characterindex)) {
         if(player.characterindex == 0 || player.characterindex == 1) {
           if(randomint(100) > 50)
             return 2;
@@ -877,7 +873,7 @@ assign_lowest_unused_character_index() {
     }
   } else {
     foreach(player in players) {
-      if(isdefined(player.characterindex))
+      if(isDefined(player.characterindex))
         arrayremovevalue(charindexarray, player.characterindex, 0);
     }
 
@@ -901,10 +897,10 @@ nuked_mannequin_init() {
   remove_count = clamp(remove_count, 0, remove_count);
   mannequins = array_randomize(mannequins);
 
-  for (i = 0; i < remove_count; i++) {
-    assert(isdefined(mannequins[i].target));
+  for(i = 0; i < remove_count; i++) {
+    assert(isDefined(mannequins[i].target));
     collision = getent(mannequins[i].target, "targetname");
-    assert(isdefined(collision));
+    assert(isDefined(collision));
     collision delete();
     mannequins[i] delete();
     level.mannequin_count--;
@@ -917,7 +913,7 @@ nuked_mannequin_init() {
 nuked_mannequin_filter(destructibles) {
   mannequins = [];
 
-  for (i = 0; i < destructibles.size; i++) {
+  for(i = 0; i < destructibles.size; i++) {
     destructible = destructibles[i];
 
     if(issubstr(destructible.destructibledef, "male")) {
@@ -932,11 +928,11 @@ nuked_mannequin_filter(destructibles) {
 custom_debris_function() {
   cost = 1000;
 
-  if(isdefined(self.zombie_cost))
+  if(isDefined(self.zombie_cost))
     cost = self.zombie_cost;
 
-  while (true) {
-    if(isdefined(self.script_noteworthy)) {
+  while(true) {
+    if(isDefined(self.script_noteworthy)) {
       if(self.script_noteworthy == "electric_door" || self.script_noteworthy == "electric_buyable_door") {
         self sethintstring(&"ZOMBIE_NEED_POWER");
         flag_wait("power_on");
@@ -947,7 +943,6 @@ custom_debris_function() {
     self waittill("trigger", who, force);
 
     if(getdvarint(#"zombie_unlock_all") > 0 || is_true(force)) {
-
     } else {
       if(!who usebuttonpressed()) {
         continue;
@@ -960,7 +955,6 @@ custom_debris_function() {
       players = get_players();
 
       if(getdvarint(#"zombie_unlock_all") > 0) {
-
       } else if(who.score >= self.zombie_cost)
         who maps\mp\zombies\_zm_score::minus_to_player_score(self.zombie_cost);
       else {
@@ -972,10 +966,10 @@ custom_debris_function() {
       bbprint("zombie_uses", "playername %s playerscore %d round %d cost %d name %s x %f y %f z %f type %s", who.name, who.score, level.round_number, self.zombie_cost, self.script_flag, self.origin, "door");
       junk = getentarray(self.target, "targetname");
 
-      if(isdefined(self.script_flag)) {
+      if(isDefined(self.script_flag)) {
         tokens = strtok(self.script_flag, ",");
 
-        for (i = 0; i < tokens.size; i++)
+        for(i = 0; i < tokens.size; i++)
           flag_set(tokens[i]);
       }
 
@@ -984,10 +978,10 @@ custom_debris_function() {
       move_ent = undefined;
       clip = undefined;
 
-      for (i = 0; i < junk.size; i++) {
+      for(i = 0; i < junk.size; i++) {
         junk[i] connectpaths();
 
-        if(isdefined(junk[i].script_noteworthy)) {
+        if(isDefined(junk[i].script_noteworthy)) {
           if(junk[i].script_noteworthy == "clip") {
             clip = junk[i];
             continue;
@@ -996,10 +990,10 @@ custom_debris_function() {
 
         struct = undefined;
 
-        if(isdefined(junk[i].script_linkto)) {
+        if(isDefined(junk[i].script_linkto)) {
           struct = getstruct(junk[i].script_linkto, "script_linkname");
 
-          if(isdefined(struct)) {
+          if(isDefined(struct)) {
             move_ent = junk[i];
             junk[i] thread maps\mp\zombies\_zm_blockers::debris_move(struct);
           } else
@@ -1013,11 +1007,11 @@ custom_debris_function() {
 
       all_trigs = getentarray(self.target, "target");
 
-      for (i = 0; i < all_trigs.size; i++)
+      for(i = 0; i < all_trigs.size; i++)
         all_trigs[i] delete();
 
-      if(isdefined(clip)) {
-        if(isdefined(move_ent))
+      if(isDefined(clip)) {
+        if(isDefined(move_ent))
           move_ent waittill("movedone");
 
         clip delete();
@@ -1056,7 +1050,7 @@ sndmusegg2() {
   level.meteor_counter = 0;
   level.music_override = 0;
 
-  for (i = 0; i < origins.size; i++)
+  for(i = 0; i < origins.size; i++)
     level thread sndmusegg2_wait(origins[i]);
 }
 
@@ -1078,7 +1072,7 @@ sndmusegg2_wait(bear_origin) {
 }
 
 sndmusegg2_override() {
-  if(isdefined(level.music_override) && level.music_override)
+  if(isDefined(level.music_override) && level.music_override)
     return false;
 
   return true;
@@ -1089,10 +1083,11 @@ sndmusegg3_counter(event, attacker) {
     return;
   }
   println("CAYERS: " + level.mannequin_count);
+
   level.mannequin_count--;
 
   if(level.mannequin_count <= 0) {
-    while (isdefined(level.music_override) && level.music_override)
+    while(isDefined(level.music_override) && level.music_override)
       wait 5;
 
     level thread sndmuseggplay(spawn("script_origin", (0, 0, 0)), "zmb_nuked_song_3", 80);
@@ -1187,7 +1182,7 @@ moon_rocket_follow_path() {
 }
 
 intermission_rocket_blur() {
-  while (!flag("rocket_hit_nuketown")) {
+  while(!flag("rocket_hit_nuketown")) {
     blur = randomfloatrange(1, 5);
     self setblur(blur, 1);
     wait(randomintrange(1, 3));
@@ -1200,7 +1195,7 @@ inermission_rocket_init() {
 }
 
 player_rocket_rumble() {
-  while (!flag("rocket_hit_nuketown")) {
+  while(!flag("rocket_hit_nuketown")) {
     self playrumbleonentity("damage_light");
     wait 1;
   }
@@ -1209,12 +1204,12 @@ player_rocket_rumble() {
 bus_taser_blocker() {
   trig = getent("bus_taser_trigger", "targetname");
 
-  if(isdefined(trig))
+  if(isDefined(trig))
     clip = getent(trig.target, "targetname");
 
   trig waittill("trigger");
 
-  if(isdefined(clip))
+  if(isDefined(clip))
     clip delete();
 }
 
@@ -1237,7 +1232,7 @@ marlton_vo_inside_bunker() {
   marlton_vo[marlton_vo.size] = "vox_plr_3_map_in_fog_2";
   marlton_vo[marlton_vo.size] = "vox_plr_3_oh_shit_0_alt01";
 
-  while (true) {
+  while(true) {
     marlton_bunker_trig waittill("trigger");
     playsoundatposition(marlton_vo[randomintrange(0, marlton_vo.size)], marlton_sound_pos);
     wait_for_next_round(level.round_number);
@@ -1245,7 +1240,7 @@ marlton_vo_inside_bunker() {
 }
 
 wait_for_next_round(current_round) {
-  while (level.round_number <= current_round)
+  while(level.round_number <= current_round)
     wait 1;
 }
 
@@ -1267,7 +1262,7 @@ moon_transmission_vo() {
 }
 
 wait_for_round_range(round) {
-  while (level.round_number < round)
+  while(level.round_number < round)
     wait 1;
 }
 
@@ -1278,7 +1273,7 @@ death_to_all_zombies() {
     if(!isalive(zombie)) {
       continue;
     }
-    if(isdefined(zombie))
+    if(isDefined(zombie))
       zombie dodamage(zombie.health + 666, zombie.origin);
 
     if(index % 3 == 0)
@@ -1292,7 +1287,7 @@ zombie_eye_glow_change() {
   death_to_all_zombies();
   level.zombie_spawners = getentarray("zombie_spawner_beyes", "script_noteworthy");
 
-  if(isdefined(level._game_module_custom_spawn_init_func))
+  if(isDefined(level._game_module_custom_spawn_init_func))
     [[level._game_module_custom_spawn_init_func]]();
 
   flag_set("spawn_zombies");
@@ -1313,7 +1308,7 @@ bus_random_horn() {
 fake_lighting_cleanup() {
   ent = getent("nuke_reflection", "targetname");
 
-  if(isdefined(ent))
+  if(isDefined(ent))
     ent delete();
 }
 
@@ -1364,7 +1359,7 @@ nuked_collision_patch() {
 }
 
 nuked_special_weapon_magicbox_check(weapon) {
-  if(isdefined(level.raygun2_included) && level.raygun2_included) {
+  if(isDefined(level.raygun2_included) && level.raygun2_included) {
     if(weapon == "ray_gun_zm") {
       if(self has_weapon_or_upgrade("raygun_mark2_zm"))
         return false;

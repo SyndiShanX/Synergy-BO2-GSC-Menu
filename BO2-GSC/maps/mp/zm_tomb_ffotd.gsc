@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\zm_tomb_ffotd.gsc
-***************************************/
+**************************************/
 
 #include maps\mp\_utility;
 #include common_scripts\utility;
@@ -54,7 +54,7 @@ spawned_collision_ffotd() {
   m_disconnector disconnectpaths();
   m_disconnector ghost();
 
-  if(!(isdefined(level.optimise_for_splitscreen) && level.optimise_for_splitscreen)) {
+  if(!(isDefined(level.optimise_for_splitscreen) && level.optimise_for_splitscreen)) {
     collision1a = spawn("script_model", (1128, -2664.25, 122));
     collision1a setmodel("collision_player_wall_256x256x10");
     collision1a.angles = vectorscale((0, 1, 0), 285.0);
@@ -162,7 +162,7 @@ spawn_kill_brushes() {
 one_inch_punch_take_think() {
   self endon("disconnect");
 
-  while (true) {
+  while(true) {
     self waittill("bled_out");
     self.one_inch_punch_flag_has_been_init = 0;
 
@@ -206,7 +206,7 @@ traversal_blocker_disabler() {
   pos2 = (672, 3720, -179);
   b_too_close = 0;
 
-  while (level.round_number < 10 && !b_too_close) {
+  while(level.round_number < 10 && !b_too_close) {
     a_players = getplayers();
 
     foreach(player in a_players) {

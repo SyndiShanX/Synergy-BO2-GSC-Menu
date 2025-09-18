@@ -28,6 +28,7 @@ fountain_setup() {
   level thread sloth_fountain_think();
   level thread maze_fountain_think();
   level thread fountain_transport_think();
+
   level thread debug_warp_player_to_fountain();
 }
 
@@ -42,7 +43,7 @@ sloth_fountain_think() {
   level setclientfield("sloth_fountain_start", 1);
   s_courtyard_fountain = getstruct("courtyard_fountain_struct", "targetname");
 
-  if(isdefined(s_courtyard_fountain)) {
+  if(isDefined(s_courtyard_fountain)) {
     sound_offset = vectorscale((0, 0, 1), 100.0);
     sound_ent = spawn("script_origin", s_courtyard_fountain.origin + sound_offset);
     playfx(level._effect["fx_buried_fountain_spray"], s_courtyard_fountain.origin);
@@ -89,16 +90,17 @@ show_maze_fountain_water() {
 
 wait_for_maze_fountain_to_be_destroyed() {
   level endon("_destroy_maze_fountain");
+
   t_damage = getent("maze_fountain_trigger", "targetname");
   health = 1000;
 
-  while (health > 0) {
+  while(health > 0) {
     t_damage waittill("damage", damage, attacker, direction, point, type, tagname, modelname, partname, weaponname, idflags);
 
     if(damage < 50)
       damage = 0;
 
-    if(isdefined(type) && (type == "MOD_EXPLOSIVE" || type == "MOD_EXPLOSIVE_SPLASH" || type == "MOD_GRENADE" || type == "MOD_GRENADE_SPLASH" || type == "MOD_PROJECTILE" || type == "MOD_PROJECTILE_SPLASH"))
+    if(isDefined(type) && (type == "MOD_EXPLOSIVE" || type == "MOD_EXPLOSIVE_SPLASH" || type == "MOD_GRENADE" || type == "MOD_GRENADE_SPLASH" || type == "MOD_PROJECTILE" || type == "MOD_PROJECTILE_SPLASH"))
       health = health - damage;
   }
 }
@@ -107,7 +109,7 @@ destroy_maze_fountain() {
   s_fountain = getstruct("maze_fountain_struct", "targetname");
   level setclientfield("maze_fountain_start", 1);
 
-  if(isdefined(s_fountain))
+  if(isDefined(s_fountain))
     playfx(level._effect["fountain_break"], s_fountain.origin);
 
   s_fountain_clip = getent("maze_fountain_clip", "targetname");
@@ -118,10 +120,10 @@ destroy_maze_fountain() {
 fountain_transport_think() {
   t_transporter = getent("maze_fountain_water_trigger", "targetname");
 
-  while (true) {
+  while(true) {
     t_transporter waittill("trigger", player);
 
-    if(!isdefined(player.is_in_fountain_transport_trigger) || !player.is_in_fountain_transport_trigger) {
+    if(!isDefined(player.is_in_fountain_transport_trigger) || !player.is_in_fountain_transport_trigger) {
       player.is_in_fountain_transport_trigger = 1;
 
       if(flag("fountain_transport_active"))
@@ -143,7 +145,7 @@ transport_player_to_start_zone() {
   self endon("death_or_disconnect");
   fountain_debug_print("transport player!");
 
-  if(!isdefined(level._fountain_transporter)) {
+  if(!isDefined(level._fountain_transporter)) {
     level._fountain_transporter = spawnstruct();
     level._fountain_transporter.index = 0;
     level._fountain_transporter.end_points = getstructarray("fountain_transport_end_location", "targetname");
@@ -159,7 +161,7 @@ transport_player_to_start_zone() {
 
   tries = 0;
 
-  while (positionwouldtelefrag(level._fountain_transporter.end_points[level._fountain_transporter.index].origin)) {
+  while(positionwouldtelefrag(level._fountain_transporter.end_points[level._fountain_transporter.index].origin)) {
     tries++;
 
     if(tries >= 4) {
@@ -224,7 +226,7 @@ create_client_hud_elem() {
 }
 
 debug_warp_player_to_fountain() {
-  while (true) {
+  while(true) {
     str_notify = level waittill_any_return("warp_player_to_maze_fountain", "warp_player_to_courtyard_fountain");
 
     if(str_notify == "warp_player_to_maze_fountain")
@@ -243,7 +245,7 @@ _warp_player_to_maze_fountain(player, str_teleport_point) {
   fountain_debug_print("teleporting player to " + str_teleport_point);
   s_warp = getstruct(str_teleport_point, "targetname");
 
-  for (origin = s_warp.origin; positionwouldtelefrag(origin); origin = s_warp.origin + (randomfloatrange(-64, 64), randomfloatrange(-64, 64), 0))
+  for(origin = s_warp.origin; positionwouldtelefrag(origin); origin = s_warp.origin + (randomfloatrange(-64, 64), randomfloatrange(-64, 64), 0))
     wait 0.05;
 
   player setorigin(origin);

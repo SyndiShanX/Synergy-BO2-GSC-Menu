@@ -23,6 +23,7 @@
 
 init() {
   println("ZM >> init (_zm_weapons.gsc)");
+
   init_weapons();
   init_weapon_upgrade();
   init_weapon_toggle();
@@ -42,7 +43,7 @@ setupretrievablehintstrings() {
 }
 
 onplayerconnect() {
-  for (;;) {
+  for(;;) {
     level waittill("connecting", player);
     player thread onplayerspawned();
   }
@@ -51,7 +52,7 @@ onplayerconnect() {
 onplayerspawned() {
   self endon("disconnect");
 
-  for (;;) {
+  for(;;) {
     self waittill("spawned_player");
     self thread watchforgrenadeduds();
     self thread watchforgrenadelauncherduds();
@@ -63,7 +64,7 @@ watchforgrenadeduds() {
   self endon("spawned_player");
   self endon("disconnect");
 
-  while (true) {
+  while(true) {
     self waittill("grenade_fire", grenade, weapname);
 
     if(!is_equipment(weapname) && weapname != "claymore_zm") {
@@ -77,7 +78,7 @@ watchforgrenadelauncherduds() {
   self endon("spawned_player");
   self endon("disconnect");
 
-  while (true) {
+  while(true) {
     self waittill("grenade_launcher_fire", grenade, weapname);
     grenade thread checkgrenadefordud(weapname, 0, self);
     grenade thread watchforscriptexplosion(weapname, 0, self);
@@ -85,14 +86,14 @@ watchforgrenadelauncherduds() {
 }
 
 grenade_safe_to_throw(player, weapname) {
-  if(isdefined(level.grenade_safe_to_throw))
+  if(isDefined(level.grenade_safe_to_throw))
     return self[[level.grenade_safe_to_throw]](player, weapname);
 
   return 1;
 }
 
 grenade_safe_to_bounce(player, weapname) {
-  if(isdefined(level.grenade_safe_to_bounce))
+  if(isDefined(level.grenade_safe_to_bounce))
     return self[[level.grenade_safe_to_bounce]](player, weapname);
 
   return 1;
@@ -104,7 +105,7 @@ makegrenadedudanddestroy() {
   self makegrenadedud();
   wait 3;
 
-  if(isdefined(self))
+  if(isDefined(self))
     self delete();
 }
 
@@ -117,7 +118,7 @@ checkgrenadefordud(weapname, isthrowngrenade, player) {
     return;
   }
 
-  for (;;) {
+  for(;;) {
     self waittill_any_timeout(0.25, "grenade_bounce", "stationary");
 
     if(!self grenade_safe_to_bounce(player, weapname)) {
@@ -221,19 +222,19 @@ take_fallback_weapon() {
 }
 
 switch_back_primary_weapon(oldprimary) {
-  if(isdefined(self.laststand) && self.laststand) {
+  if(isDefined(self.laststand) && self.laststand) {
     return;
   }
   primaryweapons = self getweaponslistprimaries();
 
-  if(isdefined(oldprimary) && isinarray(primaryweapons, oldprimary))
+  if(isDefined(oldprimary) && isinarray(primaryweapons, oldprimary))
     self switchtoweapon(oldprimary);
-  else if(isdefined(primaryweapons) && primaryweapons.size > 0)
+  else if(isDefined(primaryweapons) && primaryweapons.size > 0)
     self switchtoweapon(primaryweapons[0]);
 }
 
 add_retrievable_knife_init_name(name) {
-  if(!isdefined(level.retrievable_knife_init_names))
+  if(!isDefined(level.retrievable_knife_init_names))
     level.retrievable_knife_init_names = [];
 
   level.retrievable_knife_init_names[level.retrievable_knife_init_names.size] = name;
@@ -244,12 +245,12 @@ watchweaponusagezm() {
   self endon("disconnect");
   level endon("game_ended");
 
-  for (;;) {
+  for(;;) {
     self waittill("weapon_fired", curweapon);
     self.lastfiretime = gettime();
     self.hasdonecombat = 1;
 
-    if(isdefined(self.hitsthismag[curweapon]))
+    if(isDefined(self.hitsthismag[curweapon]))
       self thread updatemagshots(curweapon);
 
     switch (weaponclass(curweapon)) {
@@ -299,7 +300,7 @@ trackweaponzm() {
   self.currenttime = gettime();
   spawnid = getplayerspawnid(self);
 
-  while (true) {
+  while(true) {
     event = self waittill_any_return("weapon_change", "death", "disconnect", "bled_out");
     newtime = gettime();
 
@@ -321,7 +322,7 @@ trackweaponzm() {
 }
 
 updatelastheldweapontimingszm(newtime) {
-  if(isdefined(self.currentweapon) && isdefined(self.currenttime)) {
+  if(isDefined(self.currentweapon) && isDefined(self.currenttime)) {
     curweapon = self.currentweapon;
     totaltime = int((newtime - self.currenttime) / 1000);
 
@@ -340,7 +341,7 @@ updateweapontimingszm(newtime) {
   }
   updatelastheldweapontimingszm(newtime);
 
-  if(!isdefined(self.staticweaponsstarttime)) {
+  if(!isDefined(self.staticweaponsstarttime)) {
     return;
   }
   totaltime = int((newtime - self.staticweaponsstarttime) / 1000);
@@ -358,10 +359,10 @@ watchweaponchangezm() {
   self.hitsthismag = [];
   weapon = self getcurrentweapon();
 
-  if(isdefined(weapon) && weapon != "none" && !isdefined(self.hitsthismag[weapon]))
+  if(isDefined(weapon) && weapon != "none" && !isDefined(self.hitsthismag[weapon]))
     self.hitsthismag[weapon] = weaponclipsize(weapon);
 
-  while (true) {
+  while(true) {
     previous_weapon = self getcurrentweapon();
     self waittill("weapon_change", newweapon);
 
@@ -369,7 +370,7 @@ watchweaponchangezm() {
       self.lastdroppableweapon = newweapon;
 
     if(newweapon != "none") {
-      if(!isdefined(self.hitsthismag[newweapon]))
+      if(!isDefined(self.hitsthismag[newweapon]))
         self.hitsthismag[newweapon] = weaponclipsize(newweapon);
     }
   }
@@ -379,12 +380,12 @@ weaponobjects_on_player_connect_override_internal() {
   self maps\mp\gametypes_zm\_weaponobjects::createbasewatchers();
   self createclaymorewatcher_zm();
 
-  for (i = 0; i < level.retrievable_knife_init_names.size; i++)
+  for(i = 0; i < level.retrievable_knife_init_names.size; i++)
     self createballisticknifewatcher_zm(level.retrievable_knife_init_names[i], level.retrievable_knife_init_names[i] + "_zm");
 
   self maps\mp\gametypes_zm\_weaponobjects::setupretrievablewatcher();
 
-  if(!isdefined(self.weaponobjectwatcherarray))
+  if(!isDefined(self.weaponobjectwatcherarray))
     self.weaponobjectwatcherarray = [];
 
   self thread maps\mp\gametypes_zm\_weaponobjects::watchweaponobjectspawn();
@@ -430,7 +431,7 @@ createballisticknifewatcher_zm(name, weapon) {
 }
 
 isempweapon(weaponname) {
-  if(isdefined(weaponname) && (weaponname == "emp_mp" || weaponname == "emp_grenade_mp" || weaponname == "emp_grenade_zm"))
+  if(isDefined(weaponname) && (weaponname == "emp_mp" || weaponname == "emp_grenade_mp" || weaponname == "emp_grenade_zm"))
     return true;
 
   return false;
@@ -444,9 +445,9 @@ claymoredetonate(attacker, weaponname) {
     return;
   }
 
-  if(isdefined(attacker))
+  if(isDefined(attacker))
     self detonate(attacker);
-  else if(isdefined(self.owner) && isplayer(self.owner))
+  else if(isDefined(self.owner) && isplayer(self.owner))
     self detonate(self.owner);
   else
     self detonate();
@@ -457,29 +458,29 @@ default_check_firesale_loc_valid_func() {
 }
 
 add_zombie_weapon(weapon_name, upgrade_name, hint, cost, weaponvo, weaponvoresp, ammo_cost, create_vox) {
-  if(isdefined(level.zombie_include_weapons) && !isdefined(level.zombie_include_weapons[weapon_name])) {
+  if(isDefined(level.zombie_include_weapons) && !isDefined(level.zombie_include_weapons[weapon_name])) {
     return;
   }
   table = "mp/zombiemode.csv";
   table_cost = tablelookup(table, 0, weapon_name, 1);
   table_ammo_cost = tablelookup(table, 0, weapon_name, 2);
 
-  if(isdefined(table_cost) && table_cost != "")
+  if(isDefined(table_cost) && table_cost != "")
     cost = round_up_to_ten(int(table_cost));
 
-  if(isdefined(table_ammo_cost) && table_ammo_cost != "")
+  if(isDefined(table_ammo_cost) && table_ammo_cost != "")
     ammo_cost = round_up_to_ten(int(table_ammo_cost));
 
   precachestring(hint);
   struct = spawnstruct();
 
-  if(!isdefined(level.zombie_weapons))
+  if(!isDefined(level.zombie_weapons))
     level.zombie_weapons = [];
 
-  if(!isdefined(level.zombie_weapons_upgraded))
+  if(!isDefined(level.zombie_weapons_upgraded))
     level.zombie_weapons_upgraded = [];
 
-  if(isdefined(upgrade_name))
+  if(isDefined(upgrade_name))
     level.zombie_weapons_upgraded[upgrade_name] = weapon_name;
 
   struct.weapon_name = weapon_name;
@@ -489,29 +490,31 @@ add_zombie_weapon(weapon_name, upgrade_name, hint, cost, weaponvo, weaponvoresp,
   struct.cost = cost;
   struct.vox = weaponvo;
   struct.vox_response = weaponvoresp;
+
   println("ZM >> Looking for weapon - " + weapon_name);
+
   struct.is_in_box = level.zombie_include_weapons[weapon_name];
 
-  if(!isdefined(ammo_cost))
+  if(!isDefined(ammo_cost))
     ammo_cost = round_up_to_ten(int(cost * 0.5));
 
   struct.ammo_cost = ammo_cost;
   level.zombie_weapons[weapon_name] = struct;
 
-  if(isdefined(level.zombiemode_reusing_pack_a_punch) && level.zombiemode_reusing_pack_a_punch && isdefined(upgrade_name))
+  if(isDefined(level.zombiemode_reusing_pack_a_punch) && level.zombiemode_reusing_pack_a_punch && isDefined(upgrade_name))
     add_attachments(weapon_name, upgrade_name);
 
-  if(isdefined(create_vox))
+  if(isDefined(create_vox))
     level.vox maps\mp\zombies\_zm_audio::zmbvoxadd("player", "weapon_pickup", weapon_name, weaponvo, undefined);
 
-  if(isdefined(level.devgui_add_weapon))
+  if(isDefined(level.devgui_add_weapon))
     [[level.devgui_add_weapon]](weapon_name, upgrade_name, hint, cost, weaponvo, weaponvoresp, ammo_cost);
 }
 
 add_attachments(weapon_name, upgrade_name) {
   table = "zm/pap_attach.csv";
 
-  if(isdefined(level.weapon_attachment_table))
+  if(isDefined(level.weapon_attachment_table))
     table = level.weapon_attachment_table;
 
   row = tablelookuprownum(table, 0, upgrade_name);
@@ -521,7 +524,7 @@ add_attachments(weapon_name, upgrade_name) {
     level.zombie_weapons[weapon_name].addon_attachments = [];
     index = 2;
 
-    for (next_addon = tablelookup(table, 0, upgrade_name, index); isdefined(next_addon) && next_addon.size > 0; next_addon = tablelookup(table, 0, upgrade_name, index)) {
+    for(next_addon = tablelookup(table, 0, upgrade_name, index); isDefined(next_addon) && next_addon.size > 0; next_addon = tablelookup(table, 0, upgrade_name, index)) {
       level.zombie_weapons[weapon_name].addon_attachments[level.zombie_weapons[weapon_name].addon_attachments.size] = next_addon;
       index++;
     }
@@ -535,11 +538,11 @@ default_weighting_func() {
 default_tesla_weighting_func() {
   num_to_add = 1;
 
-  if(isdefined(level.pulls_since_last_tesla_gun)) {
-    if(isdefined(level.player_drops_tesla_gun) && level.player_drops_tesla_gun == 1)
+  if(isDefined(level.pulls_since_last_tesla_gun)) {
+    if(isDefined(level.player_drops_tesla_gun) && level.player_drops_tesla_gun == 1)
       num_to_add = num_to_add + int(0.2 * level.zombie_include_weapons.size);
 
-    if(!isdefined(level.player_seen_tesla_gun) || level.player_seen_tesla_gun == 0) {
+    if(!isDefined(level.player_seen_tesla_gun) || level.player_seen_tesla_gun == 0) {
       if(level.round_number > 10)
         num_to_add = num_to_add + int(0.2 * level.zombie_include_weapons.size);
       else if(level.round_number > 5)
@@ -569,7 +572,7 @@ default_cymbal_monkey_weighting_func() {
   players = get_players();
   count = 0;
 
-  for (i = 0; i < players.size; i++) {
+  for(i = 0; i < players.size; i++) {
     if(players[i] has_weapon_or_upgrade("cymbal_monkey_zm"))
       count++;
   }
@@ -583,62 +586,63 @@ default_cymbal_monkey_weighting_func() {
 }
 
 is_weapon_included(weapon_name) {
-  if(!isdefined(level.zombie_weapons))
+  if(!isDefined(level.zombie_weapons))
     return 0;
 
-  return isdefined(level.zombie_weapons[weapon_name]);
+  return isDefined(level.zombie_weapons[weapon_name]);
 }
 
 is_weapon_or_base_included(weapon_name) {
-  if(!isdefined(level.zombie_weapons))
+  if(!isDefined(level.zombie_weapons))
     return false;
 
-  if(isdefined(level.zombie_weapons[weapon_name]))
+  if(isDefined(level.zombie_weapons[weapon_name]))
     return true;
 
   base = get_base_weapon_name(weapon_name, 1);
 
-  if(isdefined(level.zombie_weapons[base]))
+  if(isDefined(level.zombie_weapons[base]))
     return true;
 
   return false;
 }
 
 include_zombie_weapon(weapon_name, in_box, collector, weighting_func) {
-  if(!isdefined(level.zombie_include_weapons))
+  if(!isDefined(level.zombie_include_weapons))
     level.zombie_include_weapons = [];
 
-  if(!isdefined(in_box))
+  if(!isDefined(in_box))
     in_box = 1;
 
   println("ZM >> Including weapon - " + weapon_name);
+
   level.zombie_include_weapons[weapon_name] = in_box;
   precacheitem(weapon_name);
 
-  if(!isdefined(weighting_func))
+  if(!isDefined(weighting_func))
     level.weapon_weighting_funcs[weapon_name] = ::default_weighting_func;
   else
     level.weapon_weighting_funcs[weapon_name] = weighting_func;
 }
 
 init_weapons() {
-  if(isdefined(level._zombie_custom_add_weapons))
+  if(isDefined(level._zombie_custom_add_weapons))
     [[level._zombie_custom_add_weapons]]();
 
   precachemodel("zombie_teddybear");
 }
 
 add_limited_weapon(weapon_name, amount) {
-  if(!isdefined(level.limited_weapons))
+  if(!isDefined(level.limited_weapons))
     level.limited_weapons = [];
 
   level.limited_weapons[weapon_name] = amount;
 }
 
 limited_weapon_below_quota(weapon, ignore_player, pap_triggers) {
-  if(isdefined(level.limited_weapons[weapon])) {
-    if(!isdefined(pap_triggers)) {
-      if(!isdefined(level.pap_triggers))
+  if(isDefined(level.limited_weapons[weapon])) {
+    if(!isDefined(pap_triggers)) {
+      if(!isDefined(level.pap_triggers))
         pap_triggers = getentarray("specialty_weapupgrade", "script_noteworthy");
       else
         pap_triggers = level.pap_triggers;
@@ -649,15 +653,15 @@ limited_weapon_below_quota(weapon, ignore_player, pap_triggers) {
 
     upgradedweapon = weapon;
 
-    if(isdefined(level.zombie_weapons[weapon]) && isdefined(level.zombie_weapons[weapon].upgrade_name))
+    if(isDefined(level.zombie_weapons[weapon]) && isDefined(level.zombie_weapons[weapon].upgrade_name))
       upgradedweapon = level.zombie_weapons[weapon].upgrade_name;
 
     players = get_players();
     count = 0;
     limit = level.limited_weapons[weapon];
 
-    for (i = 0; i < players.size; i++) {
-      if(isdefined(ignore_player) && ignore_player == players[i]) {
+    for(i = 0; i < players.size; i++) {
+      if(isDefined(ignore_player) && ignore_player == players[i]) {
         continue;
       }
       if(players[i] has_weapon_or_upgrade(weapon)) {
@@ -668,8 +672,8 @@ limited_weapon_below_quota(weapon, ignore_player, pap_triggers) {
       }
     }
 
-    for (k = 0; k < pap_triggers.size; k++) {
-      if(isdefined(pap_triggers[k].current_weapon) && (pap_triggers[k].current_weapon == weapon || pap_triggers[k].current_weapon == upgradedweapon)) {
+    for(k = 0; k < pap_triggers.size; k++) {
+      if(isDefined(pap_triggers[k].current_weapon) && (pap_triggers[k].current_weapon == weapon || pap_triggers[k].current_weapon == upgradedweapon)) {
         count++;
 
         if(count >= limit)
@@ -677,8 +681,8 @@ limited_weapon_below_quota(weapon, ignore_player, pap_triggers) {
       }
     }
 
-    for (chestindex = 0; chestindex < level.chests.size; chestindex++) {
-      if(isdefined(level.chests[chestindex].zbarrier.weapon_string) && level.chests[chestindex].zbarrier.weapon_string == weapon) {
+    for(chestindex = 0; chestindex < level.chests.size; chestindex++) {
+      if(isDefined(level.chests[chestindex].zbarrier.weapon_string) && level.chests[chestindex].zbarrier.weapon_string == weapon) {
         count++;
 
         if(count >= limit)
@@ -686,7 +690,7 @@ limited_weapon_below_quota(weapon, ignore_player, pap_triggers) {
       }
     }
 
-    if(isdefined(level.custom_limited_weapon_checks)) {
+    if(isDefined(level.custom_limited_weapon_checks)) {
       foreach(check in level.custom_limited_weapon_checks)
       count = count + [
         [check]
@@ -696,9 +700,9 @@ limited_weapon_below_quota(weapon, ignore_player, pap_triggers) {
         return false;
     }
 
-    if(isdefined(level.random_weapon_powerups)) {
-      for (powerupindex = 0; powerupindex < level.random_weapon_powerups.size; powerupindex++) {
-        if(isdefined(level.random_weapon_powerups[powerupindex]) && level.random_weapon_powerups[powerupindex].base_weapon == weapon) {
+    if(isDefined(level.random_weapon_powerups)) {
+      for(powerupindex = 0; powerupindex < level.random_weapon_powerups.size; powerupindex++) {
+        if(isDefined(level.random_weapon_powerups[powerupindex]) && level.random_weapon_powerups[powerupindex].base_weapon == weapon) {
           count++;
 
           if(count >= limit)
@@ -712,22 +716,22 @@ limited_weapon_below_quota(weapon, ignore_player, pap_triggers) {
 }
 
 add_custom_limited_weapon_check(callback) {
-  if(!isdefined(level.custom_limited_weapon_checks))
+  if(!isDefined(level.custom_limited_weapon_checks))
     level.custom_limited_weapon_checks = [];
 
   level.custom_limited_weapon_checks[level.custom_limited_weapon_checks.size] = callback;
 }
 
 add_weapon_to_content(weapon_name, package) {
-  if(!isdefined(level.content_weapons))
+  if(!isDefined(level.content_weapons))
     level.content_weapons = [];
 
   level.content_weapons[weapon_name] = package;
 }
 
 player_can_use_content(weapon) {
-  if(isdefined(level.content_weapons)) {
-    if(isdefined(level.content_weapons[weapon]))
+  if(isDefined(level.content_weapons)) {
+    if(isDefined(level.content_weapons[weapon]))
       return self hasdlcavailable(level.content_weapons[weapon]);
   }
 
@@ -748,7 +752,7 @@ init_spawnable_weapon_upgrade() {
   match_string = "";
   location = level.scr_zm_map_start_location;
 
-  if((location == "default" || location == "") && isdefined(level.default_start_location))
+  if((location == "default" || location == "") && isDefined(level.default_start_location))
     location = level.default_start_location;
 
   match_string = level.scr_zm_ui_gametype;
@@ -758,20 +762,20 @@ init_spawnable_weapon_upgrade() {
 
   match_string_plus_space = " " + match_string;
 
-  for (i = 0; i < spawnable_weapon_spawns.size; i++) {
+  for(i = 0; i < spawnable_weapon_spawns.size; i++) {
     spawnable_weapon = spawnable_weapon_spawns[i];
 
-    if(isdefined(spawnable_weapon.zombie_weapon_upgrade) && spawnable_weapon.zombie_weapon_upgrade == "sticky_grenade_zm" && is_true(level.headshots_only)) {
+    if(isDefined(spawnable_weapon.zombie_weapon_upgrade) && spawnable_weapon.zombie_weapon_upgrade == "sticky_grenade_zm" && is_true(level.headshots_only)) {
       continue;
     }
-    if(!isdefined(spawnable_weapon.script_noteworthy) || spawnable_weapon.script_noteworthy == "") {
+    if(!isDefined(spawnable_weapon.script_noteworthy) || spawnable_weapon.script_noteworthy == "") {
       spawn_list[spawn_list.size] = spawnable_weapon;
       continue;
     }
 
     matches = strtok(spawnable_weapon.script_noteworthy, ",");
 
-    for (j = 0; j < matches.size; j++) {
+    for(j = 0; j < matches.size; j++) {
       if(matches[j] == match_string || matches[j] == match_string_plus_space)
         spawn_list[spawn_list.size] = spawnable_weapon;
     }
@@ -779,11 +783,11 @@ init_spawnable_weapon_upgrade() {
 
   tempmodel = spawn("script_model", (0, 0, 0));
 
-  for (i = 0; i < spawn_list.size; i++) {
+  for(i = 0; i < spawn_list.size; i++) {
     clientfieldname = spawn_list[i].zombie_weapon_upgrade + "_" + spawn_list[i].origin;
     numbits = 2;
 
-    if(isdefined(level._wallbuy_override_num_bits))
+    if(isDefined(level._wallbuy_override_num_bits))
       numbits = level._wallbuy_override_num_bits;
 
     registerclientfield("world", clientfieldname, 1, numbits, "int");
@@ -792,7 +796,7 @@ init_spawnable_weapon_upgrade() {
     if(spawn_list[i].targetname == "buildable_wallbuy") {
       bits = 4;
 
-      if(isdefined(level.buildable_wallbuy_weapons))
+      if(isDefined(level.buildable_wallbuy_weapons))
         bits = getminbitcountfornum(level.buildable_wallbuy_weapons.size + 1);
 
       registerclientfield("world", clientfieldname + "_idx", 12000, bits, "int");
@@ -828,13 +832,13 @@ init_spawnable_weapon_upgrade() {
     if(spawn_list[i].targetname == "weapon_upgrade") {
       unitrigger_stub.cost = get_weapon_cost(spawn_list[i].zombie_weapon_upgrade);
 
-      if(!(isdefined(level.monolingustic_prompt_format) && level.monolingustic_prompt_format)) {
+      if(!(isDefined(level.monolingustic_prompt_format) && level.monolingustic_prompt_format)) {
         unitrigger_stub.hint_string = get_weapon_hint(spawn_list[i].zombie_weapon_upgrade);
         unitrigger_stub.hint_parm1 = unitrigger_stub.cost;
       } else {
         unitrigger_stub.hint_parm1 = get_weapon_display_name(spawn_list[i].zombie_weapon_upgrade);
 
-        if(!isdefined(unitrigger_stub.hint_parm1) || unitrigger_stub.hint_parm1 == "" || unitrigger_stub.hint_parm1 == "none")
+        if(!isDefined(unitrigger_stub.hint_parm1) || unitrigger_stub.hint_parm1 == "" || unitrigger_stub.hint_parm1 == "none")
           unitrigger_stub.hint_parm1 = "missing weapon name " + spawn_list[i].zombie_weapon_upgrade;
 
         unitrigger_stub.hint_parm2 = unitrigger_stub.cost;
@@ -846,7 +850,7 @@ init_spawnable_weapon_upgrade() {
     unitrigger_stub.script_unitrigger_type = "unitrigger_box_use";
     unitrigger_stub.require_look_at = 1;
 
-    if(isdefined(spawn_list[i].require_look_from) && spawn_list[i].require_look_from)
+    if(isDefined(spawn_list[i].require_look_from) && spawn_list[i].require_look_from)
       unitrigger_stub.require_look_from = 1;
 
     unitrigger_stub.zombie_weapon_upgrade = spawn_list[i].zombie_weapon_upgrade;
@@ -854,7 +858,7 @@ init_spawnable_weapon_upgrade() {
     maps\mp\zombies\_zm_unitrigger::unitrigger_force_per_player_triggers(unitrigger_stub, 1);
 
     if(is_melee_weapon(unitrigger_stub.zombie_weapon_upgrade)) {
-      if(unitrigger_stub.zombie_weapon_upgrade == "tazer_knuckles_zm" && isdefined(level.taser_trig_adjustment))
+      if(unitrigger_stub.zombie_weapon_upgrade == "tazer_knuckles_zm" && isDefined(level.taser_trig_adjustment))
         unitrigger_stub.origin = unitrigger_stub.origin + level.taser_trig_adjustment;
 
       maps\mp\zombies\_zm_unitrigger::register_static_unitrigger(unitrigger_stub, ::weapon_spawn_think);
@@ -876,20 +880,22 @@ init_spawnable_weapon_upgrade() {
 add_dynamic_wallbuy(weapon, wallbuy, pristine) {
   spawned_wallbuy = undefined;
 
-  for (i = 0; i < level._spawned_wallbuys.size; i++) {
+  for(i = 0; i < level._spawned_wallbuys.size; i++) {
     if(level._spawned_wallbuys[i].target == wallbuy) {
       spawned_wallbuy = level._spawned_wallbuys[i];
       break;
     }
   }
 
-  if(!isdefined(spawned_wallbuy)) {
+  if(!isDefined(spawned_wallbuy)) {
     assertmsg("Cannot find dynamic wallbuy");
+
     return;
   }
 
-  if(isdefined(spawned_wallbuy.trigger_stub)) {
+  if(isDefined(spawned_wallbuy.trigger_stub)) {
     assertmsg("Dynamic wallbuy already added");
+
     return;
   }
 
@@ -940,7 +946,7 @@ add_dynamic_wallbuy(weapon, wallbuy, pristine) {
   unitrigger_force_per_player_triggers(unitrigger_stub, 1);
 
   if(is_melee_weapon(weapon)) {
-    if(weapon == "tazer_knuckles_zm" && isdefined(level.taser_trig_adjustment))
+    if(weapon == "tazer_knuckles_zm" && isDefined(level.taser_trig_adjustment))
       unitrigger_stub.origin = unitrigger_stub.origin + level.taser_trig_adjustment;
 
     maps\mp\zombies\_zm_melee_weapon::add_stub(unitrigger_stub, weapon);
@@ -956,8 +962,8 @@ add_dynamic_wallbuy(weapon, wallbuy, pristine) {
   spawned_wallbuy.trigger_stub = unitrigger_stub;
   weaponidx = undefined;
 
-  if(isdefined(level.buildable_wallbuy_weapons)) {
-    for (i = 0; i < level.buildable_wallbuy_weapons.size; i++) {
+  if(isDefined(level.buildable_wallbuy_weapons)) {
+    for(i = 0; i < level.buildable_wallbuy_weapons.size; i++) {
       if(weapon == level.buildable_wallbuy_weapons[i]) {
         weaponidx = i;
         break;
@@ -965,7 +971,7 @@ add_dynamic_wallbuy(weapon, wallbuy, pristine) {
     }
   }
 
-  if(isdefined(weaponidx)) {
+  if(isDefined(weaponidx)) {
     level setclientfield(clientfieldname + "_idx", weaponidx + 1);
     wallmodel delete();
 
@@ -980,13 +986,13 @@ add_dynamic_wallbuy(weapon, wallbuy, pristine) {
 wall_weapon_update_prompt(player) {
   weapon = self.stub.zombie_weapon_upgrade;
 
-  if(!(isdefined(level.monolingustic_prompt_format) && level.monolingustic_prompt_format)) {
+  if(!(isDefined(level.monolingustic_prompt_format) && level.monolingustic_prompt_format)) {
     player_has_weapon = player has_weapon_or_upgrade(weapon);
 
-    if(!player_has_weapon && (isdefined(level.weapons_using_ammo_sharing) && level.weapons_using_ammo_sharing)) {
+    if(!player_has_weapon && (isDefined(level.weapons_using_ammo_sharing) && level.weapons_using_ammo_sharing)) {
       shared_ammo_weapon = player get_shared_ammo_weapon(self.zombie_weapon_upgrade);
 
-      if(isdefined(shared_ammo_weapon)) {
+      if(isDefined(shared_ammo_weapon)) {
         weapon = shared_ammo_weapon;
         player_has_weapon = 1;
       }
@@ -996,7 +1002,7 @@ wall_weapon_update_prompt(player) {
       cost = get_weapon_cost(weapon);
       self.stub.hint_string = get_weapon_hint(weapon);
       self sethintstring(self.stub.hint_string, cost);
-    } else if(isdefined(level.use_legacy_weapon_prompt_format) && level.use_legacy_weapon_prompt_format) {
+    } else if(isDefined(level.use_legacy_weapon_prompt_format) && level.use_legacy_weapon_prompt_format) {
       cost = get_weapon_cost(weapon);
       ammo_cost = get_ammo_cost(weapon);
       self.stub.hint_string = get_weapon_hint_ammo();
@@ -1013,14 +1019,14 @@ wall_weapon_update_prompt(player) {
   } else if(!player has_weapon_or_upgrade(weapon)) {
     string_override = 0;
 
-    if(isdefined(player.pers_upgrades_awarded["nube"]) && player.pers_upgrades_awarded["nube"])
+    if(isDefined(player.pers_upgrades_awarded["nube"]) && player.pers_upgrades_awarded["nube"])
       string_override = maps\mp\zombies\_zm_pers_upgrades_functions::pers_nube_ammo_hint_string(player, weapon);
 
     if(!string_override) {
       cost = get_weapon_cost(weapon);
       weapon_display = get_weapon_display_name(weapon);
 
-      if(!isdefined(weapon_display) || weapon_display == "" || weapon_display == "none")
+      if(!isDefined(weapon_display) || weapon_display == "" || weapon_display == "none")
         weapon_display = "missing weapon name " + weapon;
 
       self.stub.hint_string = & "ZOMBIE_WEAPONCOSTONLY";
@@ -1050,10 +1056,10 @@ wall_weapon_update_prompt(player) {
 }
 
 reset_wallbuy_internal(set_hint_string) {
-  if(isdefined(self.first_time_triggered) && self.first_time_triggered == 1) {
+  if(isDefined(self.first_time_triggered) && self.first_time_triggered == 1) {
     self.first_time_triggered = 0;
 
-    if(isdefined(self.clientfieldname))
+    if(isDefined(self.clientfieldname))
       level setclientfield(self.clientfieldname, 0);
 
     if(set_hint_string) {
@@ -1075,23 +1081,23 @@ reset_wallbuys() {
   if(!is_true(level.headshots_only))
     melee_and_grenade_spawns = arraycombine(melee_and_grenade_spawns, getentarray("claymore_purchase", "targetname"), 1, 0);
 
-  for (i = 0; i < weapon_spawns.size; i++)
+  for(i = 0; i < weapon_spawns.size; i++)
     weapon_spawns[i] reset_wallbuy_internal(1);
 
-  for (i = 0; i < melee_and_grenade_spawns.size; i++)
+  for(i = 0; i < melee_and_grenade_spawns.size; i++)
     melee_and_grenade_spawns[i] reset_wallbuy_internal(0);
 
-  if(isdefined(level._unitriggers)) {
+  if(isDefined(level._unitriggers)) {
     candidates = [];
 
-    for (i = 0; i < level._unitriggers.trigger_stubs.size; i++) {
+    for(i = 0; i < level._unitriggers.trigger_stubs.size; i++) {
       stub = level._unitriggers.trigger_stubs[i];
       tn = stub.targetname;
 
       if(tn == "weapon_upgrade" || tn == "bowie_upgrade" || tn == "sickle_upgrade" || tn == "tazer_upgrade" || tn == "claymore_purchase") {
         stub.first_time_triggered = 0;
 
-        if(isdefined(stub.clientfieldname))
+        if(isDefined(stub.clientfieldname))
           level setclientfield(stub.clientfieldname, 0);
 
         if(tn == "weapon_upgrade") {
@@ -1109,8 +1115,8 @@ init_weapon_upgrade() {
   weapon_spawns = [];
   weapon_spawns = getentarray("weapon_upgrade", "targetname");
 
-  for (i = 0; i < weapon_spawns.size; i++) {
-    if(!(isdefined(level.monolingustic_prompt_format) && level.monolingustic_prompt_format)) {
+  for(i = 0; i < weapon_spawns.size; i++) {
+    if(!(isDefined(level.monolingustic_prompt_format) && level.monolingustic_prompt_format)) {
       hint_string = get_weapon_hint(weapon_spawns[i].zombie_weapon_upgrade);
       cost = get_weapon_cost(weapon_spawns[i].zombie_weapon_upgrade);
       weapon_spawns[i] sethintstring(hint_string, cost);
@@ -1119,7 +1125,7 @@ init_weapon_upgrade() {
       cost = get_weapon_cost(weapon_spawns[i].zombie_weapon_upgrade);
       weapon_display = get_weapon_display_name(weapon_spawns[i].zombie_weapon_upgrade);
 
-      if(!isdefined(weapon_display) || weapon_display == "" || weapon_display == "none")
+      if(!isDefined(weapon_display) || weapon_display == "" || weapon_display == "none")
         weapon_display = "missing weapon name " + weapon_spawns[i].zombie_weapon_upgrade;
 
       hint_string = & "ZOMBIE_WEAPONCOSTONLY";
@@ -1130,7 +1136,7 @@ init_weapon_upgrade() {
     weapon_spawns[i] thread weapon_spawn_think();
     model = getent(weapon_spawns[i].target, "targetname");
 
-    if(isdefined(model)) {
+    if(isDefined(model)) {
       model useweaponhidetags(weapon_spawns[i].zombie_weapon_upgrade);
       model hide();
     }
@@ -1138,7 +1144,7 @@ init_weapon_upgrade() {
 }
 
 init_weapon_toggle() {
-  if(!isdefined(level.magic_box_weapon_toggle_init_callback)) {
+  if(!isDefined(level.magic_box_weapon_toggle_init_callback)) {
     return;
   }
   level.zombie_weapon_toggles = [];
@@ -1163,7 +1169,7 @@ init_weapon_toggle() {
   weapon_toggle_ents = [];
   weapon_toggle_ents = getentarray("magic_box_weapon_toggle", "targetname");
 
-  for (i = 0; i < weapon_toggle_ents.size; i++) {
+  for(i = 0; i < weapon_toggle_ents.size; i++) {
     struct = spawnstruct();
     struct.trigger = weapon_toggle_ents[i];
     struct.weapon_name = struct.trigger.script_string;
@@ -1174,7 +1180,7 @@ init_weapon_toggle() {
     target_array = [];
     target_array = getentarray(struct.trigger.target, "targetname");
 
-    for (j = 0; j < target_array.size; j++) {
+    for(j = 0; j < target_array.size; j++) {
       switch (target_array[j].script_string) {
         case "light":
           struct.light = target_array[j];
@@ -1198,15 +1204,15 @@ init_weapon_toggle() {
 }
 
 get_weapon_toggle(weapon_name) {
-  if(!isdefined(level.zombie_weapon_toggles))
+  if(!isDefined(level.zombie_weapon_toggles))
     return undefined;
 
-  if(isdefined(level.zombie_weapon_toggles[weapon_name]))
+  if(isDefined(level.zombie_weapon_toggles[weapon_name]))
     return level.zombie_weapon_toggles[weapon_name];
 
   keys = getarraykeys(level.zombie_weapon_toggles);
 
-  for (i = 0; i < keys.size; i++) {
+  for(i = 0; i < keys.size; i++) {
     if(weapon_name == level.zombie_weapon_toggles[keys[i]].upgrade_name)
       return level.zombie_weapon_toggles[keys[i]];
   }
@@ -1215,13 +1221,13 @@ get_weapon_toggle(weapon_name) {
 }
 
 is_weapon_toggle(weapon_name) {
-  return isdefined(get_weapon_toggle(weapon_name));
+  return isDefined(get_weapon_toggle(weapon_name));
 }
 
 disable_weapon_toggle(weapon_name) {
   toggle = get_weapon_toggle(weapon_name);
 
-  if(!isdefined(toggle)) {
+  if(!isDefined(toggle)) {
     return;
   }
   if(toggle.active)
@@ -1237,7 +1243,7 @@ disable_weapon_toggle(weapon_name) {
 enable_weapon_toggle(weapon_name) {
   toggle = get_weapon_toggle(weapon_name);
 
-  if(!isdefined(toggle)) {
+  if(!isDefined(toggle)) {
     return;
   }
   toggle.enabled = 1;
@@ -1248,7 +1254,7 @@ enable_weapon_toggle(weapon_name) {
 
 activate_weapon_toggle(weapon_name, trig_for_vox) {
   if(level.zombie_weapon_toggle_active_count >= level.zombie_weapon_toggle_max_active_count) {
-    if(isdefined(trig_for_vox))
+    if(isDefined(trig_for_vox))
       trig_for_vox thread maps\mp\zombies\_zm_audio::weapon_toggle_vox("max");
 
     return;
@@ -1256,10 +1262,10 @@ activate_weapon_toggle(weapon_name, trig_for_vox) {
 
   toggle = get_weapon_toggle(weapon_name);
 
-  if(!isdefined(toggle)) {
+  if(!isDefined(toggle)) {
     return;
   }
-  if(isdefined(trig_for_vox))
+  if(isDefined(trig_for_vox))
     trig_for_vox thread maps\mp\zombies\_zm_audio::weapon_toggle_vox("activate", weapon_name);
 
   level.zombie_weapon_toggle_active_count++;
@@ -1271,10 +1277,10 @@ activate_weapon_toggle(weapon_name, trig_for_vox) {
 deactivate_weapon_toggle(weapon_name, trig_for_vox) {
   toggle = get_weapon_toggle(weapon_name);
 
-  if(!isdefined(toggle)) {
+  if(!isDefined(toggle)) {
     return;
   }
-  if(isdefined(trig_for_vox))
+  if(isDefined(trig_for_vox))
     trig_for_vox thread maps\mp\zombies\_zm_audio::weapon_toggle_vox("deactivate", weapon_name);
 
   if(toggle.active)
@@ -1288,7 +1294,7 @@ deactivate_weapon_toggle(weapon_name, trig_for_vox) {
 acquire_weapon_toggle(weapon_name, player) {
   toggle = get_weapon_toggle(weapon_name);
 
-  if(!isdefined(toggle)) {
+  if(!isDefined(toggle)) {
     return;
   }
   if(!toggle.active || toggle.acquired) {
@@ -1310,7 +1316,7 @@ unacquire_weapon_toggle_on_death_or_disconnect_thread(player) {
 unacquire_weapon_toggle(weapon_name) {
   toggle = get_weapon_toggle(weapon_name);
 
-  if(!isdefined(toggle)) {
+  if(!isDefined(toggle)) {
     return;
   }
   if(!toggle.active || !toggle.acquired) {
@@ -1323,7 +1329,7 @@ unacquire_weapon_toggle(weapon_name) {
 }
 
 weapon_toggle_think() {
-  for (;;) {
+  for(;;) {
     self.trigger waittill("trigger", player);
 
     if(!is_player_valid(player)) {
@@ -1346,24 +1352,24 @@ weapon_toggle_think() {
 }
 
 get_weapon_hint(weapon_name) {
-  assert(isdefined(level.zombie_weapons[weapon_name]), weapon_name + " was not included or is not part of the zombie weapon list.");
+  assert(isDefined(level.zombie_weapons[weapon_name]), weapon_name + " was not included or is not part of the zombie weapon list.");
   return level.zombie_weapons[weapon_name].hint;
 }
 
 get_weapon_cost(weapon_name) {
-  assert(isdefined(level.zombie_weapons[weapon_name]), weapon_name + " was not included or is not part of the zombie weapon list.");
+  assert(isDefined(level.zombie_weapons[weapon_name]), weapon_name + " was not included or is not part of the zombie weapon list.");
   return level.zombie_weapons[weapon_name].cost;
 }
 
 get_ammo_cost(weapon_name) {
-  assert(isdefined(level.zombie_weapons[weapon_name]), weapon_name + " was not included or is not part of the zombie weapon list.");
+  assert(isDefined(level.zombie_weapons[weapon_name]), weapon_name + " was not included or is not part of the zombie weapon list.");
   return level.zombie_weapons[weapon_name].ammo_cost;
 }
 
 get_upgraded_ammo_cost(weapon_name) {
-  assert(isdefined(level.zombie_weapons[weapon_name]), weapon_name + " was not included or is not part of the zombie weapon list.");
+  assert(isDefined(level.zombie_weapons[weapon_name]), weapon_name + " was not included or is not part of the zombie weapon list.");
 
-  if(isdefined(level.zombie_weapons[weapon_name].upgraded_ammo_cost))
+  if(isDefined(level.zombie_weapons[weapon_name].upgraded_ammo_cost))
     return level.zombie_weapons[weapon_name].upgraded_ammo_cost;
 
   return 4500;
@@ -1372,35 +1378,37 @@ get_upgraded_ammo_cost(weapon_name) {
 get_weapon_display_name(weapon_name) {
   weapon_display = getweapondisplayname(weapon_name);
 
-  if(!isdefined(weapon_display) || weapon_display == "" || weapon_display == "none") {
+  if(!isDefined(weapon_display) || weapon_display == "" || weapon_display == "none") {
     weapon_display = & "MPUI_NONE";
+
     weapon_display = "missing weapon name " + weapon_name;
+
   }
 
   return weapon_display;
 }
 
 get_is_in_box(weapon_name) {
-  assert(isdefined(level.zombie_weapons[weapon_name]), weapon_name + " was not included or is not part of the zombie weapon list.");
+  assert(isDefined(level.zombie_weapons[weapon_name]), weapon_name + " was not included or is not part of the zombie weapon list.");
   return level.zombie_weapons[weapon_name].is_in_box;
 }
 
 weapon_supports_default_attachment(weaponname) {
   weaponname = get_base_weapon_name(weaponname);
 
-  if(isdefined(weaponname))
+  if(isDefined(weaponname))
     attachment = level.zombie_weapons[weaponname].default_attachment;
 
-  return isdefined(attachment);
+  return isDefined(attachment);
 }
 
 default_attachment(weaponname) {
   weaponname = get_base_weapon_name(weaponname);
 
-  if(isdefined(weaponname))
+  if(isDefined(weaponname))
     attachment = level.zombie_weapons[weaponname].default_attachment;
 
-  if(isdefined(attachment))
+  if(isDefined(attachment))
     return attachment;
   else
     return "none";
@@ -1409,16 +1417,16 @@ default_attachment(weaponname) {
 weapon_supports_attachments(weaponname) {
   weaponname = get_base_weapon_name(weaponname);
 
-  if(isdefined(weaponname))
+  if(isDefined(weaponname))
     attachments = level.zombie_weapons[weaponname].addon_attachments;
 
-  return isdefined(attachments) && attachments.size > 1;
+  return isDefined(attachments) && attachments.size > 1;
 }
 
 random_attachment(weaponname, exclude) {
   lo = 0;
 
-  if(isdefined(level.zombie_weapons[weaponname].addon_attachments) && level.zombie_weapons[weaponname].addon_attachments.size > 0)
+  if(isDefined(level.zombie_weapons[weaponname].addon_attachments) && level.zombie_weapons[weaponname].addon_attachments.size > 0)
     attachments = level.zombie_weapons[weaponname].addon_attachments;
   else {
     attachments = getweaponsupportedattachments(weaponname);
@@ -1427,14 +1435,14 @@ random_attachment(weaponname, exclude) {
 
   minatt = lo;
 
-  if(isdefined(exclude) && exclude != "none")
+  if(isDefined(exclude) && exclude != "none")
     minatt = lo + 1;
 
   if(attachments.size > minatt) {
-    while (true) {
+    while(true) {
       idx = randomint(attachments.size - lo) + lo;
 
-      if(!isdefined(exclude) || attachments[idx] != exclude)
+      if(!isDefined(exclude) || attachments[idx] != exclude)
         return attachments[idx];
     }
   }
@@ -1454,7 +1462,7 @@ get_base_name(weaponname) {
 get_attachment_name(weaponname, att_id) {
   split = strtok(weaponname, "+");
 
-  if(isdefined(att_id)) {
+  if(isDefined(att_id)) {
     attachment = att_id + 1;
 
     if(split.size > attachment)
@@ -1462,7 +1470,7 @@ get_attachment_name(weaponname, att_id) {
   } else if(split.size > 1) {
     att = split[1];
 
-    for (idx = 2; split.size > idx; idx++)
+    for(idx = 2; split.size > idx; idx++)
       att = att + "+" + split[idx];
 
     return att;
@@ -1482,14 +1490,15 @@ get_attachment_index(weapon) {
   if(att == level.zombie_weapons[base].default_attachment)
     return 0;
 
-  if(isdefined(level.zombie_weapons[base].addon_attachments)) {
-    for (i = 0; i < level.zombie_weapons[base].addon_attachments.size; i++) {
+  if(isDefined(level.zombie_weapons[base].addon_attachments)) {
+    for(i = 0; i < level.zombie_weapons[base].addon_attachments.size; i++) {
       if(level.zombie_weapons[base].addon_attachments[i] == att)
         return i + 1;
     }
   }
 
   println("ZM WEAPON ERROR: Unrecognized attachment in weapon " + weapon);
+
   return -1;
 }
 
@@ -1499,8 +1508,8 @@ weapon_supports_this_attachment(weapon, att) {
   if(att == level.zombie_weapons[base].default_attachment)
     return true;
 
-  if(isdefined(level.zombie_weapons[base].addon_attachments)) {
-    for (i = 0; i < level.zombie_weapons[base].addon_attachments.size; i++) {
+  if(isDefined(level.zombie_weapons[base].addon_attachments)) {
+    for(i = 0; i < level.zombie_weapons[base].addon_attachments.size; i++) {
       if(level.zombie_weapons[base].addon_attachments[i] == att)
         return true;
     }
@@ -1513,7 +1522,7 @@ has_attachment(weaponname, att) {
   split = strtok(weaponname, "+");
   idx = 1;
 
-  while (split.size > idx) {
+  while(split.size > idx) {
     if(att == split[idx])
       return true;
   }
@@ -1522,16 +1531,16 @@ has_attachment(weaponname, att) {
 }
 
 get_base_weapon_name(upgradedweaponname, base_if_not_upgraded) {
-  if(!isdefined(upgradedweaponname) || upgradedweaponname == "")
+  if(!isDefined(upgradedweaponname) || upgradedweaponname == "")
     return undefined;
 
   upgradedweaponname = tolower(upgradedweaponname);
   upgradedweaponname = get_base_name(upgradedweaponname);
 
-  if(isdefined(level.zombie_weapons_upgraded[upgradedweaponname]))
+  if(isDefined(level.zombie_weapons_upgraded[upgradedweaponname]))
     return level.zombie_weapons_upgraded[upgradedweaponname];
 
-  if(isdefined(base_if_not_upgraded) && base_if_not_upgraded)
+  if(isDefined(base_if_not_upgraded) && base_if_not_upgraded)
     return upgradedweaponname;
 
   return undefined;
@@ -1546,11 +1555,11 @@ get_upgrade_weapon(weaponname, add_attachment) {
   if(!is_weapon_upgraded(rootweaponname))
     newweapon = level.zombie_weapons[rootweaponname].upgrade_name;
 
-  if(isdefined(add_attachment) && add_attachment && (isdefined(level.zombiemode_reusing_pack_a_punch) && level.zombiemode_reusing_pack_a_punch)) {
+  if(isDefined(add_attachment) && add_attachment && (isDefined(level.zombiemode_reusing_pack_a_punch) && level.zombiemode_reusing_pack_a_punch)) {
     oldatt = get_attachment_name(weaponname);
     att = random_attachment(baseweaponname, oldatt);
     newweapon = newweapon + "+" + att;
-  } else if(isdefined(level.zombie_weapons[rootweaponname]) && isdefined(level.zombie_weapons[rootweaponname].default_attachment)) {
+  } else if(isDefined(level.zombie_weapons[rootweaponname]) && isDefined(level.zombie_weapons[rootweaponname].default_attachment)) {
     att = level.zombie_weapons[rootweaponname].default_attachment;
     newweapon = newweapon + "+" + att;
   }
@@ -1559,23 +1568,23 @@ get_upgrade_weapon(weaponname, add_attachment) {
 }
 
 can_upgrade_weapon(weaponname) {
-  if(!isdefined(weaponname) || weaponname == "" || weaponname == "zombie_fists_zm")
+  if(!isDefined(weaponname) || weaponname == "" || weaponname == "zombie_fists_zm")
     return 0;
 
   weaponname = tolower(weaponname);
   weaponname = get_base_name(weaponname);
 
   if(!is_weapon_upgraded(weaponname))
-    return isdefined(level.zombie_weapons[weaponname].upgrade_name);
+    return isDefined(level.zombie_weapons[weaponname].upgrade_name);
 
-  if(isdefined(level.zombiemode_reusing_pack_a_punch) && level.zombiemode_reusing_pack_a_punch && weapon_supports_attachments(weaponname))
+  if(isDefined(level.zombiemode_reusing_pack_a_punch) && level.zombiemode_reusing_pack_a_punch && weapon_supports_attachments(weaponname))
     return 1;
 
   return 0;
 }
 
 will_upgrade_weapon_as_attachment(weaponname) {
-  if(!isdefined(weaponname) || weaponname == "" || weaponname == "zombie_fists_zm")
+  if(!isDefined(weaponname) || weaponname == "" || weaponname == "zombie_fists_zm")
     return false;
 
   weaponname = tolower(weaponname);
@@ -1584,20 +1593,20 @@ will_upgrade_weapon_as_attachment(weaponname) {
   if(!is_weapon_upgraded(weaponname))
     return false;
 
-  if(isdefined(level.zombiemode_reusing_pack_a_punch) && level.zombiemode_reusing_pack_a_punch && weapon_supports_attachments(weaponname))
+  if(isDefined(level.zombiemode_reusing_pack_a_punch) && level.zombiemode_reusing_pack_a_punch && weapon_supports_attachments(weaponname))
     return true;
 
   return false;
 }
 
 is_weapon_upgraded(weaponname) {
-  if(!isdefined(weaponname) || weaponname == "" || weaponname == "zombie_fists_zm")
+  if(!isDefined(weaponname) || weaponname == "" || weaponname == "zombie_fists_zm")
     return false;
 
   weaponname = tolower(weaponname);
   weaponname = get_base_name(weaponname);
 
-  if(isdefined(level.zombie_weapons_upgraded[weaponname]))
+  if(isDefined(level.zombie_weapons_upgraded[weaponname]))
     return true;
 
   return false;
@@ -1607,7 +1616,7 @@ get_weapon_with_attachments(weaponname) {
   if(self hasweapon(weaponname))
     return weaponname;
 
-  if(isdefined(level.zombiemode_reusing_pack_a_punch) && level.zombiemode_reusing_pack_a_punch) {
+  if(isDefined(level.zombiemode_reusing_pack_a_punch) && level.zombiemode_reusing_pack_a_punch) {
     weaponname = tolower(weaponname);
     weaponname = get_base_name(weaponname);
     weapons = self getweaponslist(1);
@@ -1628,7 +1637,7 @@ has_weapon_or_attachments(weaponname) {
   if(self hasweapon(weaponname))
     return true;
 
-  if(isdefined(level.zombiemode_reusing_pack_a_punch) && level.zombiemode_reusing_pack_a_punch) {
+  if(isDefined(level.zombiemode_reusing_pack_a_punch) && level.zombiemode_reusing_pack_a_punch) {
     weaponname = tolower(weaponname);
     weaponname = get_base_name(weaponname);
     weapons = self getweaponslist(1);
@@ -1649,7 +1658,7 @@ has_upgrade(weaponname) {
   weaponname = get_base_name(weaponname);
   has_upgrade = 0;
 
-  if(isdefined(level.zombie_weapons[weaponname]) && isdefined(level.zombie_weapons[weaponname].upgrade_name))
+  if(isDefined(level.zombie_weapons[weaponname]) && isDefined(level.zombie_weapons[weaponname].upgrade_name))
     has_upgrade = self has_weapon_or_attachments(level.zombie_weapons[weaponname].upgrade_name);
 
   if(!has_upgrade && "knife_ballistic_zm" == weaponname)
@@ -1662,12 +1671,12 @@ has_weapon_or_upgrade(weaponname) {
   weaponname = get_base_name(weaponname);
   upgradedweaponname = weaponname;
 
-  if(isdefined(level.zombie_weapons[weaponname]) && isdefined(level.zombie_weapons[weaponname].upgrade_name))
+  if(isDefined(level.zombie_weapons[weaponname]) && isDefined(level.zombie_weapons[weaponname].upgrade_name))
     upgradedweaponname = level.zombie_weapons[weaponname].upgrade_name;
 
   has_weapon = 0;
 
-  if(isdefined(level.zombie_weapons[weaponname]))
+  if(isDefined(level.zombie_weapons[weaponname]))
     has_weapon = self has_weapon_or_attachments(weaponname) || self has_upgrade(weaponname);
 
   if(!has_weapon && "knife_ballistic_zm" == weaponname)
@@ -1691,10 +1700,10 @@ get_shared_ammo_weapon(base_weapon) {
     weapon = tolower(weapon);
     weapon = get_base_name(weapon);
 
-    if(!isdefined(level.zombie_weapons[weapon]) && isdefined(level.zombie_weapons_upgraded[weapon]))
+    if(!isDefined(level.zombie_weapons[weapon]) && isDefined(level.zombie_weapons_upgraded[weapon]))
       weapon = level.zombie_weapons_upgraded[weapon];
 
-    if(isdefined(level.zombie_weapons[weapon]) && isdefined(level.zombie_weapons[weapon].shared_ammo_weapon) && level.zombie_weapons[weapon].shared_ammo_weapon == base_weapon)
+    if(isDefined(level.zombie_weapons[weapon]) && isDefined(level.zombie_weapons[weapon].shared_ammo_weapon) && level.zombie_weapons[weapon].shared_ammo_weapon == base_weapon)
       return weapon;
   }
 
@@ -1706,10 +1715,10 @@ get_player_weapon_with_same_base(weaponname) {
   weaponname = get_base_name(weaponname);
   retweapon = get_weapon_with_attachments(weaponname);
 
-  if(!isdefined(retweapon)) {
-    if(isdefined(level.zombie_weapons[weaponname]))
+  if(!isDefined(retweapon)) {
+    if(isDefined(level.zombie_weapons[weaponname]))
       retweapon = get_weapon_with_attachments(level.zombie_weapons[weaponname].upgrade_name);
-    else if(isdefined(level.zombie_weapons_upgraded[weaponname]))
+    else if(isDefined(level.zombie_weapons_upgraded[weaponname]))
       return get_weapon_with_attachments(level.zombie_weapons_upgraded[weaponname]);
   }
 
@@ -1717,7 +1726,7 @@ get_player_weapon_with_same_base(weaponname) {
 }
 
 get_weapon_hint_ammo() {
-  if(isdefined(level.has_pack_a_punch) && !level.has_pack_a_punch)
+  if(isDefined(level.has_pack_a_punch) && !level.has_pack_a_punch)
     return & "ZOMBIE_WEAPONCOSTAMMO";
   else
     return & "ZOMBIE_WEAPONCOSTAMMO_UPGRADE";
@@ -1734,12 +1743,12 @@ weapon_spawn_think() {
   shared_ammo_weapon = undefined;
   second_endon = undefined;
 
-  if(isdefined(self.stub)) {
+  if(isDefined(self.stub)) {
     second_endon = "kill_trigger";
     self.first_time_triggered = self.stub.first_time_triggered;
   }
 
-  if(isdefined(self.stub) && (isdefined(self.stub.trigger_per_player) && self.stub.trigger_per_player))
+  if(isDefined(self.stub) && (isDefined(self.stub.trigger_per_player) && self.stub.trigger_per_player))
     self thread decide_hide_show_hint("stop_hint_logic", second_endon, self.parent_player);
   else
     self thread decide_hide_show_hint("stop_hint_logic", second_endon);
@@ -1748,17 +1757,17 @@ weapon_spawn_think() {
     self.first_time_triggered = 0;
     hint = get_weapon_hint(self.zombie_weapon_upgrade);
     self sethintstring(hint, cost);
-  } else if(!isdefined(self.first_time_triggered)) {
+  } else if(!isDefined(self.first_time_triggered)) {
     self.first_time_triggered = 0;
 
-    if(isdefined(self.stub))
+    if(isDefined(self.stub))
       self.stub.first_time_triggered = 0;
   } else if(self.first_time_triggered) {
-    if(isdefined(level.use_legacy_weapon_prompt_format) && level.use_legacy_weapon_prompt_format)
+    if(isDefined(level.use_legacy_weapon_prompt_format) && level.use_legacy_weapon_prompt_format)
       self weapon_set_first_time_hint(cost, get_ammo_cost(self.zombie_weapon_upgrade));
   }
 
-  for (;;) {
+  for(;;) {
     self waittill("trigger", player);
 
     if(!is_player_valid(player)) {
@@ -1771,7 +1780,7 @@ weapon_spawn_think() {
       continue;
     }
 
-    if(isdefined(self.stub) && (isdefined(self.stub.require_look_from) && self.stub.require_look_from)) {
+    if(isDefined(self.stub) && (isDefined(self.stub.require_look_from) && self.stub.require_look_from)) {
       toplayer = player get_eye() - self.origin;
       forward = -1 * anglestoright(self.angles);
       dot = vectordot(toplayer, forward);
@@ -1787,14 +1796,14 @@ weapon_spawn_think() {
 
     player_has_weapon = player has_weapon_or_upgrade(self.zombie_weapon_upgrade);
 
-    if(!player_has_weapon && (isdefined(level.weapons_using_ammo_sharing) && level.weapons_using_ammo_sharing)) {
+    if(!player_has_weapon && (isDefined(level.weapons_using_ammo_sharing) && level.weapons_using_ammo_sharing)) {
       shared_ammo_weapon = player get_shared_ammo_weapon(self.zombie_weapon_upgrade);
 
-      if(isdefined(shared_ammo_weapon))
+      if(isDefined(shared_ammo_weapon))
         player_has_weapon = 1;
     }
 
-    if(isdefined(level.pers_upgrade_nube) && level.pers_upgrade_nube)
+    if(isDefined(level.pers_upgrade_nube) && level.pers_upgrade_nube)
       player_has_weapon = maps\mp\zombies\_zm_pers_upgrades_functions::pers_nube_should_we_give_raygun(player_has_weapon, player, self.zombie_weapon_upgrade);
 
     cost = get_weapon_cost(self.zombie_weapon_upgrade);
@@ -1814,7 +1823,7 @@ weapon_spawn_think() {
         if(self.zombie_weapon_upgrade == "riotshield_zm") {
           player maps\mp\zombies\_zm_equipment::equipment_give("riotshield_zm");
 
-          if(isdefined(player.player_shield_reset_health))
+          if(isDefined(player.player_shield_reset_health))
             player[[player.player_shield_reset_health]]();
         } else if(self.zombie_weapon_upgrade == "jetgun_zm")
           player maps\mp\zombies\_zm_equipment::equipment_give("jetgun_zm");
@@ -1826,7 +1835,7 @@ weapon_spawn_think() {
 
           str_weapon = self.zombie_weapon_upgrade;
 
-          if(isdefined(level.pers_upgrade_nube) && level.pers_upgrade_nube)
+          if(isDefined(level.pers_upgrade_nube) && level.pers_upgrade_nube)
             str_weapon = maps\mp\zombies\_zm_pers_upgrades_functions::pers_nube_weapon_upgrade_check(player, str_weapon);
 
           player weapon_give(str_weapon);
@@ -1841,13 +1850,13 @@ weapon_spawn_think() {
     } else {
       str_weapon = self.zombie_weapon_upgrade;
 
-      if(isdefined(shared_ammo_weapon))
+      if(isDefined(shared_ammo_weapon))
         str_weapon = shared_ammo_weapon;
 
-      if(isdefined(level.pers_upgrade_nube) && level.pers_upgrade_nube)
+      if(isDefined(level.pers_upgrade_nube) && level.pers_upgrade_nube)
         str_weapon = maps\mp\zombies\_zm_pers_upgrades_functions::pers_nube_weapon_ammo_check(player, str_weapon);
 
-      if(isdefined(self.hacked) && self.hacked) {
+      if(isDefined(self.hacked) && self.hacked) {
         if(!player has_upgrade(str_weapon))
           ammo_cost = 4500;
         else
@@ -1857,7 +1866,7 @@ weapon_spawn_think() {
       else
         ammo_cost = get_ammo_cost(str_weapon);
 
-      if(isdefined(player.pers_upgrades_awarded["nube"]) && player.pers_upgrades_awarded["nube"])
+      if(isDefined(player.pers_upgrades_awarded["nube"]) && player.pers_upgrades_awarded["nube"])
         ammo_cost = maps\mp\zombies\_zm_pers_upgrades_functions::pers_nube_override_ammo_cost(player, self.zombie_weapon_upgrade, ammo_cost);
 
       if(player maps\mp\zombies\_zm_pers_upgrades_functions::is_pers_double_points_active())
@@ -1878,7 +1887,7 @@ weapon_spawn_think() {
         }
 
         if(str_weapon == "riotshield_zm") {
-          if(isdefined(player.player_shield_reset_health))
+          if(isDefined(player.player_shield_reset_health))
             ammo_given = player[[player.player_shield_reset_health]]();
           else
             ammo_given = 0;
@@ -1894,14 +1903,14 @@ weapon_spawn_think() {
       } else {
         play_sound_on_ent("no_purchase");
 
-        if(isdefined(level.custom_generic_deny_vo_func))
+        if(isDefined(level.custom_generic_deny_vo_func))
           player[[level.custom_generic_deny_vo_func]]();
         else
           player maps\mp\zombies\_zm_audio::create_and_play_dialog("general", "no_money_weapon");
       }
     }
 
-    if(isdefined(self.stub) && isdefined(self.stub.prompt_and_visibility_func))
+    if(isDefined(self.stub) && isDefined(self.stub.prompt_and_visibility_func))
       self[[self.stub.prompt_and_visibility_func]](player);
   }
 }
@@ -1909,40 +1918,40 @@ weapon_spawn_think() {
 show_all_weapon_buys(player, cost, ammo_cost, is_grenade) {
   model = getent(self.target, "targetname");
 
-  if(isdefined(model))
+  if(isDefined(model))
     model thread weapon_show(player);
-  else if(isdefined(self.clientfieldname))
+  else if(isDefined(self.clientfieldname))
     level setclientfield(self.clientfieldname, 1);
 
   self.first_time_triggered = 1;
 
-  if(isdefined(self.stub))
+  if(isDefined(self.stub))
     self.stub.first_time_triggered = 1;
 
   if(!is_grenade)
     self weapon_set_first_time_hint(cost, ammo_cost);
 
-  if(!(isdefined(level.dont_link_common_wallbuys) && level.dont_link_common_wallbuys) && isdefined(level._spawned_wallbuys)) {
-    for (i = 0; i < level._spawned_wallbuys.size; i++) {
+  if(!(isDefined(level.dont_link_common_wallbuys) && level.dont_link_common_wallbuys) && isDefined(level._spawned_wallbuys)) {
+    for(i = 0; i < level._spawned_wallbuys.size; i++) {
       wallbuy = level._spawned_wallbuys[i];
 
-      if(isdefined(self.stub) && isdefined(wallbuy.trigger_stub) && self.stub.clientfieldname == wallbuy.trigger_stub.clientfieldname) {
+      if(isDefined(self.stub) && isDefined(wallbuy.trigger_stub) && self.stub.clientfieldname == wallbuy.trigger_stub.clientfieldname) {
         continue;
       }
       if(self.zombie_weapon_upgrade == wallbuy.zombie_weapon_upgrade) {
-        if(isdefined(wallbuy.trigger_stub) && isdefined(wallbuy.trigger_stub.clientfieldname))
+        if(isDefined(wallbuy.trigger_stub) && isDefined(wallbuy.trigger_stub.clientfieldname))
           level setclientfield(wallbuy.trigger_stub.clientfieldname, 1);
-        else if(isdefined(wallbuy.target)) {
+        else if(isDefined(wallbuy.target)) {
           model = getent(wallbuy.target, "targetname");
 
-          if(isdefined(model))
+          if(isDefined(model))
             model thread weapon_show(player);
         }
 
-        if(isdefined(wallbuy.trigger_stub)) {
+        if(isDefined(wallbuy.trigger_stub)) {
           wallbuy.trigger_stub.first_time_triggered = 1;
 
-          if(isdefined(wallbuy.trigger_stub.trigger)) {
+          if(isDefined(wallbuy.trigger_stub.trigger)) {
             wallbuy.trigger_stub.trigger.first_time_triggered = 1;
 
             if(!is_grenade)
@@ -1964,7 +1973,7 @@ weapon_show(player) {
   player_yaw = player_angles[1];
   weapon_yaw = self.angles[1];
 
-  if(isdefined(self.script_int))
+  if(isDefined(self.script_int))
     weapon_yaw = weapon_yaw - self.script_int;
 
   yaw_diff = angleclamp180(player_yaw - weapon_yaw);
@@ -1981,18 +1990,18 @@ weapon_show(player) {
   play_sound_at_pos("weapon_show", self.origin, self);
   time = 1;
 
-  if(!isdefined(self._linked_ent))
+  if(!isDefined(self._linked_ent))
     self moveto(self.og_origin, time);
 }
 
 get_pack_a_punch_weapon_options(weapon) {
-  if(!isdefined(self.pack_a_punch_weapon_options))
+  if(!isDefined(self.pack_a_punch_weapon_options))
     self.pack_a_punch_weapon_options = [];
 
   if(!is_weapon_upgraded(weapon))
     return self calcweaponoptions(0, 0, 0, 0, 0);
 
-  if(isdefined(self.pack_a_punch_weapon_options[weapon]))
+  if(isDefined(self.pack_a_punch_weapon_options[weapon]))
     return self.pack_a_punch_weapon_options[weapon];
 
   smiley_face_reticle_index = 1;
@@ -2018,6 +2027,7 @@ get_pack_a_punch_weapon_options(weapon) {
 
   if(getdvarint(#"_id_471F9AB9") >= 0)
     reticle_index = getdvarint(#"_id_471F9AB9");
+
   scary_eyes_reticle_index = 8;
   purple_reticle_color_index = 3;
 
@@ -2046,7 +2056,7 @@ weapon_give(weapon, is_upgrade, magic_box, nosound) {
   current_weapon = self maps\mp\zombies\_zm_weapons::switch_from_alt_weapon(current_weapon);
   assert(self player_can_use_content(weapon));
 
-  if(!isdefined(is_upgrade))
+  if(!isDefined(is_upgrade))
     is_upgrade = 0;
 
   weapon_limit = get_player_weapon_limit(self);
@@ -2055,7 +2065,7 @@ weapon_give(weapon, is_upgrade, magic_box, nosound) {
     self maps\mp\zombies\_zm_equipment::equipment_give(weapon);
 
   if(weapon == "riotshield_zm") {
-    if(isdefined(self.player_shield_reset_health))
+    if(isDefined(self.player_shield_reset_health))
       self[[self.player_shield_reset_health]]();
   }
 
@@ -2076,7 +2086,7 @@ weapon_give(weapon, is_upgrade, magic_box, nosound) {
   else if(is_lethal_grenade(weapon)) {
     old_lethal = self get_player_lethal_grenade();
 
-    if(isdefined(old_lethal) && old_lethal != "") {
+    if(isDefined(old_lethal) && old_lethal != "") {
       self takeweapon(old_lethal);
       unacquire_weapon_toggle(old_lethal);
     }
@@ -2085,7 +2095,7 @@ weapon_give(weapon, is_upgrade, magic_box, nosound) {
   } else if(is_tactical_grenade(weapon)) {
     old_tactical = self get_player_tactical_grenade();
 
-    if(isdefined(old_tactical) && old_tactical != "") {
+    if(isDefined(old_tactical) && old_tactical != "") {
       self takeweapon(old_tactical);
       unacquire_weapon_toggle(old_tactical);
     }
@@ -2094,7 +2104,7 @@ weapon_give(weapon, is_upgrade, magic_box, nosound) {
   } else if(is_placeable_mine(weapon)) {
     old_mine = self get_player_placeable_mine();
 
-    if(isdefined(old_mine)) {
+    if(isDefined(old_mine)) {
       self takeweapon(old_mine);
       unacquire_weapon_toggle(old_mine);
     }
@@ -2109,7 +2119,7 @@ weapon_give(weapon, is_upgrade, magic_box, nosound) {
     if(is_placeable_mine(current_weapon) || is_equipment(current_weapon))
       current_weapon = undefined;
 
-    if(isdefined(current_weapon)) {
+    if(isDefined(current_weapon)) {
       if(!is_offhand_weapon(weapon)) {
         if(current_weapon == "tesla_gun_zm")
           level.player_drops_tesla_gun = 1;
@@ -2123,7 +2133,7 @@ weapon_give(weapon, is_upgrade, magic_box, nosound) {
     }
   }
 
-  if(isdefined(level.zombiemode_offhand_weapon_give_override)) {
+  if(isDefined(level.zombiemode_offhand_weapon_give_override)) {
     if(self[[level.zombiemode_offhand_weapon_give_override]](weapon))
       return;
   }
@@ -2140,13 +2150,13 @@ weapon_give(weapon, is_upgrade, magic_box, nosound) {
     return;
   }
 
-  if(isdefined(level.zombie_weapons_callbacks) && isdefined(level.zombie_weapons_callbacks[weapon])) {
+  if(isDefined(level.zombie_weapons_callbacks) && isDefined(level.zombie_weapons_callbacks[weapon])) {
     self thread[[level.zombie_weapons_callbacks[weapon]]]();
     play_weapon_vo(weapon, magic_box);
     return;
   }
 
-  if(!(isdefined(nosound) && nosound))
+  if(!(isDefined(nosound) && nosound))
     self play_sound_on_ent("purchase");
 
   if(weapon == "ray_gun_zm")
@@ -2171,7 +2181,7 @@ weapon_give(weapon, is_upgrade, magic_box, nosound) {
 }
 
 play_weapon_vo(weapon, magic_box) {
-  if(isdefined(level._audio_custom_weapon_check))
+  if(isDefined(level._audio_custom_weapon_check))
     type = self[[level._audio_custom_weapon_check]](weapon, magic_box);
   else
     type = self weapon_type_check(weapon);
@@ -2186,7 +2196,7 @@ play_weapon_vo(weapon, magic_box) {
 }
 
 weapon_type_check(weapon) {
-  if(!isdefined(self.entity_num))
+  if(!isDefined(self.entity_num))
     return "crappy";
 
   weapon = get_base_name(weapon);
@@ -2202,11 +2212,13 @@ weapon_type_check(weapon) {
 
 get_player_index(player) {
   assert(isplayer(player));
-  assert(isdefined(player.characterindex));
+  assert(isDefined(player.characterindex));
+
   if(player.entity_num == 0 && getdvar(#"_id_2222BA21") != "") {
     new_vo_index = getdvarint(#"_id_2222BA21");
     return new_vo_index;
   }
+
   return player.characterindex;
 }
 
@@ -2216,7 +2228,7 @@ ammo_give(weapon) {
   if(!is_offhand_weapon(weapon)) {
     weapon = get_weapon_with_attachments(weapon);
 
-    if(isdefined(weapon)) {
+    if(isDefined(weapon)) {
       stockmax = 0;
       stockmax = weaponstartammo(weapon);
       clipcount = self getweaponammoclip(weapon);
@@ -2250,7 +2262,7 @@ ammo_give(weapon) {
 get_player_weapondata(player, weapon) {
   weapondata = [];
 
-  if(!isdefined(weapon))
+  if(!isDefined(weapon))
     weapondata["name"] = player getcurrentweapon();
   else
     weapondata["name"] = weapon;
@@ -2290,8 +2302,8 @@ get_player_weapondata(player, weapon) {
 
 weapon_is_better(left, right) {
   if(left != right) {
-    left_upgraded = !isdefined(level.zombie_weapons[left]);
-    right_upgraded = !isdefined(level.zombie_weapons[right]);
+    left_upgraded = !isDefined(level.zombie_weapons[left]);
+    right_upgraded = !isDefined(level.zombie_weapons[right]);
 
     if(left_upgraded && right_upgraded) {
       leftatt = get_attachment_index(left);
@@ -2346,7 +2358,7 @@ merge_weapons(oldweapondata, newweapondata) {
 weapondata_give(weapondata) {
   current = get_player_weapon_with_same_base(weapondata["name"]);
 
-  if(isdefined(current)) {
+  if(isDefined(current)) {
     curweapondata = get_player_weapondata(self, current);
     self takeweapon(current);
     weapondata = merge_weapons(curweapondata, weapondata);
@@ -2361,10 +2373,10 @@ weapondata_give(weapondata) {
     self setweaponammoclip(name, weapondata["clip"]);
     self setweaponammostock(name, weapondata["stock"]);
 
-    if(isdefined(weapondata["fuel"]))
+    if(isDefined(weapondata["fuel"]))
       self setweaponammofuel(name, weapondata["fuel"]);
 
-    if(isdefined(weapondata["heat"]) && isdefined(weapondata["overheat"]))
+    if(isDefined(weapondata["heat"]) && isDefined(weapondata["overheat"]))
       self setweaponoverheating(weapondata["overheat"], weapondata["heat"], name);
   }
 
@@ -2378,9 +2390,9 @@ weapondata_give(weapondata) {
 }
 
 register_zombie_weapon_callback(str_weapon, func) {
-  if(!isdefined(level.zombie_weapons_callbacks))
+  if(!isDefined(level.zombie_weapons_callbacks))
     level.zombie_weapons_callbacks = [];
 
-  if(!isdefined(level.zombie_weapons_callbacks[str_weapon]))
+  if(!isDefined(level.zombie_weapons_callbacks[str_weapon]))
     level.zombie_weapons_callbacks[str_weapon] = func;
 }

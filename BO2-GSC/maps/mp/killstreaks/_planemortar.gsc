@@ -32,7 +32,7 @@ usekillstreakplanemortar(hardpointtype) {
   self thread playpilotdialog("a10_used", 1.5);
   result = self selectplanemortarlocation(hardpointtype);
 
-  if(!isdefined(result) || !result)
+  if(!isDefined(result) || !result)
     return false;
 
   return true;
@@ -51,16 +51,16 @@ selectplanemortarlocation(hardpointtype) {
   self thread endselectionthink();
   locations = [];
 
-  if(!isdefined(self.pers["mortarRadarUsed"]) || !self.pers["mortarRadarUsed"])
+  if(!isDefined(self.pers["mortarRadarUsed"]) || !self.pers["mortarRadarUsed"])
     self thread singleradarsweep();
 
-  for (i = 0; i < 3; i++) {
+  for(i = 0; i < 3; i++) {
     location = self waittill_confirm_location();
 
-    if(!isdefined(self))
+    if(!isDefined(self))
       return 0;
 
-    if(!isdefined(location)) {
+    if(!isDefined(location)) {
       self.pers["mortarRadarUsed"] = 1;
       self notify("cancel_selection");
       return 0;
@@ -80,26 +80,26 @@ selectplanemortarlocation(hardpointtype) {
 }
 
 playpilotdialog(dialog, waittime) {
-  if(isdefined(waittime))
+  if(isDefined(waittime))
     wait(waittime);
 
   self.pilotvoicenumber = self.bcvoicenumber + 1;
   soundalias = level.teamprefix[self.team] + self.pilotvoicenumber + "_" + dialog;
 
-  if(isdefined(self)) {
+  if(isDefined(self)) {
     if(self.pilotisspeaking) {
-      while (self.pilotisspeaking)
+      while(self.pilotisspeaking)
         wait 0.2;
     }
   }
 
-  if(isdefined(self)) {
+  if(isDefined(self)) {
     self playlocalsound(soundalias);
     self.pilotisspeaking = 1;
     self thread waitplaybacktime(soundalias);
     self waittill_any(soundalias, "death", "disconnect");
 
-    if(isdefined(self))
+    if(isDefined(self))
       self.pilotisspeaking = 0;
   }
 }
@@ -180,7 +180,7 @@ doplanemortar(positions, team, killstreak_id) {
 }
 
 plane_mortar_bda_dialog() {
-  if(!isdefined(self.planemortarbda))
+  if(!isDefined(self.planemortarbda))
     self.planemortarbda = 0;
 
   if(self.planemortarbda == 0)
@@ -198,7 +198,7 @@ plane_mortar_bda_dialog() {
   if(self.planemortarbda > 3)
     bdadialog = "kls_killm";
 
-  if(isdefined(bdadialog))
+  if(isDefined(bdadialog))
     self thread playpilotdialog(bdadialog);
 
   self.planemortarbda = 0;
@@ -250,7 +250,7 @@ dobombrun(position, yaw, team) {
   plane.killcament thread followbomb(plane, position, direction, impact, player);
   wait(2.0 / 2);
 
-  if(isdefined(self))
+  if(isDefined(self))
     self thread dropbomb(plane, position);
 
   wait(2.0 * 3 / 4);
@@ -265,7 +265,7 @@ followbomb(plane, position, direction, impact, player) {
 }
 
 lookatexplosion(bomb) {
-  while (isdefined(self) && isdefined(bomb)) {
+  while(isDefined(self) && isDefined(bomb)) {
     angles = vectortoangles(vectornormalize(bomb.origin - self.origin));
     self.angles = (max(angles[0], 15), angles[1], angles[2]);
     wait 0.05;
@@ -294,7 +294,7 @@ plane_cleanupondeath() {
 }
 
 dropbomb(plane, bombposition) {
-  if(!isdefined(plane.owner)) {
+  if(!isDefined(plane.owner)) {
     return;
   }
   targets = getplayers();

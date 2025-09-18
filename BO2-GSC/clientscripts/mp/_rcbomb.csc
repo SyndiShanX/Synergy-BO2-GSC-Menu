@@ -25,7 +25,7 @@ main() {
 }
 
 loadtreadfx(type) {
-  if(!isdefined(level._effect[type]))
+  if(!isDefined(level._effect[type]))
     level._effect[type] = [];
 
   level._effect[type]["rcbomb_driving_1st"] = loadfx("vehicle/treadfx/fx_treadfx_rcbomb_" + type + "_first_person");
@@ -62,11 +62,11 @@ spawn_solid_fx(localclientnum) {
   self stop_light_fx(localclientnum);
   self start_light_fx(localclientnum);
 
-  for (;;) {
+  for(;;) {
     level waittill("snap_processed");
     player = getlocalplayer(localclientnum);
 
-    if(!isdefined(player)) {
+    if(!isDefined(player)) {
       self stop_light_fx(localclientnum);
       continue;
     } else if(player getinkillcam(localclientnum))
@@ -74,7 +74,7 @@ spawn_solid_fx(localclientnum) {
     else if(self.friend != self friendnotfoe(localclientnum))
       self stop_light_fx(localclientnum);
 
-    if(!isdefined(self.fx) || self.fx == 0)
+    if(!isDefined(self.fx) || self.fx == 0)
       self start_light_fx(localclientnum);
   }
 }
@@ -87,7 +87,7 @@ death(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemo
 }
 
 start_light_fx(localclientnum, blink) {
-  if(!isdefined(blink))
+  if(!isDefined(blink))
     blink = 0;
 
   friend = self friendnotfoe(localclientnum);
@@ -111,7 +111,7 @@ start_light_fx(localclientnum, blink) {
 }
 
 stop_light_fx(localclientnum) {
-  if(isdefined(self.fx) && self.fx != 0) {
+  if(isDefined(self.fx) && self.fx != 0) {
     stopfx(localclientnum, self.fx);
     self.fx = undefined;
   }
@@ -131,7 +131,7 @@ countdown(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bwas
 
   self stop_light_fx(localclientnum);
 
-  for (;;) {
+  for(;;) {
     self playsound(localclientnum, "wpn_crossbow_alert");
     self start_light_fx(localclientnum, 1);
     serverwait(localclientnum, interval);
@@ -145,7 +145,7 @@ demo_think(localclientnum) {
   if(!isdemoplaying()) {
     return;
   }
-  for (;;) {
+  for(;;) {
     level waittill_any("demo_jump", "demo_player_switch");
     self stop_light_fx(localclientnum);
     self thread spawn_solid_fx(localclientnum);
@@ -181,8 +181,9 @@ play_screen_fx_dust(localclientnum) {
 play_driving_fx_firstperson(localclientnum, speed, speed_fraction, surf_type) {
   play_trail = 0;
 
-  if(!isdefined(level._effect[surf_type])) {
+  if(!isDefined(level._effect[surf_type])) {
     println("Surface type: " + surf_type + " is not defined for the rcxd road fx");
+
     return;
   }
 
@@ -246,8 +247,9 @@ play_driving_fx_firstperson(localclientnum, speed, speed_fraction, surf_type) {
 play_driving_fx_thirdperson(localclientnum, speed, speed_fraction, surf_type) {
   play_trail = 0;
 
-  if(!isdefined(level._effect[surf_type])) {
+  if(!isDefined(level._effect[surf_type])) {
     println("Surface type: " + surf_type + " is not defined for the rcxd road fx");
+
     return;
   }
 
@@ -281,7 +283,7 @@ play_driving_fx_thirdperson(localclientnum, speed, speed_fraction, surf_type) {
 play_driving_screen_fx(localclientnum) {
   speed_fraction = 0;
 
-  while (true) {
+  while(true) {
     speed = self getspeed();
     maxspeed = self getmaxspeed();
 
@@ -295,7 +297,6 @@ play_driving_screen_fx(localclientnum) {
 
     if(self iswheelcolliding("back_left") || self iswheelcolliding("back_right")) {
       if(self islocalclientdriver(localclientnum)) {
-
       }
     }
   }
@@ -308,7 +309,7 @@ play_driving_fx(localclientnum) {
   self.screen_dirt_delay = 0;
   speed_fraction = 0;
 
-  while (true) {
+  while(true) {
     speed = self getspeed();
     maxspeed = self getmaxspeed();
 
@@ -323,7 +324,7 @@ play_driving_fx(localclientnum) {
     if(self iswheelcolliding("back_left") || self iswheelcolliding("back_right")) {
       surf_type = self[[level.rcbombsurfacetypefortreadfx]]();
 
-      if(isdefined(surf_type)) {
+      if(isDefined(surf_type)) {
         if(self islocalclientdriver(localclientnum))
           play_driving_fx_firstperson(localclientnum, speed, speed_fraction, surf_type);
         else
@@ -338,7 +339,7 @@ play_driving_fx(localclientnum) {
 play_boost_fx(localclientnum) {
   self endon("entityshutdown");
 
-  while (true) {
+  while(true) {
     speed = self getspeed();
 
     if(speed > 400) {
@@ -353,14 +354,14 @@ play_boost_fx(localclientnum) {
 collisionhandler(localclientnum) {
   self endon("entityshutdown");
 
-  while (true) {
+  while(true) {
     self waittill("veh_collision", hip, hitn, hit_intensity);
     driver_local_client = self getlocalclientdriver();
 
-    if(isdefined(driver_local_client)) {
+    if(isDefined(driver_local_client)) {
       player = getlocalplayer(driver_local_client);
 
-      if(isdefined(player)) {
+      if(isDefined(player)) {
         if(hit_intensity > 15)
           player playrumbleonentity(driver_local_client, "damage_heavy");
         else
@@ -374,7 +375,7 @@ stunnedhandler(localclientnum) {
   self endon("entityshutdown");
   self thread enginestutterhandler(localclientnum);
 
-  while (true) {
+  while(true) {
     self waittill("stunned");
     self setstunned(1);
     self thread notstunnedhandler(localclientnum);
@@ -394,7 +395,7 @@ play_stunned_fx_handler(localclientnum) {
   self endon("stunned");
   self endon("not_stunned");
 
-  while (true) {
+  while(true) {
     playfxontag(localclientnum, level._effect["rcbomb_stunned"], self, "tag_origin");
     wait 0.5;
   }
@@ -403,13 +404,13 @@ play_stunned_fx_handler(localclientnum) {
 enginestutterhandler(localclientnum) {
   self endon("entityshutdown");
 
-  while (true) {
+  while(true) {
     self waittill("veh_engine_stutter");
 
     if(self islocalclientdriver(localclientnum)) {
       player = getlocalplayer(localclientnum);
 
-      if(isdefined(player))
+      if(isDefined(player))
         player playrumbleonentity(localclientnum, "rcbomb_engine_stutter");
     }
   }
@@ -419,11 +420,11 @@ slidehandler(localclientnum) {
   self endon("entityshutdown");
   slide_start_time = 0;
 
-  while (true) {
+  while(true) {
     if(self islocalclientdriver(localclientnum)) {
       player = getlocalplayer(localclientnum);
 
-      if(isdefined(player)) {
+      if(isDefined(player)) {
         if(self ispeelingout() || self iswheelsliding("back_left") && self iswheelsliding("back_right")) {
           if(slide_start_time == 0)
             slide_start_time = getrealtime();

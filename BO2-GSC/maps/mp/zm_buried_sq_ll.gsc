@@ -22,7 +22,7 @@ init_stage() {
 stage_logic() {
   iprintlnbold("LL Started");
 
-  if(!isdefined(level.generator_power_states_color))
+  if(!isDefined(level.generator_power_states_color))
     level.generator_power_states_color = 0;
 
   sq_ll_show_code();
@@ -37,22 +37,22 @@ sq_ll_show_code() {
 
   foreach(m_sign in a_signs) {
     if(flag("sq_is_max_tower_built")) {
-      if(isdefined(m_sign.is_max_sign))
+      if(isDefined(m_sign.is_max_sign))
         a_codes[a_codes.size] = m_sign.model + "_code";
 
       continue;
     }
 
-    if(isdefined(m_sign.is_ric_sign))
+    if(isDefined(m_sign.is_ric_sign))
       a_codes[a_codes.size] = m_sign.model + "_code";
   }
 
-  for (i = 0; i < a_codes.size; i++) {
+  for(i = 0; i < a_codes.size; i++) {
     if(a_codes[i] == "p6_zm_bu_sign_tunnel_consumption_code")
       a_codes[i] = "p6_zm_bu_sign_tunnel_consump_code";
   }
 
-  for (i = 0; i < a_codes.size; i++) {
+  for(i = 0; i < a_codes.size; i++) {
     m_code = spawn("script_model", a_spots[i].origin);
     m_code.angles = a_spots[i].angles;
     m_code setmodel(a_codes[i]);
@@ -65,7 +65,6 @@ sq_ll_show_code() {
 }
 
 exit_stage(success) {
-
 }
 
 sq_ll_show_code_vo_max() {

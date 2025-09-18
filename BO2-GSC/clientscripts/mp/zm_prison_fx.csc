@@ -9,7 +9,6 @@
 #include clientscripts\mp\_fx;
 
 precache_util_fx() {
-
 }
 
 precache_scripted_fx() {
@@ -104,18 +103,18 @@ main() {
   precache_fxanim_props();
   disablefx = getdvarint(#"_id_C9B177D6");
 
-  if(!isdefined(disablefx) || disablefx <= 0)
+  if(!isDefined(disablefx) || disablefx <= 0)
     precache_scripted_fx();
 
   level thread acid_trap_fx_monitor("acid_trap", "cafeteria");
 }
 
 acid_trap_fx_monitor(name, side) {
-  while (true) {
+  while(true) {
     level waittill(name);
     fire_points = getstructarray(name, "targetname");
 
-    for (i = 0; i < fire_points.size; i++)
+    for(i = 0; i < fire_points.size; i++)
       fire_points[i] thread acid_trap_fx(name, side);
   }
 }
@@ -125,21 +124,21 @@ acid_trap_fx(name, side) {
   forward = anglestoforward(ang);
   up = anglestoup(ang);
 
-  if(isdefined(self.loopfx)) {
-    for (i = 0; i < self.loopfx.size; i++)
+  if(isDefined(self.loopfx)) {
+    for(i = 0; i < self.loopfx.size; i++)
       self.loopfx[i] delete();
 
     self.loopfx = [];
   }
 
-  if(!isdefined(self.loopfx))
+  if(!isDefined(self.loopfx))
     self.loopfx = [];
 
   players = getlocalplayers();
   playsound(0, "zmb_trap_acid_start", self.origin);
   playloopat("zmb_trap_acid_loop", self.origin);
 
-  for (i = 0; i < players.size; i++) {
+  for(i = 0; i < players.size; i++) {
     self.loopfx[i] = spawnfx(i, level._effect["acid_spray"], self.origin, 0, forward, up);
     triggerfx(self.loopfx[i]);
   }
@@ -148,7 +147,7 @@ acid_trap_fx(name, side) {
   playsound(0, "zmb_trap_acid_end", self.origin);
   stoploopat("zmb_trap_acid_loop", self.origin);
 
-  for (i = 0; i < self.loopfx.size; i++)
+  for(i = 0; i < self.loopfx.size; i++)
     self.loopfx[i] delete();
 
   self.loopfx = [];
@@ -158,7 +157,7 @@ acid_trap_death_fx(localclientnum, oldval, newval, bnewent, binitialsnap, fieldn
   if(newval == 1) {
     self.acid_trap_death_fx = playfxontag(localclientnum, level._effect["acid_death"], self, "TAG_STOWED_BACK");
     playsound(0, "zmb_exp_jib_acid_zombie", self.origin);
-  } else if(isdefined(self.acid_trap_death_fx))
+  } else if(isDefined(self.acid_trap_death_fx))
     stopfx(localclientnum, self.acid_trap_death_fx);
 }
 
@@ -171,7 +170,7 @@ fan_trap_blood_fx(localclientnum, oldval, newval, bnewent, binitialsnap, fieldna
   if(newval == 1) {
     self.fan_trap_blood_fx = playfxontag(localclientnum, level._effect["fan_blood"], self, "J_Neck");
     playsound(0, "zmb_exp_jib_fan_zombie", self.origin);
-  } else if(isdefined(self.fan_trap_blood_fx))
+  } else if(isDefined(self.fan_trap_blood_fx))
     stopfx(localclientnum, self.fan_trap_blood_fx);
 }
 
@@ -183,7 +182,7 @@ sq_bg_reward_portal_fx(localclientnum, oldval, newval, bnewent, binitialsnap, fi
     v_up = anglestoforward(self.angles);
     level.sq_bg_portal_fx = playfx(localclientnum, level._effect["hell_portal"], s_reward_fx.origin);
   } else {
-    if(isdefined(level.sq_bg_portal_fx))
+    if(isDefined(level.sq_bg_portal_fx))
       stopfx(localclientnum, level.sq_bg_portal_fx);
 
     level.sq_bg_portal_fx = playfx(localclientnum, level._effect["hell_portal_close"], s_reward_fx.origin);
@@ -220,7 +219,7 @@ play_quest_prop_anims(localclientnum) {
   m_dryer = getent(localclientnum, "dryer_model", "targetname");
   m_dryer waittill_dobj(localclientnum);
 
-  for (i = 0; i < fxanim_props.size; i++) {
+  for(i = 0; i < fxanim_props.size; i++) {
     if(fxanim_props[i].model == "fxanim_zom_al_industrial_dryer_mod")
       m_dryer linkto(fxanim_props[i], "dryer_jnt");
   }
@@ -240,8 +239,8 @@ fxanim_setup_pulley(localclientnum, oldval, newval, bnewent, binitialsnap, field
   fx_key_glint = undefined;
   fxanim_props = getentarray(localclientnum, "fxanim", "targetname");
 
-  for (i = 0; i < fxanim_props.size; i++) {
-    if(isdefined(fxanim_props[i].fxanim_waittill_1)) {
+  for(i = 0; i < fxanim_props.size; i++) {
+    if(isDefined(fxanim_props[i].fxanim_waittill_1)) {
       if(fxanim_props[i].fxanim_waittill_1 == "fxanim_" + str_master_key_location + "_pulley_down_start") {
         fxanim_props[i] waittill_dobj(localclientnum);
         fx_key_glint = playfxontag(localclientnum, level._effect["key_glint"], fxanim_props[i], "tag_key");
@@ -275,14 +274,14 @@ fxanim_props_think(localclientnum) {
 }
 
 fxanim_props_wait_1(localclientnum) {
-  if(isdefined(self.fxanim_waittill_1))
+  if(isDefined(self.fxanim_waittill_1))
     level waittill(self.fxanim_waittill_1);
 
-  if(isdefined(self.fxanim_wait))
+  if(isDefined(self.fxanim_wait))
     wait(self.fxanim_wait);
 
-  if(isdefined(self.fxanim_scene_1)) {
-    if(isdefined(level.scr_anim["fxanim_props"][self.fxanim_scene_1])) {
+  if(isDefined(self.fxanim_scene_1)) {
+    if(isDefined(level.scr_anim["fxanim_props"][self.fxanim_scene_1])) {
       self clearanim(level.scr_anim["fxanim_props"][self.fxanim_scene_1], 0);
       self setflaggedanim("alcatraz_fxanim", level.scr_anim["fxanim_props"][self.fxanim_scene_1], 1.0, 0.0, 1.0);
     }
@@ -290,14 +289,14 @@ fxanim_props_wait_1(localclientnum) {
 }
 
 fxanim_props_wait_2(localclientnum) {
-  if(isdefined(self.fxanim_waittill_2))
+  if(isDefined(self.fxanim_waittill_2))
     level waittill(self.fxanim_waittill_2);
 
-  if(isdefined(self.fxanim_wait))
+  if(isDefined(self.fxanim_wait))
     wait(self.fxanim_wait);
 
-  if(isdefined(self.fxanim_scene_2)) {
-    if(isdefined(level.scr_anim["fxanim_props"][self.fxanim_scene_2])) {
+  if(isDefined(self.fxanim_scene_2)) {
+    if(isDefined(level.scr_anim["fxanim_props"][self.fxanim_scene_2])) {
       self clearanim(level.scr_anim["fxanim_props"][self.fxanim_scene_1], 0);
       self setflaggedanim("alcatraz_fxanim", level.scr_anim["fxanim_props"][self.fxanim_scene_2], 1.0, 0.0, 1.0);
     }
@@ -305,14 +304,14 @@ fxanim_props_wait_2(localclientnum) {
 }
 
 fxanim_props_wait_3(localclientnum) {
-  if(isdefined(self.fxanim_waittill_3))
+  if(isDefined(self.fxanim_waittill_3))
     level waittill(self.fxanim_waittill_3);
 
-  if(isdefined(self.fxanim_wait))
+  if(isDefined(self.fxanim_wait))
     wait(self.fxanim_wait);
 
-  if(isdefined(self.fxanim_scene_3)) {
-    if(isdefined(level.scr_anim["fxanim_props"][self.fxanim_scene_3])) {
+  if(isDefined(self.fxanim_scene_3)) {
+    if(isDefined(level.scr_anim["fxanim_props"][self.fxanim_scene_3])) {
       self clearanim(level.scr_anim["fxanim_props"][self.fxanim_scene_2], 0);
       self setflaggedanim("alcatraz_fxanim", level.scr_anim["fxanim_props"][self.fxanim_scene_3], 1.0, 0.0, 1.0);
     }
@@ -320,14 +319,14 @@ fxanim_props_wait_3(localclientnum) {
 }
 
 fxanim_props_wait_4(localclientnum) {
-  if(isdefined(self.script_noteworthy))
+  if(isDefined(self.script_noteworthy))
     level waittill(self.script_noteworthy);
 
-  if(isdefined(self.fxanim_wait))
+  if(isDefined(self.fxanim_wait))
     wait(self.fxanim_wait);
 
-  if(isdefined(self.script_string)) {
-    if(isdefined(level.scr_anim["fxanim_props"][self.script_string])) {
+  if(isDefined(self.script_string)) {
+    if(isDefined(level.scr_anim["fxanim_props"][self.script_string])) {
       self clearanim(level.scr_anim["fxanim_props"][self.fxanim_scene_3], 0);
       self setflaggedanim("alcatraz_fxanim", level.scr_anim["fxanim_props"][self.script_string], 1.0, 0.0, 1.0);
     }
@@ -338,7 +337,7 @@ setup_prop_anims() {
   waitforclient(0);
   players = level.localplayers;
 
-  for (i = 0; i < players.size; i++)
+  for(i = 0; i < players.size; i++)
     players[i] thread play_fx_prop_anims(i);
 }
 
@@ -346,10 +345,10 @@ rumble_electric_chair(localclientnum, oldval, newval, bnewent, binitialsnap, fie
   self endon("death");
   self endon("disconnect");
 
-  if(isdefined(self) && self islocalplayer()) {
+  if(isDefined(self) && self islocalplayer()) {
     localclientnum = self getlocalclientnumber();
 
-    if(isdefined(localclientnum)) {
+    if(isDefined(localclientnum)) {
       if(newval == 1) {
         self earthquake(0.1, 0.25, self.origin, 1500);
         self playrumbleonentity(localclientnum, "damage_light");
@@ -379,18 +378,18 @@ rumble_escape_flight(localclientnum, oldval, newval, bnewent, binitialsnap, fiel
   self endon("death");
   self endon("disconnect");
 
-  if(isdefined(self) && self islocalplayer()) {
+  if(isDefined(self) && self islocalplayer()) {
     localclientnum = self getlocalclientnumber();
 
-    if(isdefined(localclientnum)) {
+    if(isDefined(localclientnum)) {
       switch (newval) {
         case 1:
-          for (i = 0; i < 20; i++) {
+          for(i = 0; i < 20; i++) {
             self playrumbleonentity(localclientnum, "buzz_high");
             wait 0.2;
           }
 
-          for (i = 0; i < 60; i++) {
+          for(i = 0; i < 60; i++) {
             self playrumbleonentity(localclientnum, "buzz_high");
             wait 0.1;
           }
@@ -399,60 +398,60 @@ rumble_escape_flight(localclientnum, oldval, newval, bnewent, binitialsnap, fiel
         case 2:
           self playrumbleonentity(localclientnum, "damage_heavy");
 
-          for (i = 0; i < 6; i++) {
+          for(i = 0; i < 6; i++) {
             self playrumbleonentity(localclientnum, "damage_light");
             wait 0.2;
           }
 
-          for (i = 0; i < 16; i++) {
+          for(i = 0; i < 16; i++) {
             self playrumbleonentity(localclientnum, "damage_heavy");
             wait 0.05;
           }
 
-          for (i = 0; i < 40; i++) {
+          for(i = 0; i < 40; i++) {
             self playrumbleonentity(localclientnum, "damage_light");
             wait 0.05;
           }
 
-          for (i = 0; i < 20; i++) {
+          for(i = 0; i < 20; i++) {
             self playrumbleonentity(localclientnum, "slide_rumble");
             wait 0.05;
           }
 
           wait 1.5;
 
-          for (i = 0; i < 20; i++) {
+          for(i = 0; i < 20; i++) {
             self playrumbleonentity(localclientnum, "buzz_high");
             wait 0.3;
           }
 
           break;
         case 3:
-          for (i = 0; i < 3; i++) {
+          for(i = 0; i < 3; i++) {
             self playrumbleonentity(localclientnum, "damage_heavy");
             wait 0.1;
           }
 
-          for (i = 0; i < 10; i++) {
+          for(i = 0; i < 10; i++) {
             self playrumbleonentity(localclientnum, "damage_light");
             wait(randomfloatrange(0.1, 0.2));
           }
 
-          for (i = 0; i < 15; i++) {
+          for(i = 0; i < 15; i++) {
             self playrumbleonentity(localclientnum, "buzz_high");
             wait(randomfloatrange(0.4, 0.5));
           }
 
           break;
         case 4:
-          for (i = 0; i < 3; i++) {
+          for(i = 0; i < 3; i++) {
             self playrumbleonentity(localclientnum, "damage_heavy");
             wait 0.05;
           }
 
           break;
         case 5:
-          for (i = 0; i < 5; i++) {
+          for(i = 0; i < 5; i++) {
             self playrumbleonentity(localclientnum, "brutus_footsteps");
             wait 0.05;
           }
@@ -469,13 +468,13 @@ earthquake_escape_flight(localclientnum, oldval, newval, bnewent, binitialsnap, 
   self endon("death");
   self endon("disconnect");
 
-  if(isdefined(self) && self islocalplayer()) {
+  if(isDefined(self) && self islocalplayer()) {
     localclientnum = self getlocalclientnumber();
 
-    if(isdefined(localclientnum)) {
+    if(isDefined(localclientnum)) {
       switch (newval) {
         case 1:
-          for (i = 0; i < 250; i++) {
+          for(i = 0; i < 250; i++) {
             self earthquake(0.1, 1, self.origin, 1500);
             wait 0.04;
           }
@@ -484,39 +483,39 @@ earthquake_escape_flight(localclientnum, oldval, newval, bnewent, binitialsnap, 
         case 2:
           self earthquake(0.75, 1, self.origin, 1500);
 
-          for (i = 0; i < 6; i++) {
+          for(i = 0; i < 6; i++) {
             self earthquake(0.1, 1, self.origin, 1500);
             wait 0.2;
           }
 
-          for (i = 0; i < 4; i++) {
+          for(i = 0; i < 4; i++) {
             self earthquake(0.4, 1, self.origin, 1500);
             wait 0.2;
           }
 
-          for (i = 0; i < 10; i++) {
+          for(i = 0; i < 10; i++) {
             self earthquake(0.1, 1, self.origin, 1500);
             wait 0.05;
           }
 
-          for (i = 0; i < 20; i++) {
+          for(i = 0; i < 20; i++) {
             self earthquake(0.05, 1, self.origin, 1500);
             wait 0.05;
           }
 
-          for (i = 0; i < 50; i++) {
+          for(i = 0; i < 50; i++) {
             self earthquake(0.1, 1, self.origin, 1500);
             wait 0.2;
           }
 
           break;
         case 3:
-          for (i = 0; i < 10; i++) {
+          for(i = 0; i < 10; i++) {
             self earthquake(0.5, 1, self.origin, 1500);
             wait(randomfloatrange(0.1, 0.2));
           }
 
-          for (i = 0; i < 20; i++) {
+          for(i = 0; i < 20; i++) {
             self earthquake(0.1, 1, self.origin, 1500);
             wait(randomfloatrange(0.2, 0.3));
           }
@@ -525,7 +524,7 @@ earthquake_escape_flight(localclientnum, oldval, newval, bnewent, binitialsnap, 
         case 4:
           self earthquake(1, 1, self.origin, 1500);
 
-          for (i = 0; i < 10; i++) {
+          for(i = 0; i < 10; i++) {
             self earthquake(0.5, 1, self.origin, 1500);
             wait(randomfloatrange(0.1, 0.15));
           }

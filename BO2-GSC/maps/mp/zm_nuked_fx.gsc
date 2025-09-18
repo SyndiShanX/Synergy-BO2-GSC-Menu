@@ -1,13 +1,12 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\zm_nuked_fx.gsc
-***************************************/
+**************************************/
 
 #include maps\mp\_utility;
 #include maps\mp\createfx\zm_nuked_fx;
 
 precache_util_fx() {
-
 }
 
 precache_scripted_fx() {

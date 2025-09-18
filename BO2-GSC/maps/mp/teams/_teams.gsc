@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\teams\_teams.gsc
-***************************************/
+**************************************/
 
 #include maps\mp\_utility;
 #include maps\mp\gametypes\_persistence;
@@ -44,7 +44,7 @@ init() {
 }
 
 onplayerconnect() {
-  for (;;) {
+  for(;;) {
     level waittill("connecting", player);
     player thread onjoinedteam();
     player thread onjoinedspectators();
@@ -53,7 +53,7 @@ onplayerconnect() {
 }
 
 onfreeplayerconnect() {
-  for (;;) {
+  for(;;) {
     level waittill("connecting", player);
     player thread trackfreeplayedtime();
   }
@@ -62,7 +62,7 @@ onfreeplayerconnect() {
 onjoinedteam() {
   self endon("disconnect");
 
-  for (;;) {
+  for(;;) {
     self waittill("joined_team");
     self logstring("joined team: " + self.pers["team"]);
     self updateteamtime();
@@ -72,7 +72,7 @@ onjoinedteam() {
 onjoinedspectators() {
   self endon("disconnect");
 
-  for (;;) {
+  for(;;) {
     self waittill("joined_spectators");
     self.pers["teamTime"] = undefined;
   }
@@ -88,15 +88,15 @@ trackplayedtime() {
   self.timeplayed["other"] = 0;
   self.timeplayed["alive"] = 0;
 
-  if(!isdefined(self.timeplayed["total"]) || !(level.gametype == "twar" && 0 < game["roundsplayed"] && 0 < self.timeplayed["total"]))
+  if(!isDefined(self.timeplayed["total"]) || !(level.gametype == "twar" && 0 < game["roundsplayed"] && 0 < self.timeplayed["total"]))
     self.timeplayed["total"] = 0;
 
-  while (level.inprematchperiod)
+  while(level.inprematchperiod)
     wait 0.05;
 
-  for (;;) {
+  for(;;) {
     if(game["state"] == "playing") {
-      if(isdefined(level.teams[self.sessionteam])) {
+      if(isDefined(level.teams[self.sessionteam])) {
         self.timeplayed[self.sessionteam]++;
         self.timeplayed["total"]++;
 
@@ -113,13 +113,13 @@ trackplayedtime() {
 updateplayertimes() {
   nexttoupdate = 0;
 
-  for (;;) {
+  for(;;) {
     nexttoupdate++;
 
     if(nexttoupdate >= level.players.size)
       nexttoupdate = 0;
 
-    if(isdefined(level.players[nexttoupdate])) {
+    if(isDefined(level.players[nexttoupdate])) {
       level.players[nexttoupdate] updateplayedtime();
       level.players[nexttoupdate] maps\mp\gametypes\_persistence::checkcontractexpirations();
     }
@@ -169,7 +169,7 @@ updateteamtime() {
 }
 
 updateteambalancedvar() {
-  for (;;) {
+  for(;;) {
     teambalance = getdvarint(#"scr_teambalance");
 
     if(level.teambalance != teambalance)
@@ -223,7 +223,7 @@ countplayers() {
     }
     team = player.pers["team"];
 
-    if(isdefined(team) && isdefined(level.teams[team]))
+    if(isDefined(team) && isDefined(level.teams[team]))
       playercounts[team]++;
   }
 
@@ -240,11 +240,11 @@ trackfreeplayedtime() {
   self.timeplayed["total"] = 0;
   self.timeplayed["alive"] = 0;
 
-  for (;;) {
+  for(;;) {
     if(game["state"] == "playing") {
       team = self.pers["team"];
 
-      if(isdefined(team) && isdefined(level.teams[team]) && self.sessionteam != "spectator") {
+      if(isDefined(team) && isDefined(level.teams[team]) && self.sessionteam != "spectator") {
         self.timeplayed[team]++;
         self.timeplayed["total"]++;
 
@@ -297,19 +297,19 @@ set_player_model(team, weapon) {
 }
 
 getteamflagmodel(teamref) {
-  assert(isdefined(game["flagmodels"]));
-  assert(isdefined(game["flagmodels"][teamref]));
+  assert(isDefined(game["flagmodels"]));
+  assert(isDefined(game["flagmodels"][teamref]));
   return game["flagmodels"][teamref];
 }
 
 getteamflagcarrymodel(teamref) {
-  assert(isdefined(game["carry_flagmodels"]));
-  assert(isdefined(game["carry_flagmodels"][teamref]));
+  assert(isDefined(game["carry_flagmodels"]));
+  assert(isDefined(game["carry_flagmodels"][teamref]));
   return game["carry_flagmodels"][teamref];
 }
 
 getteamflagicon(teamref) {
-  assert(isdefined(game["carry_icon"]));
-  assert(isdefined(game["carry_icon"][teamref]));
+  assert(isDefined(game["carry_icon"]));
+  assert(isDefined(game["carry_icon"][teamref]));
   return game["carry_icon"][teamref];
 }

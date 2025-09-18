@@ -22,7 +22,7 @@ achievement_sound_func(achievement_name_lower) {
   if(!sessionmodeisonlinegame()) {
     return;
   }
-  for (i = 0; i < self getentitynumber() + 1; i++)
+  for(i = 0; i < self getentitynumber() + 1; i++)
     wait_network_frame();
 
   self thread do_player_general_vox("general", "achievement");
@@ -119,16 +119,16 @@ _zombie_blood_achievement_think() {
   self endon("zombie_blood_over");
   b_finished_achievement = 0;
 
-  if(!isdefined(self.zombie_blood_revives))
+  if(!isDefined(self.zombie_blood_revives))
     self.zombie_blood_revives = 0;
 
-  if(!isdefined(self.zombie_blood_generators_started))
+  if(!isDefined(self.zombie_blood_generators_started))
     self.zombie_blood_generators_started = 0;
 
   b_did_capture = 0;
   n_revives = 0;
 
-  while (true) {
+  while(true) {
     str_action = waittill_any_return("completed_zone_capture", "do_revive_ended_normally", "revived_player_with_quadrotor", "revived_player_with_upgraded_staff");
 
     if(issubstr(str_action, "revive"))
@@ -145,14 +145,15 @@ achievement_master_of_disguise() {
   level endon("end_game");
   self endon("disconnect");
 
-  while (true) {
+  while(true) {
     self waittill("zombie_blood");
     b_finished_achievement = self _zombie_blood_achievement_think();
 
-    if(isdefined(b_finished_achievement) && b_finished_achievement) {
+    if(isDefined(b_finished_achievement) && b_finished_achievement) {
       break;
     }
   }
+
   self giveachievement_wrapper("ZM_DLC4_MASTER_OF_DISGUISE");
 }
 
@@ -160,7 +161,7 @@ watch_equipped_weapons_for_upgraded_staffs() {
   self endon("disconnect");
   self endon("stop_weapon_switch_watcher_thread");
 
-  while (true) {
+  while(true) {
     self waittill("weapon_change", str_weapon);
 
     if(self.sessionstate != "playing") {

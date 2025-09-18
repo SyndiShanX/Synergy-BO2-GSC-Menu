@@ -25,14 +25,16 @@ init() {
 screecher_should_burrow() {
   green_light = self.green_light;
 
-  if(isdefined(green_light)) {
-    if(isdefined(green_light.burrow_active) && green_light.burrow_active) {
+  if(isDefined(green_light)) {
+    if(isDefined(green_light.burrow_active) && green_light.burrow_active) {
       screecher_print("burrow: already active");
+
       return false;
     }
 
-    if(isdefined(green_light.claimed) && green_light.claimed) {
+    if(isDefined(green_light.claimed) && green_light.claimed) {
       screecher_print("burrow: already claimed");
+
       return false;
     }
 
@@ -46,7 +48,7 @@ screecher_should_burrow() {
     self animscripted(ground_pos, self.angles, "zm_burrow");
     self playsound("zmb_screecher_dig");
 
-    if(!(isdefined(green_light.burrow_active) && green_light.burrow_active) && (isdefined(green_light.power_on) && green_light.power_on))
+    if(!(isDefined(green_light.burrow_active) && green_light.burrow_active) && (isDefined(green_light.power_on) && green_light.power_on))
       green_light thread create_portal();
 
     maps\mp\animscripts\zm_shared::donotetracks("burrow_anim");
@@ -64,14 +66,14 @@ create_portal() {
   self.burrow_active = 1;
   ground_pos = groundpos(self.origin);
 
-  if(!isdefined(self.hole)) {
+  if(!isDefined(self.hole)) {
     self.hole = spawn("script_model", ground_pos + vectorscale((0, 0, -1), 20.0));
     self.hole.start_origin = self.hole.origin;
     self.hole setmodel("p6_zm_screecher_hole");
     self.hole playsound("zmb_screecher_portal_spawn");
   }
 
-  if(!isdefined(self.hole_fx)) {
+  if(!isDefined(self.hole_fx)) {
     self.hole_fx = spawn("script_model", ground_pos);
     self.hole_fx setmodel("tag_origin");
   }
@@ -93,7 +95,7 @@ portal_think() {
 portal_player_watcher() {
   self endon("disconnect");
 
-  while (true) {
+  while(true) {
     if(!self isonground())
       self player_wait_land();
 
@@ -104,7 +106,7 @@ portal_player_watcher() {
 player_wait_land() {
   self endon("disconnect");
 
-  while (!self isonground())
+  while(!self isonground())
     wait 0.1;
 
   if(level.portals.size > 0) {
@@ -119,7 +121,7 @@ player_wait_land() {
       }
     }
 
-    if(isdefined(remove_portal)) {
+    if(isDefined(remove_portal)) {
       arrayremovevalue(level.portals, remove_portal);
       portal portal_use(self);
       wait 0.5;
@@ -151,7 +153,7 @@ teleport_player(player) {
     break;
   }
 
-  if(isdefined(dest_light)) {
+  if(isDefined(dest_light)) {
     playsoundatposition("zmb_screecher_portal_arrive", dest_light.origin);
     player maps\mp\zombies\_zm_gump::player_teleport_blackscreen_on();
     player setorigin(dest_light.origin);
@@ -183,7 +185,7 @@ screecher_should_runaway(player) {
   if(maps\mp\zm_transit::player_entered_safety_light(player)) {
     screecher_print("runaway: green light");
 
-    if(!isdefined(player.screecher))
+    if(!isDefined(player.screecher))
       player thread do_player_general_vox("general", "screecher_flee_green");
 
     return true;
@@ -192,7 +194,7 @@ screecher_should_runaway(player) {
   if(maps\mp\zm_transit::player_entered_safety_zone(player)) {
     screecher_print("runaway: safety zone");
 
-    if(!isdefined(player.screecher))
+    if(!isDefined(player.screecher))
       player thread do_player_general_vox("general", "screecher_flee");
 
     return true;
@@ -203,7 +205,7 @@ screecher_should_runaway(player) {
   if(bus_dist_sq < 62500) {
     screecher_print("runaway: bus");
 
-    if(!isdefined(player.screecher))
+    if(!isDefined(player.screecher))
       player thread do_player_general_vox("general", "screecher_flee");
 
     return true;
@@ -215,17 +217,18 @@ screecher_should_runaway(player) {
 transit_screecher_cleanup() {
   green_light = self.green_light;
 
-  if(isdefined(green_light)) {
-    if(isdefined(green_light.claimed))
+  if(isDefined(green_light)) {
+    if(isDefined(green_light.claimed))
       green_light.claimed = undefined;
 
     if(self.state == "burrow_started") {
       screecher_print("clean up portal");
+
       green_light notify("portal_stopped");
       green_light.hole moveto(green_light.hole.start_origin, 1.0);
       green_light.burrow_active = 0;
 
-      if(isdefined(green_light.hole_fx))
+      if(isDefined(green_light.hole_fx))
         green_light.hole_fx delete();
     }
   }
@@ -234,12 +237,14 @@ transit_screecher_cleanup() {
 screecher_init_done() {
   self endon("death");
 
-  while (true) {
+  while(true) {
     ground_ent = self getgroundent();
 
-    if(isdefined(ground_ent) && ground_ent == level.the_bus) {
+    if(isDefined(ground_ent) && ground_ent == level.the_bus) {
       self dodamage(self.health + 666, self.origin);
+
       screecher_print("Died on bus");
+
     }
 
     wait 0.1;

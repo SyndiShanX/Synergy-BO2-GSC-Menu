@@ -9,7 +9,7 @@
 #include maps\mp\_utility;
 
 append_missing_legs_suffix(animstate) {
-  if(isdefined(self.has_legs) && !self.has_legs && self hasanimstatefromasd(animstate + "_crawl"))
+  if(isDefined(self.has_legs) && !self.has_legs && self hasanimstatefromasd(animstate + "_crawl"))
     return animstate + "_crawl";
 
   return animstate;
@@ -19,7 +19,7 @@ initanimtree(animscript) {
   if(animscript != "pain" && animscript != "death")
     self.a.special = "none";
 
-  assert(isdefined(animscript), "Animscript not specified in initAnimTree");
+  assert(isDefined(animscript), "Animscript not specified in initAnimTree");
   self.a.script = animscript;
 }
 
@@ -29,7 +29,7 @@ updateanimpose() {
 }
 
 initialize(animscript) {
-  if(isdefined(self.longdeathstarting)) {
+  if(isDefined(self.longdeathstarting)) {
     if(animscript != "pain" && animscript != "death")
       self dodamage(self.health + 100, self.origin);
 
@@ -39,10 +39,10 @@ initialize(animscript) {
     }
   }
 
-  if(isdefined(self.a.mayonlydie) && animscript != "death")
+  if(isDefined(self.a.mayonlydie) && animscript != "death")
     self dodamage(self.health + 100, self.origin);
 
-  if(isdefined(self.a.postscriptfunc)) {
+  if(isDefined(self.a.postscriptfunc)) {
     scriptfunc = self.a.postscriptfunc;
     self.a.postscriptfunc = undefined;
     [
@@ -59,7 +59,7 @@ initialize(animscript) {
   self.a.scriptstarttime = gettime();
   self.a.atconcealmentnode = 0;
 
-  if(isdefined(self.node) && (self.node.type == "Conceal Crouch" || self.node.type == "Conceal Stand"))
+  if(isDefined(self.node) && (self.node.type == "Conceal Crouch" || self.node.type == "Conceal Stand"))
     self.a.atconcealmentnode = 1;
 
   initanimtree(animscript);
@@ -67,7 +67,7 @@ initialize(animscript) {
 }
 
 getnodeyawtoorigin(pos) {
-  if(isdefined(self.node))
+  if(isDefined(self.node))
     yaw = self.node.angles[1] - getyaw(pos);
   else
     yaw = self.angles[1] - getyaw(pos);
@@ -82,7 +82,7 @@ getnodeyawtoenemy() {
   if(isvalidenemy(self.enemy))
     pos = self.enemy.origin;
   else {
-    if(isdefined(self.node))
+    if(isDefined(self.node))
       forward = anglestoforward(self.node.angles);
     else
       forward = anglestoforward(self.angles);
@@ -91,7 +91,7 @@ getnodeyawtoenemy() {
     pos = self.origin + forward;
   }
 
-  if(isdefined(self.node))
+  if(isDefined(self.node))
     yaw = self.node.angles[1] - getyaw(pos);
   else
     yaw = self.angles[1] - getyaw(pos);
@@ -221,7 +221,7 @@ getcovernodeyawtoorigin(org) {
 }
 
 isstanceallowedwrapper(stance) {
-  if(isdefined(self.covernode))
+  if(isDefined(self.covernode))
     return self.covernode doesnodeallowstance(stance);
 
   return self isstanceallowed(stance);
@@ -230,7 +230,7 @@ isstanceallowedwrapper(stance) {
 getclaimednode() {
   mynode = self.node;
 
-  if(isdefined(mynode) && (self nearnode(mynode) || isdefined(self.covernode) && mynode == self.covernode))
+  if(isDefined(mynode) && (self nearnode(mynode) || isDefined(self.covernode) && mynode == self.covernode))
     return mynode;
 
   return undefined;
@@ -239,7 +239,7 @@ getclaimednode() {
 getnodetype() {
   mynode = getclaimednode();
 
-  if(isdefined(mynode))
+  if(isDefined(mynode))
     return mynode.type;
 
   return "none";
@@ -248,7 +248,7 @@ getnodetype() {
 getnodedirection() {
   mynode = getclaimednode();
 
-  if(isdefined(mynode))
+  if(isDefined(mynode))
     return mynode.angles[1];
 
   return self.desiredangle;
@@ -257,7 +257,7 @@ getnodedirection() {
 getnodeforward() {
   mynode = getclaimednode();
 
-  if(isdefined(mynode))
+  if(isDefined(mynode))
     return anglestoforward(mynode.angles);
 
   return anglestoforward(self.angles);
@@ -266,7 +266,7 @@ getnodeforward() {
 getnodeorigin() {
   mynode = getclaimednode();
 
-  if(isdefined(mynode))
+  if(isDefined(mynode))
     return mynode.origin;
 
   return self.origin;
@@ -292,7 +292,7 @@ quadrantanimweights(yaw) {
   result["back"] = 0;
   result["left"] = 0;
 
-  if(isdefined(self.alwaysrunforward)) {
+  if(isDefined(self.alwaysrunforward)) {
     assert(self.alwaysrunforward);
     result["front"] = 1;
     return result;
@@ -344,7 +344,7 @@ getquadrant(angle) {
 }
 
 isinset(input, set) {
-  for (i = set.size - 1; i >= 0; i--) {
+  for(i = set.size - 1; i >= 0; i--) {
     if(input == set[i])
       return true;
   }
@@ -362,10 +362,11 @@ notifyaftertime(notifystring, killmestring, time) {
 drawstringtime(msg, org, color, timer) {
   maxtime = timer * 20;
 
-  for (i = 0; i < maxtime; i++) {
+  for(i = 0; i < maxtime; i++) {
     print3d(org, msg, color, 1, 1);
     wait 0.05;
   }
+
 }
 
 showlastenemysightpos(string) {
@@ -381,14 +382,15 @@ showlastenemysightpos(string) {
   else
     color = (1, 0.7, 0.4);
 
-  while (true) {
+  while(true) {
     wait 0.05;
 
-    if(!isdefined(self.lastenemysightpos)) {
+    if(!isDefined(self.lastenemysightpos)) {
       continue;
     }
     print3d(self.lastenemysightpos, string, color, 1, 2.15);
   }
+
 }
 
 debugtimeout() {
@@ -409,10 +411,11 @@ debugposinternal(org, string, size) {
   else
     color = (1, 0.7, 0.4);
 
-  while (true) {
+  while(true) {
     wait 0.05;
     print3d(org, string, color, 1, size);
   }
+
 }
 
 debugpos(org, string) {
@@ -427,10 +430,11 @@ showdebugproc(frompoint, topoint, color, printtime) {
   self endon("death");
   timer = printtime * 20;
 
-  for (i = 0; i < timer; i = i + 1) {
+  for(i = 0; i < timer; i = i + 1) {
     wait 0.05;
     line(frompoint, topoint, color);
   }
+
 }
 
 showdebugline(frompoint, topoint, color, printtime) {
@@ -438,7 +442,7 @@ showdebugline(frompoint, topoint, color, printtime) {
 }
 
 getnodeoffset(node) {
-  if(isdefined(node.offset))
+  if(isDefined(node.offset))
     return node.offset;
 
   cover_left_crouch_offset = (-26, 0.4, 36);
@@ -493,7 +497,7 @@ checkpitchvisibility(frompoint, topoint, atnode) {
   pitch = angleclamp180(vectortoangles(topoint - frompoint)[0]);
 
   if(abs(pitch) > 45) {
-    if(isdefined(atnode) && atnode.type != "Cover Crouch" && atnode.type != "Conceal Crouch")
+    if(isDefined(atnode) && atnode.type != "Cover Crouch" && atnode.type != "Conceal Crouch")
       return false;
 
     if(pitch > 45 || pitch < anim.covercrouchleanpitch - 45)
@@ -504,12 +508,13 @@ checkpitchvisibility(frompoint, topoint, atnode) {
 }
 
 showlines(start, end, end2) {
-  for (;;) {
+  for(;;) {
     line(start, end, (1, 0, 0), 1);
     wait 0.05;
     line(start, end2, (0, 0, 1), 1);
     wait 0.05;
   }
+
 }
 
 anim_array(animarray, animweights) {
@@ -524,13 +529,13 @@ anim_array(animarray, animweights) {
   weights = 0;
   total_weight = 0;
 
-  for (i = 0; i < total_anims; i++)
+  for(i = 0; i < total_anims; i++)
     total_weight = total_weight + animweights[i];
 
   anim_play = randomfloat(total_weight);
   current_weight = 0;
 
-  for (i = 0; i < total_anims; i++) {
+  for(i = 0; i < total_anims; i++) {
     current_weight = current_weight + animweights[i];
 
     if(anim_play >= current_weight) {
@@ -548,16 +553,17 @@ notforcedcover() {
 }
 
 forcedcover(msg) {
-  return isdefined(self.a.forced_cover) && self.a.forced_cover == msg;
+  return isDefined(self.a.forced_cover) && self.a.forced_cover == msg;
 }
 
 print3dtime(timer, org, msg, color, alpha, scale) {
   newtime = timer / 0.05;
 
-  for (i = 0; i < newtime; i++) {
+  for(i = 0; i < newtime; i++) {
     print3d(org, msg, color, alpha, scale);
     wait 0.05;
   }
+
 }
 
 print3drise(org, msg, color, alpha, scale) {
@@ -565,11 +571,12 @@ print3drise(org, msg, color, alpha, scale) {
   up = 0;
   org = org;
 
-  for (i = 0; i < newtime; i++) {
+  for(i = 0; i < newtime; i++) {
     up = up + 0.5;
     print3d(org + (0, 0, up), msg, color, alpha, scale);
     wait 0.05;
   }
+
 }
 
 crossproduct(vec1, vec2) {
@@ -591,7 +598,7 @@ getgrenademodel() {
 }
 
 sawenemymove(timer) {
-  if(!isdefined(timer))
+  if(!isDefined(timer))
     timer = 500;
 
   return gettime() - self.personalsighttime < timer;
@@ -613,13 +620,13 @@ random_weight(array) {
   if(array.size > 1) {
     anim_weight = 0;
 
-    for (i = 0; i < array.size; i++)
+    for(i = 0; i < array.size; i++)
       anim_weight = anim_weight + array[i];
 
     anim_play = randomfloat(anim_weight);
     anim_weight = 0;
 
-    for (i = 0; i < array.size; i++) {
+    for(i = 0; i < array.size; i++) {
       anim_weight = anim_weight + array[i];
 
       if(anim_play < anim_weight) {
@@ -633,10 +640,10 @@ random_weight(array) {
 }
 
 setfootstepeffect(name, fx) {
-  assert(isdefined(name), "Need to define the footstep surface type.");
-  assert(isdefined(fx), "Need to define the mud footstep effect.");
+  assert(isDefined(name), "Need to define the footstep surface type.");
+  assert(isDefined(fx), "Need to define the mud footstep effect.");
 
-  if(!isdefined(anim.optionalstepeffects))
+  if(!isDefined(anim.optionalstepeffects))
     anim.optionalstepeffects = [];
 
   anim.optionalstepeffects[anim.optionalstepeffects.size] = name;
@@ -649,10 +656,11 @@ persistentdebugline(start, end) {
   level notify("newdebugline");
   level endon("newdebugline");
 
-  for (;;) {
+  for(;;) {
     line(start, end, (0.3, 1, 0), 1);
     wait 0.05;
   }
+
 }
 
 isnodedontstand() {
@@ -673,29 +681,35 @@ doesnodeallowstance(stance) {
 }
 
 animarray(animname) {
-  assert(isdefined(self.a.array));
-  if(!isdefined(self.a.array[animname])) {
+  assert(isDefined(self.a.array));
+
+  if(!isDefined(self.a.array[animname])) {
     dumpanimarray();
-    assert(isdefined(self.a.array[animname]), "self.a.array[ \"" + animname + "\" ] is undefined");
+    assert(isDefined(self.a.array[animname]), "self.a.array[ \"" + animname + "\" ] is undefined");
   }
+
   return self.a.array[animname];
 }
 
 animarrayanyexist(animname) {
-  assert(isdefined(self.a.array));
-  if(!isdefined(self.a.array[animname])) {
+  assert(isDefined(self.a.array));
+
+  if(!isDefined(self.a.array[animname])) {
     dumpanimarray();
-    assert(isdefined(self.a.array[animname]), "self.a.array[ \"" + animname + "\" ] is undefined");
+    assert(isDefined(self.a.array[animname]), "self.a.array[ \"" + animname + "\" ] is undefined");
   }
+
   return self.a.array[animname].size > 0;
 }
 
 animarraypickrandom(animname) {
-  assert(isdefined(self.a.array));
-  if(!isdefined(self.a.array[animname])) {
+  assert(isDefined(self.a.array));
+
+  if(!isDefined(self.a.array[animname])) {
     dumpanimarray();
-    assert(isdefined(self.a.array[animname]), "self.a.array[ \"" + animname + "\" ] is undefined");
+    assert(isDefined(self.a.array[animname]), "self.a.array[ \"" + animname + "\" ] is undefined");
   }
+
   assert(self.a.array[animname].size > 0);
 
   if(self.a.array[animname].size > 1)
@@ -710,7 +724,7 @@ dumpanimarray() {
   println("self.a.array:");
   keys = getarraykeys(self.a.array);
 
-  for (i = 0; i < keys.size; i++) {
+  for(i = 0; i < keys.size; i++) {
     if(isarray(self.a.array[keys[i]])) {
       println(" array[ \"" + keys[i] + "\" ] = {array of size " + self.a.array[keys[i]].size + "}");
       continue;
@@ -718,6 +732,7 @@ dumpanimarray() {
 
     println(" array[ \"" + keys[i] + "\" ] = ", self.a.array[keys[i]]);
   }
+
 }
 
 getanimendpos(theanim) {
@@ -726,80 +741,80 @@ getanimendpos(theanim) {
 }
 
 isvalidenemy(enemy) {
-  if(!isdefined(enemy))
+  if(!isDefined(enemy))
     return false;
 
   return true;
 }
 
 damagelocationisany(a, b, c, d, e, f, g, h, i, j, k, ovr) {
-  if(!isdefined(a))
+  if(!isDefined(a))
     return false;
 
   if(self.damagelocation == a)
     return true;
 
-  if(!isdefined(b))
+  if(!isDefined(b))
     return false;
 
   if(self.damagelocation == b)
     return true;
 
-  if(!isdefined(c))
+  if(!isDefined(c))
     return false;
 
   if(self.damagelocation == c)
     return true;
 
-  if(!isdefined(d))
+  if(!isDefined(d))
     return false;
 
   if(self.damagelocation == d)
     return true;
 
-  if(!isdefined(e))
+  if(!isDefined(e))
     return false;
 
   if(self.damagelocation == e)
     return true;
 
-  if(!isdefined(f))
+  if(!isDefined(f))
     return false;
 
   if(self.damagelocation == f)
     return true;
 
-  if(!isdefined(g))
+  if(!isDefined(g))
     return false;
 
   if(self.damagelocation == g)
     return true;
 
-  if(!isdefined(h))
+  if(!isDefined(h))
     return false;
 
   if(self.damagelocation == h)
     return true;
 
-  if(!isdefined(i))
+  if(!isDefined(i))
     return false;
 
   if(self.damagelocation == i)
     return true;
 
-  if(!isdefined(j))
+  if(!isDefined(j))
     return false;
 
   if(self.damagelocation == j)
     return true;
 
-  if(!isdefined(k))
+  if(!isDefined(k))
     return false;
 
   if(self.damagelocation == k)
     return true;
 
-  assert(!isdefined(ovr));
+  assert(!isDefined(ovr));
   return false;
 }
 
@@ -808,7 +823,7 @@ ragdolldeath(moveanim) {
   lastorg = self.origin;
   movevec = (0, 0, 0);
 
-  for (;;) {
+  for(;;) {
     wait 0.05;
     force = distance(self.origin, lastorg);
     lastorg = self.origin;
@@ -825,7 +840,7 @@ ragdolldeath(moveanim) {
 }
 
 iscqbwalking() {
-  return isdefined(self.cqbwalking) && self.cqbwalking;
+  return isDefined(self.cqbwalking) && self.cqbwalking;
 }
 
 squared(value) {
@@ -843,22 +858,22 @@ getrandomintfromseed(intseed, intmax) {
 }
 
 is_banzai() {
-  return isdefined(self.banzai) && self.banzai;
+  return isDefined(self.banzai) && self.banzai;
 }
 
 is_heavy_machine_gun() {
-  return isdefined(self.heavy_machine_gunner) && self.heavy_machine_gunner;
+  return isDefined(self.heavy_machine_gunner) && self.heavy_machine_gunner;
 }
 
 is_zombie() {
-  if(isdefined(self.is_zombie) && self.is_zombie)
+  if(isDefined(self.is_zombie) && self.is_zombie)
     return true;
 
   return false;
 }
 
 is_civilian() {
-  if(isdefined(self.is_civilian) && self.is_civilian)
+  if(isDefined(self.is_civilian) && self.is_civilian)
     return true;
 
   return false;
@@ -881,22 +896,22 @@ is_skeleton(skeleton) {
 }
 
 get_skeleton() {
-  if(isdefined(self.skeleton))
+  if(isDefined(self.skeleton))
     return self.skeleton;
   else
     return "base";
 }
 
 debug_anim_print(text) {
-  if(isdefined(level.dog_debug_anims) && level.dog_debug_anims)
+  if(isDefined(level.dog_debug_anims) && level.dog_debug_anims)
     println(text + " " + gettime());
 
-  if(isdefined(level.dog_debug_anims_ent) && level.dog_debug_anims_ent == self getentnum())
+  if(isDefined(level.dog_debug_anims_ent) && level.dog_debug_anims_ent == self getentnum())
     println(text + " " + gettime());
 }
 
 debug_turn_print(text, line) {
-  if(isdefined(level.dog_debug_turns) && level.dog_debug_turns == self getentnum()) {
+  if(isDefined(level.dog_debug_turns) && level.dog_debug_turns == self getentnum()) {
     duration = 200;
     currentyawcolor = (1, 1, 1);
     lookaheadyawcolor = (1, 0, 0);
@@ -908,6 +923,7 @@ debug_turn_print(text, line) {
     lookaheadyaw = angleclamp180(lookaheadangles[1]);
     println(text + " " + gettime() + " cur: " + currentyaw + " look: " + lookaheadyaw + " desired: " + desiredyaw);
   }
+
 }
 
 play_sound_on_tag_endon_death(alias, tag) {
@@ -917,17 +933,17 @@ play_sound_on_tag_endon_death(alias, tag) {
 play_sound_in_space(alias, origin, master) {
   org = spawn("script_origin", (0, 0, 1));
 
-  if(!isdefined(origin))
+  if(!isDefined(origin))
     origin = self.origin;
 
   org.origin = origin;
 
-  if(isdefined(master) && master)
+  if(isDefined(master) && master)
     org playsoundasmaster(alias);
   else
     org playsound(alias);
 
-  if(isdefined(org))
+  if(isDefined(org))
     org delete();
 }
 
@@ -935,7 +951,7 @@ wait_network_frame() {
   if(numremoteclients()) {
     snapshot_ids = getsnapshotindexarray();
 
-    for (acked = undefined; !isdefined(acked); acked = snapshotacknowledged(snapshot_ids))
+    for(acked = undefined; !isDefined(acked); acked = snapshotacknowledged(snapshot_ids))
       level waittill("snapacknowledged");
   } else
     wait 0.1;

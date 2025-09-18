@@ -46,7 +46,7 @@ chamber_devgui() {
 }
 
 watch_chamber_wall() {
-  while (true) {
+  while(true) {
     if(getdvarint(#"_id_763A3046") != 5) {
       chamber_change_walls(getdvarint(#"_id_763A3046"));
       setdvarint("chamber_wall", 5);
@@ -54,6 +54,7 @@ watch_chamber_wall() {
 
     wait 0.05;
   }
+
 }
 
 cap_value(val, min, max) {
@@ -66,7 +67,7 @@ cap_value(val, min, max) {
 }
 
 chamber_wall_dust() {
-  for (i = 1; i <= 9; i++) {
+  for(i = 1; i <= 9; i++) {
     playfxontag(level._effect["crypt_wall_drop"], self, "tag_fx_dust_0" + i);
     wait_network_frame();
   }
@@ -106,7 +107,7 @@ is_chamber_occupied() {
 }
 
 is_point_in_chamber(v_origin) {
-  if(!isdefined(level.s_chamber_center)) {
+  if(!isDefined(level.s_chamber_center)) {
     level.s_chamber_center = getstruct("chamber_center", "targetname");
     level.s_chamber_center.radius_sq = level.s_chamber_center.script_float * level.s_chamber_center.script_float;
   }
@@ -119,8 +120,8 @@ chamber_wall_change_randomly() {
   a_element_enums = array(1, 2, 3, 4);
   level endon("stop_random_chamber_walls");
 
-  for (n_elem_prev = undefined; 1; n_elem_prev = n_elem) {
-    while (!is_chamber_occupied())
+  for(n_elem_prev = undefined; 1; n_elem_prev = n_elem) {
+    while(!is_chamber_occupied())
       wait 1.0;
 
     flag_wait("any_crystal_picked_up");
@@ -130,7 +131,7 @@ chamber_wall_change_randomly() {
     n_elem = random(a_element_enums);
     arrayremovevalue(a_element_enums, n_elem, 0);
 
-    if(isdefined(n_elem_prev))
+    if(isDefined(n_elem_prev))
       a_element_enums[a_element_enums.size] = n_elem_prev;
 
     chamber_change_walls(n_elem);
@@ -155,10 +156,10 @@ move_wall_down() {
 random_shuffle(a_items, item) {
   b_done_shuffling = undefined;
 
-  if(!isdefined(item))
+  if(!isDefined(item))
     item = a_items[a_items.size - 1];
 
-  while (!(isdefined(b_done_shuffling) && b_done_shuffling)) {
+  while(!(isDefined(b_done_shuffling) && b_done_shuffling)) {
     a_items = array_randomize(a_items);
 
     if(a_items[0] != item)
@@ -180,7 +181,7 @@ tomb_chamber_find_exit_point() {
   endpos = self.origin + vectorscale(away, 600);
   locs = array_randomize(level.enemy_dog_locations);
 
-  for (i = 0; i < locs.size; i++) {
+  for(i = 0; i < locs.size; i++) {
     dist_zombie = distancesquared(locs[i].origin, endpos);
     dist_player = distancesquared(locs[i].origin, player.origin);
 
@@ -193,7 +194,7 @@ tomb_chamber_find_exit_point() {
   self notify("stop_find_flesh");
   self notify("zombie_acquire_enemy");
 
-  if(isdefined(locs[dest]))
+  if(isDefined(locs[dest]))
     self setgoalpos(locs[dest].origin);
 
   self.b_wandering_in_chamber = 1;
@@ -205,8 +206,8 @@ tomb_chamber_find_exit_point() {
 chamber_zombies_find_poi() {
   zombies = getaiarray(level.zombie_team);
 
-  for (i = 0; i < zombies.size; i++) {
-    if(isdefined(zombies[i].b_wandering_in_chamber) && zombies[i].b_wandering_in_chamber) {
+  for(i = 0; i < zombies.size; i++) {
+    if(isDefined(zombies[i].b_wandering_in_chamber) && zombies[i].b_wandering_in_chamber) {
       continue;
     }
     if(!is_point_in_chamber(zombies[i].origin)) {
@@ -223,7 +224,7 @@ tomb_is_valid_target_in_chamber() {
     if(e_player maps\mp\zombies\_zm_laststand::player_is_in_laststand()) {
       continue;
     }
-    if(isdefined(e_player.b_zombie_blood) && e_player.b_zombie_blood || isdefined(e_player.ignoreme) && e_player.ignoreme) {
+    if(isDefined(e_player.b_zombie_blood) && e_player.b_zombie_blood || isDefined(e_player.ignoreme) && e_player.ignoreme) {
       continue;
     }
     if(!is_point_in_chamber(e_player.origin)) {
@@ -246,7 +247,7 @@ tomb_watch_chamber_player_activity() {
   flag_init("player_active_in_chamber");
   flag_wait("start_zombie_round_logic");
 
-  while (true) {
+  while(true) {
     wait 1.0;
 
     if(is_chamber_occupied()) {

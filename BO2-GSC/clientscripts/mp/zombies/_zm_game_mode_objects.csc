@@ -1,7 +1,7 @@
-/**************************************************************
+/***********************************************************************
  * Decompiled and Edited by SyndiShanX
  * Script: clientscripts\mp\zombies\_zm_game_mode_objects.csc
-**************************************************************/
+***********************************************************************/
 
 #include clientscripts\mp\_utility;
 #include clientscripts\mp\zombies\_zm_weapons;
@@ -15,10 +15,10 @@ gamemode_common_setup(gametype, location, vision_set, fog_bank) {
   if(gametype == "zstandard" || gametype == "zgrief") {
     return;
   }
-  for (i = 0; i < players.size; i++) {
+  for(i = 0; i < players.size; i++) {
     localclientnum = players[i] getlocalclientnumber();
 
-    if(!isdefined(localclientnum)) {
+    if(!isDefined(localclientnum)) {
       return;
     }
     visionsetnaked(localclientnum, vision_set, 0);
@@ -38,7 +38,7 @@ init_game_mode_objects(mode, location) {
       case "zrace":
         players = getlocalplayers();
 
-        for (i = 0; i < players.size; i++) {
+        for(i = 0; i < players.size; i++) {
           trigs = getentarray(i, "vision_trig", "targetname");
 
           foreach(trig in trigs)
@@ -65,28 +65,28 @@ setup_game_mode_objects(mode, location) {
   structs = getstructarray("game_mode_object", "targetname");
   level._game_mode_spawned_objects = [];
 
-  for (x = 0; x < getlocalplayers().size; x++) {
-    for (i = 0; i < structs.size; i++) {
-      if(!isdefined(structs[i])) {
+  for(x = 0; x < getlocalplayers().size; x++) {
+    for(i = 0; i < structs.size; i++) {
+      if(!isDefined(structs[i])) {
         continue;
       }
-      if(!isdefined(structs[i].script_noteworthy) || structs[i].script_noteworthy != level._game_mode_location) {
+      if(!isDefined(structs[i].script_noteworthy) || structs[i].script_noteworthy != level._game_mode_location) {
         continue;
       }
       if(!structs[i] is_game_mode_object(mode)) {
         continue;
       }
       if(getactivelocalclients() > 1) {
-        if(isdefined(structs[i].groupname) && structs[i].groupname == "splitscreen_remove")
+        if(isDefined(structs[i].groupname) && structs[i].groupname == "splitscreen_remove")
           continue;
       }
 
       object = spawn(x, structs[i].origin, "script_model");
 
-      if(isdefined(structs[i].angles))
+      if(isDefined(structs[i].angles))
         object.angles = structs[i].angles;
 
-      if(isdefined(structs[i].script_parameters))
+      if(isDefined(structs[i].script_parameters))
         object setmodel(structs[i].script_parameters);
 
       spawned++;
@@ -100,11 +100,11 @@ is_game_mode_object(mode) {
   if(self.classname == "script_brushmodel")
     return false;
 
-  if(!isdefined(self.script_string))
+  if(!isDefined(self.script_string))
     return true;
 
   if(issplitscreen() > 1) {
-    if(isdefined(self.groupname) && self.groupname == "splitscreen_remove")
+    if(isDefined(self.groupname) && self.groupname == "splitscreen_remove")
       return false;
   }
 
@@ -128,12 +128,12 @@ door_init(team, doornum) {
   signs = [];
   location = getdvar(#"ui_zm_mapstartlocation");
 
-  for (i = 0; i < level.struct.size; i++) {
-    if(!isdefined(level.struct[i].name)) {
+  for(i = 0; i < level.struct.size; i++) {
+    if(!isDefined(level.struct[i].name)) {
       continue;
     }
     if(getactivelocalclients() > 1) {
-      if(isdefined(level.struct[i].groupname) && level.struct[i].groupname == "splitscreen_remove")
+      if(isDefined(level.struct[i].groupname) && level.struct[i].groupname == "splitscreen_remove")
         continue;
     }
 
@@ -142,13 +142,13 @@ door_init(team, doornum) {
       spots[spots.size] = spot;
       players = getlocalplayers();
 
-      for (x = 0; x < players.size; x++) {
+      for(x = 0; x < players.size; x++) {
         door = spawn(x, spot.origin, "script_model");
 
-        if(isdefined(spot.angles))
+        if(isDefined(spot.angles))
           door.angles = spot.angles;
 
-        if(isdefined(spot.script_parameters)) {
+        if(isDefined(spot.script_parameters)) {
           door setmodel(spot.script_parameters);
           door thread door_wobble();
         }
@@ -164,16 +164,16 @@ door_init(team, doornum) {
       spot = level.struct[i];
       players = getlocalplayers();
 
-      for (x = 0; x < players.size; x++) {
+      for(x = 0; x < players.size; x++) {
         arrow = spawn(x, spot.origin, "script_model");
 
-        if(isdefined(spot.angles))
+        if(isDefined(spot.angles))
           arrow.angles = spot.angles;
 
-        if(isdefined(spot.script_parameters))
+        if(isDefined(spot.script_parameters))
           arrow setmodel(spot.script_parameters);
 
-        if(isdefined(spot.targetname))
+        if(isDefined(spot.targetname))
           arrow._start_scroll = 1;
 
         signs[signs.size] = arrow;
@@ -189,15 +189,15 @@ door_init(team, doornum) {
 door_monitor(team, doornum, spots, doors, signs) {
   level endon("end_race");
 
-  while (true) {
+  while(true) {
     if(signs.size > 0)
       level thread light_race_arrows(signs);
 
     level waittill(team + "_" + doornum);
     wait 0.1;
 
-    for (i = 0; i < doors.size; i++) {
-      if(isdefined(doors[i])) {
+    for(i = 0; i < doors.size; i++) {
+      if(isDefined(doors[i])) {
         arrayremovevalue(level._race_doors, doors[i]);
         doors[i] delete();
       }
@@ -208,7 +208,7 @@ door_monitor(team, doornum, spots, doors, signs) {
     if(signs.size > 0)
       level thread blink_race_arrows(signs, team + "_" + doornum);
 
-    if(!isdefined(spots)) {
+    if(!isDefined(spots)) {
       continue;
     }
     level waittill(team + "_" + doornum);
@@ -219,14 +219,14 @@ door_monitor(team, doornum, spots, doors, signs) {
     else
       level._team_2_current_door++;
 
-    for (x = 0; x < level.localplayers.size; x++) {
-      for (i = 0; i < spots.size; i++) {
+    for(x = 0; x < level.localplayers.size; x++) {
+      for(i = 0; i < spots.size; i++) {
         door = spawn(x, spots[i].origin, "script_model");
 
-        if(isdefined(spots[i].angles))
+        if(isDefined(spots[i].angles))
           door.angles = spots[i].angles;
 
-        if(isdefined(spots[i].script_parameters)) {
+        if(isDefined(spots[i].script_parameters)) {
           door setmodel("pb_couch");
           door thread door_wobble(x);
         }
@@ -249,7 +249,7 @@ door_wobble(localclientnumber) {
   og_angles = self.angles;
   og_origin = self.origin;
 
-  while (isdefined(self)) {
+  while(isDefined(self)) {
     self rotateto(og_angles + (randomfloatrange(-5, 5), randomfloatrange(-5, 5), randomfloatrange(-5, 5)), 5, 1);
     wait 5;
   }
@@ -260,12 +260,12 @@ clean_up_doors_and_signs_on_race_end() {
   wait 3;
   deleted = 0;
 
-  if(!isdefined(level._race_doors)) {
+  if(!isDefined(level._race_doors)) {
     return;
   }
-  for (i = 0; i < level._race_doors.size; i++) {
-    if(isdefined(level._race_doors[i])) {
-      if(isdefined(level._race_doors[i]._progress_fx))
+  for(i = 0; i < level._race_doors.size; i++) {
+    if(isDefined(level._race_doors[i])) {
+      if(isDefined(level._race_doors[i]._progress_fx))
         stopfx(level._race_doors[i]._localclientnum, level._race_doors[i]._progress_fx);
 
       level._race_doors[i] delete();
@@ -273,8 +273,8 @@ clean_up_doors_and_signs_on_race_end() {
     }
   }
 
-  for (i = 0; i < level._race_arrows.size; i++) {
-    if(isdefined(level._race_arrows[i])) {
+  for(i = 0; i < level._race_arrows.size; i++) {
+    if(isDefined(level._race_arrows[i])) {
       level._race_arrows[i] delete();
       deleted++;
     }
@@ -284,7 +284,7 @@ clean_up_doors_and_signs_on_race_end() {
 }
 
 set_arrow_model(arrows, model) {
-  for (i = 0; i < arrows.size; i++) {
+  for(i = 0; i < arrows.size; i++) {
     arrows[i] setmodel(model);
 
     if(model == "p6_zm_sign_neon_arrow_on_green")
@@ -305,7 +305,7 @@ blink_race_arrows(arrows, end_on) {
   wait 0.1;
   level endon(end_on);
 
-  while (true) {
+  while(true) {
     set_arrow_model(arrows, "p6_zm_sign_neon_arrow_on_green");
     wait(randomfloatrange(0.1, 0.25));
     set_arrow_model(arrows, "p6_zm_sign_neon_arrow_off");
@@ -314,7 +314,7 @@ blink_race_arrows(arrows, end_on) {
 }
 
 zombie_soul_runner(localclientnum, fx_name, dest) {
-  if(!isdefined(level.current_soul_runners))
+  if(!isDefined(level.current_soul_runners))
     level.current_soul_runners = 0;
 
   if(level.current_soul_runners > 12) {
@@ -329,7 +329,7 @@ zombie_soul_runner(localclientnum, fx_name, dest) {
   self moveto(dest.origin, time);
   self waittill("movedone");
 
-  while (isdefined(dest) && isdefined(dest.target)) {
+  while(isDefined(dest) && isDefined(dest.target)) {
     new_dest = getstruct(dest.target, "targetname");
     dest = new_dest;
     dist = distance(new_dest.origin, self.origin);
@@ -350,8 +350,8 @@ team_1_zombie_release_soul(localclientnum, set, newent) {
   door = get_closest_team_door("1", self);
   players = getlocalplayers();
 
-  for (i = 0; i < players.size; i++) {
-    if(!isdefined(door)) {
+  for(i = 0; i < players.size; i++) {
+    if(!isDefined(door)) {
       playfx(i, level._effect["zomb_gib"], self.origin);
       continue;
     }
@@ -369,8 +369,8 @@ team_2_zombie_release_soul(localclientnum, set, newent) {
   door = get_closest_team_door("2", self);
   players = getlocalplayers();
 
-  for (i = 0; i < players.size; i++) {
-    if(!isdefined(door)) {
+  for(i = 0; i < players.size; i++) {
+    if(!isDefined(door)) {
       playfx(i, level._effect["zomb_gib"], self.origin);
       continue;
     }
@@ -388,8 +388,8 @@ team_1_zombie_release_grief_soul(localclientnum, set, newent) {
   door = get_closest_team_door("1", self);
   players = getlocalplayers();
 
-  for (i = 0; i < players.size; i++) {
-    if(!isdefined(door)) {
+  for(i = 0; i < players.size; i++) {
+    if(!isDefined(door)) {
       playfx(i, level._effect["zomb_gib"], self.origin);
       continue;
     }
@@ -407,8 +407,8 @@ team_2_zombie_release_grief_soul(localclientnum, set, newent) {
   door = get_closest_team_door("2", self);
   players = getlocalplayers();
 
-  for (i = 0; i < players.size; i++) {
-    if(!isdefined(door)) {
+  for(i = 0; i < players.size; i++) {
+    if(!isDefined(door)) {
       playfx(i, level._effect["zomb_gib"], self.origin);
       continue;
     }
@@ -427,15 +427,15 @@ get_closest_team_door(team, zombie) {
 
   potential_doors = [];
 
-  for (i = 0; i < level._race_doors.size; i++) {
-    if(isdefined(level._race_doors[i]) && isdefined(level._race_doors[i]._team) && level._race_doors[i]._team == team && level._race_doors[i]._door_num == current_door)
+  for(i = 0; i < level._race_doors.size; i++) {
+    if(isDefined(level._race_doors[i]) && isDefined(level._race_doors[i]._team) && level._race_doors[i]._team == team && level._race_doors[i]._door_num == current_door)
       potential_doors[potential_doors.size] = level._race_doors[i];
   }
 
   if(potential_doors.size > 0) {
     closest_soul_runner_spot = soul_runner_test(zombie, team);
 
-    if(isdefined(closest_soul_runner_spot))
+    if(isDefined(closest_soul_runner_spot))
       return closest_soul_runner_spot;
 
     return random(potential_doors);
@@ -445,7 +445,7 @@ get_closest_team_door(team, zombie) {
 }
 
 soul_runner_test(zombie, team) {
-  if(!isdefined(zombie))
+  if(!isDefined(zombie))
     return undefined;
 
   points = getstructarray("soul_path_" + team, "script_noteworthy");
@@ -457,7 +457,7 @@ soul_runner_test(zombie, team) {
   struct_closest = undefined;
   farthest_dist = 160000;
 
-  for (i = 0; i < points.size; i++) {
+  for(i = 0; i < points.size; i++) {
     curr_dist = distancesquared(points[i].origin, org);
 
     if(curr_dist < farthest_dist && points[i].origin[2] > org[2]) {
@@ -474,11 +474,11 @@ setup_animated_signs() {
   localplayers = getlocalplayers();
   structs = getstructarray("game_mode_object", "targetname");
 
-  for (i = 0; i < structs.size; i++) {
-    if(!isdefined(structs[i])) {
+  for(i = 0; i < structs.size; i++) {
+    if(!isDefined(structs[i])) {
       continue;
     }
-    if(!isdefined(structs[i].script_noteworthy) || structs[i].script_noteworthy != level._game_mode_location) {
+    if(!isDefined(structs[i].script_noteworthy) || structs[i].script_noteworthy != level._game_mode_location) {
       continue;
     }
     if(!structs[i] is_game_mode_object(level._game_mode_mode)) {
@@ -487,7 +487,7 @@ setup_animated_signs() {
     if(issubstr(structs[i].script_parameters, "sign_encounters")) {
       animated_panels = [];
 
-      for (x = 0; x < localplayers.size; x++) {
+      for(x = 0; x < localplayers.size; x++) {
         animated_panel = spawn(x, structs[i].origin, "script_model");
         animated_panel.angles = structs[i].angles;
         animated_panel.origin = structs[i].origin;
@@ -509,8 +509,8 @@ animate_sign(animated_panels) {
 
   sign_variant = 1;
 
-  while (true) {
-    for (i = 1; i < 5; i++) {
+  while(true) {
+    for(i = 1; i < 5; i++) {
       self setmodel("p6_zm_sign_" + mode + "_0" + sign_variant + "_step" + i);
       wait(randomfloatrange(0.75, 1.5));
     }
@@ -528,9 +528,9 @@ wobble_game_mode_objects(objects) {
   }
   wait 2;
 
-  while (true) {
+  while(true) {
     foreach(object in objects) {
-      if(!isdefined(object.og_org)) {
+      if(!isDefined(object.og_org)) {
         object.og_org = object.origin;
         object.og_ang = object.angles;
       }

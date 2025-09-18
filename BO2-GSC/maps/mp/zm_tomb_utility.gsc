@@ -66,15 +66,16 @@ zombie_devgui_tomb(cmd) {
       level notify("force_zone_recapture", int(getsubstr(cmd_strings[0], 21)));
       break;
   }
+
 }
 
 watch_for_upgraded_staffs() {
   cmd = "";
 
-  while (true) {
+  while(true) {
     wait 0.25;
 
-    if(!isdefined(level.zombie_devgui_gun) || level.zombie_devgui_gun != cmd) {
+    if(!isDefined(level.zombie_devgui_gun) || level.zombie_devgui_gun != cmd) {
       a_players = get_players();
 
       foreach(player in a_players) {
@@ -91,10 +92,11 @@ watch_for_upgraded_staffs() {
       }
     }
   }
+
 }
 
 watch_devgui_complete_puzzles() {
-  while (true) {
+  while(true) {
     if(getdvar(#"_id_BB20372B") == "on" || getdvar(#"_id_BB20372C") == "on") {
       flag_set("air_puzzle_1_complete");
       flag_set("ice_puzzle_1_complete");
@@ -139,6 +141,7 @@ watch_devgui_complete_puzzles() {
 
     wait 0.5;
   }
+
 }
 
 get_teleport_fx_from_enum(n_enum) {
@@ -156,7 +159,7 @@ get_teleport_fx_from_enum(n_enum) {
 }
 
 watch_devgui_quadrotor() {
-  while (getdvar(#"_id_7D075455") != "on")
+  while(getdvar(#"_id_7D075455") != "on")
     wait 0.1;
 
   players = getplayers();
@@ -170,10 +173,12 @@ watch_devgui_quadrotor() {
     player set_equipment_invisibility_to_player("equip_dieseldrone_zm", 1);
     player setactionslot(1, "weapon", "equip_dieseldrone_zm");
   }
+
 }
 
 include_craftable(craftable_struct) {
   println("ZM >> include_craftable = " + craftable_struct.name);
+
   maps\mp\zombies\_zm_craftables::include_zombie_craftable(craftable_struct);
 }
 
@@ -205,7 +210,7 @@ player_slow_movement_speed_monitor() {
   n_move_scale_delta = 1.0;
   self.n_move_scale = n_new_move_scale;
 
-  while (true) {
+  while(true) {
     is_player_slowed = 0;
     self.is_player_slowed = 0;
 
@@ -215,7 +220,7 @@ player_slow_movement_speed_monitor() {
         is_player_slowed = 1;
         self.is_player_slowed = 1;
 
-        if(!(isdefined(self.played_mud_vo) && self.played_mud_vo) && !(isdefined(self.dontspeak) && self.dontspeak))
+        if(!(isDefined(self.played_mud_vo) && self.played_mud_vo) && !(isDefined(self.dontspeak) && self.dontspeak))
           self thread maps\mp\zm_tomb_vo::struggle_mud_vo();
 
         if(self hasperk("specialty_longersprint")) {
@@ -250,7 +255,7 @@ player_slow_movement_speed_monitor() {
 }
 
 dug_zombie_spawn_init(animname_set) {
-  if(!isdefined(animname_set))
+  if(!isDefined(animname_set))
     animname_set = 0;
 
   self.targetname = "zombie";
@@ -259,7 +264,7 @@ dug_zombie_spawn_init(animname_set) {
   if(!animname_set)
     self.animname = "zombie";
 
-  if(isdefined(get_gamemode_var("pre_init_zombie_spawn_func")))
+  if(isDefined(get_gamemode_var("pre_init_zombie_spawn_func")))
     self[[get_gamemode_var("pre_init_zombie_spawn_func")]]();
 
   self thread play_ambient_zombie_vocals();
@@ -289,10 +294,10 @@ dug_zombie_spawn_init(animname_set) {
   self.a.disablepain = 1;
   self disable_react();
 
-  if(isdefined(level.zombie_health)) {
+  if(isDefined(level.zombie_health)) {
     self.maxhealth = level.zombie_health;
 
-    if(isdefined(level.zombie_respawned_health) && level.zombie_respawned_health.size > 0) {
+    if(isDefined(level.zombie_respawned_health) && level.zombie_respawned_health.size > 0) {
       self.health = level.zombie_respawned_health[0];
       arrayremovevalue(level.zombie_respawned_health, level.zombie_respawned_health[0]);
     } else
@@ -311,16 +316,16 @@ dug_zombie_spawn_init(animname_set) {
   self thread zombie_damage_failsafe();
   self thread enemy_death_detection();
 
-  if(isdefined(level._zombie_custom_spawn_logic)) {
+  if(isDefined(level._zombie_custom_spawn_logic)) {
     if(isarray(level._zombie_custom_spawn_logic)) {
-      for (i = 0; i < level._zombie_custom_spawn_logic.size; i++)
+      for(i = 0; i < level._zombie_custom_spawn_logic.size; i++)
         self thread[[level._zombie_custom_spawn_logic[i]]]();
     } else
       self thread[[level._zombie_custom_spawn_logic]]();
   }
 
-  if(!isdefined(self.no_eye_glow) || !self.no_eye_glow) {
-    if(!(isdefined(self.is_inert) && self.is_inert))
+  if(!isDefined(self.no_eye_glow) || !self.no_eye_glow) {
+    if(!(isDefined(self.is_inert) && self.is_inert))
       self thread delayed_zombie_eye_glow();
   }
 
@@ -333,10 +338,10 @@ dug_zombie_spawn_init(animname_set) {
   self.tesla_head_gib_func = ::zombie_tesla_head_gib;
   self.team = level.zombie_team;
 
-  if(isdefined(get_gamemode_var("post_init_zombie_spawn_func")))
+  if(isDefined(get_gamemode_var("post_init_zombie_spawn_func")))
     self[[get_gamemode_var("post_init_zombie_spawn_func")]]();
 
-  if(isdefined(level.zombie_init_done))
+  if(isDefined(level.zombie_init_done))
     self[[level.zombie_init_done]]();
 
   self.zombie_init_done = 1;
@@ -353,14 +358,14 @@ dug_zombie_think() {
   desired_nodes = [];
   self.entrance_nodes = [];
 
-  if(isdefined(level.max_barrier_search_dist_override))
+  if(isDefined(level.max_barrier_search_dist_override))
     max_dist = level.max_barrier_search_dist_override;
   else
     max_dist = 500;
 
-  if(!isdefined(find_flesh_struct_string) && isdefined(self.target) && self.target != "") {
+  if(!isDefined(find_flesh_struct_string) && isDefined(self.target) && self.target != "") {
     desired_origin = get_desired_origin();
-    assert(isdefined(desired_origin), "Spawner @ " + self.origin + " has a .target but did not find a target");
+    assert(isDefined(desired_origin), "Spawner @ " + self.origin + " has a .target but did not find a target");
     origin = desired_origin;
     node = getclosest(origin, level.exterior_goals);
     self.entrance_nodes[self.entrance_nodes.size] = node;
@@ -368,16 +373,16 @@ dug_zombie_think() {
   } else if(self should_skip_teardown(find_flesh_struct_string)) {
     self zombie_setup_attack_properties();
 
-    if(isdefined(self.target)) {
+    if(isDefined(self.target)) {
       end_at_node = getnode(self.target, "targetname");
 
-      if(isdefined(end_at_node)) {
+      if(isDefined(end_at_node)) {
         self setgoalnode(end_at_node);
         self waittill("goal");
       }
     }
 
-    if(isdefined(self.start_inert) && self.start_inert) {
+    if(isDefined(self.start_inert) && self.start_inert) {
       self thread maps\mp\zombies\_zm_ai_basic::start_inert(1);
       self zombie_complete_emerging_into_playable_area();
     } else {
@@ -386,10 +391,10 @@ dug_zombie_think() {
     }
 
     return;
-  } else if(isdefined(find_flesh_struct_string)) {
-    assert(isdefined(find_flesh_struct_string));
+  } else if(isDefined(find_flesh_struct_string)) {
+    assert(isDefined(find_flesh_struct_string));
 
-    for (i = 0; i < level.exterior_goals.size; i++) {
+    for(i = 0; i < level.exterior_goals.size; i++) {
       if(level.exterior_goals[i].script_string == find_flesh_struct_string) {
         node = level.exterior_goals[i];
         break;
@@ -403,14 +408,14 @@ dug_zombie_think() {
     origin = self.origin;
     desired_origin = get_desired_origin();
 
-    if(isdefined(desired_origin))
+    if(isDefined(desired_origin))
       origin = desired_origin;
 
     nodes = get_array_of_closest(origin, level.exterior_goals, undefined, 3);
     desired_nodes[0] = nodes[0];
     prev_dist = distance(self.origin, nodes[0].origin);
 
-    for (i = 1; i < nodes.size; i++) {
+    for(i = 1; i < nodes.size; i++) {
       dist = distance(self.origin, nodes[i].origin);
 
       if(dist - prev_dist > max_dist) {
@@ -431,7 +436,7 @@ dug_zombie_think() {
     self thread zombie_assure_node();
   }
 
-  assert(isdefined(node), "Did not find a node!!! [Should not see this!]");
+  assert(isDefined(node), "Did not find a node!!! [Should not see this!]");
   level thread draw_line_ent_to_pos(self, node.origin, "goal");
   self.first_node = node;
   self thread zombie_goto_entrance(node);
@@ -440,10 +445,10 @@ dug_zombie_think() {
 dug_zombie_entered_playable() {
   self endon("death");
 
-  if(!isdefined(level.playable_areas))
+  if(!isDefined(level.playable_areas))
     level.playable_areas = getentarray("player_volume", "script_noteworthy");
 
-  while (true) {
+  while(true) {
     foreach(area in level.playable_areas) {
       if(self istouching(area)) {
         self dug_zombie_complete_emerging_into_playable_area();
@@ -463,7 +468,7 @@ dug_zombie_complete_emerging_into_playable_area() {
 }
 
 dug_zombie_rise(spot, func_rise_fx) {
-  if(!isdefined(func_rise_fx))
+  if(!isDefined(func_rise_fx))
     func_rise_fx = ::zombie_rise_fx;
 
   self endon("death");
@@ -473,7 +478,7 @@ dug_zombie_rise(spot, func_rise_fx) {
   self.anchor.angles = self.angles;
   self linkto(self.anchor);
 
-  if(!isdefined(spot.angles))
+  if(!isDefined(spot.angles))
     spot.angles = (0, 0, 0);
 
   anim_org = spot.origin;
@@ -483,7 +488,7 @@ dug_zombie_rise(spot, func_rise_fx) {
   self.anchor waittill("movedone");
   target_org = get_desired_origin();
 
-  if(isdefined(target_org)) {
+  if(isDefined(target_org)) {
     anim_ang = vectortoangles(target_org - self.origin);
     self.anchor rotateto((0, anim_ang[1], 0), 0.05);
     self.anchor waittill("rotatedone");
@@ -491,7 +496,7 @@ dug_zombie_rise(spot, func_rise_fx) {
 
   self unlink();
 
-  if(isdefined(self.anchor))
+  if(isDefined(self.anchor))
     self.anchor delete();
 
   self thread hide_pop();
@@ -537,7 +542,7 @@ watch_staff_usage() {
   self endon("disconnect");
   self setclientfieldtoplayer("player_staff_charge", 0);
 
-  while (true) {
+  while(true) {
     self waittill("weapon_change", weapon);
     has_upgraded_staff = 0;
     has_revive_staff = 0;
@@ -584,12 +589,12 @@ staff_charge_watch() {
   self endon("weapon_change");
   self endon("weapon_fired");
 
-  while (!self attackbuttonpressed())
+  while(!self attackbuttonpressed())
     wait 0.05;
 
   n_old_charge = 0;
 
-  while (true) {
+  while(true) {
     if(n_old_charge != self.chargeshotlevel) {
       self setclientfieldtoplayer("player_staff_charge", self.chargeshotlevel);
       n_old_charge = self.chargeshotlevel;
@@ -605,7 +610,7 @@ staff_charge_watch_wrapper(weapon) {
   self endon("disconnect");
   self setclientfieldtoplayer("player_staff_charge", 0);
 
-  while (is_weapon_upgraded_staff(weapon)) {
+  while(is_weapon_upgraded_staff(weapon)) {
     self staff_charge_watch();
     self setclientfieldtoplayer("player_staff_charge", 0);
     weapon = self getcurrentweapon();
@@ -638,19 +643,19 @@ puzzle_debug_position(string_to_show, color, origin, str_dvar, n_show_time) {
   self endon("death");
   self endon("stop_debug_position");
 
-  if(!isdefined(string_to_show))
+  if(!isDefined(string_to_show))
     string_to_show = "+";
 
-  if(!isdefined(color))
+  if(!isDefined(color))
     color = vectorscale((1, 1, 1), 255.0);
 
-  if(isdefined(str_dvar)) {
-    while (getdvar(#"_id_93087F74") != "on")
+  if(isDefined(str_dvar)) {
+    while(getdvar(#"_id_93087F74") != "on")
       wait 1.0;
   }
 
-  while (true) {
-    if(isdefined(origin))
+  while(true) {
+    if(isDefined(origin))
       where_to_draw = origin;
     else
       where_to_draw = self.origin;
@@ -658,7 +663,7 @@ puzzle_debug_position(string_to_show, color, origin, str_dvar, n_show_time) {
     print3d(where_to_draw, string_to_show, color, 1);
     wait 0.1;
 
-    if(isdefined(n_show_time)) {
+    if(isDefined(n_show_time)) {
       n_show_time = n_show_time - 0.1;
 
       if(n_show_time <= 0) {
@@ -666,6 +671,7 @@ puzzle_debug_position(string_to_show, color, origin, str_dvar, n_show_time) {
       }
     }
   }
+
 }
 
 placeholder_puzzle_delete_ent(str_flag_name) {
@@ -677,7 +683,7 @@ placeholder_puzzle_delete_ent(str_flag_name) {
 placeholder_puzzle_spin_model() {
   self endon("death");
 
-  while (true) {
+  while(true) {
     self rotateyaw(360, 10, 0, 0);
     wait 9.9;
   }
@@ -704,7 +710,7 @@ tomb_trigger_update_message(func_per_player_msg) {
   foreach(e_player in a_players) {
     n_player = e_player getentitynumber();
 
-    if(!isdefined(self.stub.playertrigger[n_player])) {
+    if(!isDefined(self.stub.playertrigger[n_player])) {
       continue;
     }
     new_msg = self[[func_per_player_msg]](e_player);
@@ -720,7 +726,7 @@ set_unitrigger_hint_string(str_message) {
 }
 
 tomb_spawn_trigger_radius(origin, radius, use_trigger, func_per_player_msg) {
-  if(!isdefined(use_trigger))
+  if(!isDefined(use_trigger))
     use_trigger = 0;
 
   trigger_stub = spawnstruct();
@@ -733,7 +739,7 @@ tomb_spawn_trigger_radius(origin, radius, use_trigger, func_per_player_msg) {
   } else
     trigger_stub.script_unitrigger_type = "unitrigger_radius";
 
-  if(isdefined(func_per_player_msg)) {
+  if(isDefined(func_per_player_msg)) {
     trigger_stub.func_update_msg = func_per_player_msg;
     maps\mp\zombies\_zm_unitrigger::unitrigger_force_per_player_triggers(trigger_stub, 1);
   }
@@ -745,10 +751,10 @@ tomb_spawn_trigger_radius(origin, radius, use_trigger, func_per_player_msg) {
 tomb_unitrigger_think() {
   self endon("kill_trigger");
 
-  if(isdefined(self.stub.func_update_msg))
+  if(isDefined(self.stub.func_update_msg))
     self thread tomb_trigger_update_message(self.stub.func_update_msg);
 
-  while (true) {
+  while(true) {
     self waittill("trigger", player);
     self.stub notify("trigger", player);
   }
@@ -760,10 +766,10 @@ tomb_unitrigger_delete() {
 }
 
 zombie_gib_all() {
-  if(!isdefined(self)) {
+  if(!isDefined(self)) {
     return;
   }
-  if(isdefined(self.is_mechz) && self.is_mechz) {
+  if(isDefined(self.is_mechz) && self.is_mechz) {
     return;
   }
   a_gib_ref = [];
@@ -772,31 +778,31 @@ zombie_gib_all() {
   self ghost();
   wait 0.4;
 
-  if(isdefined(self))
+  if(isDefined(self))
     self self_delete();
 }
 
 zombie_gib_guts() {
-  if(!isdefined(self)) {
+  if(!isDefined(self)) {
     return;
   }
-  if(isdefined(self.is_mechz) && self.is_mechz) {
+  if(isDefined(self.is_mechz) && self.is_mechz) {
     return;
   }
   v_origin = self gettagorigin("J_SpineLower");
 
-  if(isdefined(v_origin)) {
+  if(isDefined(v_origin)) {
     v_forward = anglestoforward((0, randomint(360), 0));
     playfx(level._effect["zombie_guts_explosion"], v_origin, v_forward);
   }
 
   wait_network_frame();
 
-  if(isdefined(self)) {
+  if(isDefined(self)) {
     self ghost();
     wait(randomfloatrange(0.4, 1.1));
 
-    if(isdefined(self))
+    if(isDefined(self))
       self self_delete();
   }
 }
@@ -832,7 +838,7 @@ init_weather_manager() {
   else
     level.force_weather[4] = "snow";
 
-  for (i = 5; i <= 9; i++) {
+  for(i = 5; i <= 9; i++) {
     if(cointoss()) {
       level.force_weather[i] = "none";
       continue;
@@ -847,7 +853,7 @@ init_weather_manager() {
 randomize_weather() {
   weather_name = level.force_weather[level.round_number];
 
-  if(!isdefined(weather_name)) {
+  if(!isDefined(weather_name)) {
     n_round_weather = randomint(100);
     rounds_since_snow = level.round_number - level.last_snow_round;
     rounds_since_rain = level.round_number - level.last_rain_round;
@@ -881,7 +887,7 @@ weather_manager() {
   level.last_snow_round = 0;
   level.last_rain_round = 0;
 
-  while (true) {
+  while(true) {
     level waittill("end_of_round");
     randomize_weather();
     level setclientfield("rain_level", level.weather_rain);
@@ -902,7 +908,7 @@ set_weather_to_player() {
 rotate_skydome() {
   level.sky_rotation = 360;
 
-  while (true) {
+  while(true) {
     level.sky_rotation = level.sky_rotation - 0.025;
 
     if(level.sky_rotation < 0)
@@ -934,10 +940,10 @@ puzzle_orb_move(v_to_pos) {
 puzzle_orb_follow_path(s_start) {
   s_next_pos = s_start;
 
-  while (isdefined(s_next_pos)) {
+  while(isDefined(s_next_pos)) {
     self puzzle_orb_move(s_next_pos.origin);
 
-    if(isdefined(s_next_pos.target))
+    if(isDefined(s_next_pos.target))
       s_next_pos = getstruct(s_next_pos.target, "targetname");
     else
       s_next_pos = undefined;
@@ -948,10 +954,10 @@ puzzle_orb_follow_return_path(s_start, n_element) {
   a_path = [];
   s_next = s_start;
 
-  while (isdefined(s_next)) {
+  while(isDefined(s_next)) {
     a_path[a_path.size] = s_next;
 
-    if(isdefined(s_next.target))
+    if(isDefined(s_next.target))
       s_next = getstruct(s_next.target, "targetname");
     else
       s_next = undefined;
@@ -963,7 +969,7 @@ puzzle_orb_follow_return_path(s_start, n_element) {
   e_model setclientfield("element_glow_fx", n_element);
   playfxontag(level._effect["puzzle_orb_trail"], e_model, "tag_origin");
 
-  for (i = a_path.size - 1; i >= 0; i--)
+  for(i = a_path.size - 1; i >= 0; i--)
     e_model puzzle_orb_move(a_path[i].origin);
 
   return e_model;
@@ -975,7 +981,7 @@ puzzle_orb_pillar_show() {
   s_pillar = getstruct("crypt_pillar", "targetname");
   exploder(333);
 
-  if(isdefined(s_pillar.e_model))
+  if(isDefined(s_pillar.e_model))
     s_pillar.e_model delete();
 
   s_pillar.e_model = spawn("script_model", s_pillar.origin);
@@ -1040,7 +1046,7 @@ puzzle_orb_chamber_to_crypt(str_start_point, e_gem_pos) {
   min_lookat_dot = cos(30);
   n_near_dist_sq = 32400;
 
-  while (time_looking_at_orb < 1.0) {
+  while(time_looking_at_orb < 1.0) {
     wait 0.1;
 
     if(s_start puzzle_orb_ready_to_leave(str_zone, min_lookat_dot, n_near_dist_sq))
@@ -1081,7 +1087,7 @@ puzzle_orb_chamber_to_crypt(str_start_point, e_gem_pos) {
 }
 
 capture_zombie_spawn_init(animname_set) {
-  if(!isdefined(animname_set))
+  if(!isDefined(animname_set))
     animname_set = 0;
 
   self.targetname = "capture_zombie_ai";
@@ -1091,7 +1097,7 @@ capture_zombie_spawn_init(animname_set) {
 
   self.sndname = "capzomb";
 
-  if(isdefined(get_gamemode_var("pre_init_zombie_spawn_func")))
+  if(isDefined(get_gamemode_var("pre_init_zombie_spawn_func")))
     self[[get_gamemode_var("pre_init_zombie_spawn_func")]]();
 
   self thread play_ambient_zombie_vocals();
@@ -1123,10 +1129,10 @@ capture_zombie_spawn_init(animname_set) {
   self.a.disablepain = 1;
   self disable_react();
 
-  if(isdefined(level.zombie_health)) {
+  if(isDefined(level.zombie_health)) {
     self.maxhealth = level.zombie_health;
 
-    if(isdefined(level.zombie_respawned_health) && level.zombie_respawned_health.size > 0) {
+    if(isDefined(level.zombie_respawned_health) && level.zombie_respawned_health.size > 0) {
       self.health = level.zombie_respawned_health[0];
       arrayremovevalue(level.zombie_respawned_health, level.zombie_respawned_health[0]);
     } else
@@ -1145,8 +1151,8 @@ capture_zombie_spawn_init(animname_set) {
   self thread zombie_damage_failsafe();
   self thread enemy_death_detection();
 
-  if(!isdefined(self.no_eye_glow) || !self.no_eye_glow) {
-    if(!(isdefined(self.is_inert) && self.is_inert))
+  if(!isDefined(self.no_eye_glow) || !self.no_eye_glow) {
+    if(!(isDefined(self.is_inert) && self.is_inert))
       self thread delayed_zombie_eye_glow();
   }
 
@@ -1159,7 +1165,7 @@ capture_zombie_spawn_init(animname_set) {
   self.tesla_head_gib_func = ::zombie_tesla_head_gib;
   self.team = level.zombie_team;
 
-  if(isdefined(get_gamemode_var("post_init_zombie_spawn_func")))
+  if(isDefined(get_gamemode_var("post_init_zombie_spawn_func")))
     self[[get_gamemode_var("post_init_zombie_spawn_func")]]();
 
   self.zombie_init_done = 1;
@@ -1167,7 +1173,7 @@ capture_zombie_spawn_init(animname_set) {
 }
 
 rumble_players_in_chamber(n_rumble_enum, n_rumble_time) {
-  if(!isdefined(n_rumble_time))
+  if(!isDefined(n_rumble_time))
     n_rumble_time = 0.1;
 
   a_players = getplayers();
@@ -1205,7 +1211,7 @@ rumble_nearby_players(v_center, n_range, n_rumble_enum) {
 }
 
 whirlwind_rumble_player(e_whirlwind, str_active_flag) {
-  if(isdefined(self.whirlwind_rumble_on) && self.whirlwind_rumble_on) {
+  if(isDefined(self.whirlwind_rumble_on) && self.whirlwind_rumble_on) {
     return;
   }
   self.whirlwind_rumble_on = 1;
@@ -1215,14 +1221,14 @@ whirlwind_rumble_player(e_whirlwind, str_active_flag) {
   range_inner_sq = 10000;
   range_sq = 90000;
 
-  while (dist_sq < range_sq) {
+  while(dist_sq < range_sq) {
     wait 0.05;
 
-    if(!isdefined(e_whirlwind)) {
+    if(!isDefined(e_whirlwind)) {
       break;
     }
 
-    if(isdefined(str_active_flag)) {
+    if(isDefined(str_active_flag)) {
       if(!flag(str_active_flag)) {
         break;
       }
@@ -1246,7 +1252,7 @@ whirlwind_rumble_player(e_whirlwind, str_active_flag) {
 whirlwind_rumble_nearby_players(str_active_flag) {
   range_sq = 90000;
 
-  while (flag(str_active_flag)) {
+  while(flag(str_active_flag)) {
     a_players = getplayers();
 
     foreach(player in a_players) {
@@ -1271,7 +1277,7 @@ bunker_door_clean_up() {
 }
 
 adjustments_for_solo() {
-  if(isdefined(level.is_forever_solo_game) && level.is_forever_solo_game) {
+  if(isDefined(level.is_forever_solo_game) && level.is_forever_solo_game) {
     a_door_buys = getentarray("zombie_door", "targetname");
     array_thread(a_door_buys, ::door_price_reduction_for_solo);
     a_debris_buys = getentarray("zombie_debris", "targetname");
@@ -1301,7 +1307,7 @@ change_weapon_cost(str_weapon, n_cost) {
 }
 
 zone_capture_powerup() {
-  while (true) {
+  while(true) {
     flag_wait("zone_capture_in_progress");
     flag_waitopen("zone_capture_in_progress");
     wait 2;
@@ -1310,7 +1316,7 @@ zone_capture_powerup() {
       if(generator ent_flag("player_controlled")) {
         foreach(uts_box in level.a_uts_challenge_boxes) {
           if(uts_box.str_location == "start_bunker") {
-            if(isdefined(level.is_forever_solo_game) && level.is_forever_solo_game)
+            if(isDefined(level.is_forever_solo_game) && level.is_forever_solo_game)
               level thread maps\mp\zombies\_zm_challenges::open_box(undefined, uts_box, maps\mp\zm_tomb_challenges::reward_powerup_double_points, -1);
             else
               level thread maps\mp\zombies\_zm_challenges::open_box(undefined, uts_box, maps\mp\zm_tomb_challenges::reward_powerup_zombie_blood, -1);
@@ -1331,7 +1337,7 @@ traversal_blocker() {
 }
 
 _kill_zombie_network_safe_internal(e_attacker, str_weapon) {
-  if(!isdefined(self)) {
+  if(!isDefined(self)) {
     return;
   }
   if(!isalive(self)) {
@@ -1342,7 +1348,7 @@ _kill_zombie_network_safe_internal(e_attacker, str_weapon) {
 }
 
 _damage_zombie_network_safe_internal(e_attacker, str_weapon, n_damage_amt) {
-  if(!isdefined(self)) {
+  if(!isDefined(self)) {
     return;
   }
   if(!isalive(self)) {
@@ -1352,7 +1358,7 @@ _damage_zombie_network_safe_internal(e_attacker, str_weapon, n_damage_amt) {
 }
 
 do_damage_network_safe(e_attacker, n_amount, str_weapon, str_mod) {
-  if(isdefined(self.is_mechz) && self.is_mechz)
+  if(isDefined(self.is_mechz) && self.is_mechz)
     self dodamage(n_amount, self.origin, e_attacker, e_attacker, "none", str_mod, 0, str_weapon);
   else if(n_amount < self.health) {
     self.kill_damagetype = str_mod;
@@ -1370,14 +1376,14 @@ _throttle_bullet_trace_think() {
     level.bullet_traces_this_frame = 0;
     wait_network_frame();
   }
-  while (true);
+  while(true);
 }
 
 bullet_trace_throttled(v_start, v_end, e_ignore) {
-  if(!isdefined(level.bullet_traces_this_frame))
+  if(!isDefined(level.bullet_traces_this_frame))
     level thread _throttle_bullet_trace_think();
 
-  while (level.bullet_traces_this_frame >= 2)
+  while(level.bullet_traces_this_frame >= 2)
     wait_network_frame();
 
   level.bullet_traces_this_frame++;
@@ -1390,14 +1396,14 @@ tomb_get_closest_player_using_paths(origin, players) {
   player_to_return = undefined;
   dist_to_tank = undefined;
 
-  for (i = 0; i < players.size; i++) {
+  for(i = 0; i < players.size; i++) {
     player = players[i];
 
-    if(!isdefined(player)) {
+    if(!isDefined(player)) {
       continue;
     }
-    if(isdefined(player.b_already_on_tank) && player.b_already_on_tank) {
-      if(!isdefined(dist_to_tank)) {
+    if(isDefined(player.b_already_on_tank) && player.b_already_on_tank) {
+      if(!isDefined(dist_to_tank)) {
         length_to_player = self maps\mp\zm_tomb_tank::tomb_get_path_length_to_tank();
         dist_to_tank = length_to_player;
       } else
@@ -1405,7 +1411,7 @@ tomb_get_closest_player_using_paths(origin, players) {
     } else
       length_to_player = self get_path_length_to_enemy(player);
 
-    if(isdefined(level.validate_enemy_path_length)) {
+    if(isDefined(level.validate_enemy_path_length)) {
       if(length_to_player == 0) {
         valid = self thread[[level.validate_enemy_path_length]](player);
 
@@ -1436,21 +1442,21 @@ tomb_get_closest_player_using_paths(origin, players) {
 }
 
 update_staff_accessories(n_element_index) {
-  if(!isdefined(n_element_index)) {
+  if(!isDefined(n_element_index)) {
     n_element_index = 0;
     str_weapon = self getcurrentweapon();
 
     if(is_weapon_upgraded_staff(str_weapon)) {
       s_info = maps\mp\zm_tomb_craftables::get_staff_info_from_weapon_name(str_weapon);
 
-      if(isdefined(s_info)) {
+      if(isDefined(s_info)) {
         n_element_index = s_info.enum;
         s_info.charger.is_charged = 1;
       }
     }
   }
 
-  if(!(isdefined(self.one_inch_punch_flag_has_been_init) && self.one_inch_punch_flag_has_been_init)) {
+  if(!(isDefined(self.one_inch_punch_flag_has_been_init) && self.one_inch_punch_flag_has_been_init)) {
     cur_weapon = self get_player_melee_weapon();
     weapon_to_keep = "knife_zm";
     self.use_staff_melee = 0;
@@ -1461,7 +1467,7 @@ update_staff_accessories(n_element_index) {
       if(staff_info.charger.is_charged)
         staff_info = staff_info.upgrade;
 
-      if(isdefined(staff_info.melee)) {
+      if(isDefined(staff_info.melee)) {
         weapon_to_keep = staff_info.melee;
         self.use_staff_melee = 1;
       }
@@ -1494,8 +1500,8 @@ update_staff_accessories(n_element_index) {
     self setactionslot(3, "weapon", "staff_revive_zm");
     self giveweapon("staff_revive_zm");
 
-    if(isdefined(staff_info)) {
-      if(isdefined(staff_info.upgrade.revive_ammo_stock)) {
+    if(isDefined(staff_info)) {
+      if(isDefined(staff_info.upgrade.revive_ammo_stock)) {
         self setweaponammostock("staff_revive_zm", staff_info.upgrade.revive_ammo_stock);
         self setweaponammoclip("staff_revive_zm", staff_info.upgrade.revive_ammo_clip);
       }
@@ -1504,7 +1510,7 @@ update_staff_accessories(n_element_index) {
 }
 
 get_round_enemy_array_wrapper() {
-  if(isdefined(level.custom_get_round_enemy_array_func))
+  if(isDefined(level.custom_get_round_enemy_array_func))
     a_enemies = [
       [level.custom_get_round_enemy_array_func]
     ]();

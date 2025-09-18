@@ -1,7 +1,7 @@
-/******************************************************
+/*******************************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\zombies\_zm_game_module_turned.gsc
-******************************************************/
+*******************************************************/
 
 #include maps\mp\_utility;
 #include maps\mp\gametypes_zm\_hud_util;
@@ -17,7 +17,7 @@ register_game_module() {
 }
 
 register_turned_match(start_func, end_func, name) {
-  if(!isdefined(level._registered_turned_matches))
+  if(!isDefined(level._registered_turned_matches))
     level._registered_turned_matches = [];
 
   match = spawnstruct();

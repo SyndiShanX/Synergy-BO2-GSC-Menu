@@ -21,16 +21,16 @@ init() {
 }
 
 createteamobjpoint(name, origin, team, shader, alpha, scale) {
-  assert(isdefined(level.teams[team]) || team == "all");
+  assert(isDefined(level.teams[team]) || team == "all");
   objpoint = getobjpointbyname(name);
 
-  if(isdefined(objpoint))
+  if(isDefined(objpoint))
     deleteobjpoint(objpoint);
 
-  if(!isdefined(shader))
+  if(!isDefined(shader))
     shader = "objpoint_default";
 
-  if(!isdefined(scale))
+  if(!isDefined(scale))
     scale = 1.0;
 
   if(team != "all")
@@ -50,7 +50,7 @@ createteamobjpoint(name, origin, team, shader, alpha, scale) {
   objpoint setshader(shader, level.objpointsize, level.objpointsize);
   objpoint setwaypoint(1);
 
-  if(isdefined(alpha))
+  if(isDefined(alpha))
     objpoint.alpha = alpha;
   else
     objpoint.alpha = level.objpoint_alpha_default;
@@ -67,7 +67,7 @@ deleteobjpoint(oldobjpoint) {
 
   if(level.objpoints.size == 1) {
     assert(level.objpointnames[0] == oldobjpoint.name);
-    assert(isdefined(level.objpoints[oldobjpoint.name]));
+    assert(isDefined(level.objpoints[oldobjpoint.name]));
     level.objpoints = [];
     level.objpointnames = [];
     oldobjpoint destroy();
@@ -101,14 +101,14 @@ setoriginbyname(name, origin) {
 }
 
 getobjpointbyname(name) {
-  if(isdefined(level.objpoints[name]))
+  if(isDefined(level.objpoints[name]))
     return level.objpoints[name];
   else
     return undefined;
 }
 
 getobjpointbyindex(index) {
-  if(isdefined(level.objpointnames[index]))
+  if(isDefined(level.objpointnames[index]))
     return level.objpoints[level.objpointnames[index]];
   else
     return undefined;
@@ -122,7 +122,7 @@ startflashing() {
   }
   self.isflashing = 1;
 
-  while (self.isflashing) {
+  while(self.isflashing) {
     self fadeovertime(0.75);
     self.alpha = 0.35 * self.basealpha;
     wait 0.75;

@@ -24,6 +24,7 @@ init_stage() {
 
 stage_logic() {
   iprintln(level._cur_stage_name + " of little girl lost started");
+
   level thread spawn_zombie_blood_plane();
   flag_wait("ee_maxis_drone_retrieved");
   wait_network_frame();
@@ -81,7 +82,7 @@ zombie_pilot_sound(ai_pilot) {
   sndent = spawn("script_origin", ai_pilot.origin);
   sndent playloopsound("zmb_zombieblood_3rd_loop_other");
 
-  while (isdefined(ai_pilot) && isalive(ai_pilot)) {
+  while(isDefined(ai_pilot) && isalive(ai_pilot)) {
     sndent.origin = ai_pilot.origin;
     wait 0.3;
   }
@@ -92,7 +93,7 @@ zombie_pilot_sound(ai_pilot) {
 pilot_loop_logic(s_start) {
   self endon("death");
 
-  for (s_goal = s_start; isalive(self); s_goal = getstruct(s_goal.target, "targetname")) {
+  for(s_goal = s_start; isalive(self); s_goal = getstruct(s_goal.target, "targetname")) {
     self setgoalpos(s_goal.origin);
     self waittill("goal");
   }
@@ -131,7 +132,7 @@ quadrotor_pickup_think() {
   self endon("kill_trigger");
   m_quadrotor = getent("quadrotor_pickup", "targetname");
 
-  while (true) {
+  while(true) {
     self waittill("trigger", player);
     player playsound("vox_maxi_drone_upgraded_0");
     flag_clear("ee_quadrotor_disabled");

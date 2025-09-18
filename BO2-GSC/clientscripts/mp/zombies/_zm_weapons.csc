@@ -21,11 +21,11 @@ weapon_box_callback(localclientnum, set, newent) {
 }
 
 cleanup_weapon_models() {
-  if(isdefined(self.weapon_models)) {
+  if(isDefined(self.weapon_models)) {
     players = level.localplayers;
 
-    for (index = 0; index < players.size; index++) {
-      if(isdefined(self.weapon_models[index])) {
+    for(index = 0; index < players.size; index++) {
+      if(isDefined(self.weapon_models[index])) {
         self.weapon_models[index].dw delete();
         self.weapon_models[index] delete();
       }
@@ -62,9 +62,10 @@ weapon_floats_up() {
   modelname = getweaponmodel(rand);
   level.localplayers = getlocalplayers();
   players = level.localplayers;
+
   println("ZM >> weapon_box_callback - players.size=" + players.size);
 
-  for (i = 0; i < players.size; i++) {
+  for(i = 0; i < players.size; i++) {
     self.weapon_models[i] = spawn_weapon_model(i, rand, modelname, self.origin, self.angles + vectorscale((0, 1, 0), 180.0));
     self.weapon_models[i].dw = spawn_weapon_model(i, rand, modelname, self.origin - vectorscale((1, 1, 1), 3.0), self.angles + vectorscale((0, 1, 0), 180.0));
     self.weapon_models[i].dw hide();
@@ -72,7 +73,7 @@ weapon_floats_up() {
     self.weapon_models[i].dw moveto(self.origin + (0, 0, floatheight) - vectorscale((1, 1, 1), 3.0), 3, 2, 0.9);
   }
 
-  for (i = 0; i < number_cycles; i++) {
+  for(i = 0; i < number_cycles; i++) {
     if(i < 20)
       serverwait(0, 0.05, 0.01);
     else if(i < 30)
@@ -86,8 +87,8 @@ weapon_floats_up() {
     modelname = getweaponmodel(rand);
     players = level.localplayers;
 
-    for (index = 0; index < players.size; index++) {
-      if(isdefined(self.weapon_models[index])) {
+    for(index = 0; index < players.size; index++) {
+      if(isDefined(self.weapon_models[index])) {
         self.weapon_models[index] setmodel(modelname);
         self.weapon_models[index] useweaponhidetags(rand);
 
@@ -107,10 +108,10 @@ weapon_floats_up() {
 }
 
 is_weapon_included(weapon_name) {
-  if(!isdefined(level._included_weapons))
+  if(!isDefined(level._included_weapons))
     return false;
 
-  for (i = 0; i < level._included_weapons.size; i++) {
+  for(i = 0; i < level._included_weapons.size; i++) {
     if(weapon_name == level._included_weapons[i])
       return true;
   }
@@ -119,21 +120,21 @@ is_weapon_included(weapon_name) {
 }
 
 include_weapon(weapon, display_in_box, func) {
-  if(!isdefined(level._included_weapons))
+  if(!isDefined(level._included_weapons))
     level._included_weapons = [];
 
   level._included_weapons[level._included_weapons.size] = weapon;
 
-  if(!isdefined(level._display_box_weapons))
+  if(!isDefined(level._display_box_weapons))
     level._display_box_weapons = [];
 
-  if(!isdefined(display_in_box))
+  if(!isDefined(display_in_box))
     display_in_box = 1;
 
   if(!display_in_box) {
     return;
   }
-  if(!isdefined(level._resetzombieboxweapons)) {
+  if(!isDefined(level._resetzombieboxweapons)) {
     level._resetzombieboxweapons = 1;
     resetzombieboxweapons();
   }
@@ -143,7 +144,7 @@ include_weapon(weapon, display_in_box, func) {
 }
 
 treasure_chest_chooserandomweapon() {
-  if(!isdefined(level._display_box_weapons))
+  if(!isDefined(level._display_box_weapons))
     level._display_box_weapons = array("python_zm", "g11_lps_zm", "famas_zm");
 
   return level._display_box_weapons[randomint(level._display_box_weapons.size)];
@@ -162,26 +163,26 @@ init() {
 
   location = level.scr_zm_map_start_location;
 
-  if((location == "default" || location == "") && isdefined(level.default_start_location))
+  if((location == "default" || location == "") && isDefined(level.default_start_location))
     location = level.default_start_location;
 
   match_string = level.scr_zm_ui_gametype + "_" + location;
   match_string_plus_space = " " + match_string;
 
-  for (i = 0; i < spawnable_weapon_spawns.size; i++) {
+  for(i = 0; i < spawnable_weapon_spawns.size; i++) {
     spawnable_weapon = spawnable_weapon_spawns[i];
 
-    if(isdefined(spawnable_weapon.zombie_weapon_upgrade) && spawnable_weapon.zombie_weapon_upgrade == "sticky_grenade_zm" && is_true(level.headshots_only)) {
+    if(isDefined(spawnable_weapon.zombie_weapon_upgrade) && spawnable_weapon.zombie_weapon_upgrade == "sticky_grenade_zm" && is_true(level.headshots_only)) {
       continue;
     }
-    if(!isdefined(spawnable_weapon.script_noteworthy) || spawnable_weapon.script_noteworthy == "") {
+    if(!isDefined(spawnable_weapon.script_noteworthy) || spawnable_weapon.script_noteworthy == "") {
       spawn_list[spawn_list.size] = spawnable_weapon;
       continue;
     }
 
     matches = strtok(spawnable_weapon.script_noteworthy, ",");
 
-    for (j = 0; j < matches.size; j++) {
+    for(j = 0; j < matches.size; j++) {
       if(matches[j] == match_string || matches[j] == match_string_plus_space)
         spawn_list[spawn_list.size] = spawnable_weapon;
     }
@@ -189,12 +190,12 @@ init() {
 
   level._active_wallbuys = [];
 
-  for (i = 0; i < spawn_list.size; i++) {
+  for(i = 0; i < spawn_list.size; i++) {
     spawn_list[i].script_label = spawn_list[i].zombie_weapon_upgrade + "_" + spawn_list[i].origin;
     level._active_wallbuys[spawn_list[i].script_label] = spawn_list[i];
     numbits = 2;
 
-    if(isdefined(level._wallbuy_override_num_bits))
+    if(isDefined(level._wallbuy_override_num_bits))
       numbits = level._wallbuy_override_num_bits;
 
     registerclientfield("world", spawn_list[i].script_label, 1, numbits, "int", ::wallbuy_callback, 0);
@@ -203,7 +204,7 @@ init() {
     if(spawn_list[i].targetname == "buildable_wallbuy") {
       bits = 4;
 
-      if(isdefined(level.buildable_wallbuy_weapons))
+      if(isDefined(level.buildable_wallbuy_weapons))
         bits = getminbitcountfornum(level.buildable_wallbuy_weapons.size + 1);
 
       registerclientfield("world", spawn_list[i].script_label + "_idx", 12000, bits, "int", ::wallbuy_callback_idx, 0);
@@ -215,18 +216,19 @@ init() {
 
 wallbuy_player_connect(localclientnum) {
   keys = getarraykeys(level._active_wallbuys);
+
   println("Wallbuy connect cb : " + localclientnum);
 
-  if(isdefined(level.createfx_enabled) && level.createfx_enabled) {
+  if(isDefined(level.createfx_enabled) && level.createfx_enabled) {
     return;
   }
-  for (i = 0; i < keys.size; i++) {
+  for(i = 0; i < keys.size; i++) {
     wallbuy = level._active_wallbuys[keys[i]];
     fx = level._effect["m14_zm_fx"];
 
     if(wallbuy.targetname == "buildable_wallbuy")
       fx = level._effect["dynamic_wallbuy_fx"];
-    else if(isdefined(level._effect[wallbuy.zombie_weapon_upgrade + "_fx"]))
+    else if(isDefined(level._effect[wallbuy.zombie_weapon_upgrade + "_fx"]))
       fx = level._effect[wallbuy.zombie_weapon_upgrade + "_fx"];
 
     wallbuy.fx[localclientnum] = playfx(localclientnum, fx, wallbuy.origin, anglestoforward(wallbuy.angles), anglestoup(wallbuy.angles), 0.1);
@@ -244,11 +246,12 @@ wallbuy_player_connect(localclientnum) {
 
 wallbuy_callback(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump) {
   if(binitialsnap) {
-    while (!isdefined(level._active_wallbuys) || !isdefined(level._active_wallbuys[fieldname]))
+    while(!isDefined(level._active_wallbuys) || !isDefined(level._active_wallbuys[fieldname]))
       wait 0.05;
   }
 
   struct = level._active_wallbuys[fieldname];
+
   println("wallbuy callback " + localclientnum);
 
   switch (newval) {
@@ -259,11 +262,11 @@ wallbuy_callback(localclientnum, oldval, newval, bnewent, binitialsnap, fieldnam
       break;
     case 1:
       if(binitialsnap) {
-        if(!isdefined(struct.models)) {
-          while (!isdefined(struct.models))
+        if(!isDefined(struct.models)) {
+          while(!isDefined(struct.models))
             wait 0.05;
 
-          while (!isdefined(struct.models[localclientnum]))
+          while(!isDefined(struct.models[localclientnum]))
             wait 0.05;
         }
 
@@ -277,7 +280,7 @@ wallbuy_callback(localclientnum, oldval, newval, bnewent, binitialsnap, fieldnam
 
         vec_offset = (0, 0, 0);
 
-        if(isdefined(struct.models[localclientnum].parent_struct.script_vector))
+        if(isDefined(struct.models[localclientnum].parent_struct.script_vector))
           vec_offset = struct.models[localclientnum].parent_struct.script_vector;
 
         struct.models[localclientnum].origin = struct.models[localclientnum].parent_struct.origin + anglestoright(struct.models[localclientnum].angles + vec_offset) * 8;
@@ -287,7 +290,7 @@ wallbuy_callback(localclientnum, oldval, newval, bnewent, binitialsnap, fieldnam
 
       break;
     case 2:
-      if(isdefined(level.wallbuy_callback_hack_override))
+      if(isDefined(level.wallbuy_callback_hack_override))
         struct.models[localclientnum][
           [level.wallbuy_callback_hack_override]
         ]();
@@ -301,24 +304,24 @@ wallbuy_callback_idx(localclientnum, oldval, newval, bnewent, binitialsnap, fiel
   struct = level._active_wallbuys[basefield];
 
   if(newval == 0) {
-    if(isdefined(struct.models[localclientnum]))
+    if(isDefined(struct.models[localclientnum]))
       struct.models[localclientnum] hide();
   } else if(newval > 0) {
     weaponname = level.buildable_wallbuy_weapons[newval - 1];
 
-    if(!isdefined(struct.models))
+    if(!isDefined(struct.models))
       struct.models = [];
 
-    if(!isdefined(struct.models[localclientnum])) {
+    if(!isDefined(struct.models[localclientnum])) {
       target_struct = getstruct(struct.target, "targetname");
       model = undefined;
 
-      if(isdefined(level.buildable_wallbuy_weapon_models[weaponname]))
+      if(isDefined(level.buildable_wallbuy_weapon_models[weaponname]))
         model = level.buildable_wallbuy_weapon_models[weaponname];
 
       angles = target_struct.angles;
 
-      if(isdefined(level.buildable_wallbuy_weapon_angles[weaponname])) {
+      if(isDefined(level.buildable_wallbuy_weapon_angles[weaponname])) {
         switch (level.buildable_wallbuy_weapon_angles[weaponname]) {
           case 90:
             angles = vectortoangles(anglestoright(angles));
@@ -337,14 +340,14 @@ wallbuy_callback_idx(localclientnum, oldval, newval, bnewent, binitialsnap, fiel
       target_model.parent_struct = target_struct;
       struct.models[localclientnum] = target_model;
 
-      if(isdefined(struct.fx[localclientnum])) {
+      if(isDefined(struct.fx[localclientnum])) {
         stopfx(localclientnum, struct.fx[localclientnum]);
         struct.fx[localclientnum] = undefined;
       }
 
       fx = level._effect["m14_zm_fx"];
 
-      if(isdefined(level._effect[weaponname + "_fx"]))
+      if(isDefined(level._effect[weaponname + "_fx"]))
         fx = level._effect[weaponname + "_fx"];
 
       struct.fx[localclientnum] = playfx(localclientnum, fx, struct.origin, anglestoforward(struct.angles), anglestoup(struct.angles), 0.1);

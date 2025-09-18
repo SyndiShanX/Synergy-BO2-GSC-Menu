@@ -1,7 +1,7 @@
-/**********************************************************
+/***************************************************************
  * Decompiled and Edited by SyndiShanX
  * Script: clientscripts\mp\zombies\_zm_magicbox_tomb.csc
-**********************************************************/
+***************************************************************/
 
 #include clientscripts\mp\_utility;
 #include clientscripts\mp\zombies\_zm_utility;
@@ -26,7 +26,7 @@ init() {
 }
 
 magicbox_leaving_fx(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump) {
-  if(!isdefined(self.fx_obj)) {
+  if(!isDefined(self.fx_obj)) {
     self.fx_obj = spawn(localclientnum, self.origin, "script_model");
     self.fx_obj.angles = self.angles;
     self.fx_obj setmodel("tag_origin");
@@ -37,13 +37,13 @@ magicbox_leaving_fx(localclientnum, oldval, newval, bnewent, binitialsnap, field
 }
 
 magicbox_open_fx(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump) {
-  if(!isdefined(self.fx_obj)) {
+  if(!isDefined(self.fx_obj)) {
     self.fx_obj = spawn(localclientnum, self.origin, "script_model");
     self.fx_obj.angles = self.angles;
     self.fx_obj setmodel("tag_origin");
   }
 
-  if(!isdefined(self.fx_obj_2)) {
+  if(!isDefined(self.fx_obj_2)) {
     self.fx_obj_2 = spawn(localclientnum, self.origin, "script_model");
     self.fx_obj_2.angles = self.angles;
     self.fx_obj_2 setmodel("tag_origin");
@@ -64,14 +64,14 @@ fx_magicbox_portal(localclientnum) {
   self endon("magicbox_portal_finished");
   wait 0.5;
 
-  while (true) {
+  while(true) {
     self.fx_obj_2.curr_portal_fx = playfxontag(localclientnum, level._effect["box_portal"], self.fx_obj_2, "tag_origin");
     wait 0.1;
   }
 }
 
 magicbox_initial_closed_fx(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump) {
-  if(!isdefined(self.fx_obj)) {
+  if(!isDefined(self.fx_obj)) {
     self.fx_obj = spawn(localclientnum, self.origin, "script_model");
     self.fx_obj.angles = self.angles;
     self.fx_obj setmodel("tag_origin");
@@ -83,16 +83,16 @@ magicbox_initial_closed_fx(localclientnum, oldval, newval, bnewent, binitialsnap
 }
 
 magicbox_ambient_fx(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump) {
-  if(!isdefined(self.fx_obj)) {
+  if(!isDefined(self.fx_obj)) {
     self.fx_obj = spawn(localclientnum, self.origin, "script_model");
     self.fx_obj.angles = self.angles;
     self.fx_obj setmodel("tag_origin");
   }
 
-  if(isdefined(self.fx_obj.curr_amb_fx))
+  if(isDefined(self.fx_obj.curr_amb_fx))
     stopfx(localclientnum, self.fx_obj.curr_amb_fx);
 
-  if(isdefined(self.fx_obj.curr_amb_fx_power))
+  if(isDefined(self.fx_obj.curr_amb_fx_power))
     stopfx(localclientnum, self.fx_obj.curr_amb_fx_power);
 
   if(newval == 0) {

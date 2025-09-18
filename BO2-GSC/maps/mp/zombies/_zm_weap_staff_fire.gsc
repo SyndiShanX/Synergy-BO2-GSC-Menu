@@ -33,7 +33,7 @@ onplayerconnect() {
 onplayerspawned() {
   self endon("disconnect");
 
-  while (true) {
+  while(true) {
     self waittill("spawned_player");
     self thread watch_staff_fire_upgrade_fired();
     self thread watch_staff_fire_fired();
@@ -46,7 +46,7 @@ watch_staff_fire_fired() {
   self endon("disconnect");
   self endon("watch_staff_fired");
 
-  while (true) {
+  while(true) {
     self waittill("missile_fire", e_projectile, str_weapon);
 
     if(is_true(e_projectile.additional_shot)) {
@@ -62,7 +62,7 @@ watch_staff_fire_upgrade_fired() {
   self endon("disconnect");
   self endon("watch_staff_upgrade_fired");
 
-  while (true) {
+  while(true) {
     self waittill("grenade_fire", e_projectile, str_weapon);
 
     if(is_true(e_projectile.additional_shot)) {
@@ -106,7 +106,9 @@ fire_staff_area_of_effect(e_attacker, str_weapon) {
   self waittill("explode", v_pos);
   ent = spawn("script_origin", v_pos);
   ent playloopsound("wpn_firestaff_grenade_loop", 1);
+
   level thread puzzle_debug_position("X", vectorscale((1, 0, 0), 255.0), v_pos, undefined, 5.0);
+
   n_alive_time = 5.0;
   aoe_radius = 80;
 
@@ -115,7 +117,7 @@ fire_staff_area_of_effect(e_attacker, str_weapon) {
 
   n_step_size = 0.2;
 
-  while (n_alive_time > 0.0) {
+  while(n_alive_time > 0.0) {
     if(n_alive_time - n_step_size <= 0.0)
       aoe_radius = aoe_radius * 2;
 
@@ -125,7 +127,7 @@ fire_staff_area_of_effect(e_attacker, str_weapon) {
     n_alive_time = n_alive_time - n_step_size;
 
     foreach(e_target in a_targets) {
-      if(isdefined(e_target) && isalive(e_target)) {
+      if(isDefined(e_target) && isalive(e_target)) {
         if(!is_true(self.is_on_fire))
           e_target thread flame_damage_fx(str_weapon, e_attacker);
       }
@@ -146,7 +148,7 @@ grenade_waittill_still_or_bounce() {
     wait_network_frame();
     wait_network_frame();
   }
-  while (prev_origin != self.origin);
+  while(prev_origin != self.origin);
 }
 
 fire_staff_update_grenade_fuse() {
@@ -164,10 +166,10 @@ fire_additional_shots(str_weapon) {
   if(str_weapon == "staff_fire_upgraded3_zm")
     n_shots = 2;
 
-  for (i = 1; i <= n_shots; i++) {
+  for(i = 1; i <= n_shots; i++) {
     wait 0.35;
 
-    if(isdefined(self) && self getcurrentweapon() == "staff_fire_upgraded_zm") {
+    if(isDefined(self) && self getcurrentweapon() == "staff_fire_upgraded_zm") {
       v_player_angles = vectortoangles(self getweaponforwarddir());
       n_player_pitch = v_player_angles[0];
       n_player_pitch = n_player_pitch + 5 * i;
@@ -196,7 +198,7 @@ staff_fire_zombie_damage_response(mod, hit_location, hit_origin, player, amount)
 }
 
 is_staff_fire_damage() {
-  return isdefined(self.damageweapon) && (self.damageweapon == "staff_fire_zm" || self.damageweapon == "staff_fire_upgraded_zm" || self.damageweapon == "staff_fire_upgraded2_zm" || self.damageweapon == "staff_fire_upgraded3_zm") && !is_true(self.set_beacon_damage);
+  return isDefined(self.damageweapon) && (self.damageweapon == "staff_fire_zm" || self.damageweapon == "staff_fire_upgraded_zm" || self.damageweapon == "staff_fire_upgraded2_zm" || self.damageweapon == "staff_fire_upgraded3_zm") && !is_true(self.set_beacon_damage);
 }
 
 staff_fire_zombie_hit_response_internal(mod, damageweapon, player, amount) {
@@ -234,7 +236,7 @@ on_fire_timeout(n_duration) {
 }
 
 flame_damage_fx(damageweapon, e_attacker, pct_damage) {
-  if(!isdefined(pct_damage))
+  if(!isDefined(pct_damage))
     pct_damage = 1.0;
 
   was_on_fire = is_true(self.is_on_fire);
@@ -368,8 +370,8 @@ flame_damage_over_time(e_attacker, damageweapon, pct_damage) {
   n_damage = n_damage * pct_damage;
   self thread on_fire_timeout(n_duration);
 
-  while (true) {
-    if(isdefined(e_attacker) && isplayer(e_attacker)) {
+  while(true) {
+    if(isDefined(e_attacker) && isplayer(e_attacker)) {
       if(e_attacker maps\mp\zombies\_zm_powerups::is_insta_kill_active())
         n_damage = self.health;
     }

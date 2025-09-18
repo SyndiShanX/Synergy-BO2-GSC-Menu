@@ -124,9 +124,11 @@ setup_capture_zones() {
   level.zone_capture.last_zone_captured = undefined;
   level.zone_capture.spawn_func_capture_zombie = ::init_capture_zombie;
   level.zone_capture.spawn_func_recapture_zombie = ::init_recapture_zombie;
+
   level thread watch_for_open_sesame();
   level thread debug_watch_for_zone_capture();
   level thread debug_watch_for_zone_recapture();
+
   maps\mp\zombies\_zm_spawner::register_zombie_death_event_callback(::recapture_zombie_death_func);
   level.custom_derive_damage_refs = ::zone_capture_gib_think;
   setup_inaccessible_zombie_attack_points();
@@ -145,7 +147,7 @@ all_zones_captured_vo() {
   flag_set("story_vo_playing");
   e_speaker = get_closest_player_to_richtofen();
 
-  if(isdefined(e_speaker)) {
+  if(isDefined(e_speaker)) {
     e_speaker set_player_dontspeak(0);
     e_speaker create_and_play_dialog("zone_capture", "all_generators_captured");
     e_speaker waittill_any("done_speaking", "disconnect");
@@ -153,7 +155,7 @@ all_zones_captured_vo() {
 
   e_richtofen = get_player_named("Richtofen");
 
-  if(isdefined(e_richtofen)) {
+  if(isDefined(e_richtofen)) {
     e_richtofen set_player_dontspeak(0);
     e_richtofen create_and_play_dialog("zone_capture", "all_generators_captured");
   }
@@ -167,7 +169,7 @@ get_closest_player_to_richtofen() {
   e_speaker = undefined;
   e_richtofen = get_player_named("Richtofen");
 
-  if(isdefined(e_richtofen)) {
+  if(isDefined(e_richtofen)) {
     if(a_players.size > 1) {
       arrayremovevalue(a_players, e_richtofen, 0);
       e_speaker = arraysort(a_players, e_richtofen.origin, 1)[0];
@@ -183,7 +185,7 @@ get_player_named(str_character_name) {
   e_character = undefined;
 
   foreach(player in get_players()) {
-    if(isdefined(player.character_name) && player.character_name == str_character_name)
+    if(isDefined(player.character_name) && player.character_name == str_character_name)
       e_character = player;
   }
 
@@ -191,7 +193,7 @@ get_player_named(str_character_name) {
 }
 
 quick_revive_game_type_watcher() {
-  while (true) {
+  while(true) {
     level waittill("revive_hide");
     wait 1;
     t_revive_machine = level.zone_capture.zones["generator_start_bunker"].perk_machines["revive"];
@@ -228,9 +230,9 @@ setup_inaccessible_zombie_attack_points() {
 }
 
 set_attack_point_as_inaccessible(str_zone, n_index) {
-  assert(isdefined(level.zone_capture.zones[str_zone]), "set_attack_point_as_inaccessible couldn't find " + str_zone + " in level.zone_capture's zone array!");
+  assert(isDefined(level.zone_capture.zones[str_zone]), "set_attack_point_as_inaccessible couldn't find " + str_zone + " in level.zone_capture's zone array!");
   level.zone_capture.zones[str_zone] ent_flag_wait("zone_initialized");
-  assert(isdefined(level.zone_capture.zones[str_zone].zombie_attack_points[n_index]), "set_attack_points_as_inaccessible couldn't find index " + n_index + " on zone " + str_zone);
+  assert(isDefined(level.zone_capture.zones[str_zone].zombie_attack_points[n_index]), "set_attack_points_as_inaccessible couldn't find index " + n_index + " on zone " + str_zone);
   level.zone_capture.zones[str_zone].zombie_attack_points[n_index].inaccessible = 1;
 }
 
@@ -239,7 +241,7 @@ setup_perk_machines_not_controlled_by_zone_capture() {
 }
 
 track_max_player_zombie_points() {
-  while (true) {
+  while(true) {
     a_players = get_players();
 
     foreach(player in a_players)
@@ -250,7 +252,6 @@ track_max_player_zombie_points() {
 }
 
 pack_a_punch_dummy_init() {
-
 }
 
 pack_a_punch_init() {
@@ -265,7 +266,7 @@ pack_a_punch_init() {
 }
 
 pack_a_punch_think() {
-  while (true) {
+  while(true) {
     flag_wait("all_zones_captured");
     pack_a_punch_enable();
     flag_waitopen("all_zones_captured");
@@ -310,12 +311,12 @@ register_elements_powered_by_zone_capture_generators() {
 }
 
 register_perk_machine_for_zone(str_zone_name, str_perk_name, str_machine_targetname, func_perk_fx_think) {
-  assert(isdefined(level.zone_capture.zones[str_zone_name]), "register_perk_machine_for_zone can't find " + str_zone_name + " has not been initialized in level.zone_capture.zones array!");
+  assert(isDefined(level.zone_capture.zones[str_zone_name]), "register_perk_machine_for_zone can't find " + str_zone_name + " has not been initialized in level.zone_capture.zones array!");
 
-  if(!isdefined(level.zone_capture.zones[str_zone_name].perk_machines))
+  if(!isDefined(level.zone_capture.zones[str_zone_name].perk_machines))
     level.zone_capture.zones[str_zone_name].perk_machines = [];
 
-  if(!isdefined(level.zone_capture.zones[str_zone_name].perk_machines[str_perk_name])) {
+  if(!isDefined(level.zone_capture.zones[str_zone_name].perk_machines[str_perk_name])) {
     e_perk_machine_trigger = get_perk_machine_trigger_from_vending_entity(str_machine_targetname);
     e_perk_machine_trigger.str_zone_name = str_zone_name;
     level.zone_capture.zones[str_zone_name].perk_machines[str_perk_name] = e_perk_machine_trigger;
@@ -325,23 +326,23 @@ register_perk_machine_for_zone(str_zone_name, str_perk_name, str_machine_targetn
 }
 
 register_random_perk_machine_for_zone(str_zone_name, str_identifier) {
-  assert(isdefined(level.zone_capture.zones[str_zone_name]), "register_random_perk_machine_for_zone can't find " + str_zone_name + " has not been initialized in level.zone_capture.zones array!");
+  assert(isDefined(level.zone_capture.zones[str_zone_name]), "register_random_perk_machine_for_zone can't find " + str_zone_name + " has not been initialized in level.zone_capture.zones array!");
 
-  if(!isdefined(level.zone_capture.zones[str_zone_name].perk_machines_random))
+  if(!isDefined(level.zone_capture.zones[str_zone_name].perk_machines_random))
     level.zone_capture.zones[str_zone_name].perk_machines_random = [];
 
   a_random_perk_machines = getentarray("random_perk_machine", "targetname");
 
   foreach(random_perk_machine in a_random_perk_machines) {
-    if(isdefined(random_perk_machine.script_string) && random_perk_machine.script_string == str_identifier)
+    if(isDefined(random_perk_machine.script_string) && random_perk_machine.script_string == str_identifier)
       level.zone_capture.zones[str_zone_name].perk_machines_random[level.zone_capture.zones[str_zone_name].perk_machines_random.size] = random_perk_machine;
   }
 }
 
 register_mystery_box_for_zone(str_zone_name, str_identifier) {
-  assert(isdefined(level.zone_capture.zones[str_zone_name]), "register_mystery_box_for_zone can't find " + str_zone_name + " has not been initialized in level.zone_capture.zones array!");
+  assert(isDefined(level.zone_capture.zones[str_zone_name]), "register_mystery_box_for_zone can't find " + str_zone_name + " has not been initialized in level.zone_capture.zones array!");
 
-  if(!isdefined(level.zone_capture.zones[str_zone_name].mystery_boxes))
+  if(!isDefined(level.zone_capture.zones[str_zone_name].mystery_boxes))
     level.zone_capture.zones[str_zone_name].mystery_boxes = [];
 
   s_mystery_box = get_mystery_box_from_script_noteworthy(str_identifier);
@@ -356,22 +357,22 @@ get_mystery_box_from_script_noteworthy(str_script_noteworthy) {
   s_box = undefined;
 
   foreach(s_mystery_box in level.chests) {
-    if(isdefined(s_mystery_box.script_noteworthy) && s_mystery_box.script_noteworthy == str_script_noteworthy)
+    if(isDefined(s_mystery_box.script_noteworthy) && s_mystery_box.script_noteworthy == str_script_noteworthy)
       s_box = s_mystery_box;
   }
 
-  assert(isdefined(s_mystery_box), "get_mystery_box_from_script_noteworthy() couldn't find a mystery box with script_noteworthy = " + str_script_noteworthy);
+  assert(isDefined(s_mystery_box), "get_mystery_box_from_script_noteworthy() couldn't find a mystery box with script_noteworthy = " + str_script_noteworthy);
   return s_box;
 }
 
 enable_perk_machines_in_zone() {
-  if(isdefined(self.perk_machines) && isarray(self.perk_machines)) {
+  if(isDefined(self.perk_machines) && isarray(self.perk_machines)) {
     a_keys = getarraykeys(self.perk_machines);
 
-    for (i = 0; i < a_keys.size; i++)
+    for(i = 0; i < a_keys.size; i++)
       level notify(a_keys[i] + "_on");
 
-    for (i = 0; i < a_keys.size; i++) {
+    for(i = 0; i < a_keys.size; i++) {
       e_perk_trigger = self.perk_machines[a_keys[i]];
       e_perk_trigger.is_locked = 0;
       e_perk_trigger maps\mp\zombies\_zm_perks::reset_vending_hint_string();
@@ -380,13 +381,13 @@ enable_perk_machines_in_zone() {
 }
 
 disable_perk_machines_in_zone() {
-  if(isdefined(self.perk_machines) && isarray(self.perk_machines)) {
+  if(isDefined(self.perk_machines) && isarray(self.perk_machines)) {
     a_keys = getarraykeys(self.perk_machines);
 
-    for (i = 0; i < a_keys.size; i++)
+    for(i = 0; i < a_keys.size; i++)
       level notify(a_keys[i] + "_off");
 
-    for (i = 0; i < a_keys.size; i++) {
+    for(i = 0; i < a_keys.size; i++) {
       e_perk_trigger = self.perk_machines[a_keys[i]];
       e_perk_trigger.is_locked = 1;
       e_perk_trigger sethintstring(&"ZM_TOMB_ZC");
@@ -395,7 +396,7 @@ disable_perk_machines_in_zone() {
 }
 
 enable_random_perk_machines_in_zone() {
-  if(isdefined(self.perk_machines_random) && isarray(self.perk_machines_random)) {
+  if(isDefined(self.perk_machines_random) && isarray(self.perk_machines_random)) {
     foreach(random_perk_machine in self.perk_machines_random) {
       random_perk_machine.is_locked = 0;
       random_perk_machine sethintstring(&"ZM_TOMB_RPB", level._random_zombie_perk_cost);
@@ -404,7 +405,7 @@ enable_random_perk_machines_in_zone() {
 }
 
 disable_random_perk_machines_in_zone() {
-  if(isdefined(self.perk_machines_random) && isarray(self.perk_machines_random)) {
+  if(isDefined(self.perk_machines_random) && isarray(self.perk_machines_random)) {
     foreach(random_perk_machine in self.perk_machines_random)
     random_perk_machine.is_locked = 1;
   }
@@ -428,15 +429,15 @@ disable_mystery_boxes_in_zone() {
 
 get_perk_machine_trigger_from_vending_entity(str_vending_machine_targetname) {
   e_trigger = getent(str_vending_machine_targetname, "target");
-  assert(isdefined(e_trigger), "get_perk_machine_trigger_from_vending_entity couldn't find perk machine trigger with target = " + str_vending_machine_targetname);
+  assert(isDefined(e_trigger), "get_perk_machine_trigger_from_vending_entity couldn't find perk machine trigger with target = " + str_vending_machine_targetname);
   return e_trigger;
 }
 
 check_perk_machine_valid(player) {
-  if(isdefined(self.script_noteworthy) && isinarray(level.zone_capture.perk_machines_always_on, self.script_noteworthy))
+  if(isDefined(self.script_noteworthy) && isinarray(level.zone_capture.perk_machines_always_on, self.script_noteworthy))
     b_machine_valid = 1;
   else {
-    assert(isdefined(self.str_zone_name), "str_zone_name field missing on perk machine! This is required by the zone capture system!");
+    assert(isDefined(self.str_zone_name), "str_zone_name field missing on perk machine! This is required by the zone capture system!");
     b_machine_valid = level.zone_capture.zones[self.str_zone_name] ent_flag("player_controlled");
   }
 
@@ -447,21 +448,21 @@ check_perk_machine_valid(player) {
 }
 
 init_capture_zone() {
-  assert(isdefined(self.script_noteworthy), "capture zone struct is missing script_noteworthy KVP! This is required for init_capture_zone()");
+  assert(isDefined(self.script_noteworthy), "capture zone struct is missing script_noteworthy KVP! This is required for init_capture_zone()");
 
-  if(!isdefined(level.zone_capture))
+  if(!isDefined(level.zone_capture))
     level.zone_capture = spawnstruct();
 
-  if(!isdefined(level.zone_capture.zones))
+  if(!isDefined(level.zone_capture.zones))
     level.zone_capture.zones = [];
 
-  assert(!isdefined(level.zone_capture.zones[self.script_noteworthy]), "init_capture_zone() attempting to initialize an existing zone with name '" + self.script_noteworthy + "'");
+  assert(!isDefined(level.zone_capture.zones[self.script_noteworthy]), "init_capture_zone() attempting to initialize an existing zone with name '" + self.script_noteworthy + "'");
   self.n_current_progress = 0;
   self.n_last_progress = 0;
   self setup_generator_unitrigger();
   self.str_zone = get_zone_from_position(self.origin, 1);
   self.sndent = spawn("script_origin", self.origin);
-  assert(isdefined(self.script_int), "script_int KVP is required by init_capture_zone() to identify the objective index, but it's missing on zone '" + self.script_noteworthy + "'");
+  assert(isDefined(self.script_int), "script_int KVP is required by init_capture_zone() to identify the objective index, but it's missing on zone '" + self.script_noteworthy + "'");
   self ent_flag_init("attacked_by_recapture_zombies");
   self ent_flag_init("current_recapture_target_zone");
   self ent_flag_init("player_controlled");
@@ -512,7 +513,7 @@ generator_trigger_prompt_and_visibility(e_player) {
 generator_unitrigger_think() {
   self endon("kill_trigger");
 
-  while (true) {
+  while(true) {
     self waittill("trigger", e_player);
 
     if(!is_player_valid(e_player) || e_player is_reviving_any() || e_player != self.parent_player) {
@@ -559,7 +560,7 @@ init_attack_point(v_origin, v_center_pillar) {
 }
 
 wait_for_capture_trigger() {
-  while (true) {
+  while(true) {
     self waittill("start_generator_capture", e_player);
 
     if(!flag("zone_capture_in_progress")) {
@@ -576,7 +577,7 @@ wait_for_capture_trigger() {
       self maps\mp\zm_tomb_capture_zones_ffotd::capture_event_end();
       wait 1;
 
-      if(isdefined(e_player) && self ent_flag("player_controlled"))
+      if(isDefined(e_player) && self ent_flag("player_controlled"))
         self refund_generator_cost_if_player_captured_it(e_player);
     } else {
       flag_wait("zone_capture_in_progress");
@@ -611,10 +612,10 @@ capture_event_handle_ai_limit() {
   n_capture_zombies_needed = calculate_capture_event_zombies_needed();
   level.zombie_ai_limit = 24 - n_capture_zombies_needed;
 
-  while (get_current_zombie_count() > level.zombie_ai_limit) {
+  while(get_current_zombie_count() > level.zombie_ai_limit) {
     ai_zombie = get_zombie_to_delete();
 
-    if(isdefined(ai_zombie))
+    if(isDefined(ai_zombie))
       ai_zombie thread delete_zombie_for_capture_event();
 
     wait_network_frame();
@@ -632,14 +633,14 @@ get_zombie_to_delete() {
 }
 
 delete_zombie_for_capture_event() {
-  if(isdefined(self)) {
+  if(isDefined(self)) {
     playfx(level._effect["tesla_elec_kill"], self.origin);
     self ghost();
   }
 
   wait_network_frame();
 
-  if(isdefined(self))
+  if(isDefined(self))
     self delete();
 }
 
@@ -654,7 +655,7 @@ calculate_capture_event_zombies_needed() {
 }
 
 get_capture_zombies_needed(b_per_zone) {
-  if(!isdefined(b_per_zone))
+  if(!isDefined(b_per_zone))
     b_per_zone = 0;
 
   a_contested_zones = get_contested_zones();
@@ -681,7 +682,9 @@ get_capture_zombies_needed(b_per_zone) {
       n_capture_zombies_needed_per_zone = 2;
       break;
     default:
+
       iprintlnbold("get_capture_zombies_needed() unhandled case. active capture events = " + a_contested_zones.size);
+
       n_capture_zombies_needed = 2 * a_contested_zones.size;
       n_capture_zombies_needed_per_zone = 2;
       break;
@@ -717,7 +720,7 @@ get_recapture_zombies_needed() {
 }
 
 activate_capture_zone(b_show_emergence_holes) {
-  if(!isdefined(b_show_emergence_holes))
+  if(!isDefined(b_show_emergence_holes))
     b_show_emergence_holes = 1;
 
   if(!flag("recapture_event_in_progress"))
@@ -750,9 +753,9 @@ show_emergence_holes(b_show_emergence_holes) {
 }
 
 destroy_emergence_holes() {
-  if(isdefined(self.a_emergence_holes) && self.a_emergence_holes.size > 0) {
+  if(isDefined(self.a_emergence_holes) && self.a_emergence_holes.size > 0) {
     foreach(m_emergence_hole in self.a_emergence_holes) {
-      if(isdefined(m_emergence_hole)) {
+      if(isDefined(m_emergence_hole)) {
         m_emergence_hole setclientfield("zone_capture_emergence_hole", 0);
         m_emergence_hole ghost();
         m_emergence_hole thread delete_self_after_time(randomfloatrange(0.5, 2.0));
@@ -766,7 +769,7 @@ destroy_emergence_holes() {
 delete_self_after_time(n_time) {
   wait(n_time);
 
-  if(isdefined(self))
+  if(isDefined(self))
     self delete();
 }
 
@@ -776,7 +779,7 @@ monitor_capture_zombies() {
   self.capture_zombies = [];
   self.capture_zombie_limit = self set_capture_zombies_needed_per_zone();
 
-  while (self ent_flag("zone_contested")) {
+  while(self ent_flag("zone_contested")) {
     self.capture_zombies = array_removedead(self.capture_zombies);
 
     if(self.capture_zombies.size < self.capture_zombie_limit) {
@@ -796,7 +799,7 @@ monitor_recapture_zombies() {
   n_capture_zombie_spawns = 0;
   self thread play_vo_when_generator_is_attacked();
 
-  while (flag("recapture_event_in_progress") && n_capture_zombie_spawns < self.capture_zombie_limit) {
+  while(flag("recapture_event_in_progress") && n_capture_zombie_spawns < self.capture_zombie_limit) {
     level.zone_capture.recapture_zombies = array_removedead(level.zone_capture.recapture_zombies);
     ai = spawn_zombie(e_spawner_capture_zombie);
     n_capture_zombie_spawns++;
@@ -817,8 +820,8 @@ play_vo_when_generator_is_attacked() {
 }
 
 get_emergence_hole_spawn_point() {
-  while (true) {
-    if(isdefined(self.a_emergence_hole_structs) && self.a_emergence_hole_structs.size > 0) {
+  while(true) {
+    if(isDefined(self.a_emergence_hole_structs) && self.a_emergence_hole_structs.size > 0) {
       s_spawn_point = self get_unused_emergence_hole_spawn_point();
       s_spawn_point.spawned_zombie = 1;
       return s_spawn_point;
@@ -833,9 +836,9 @@ get_unused_emergence_hole_spawn_point() {
   a_valid_spawn_points = [];
   b_all_points_used = 0;
 
-  while (!a_valid_spawn_points.size) {
+  while(!a_valid_spawn_points.size) {
     foreach(s_emergence_hole in self.a_emergence_hole_structs) {
-      if(!isdefined(s_emergence_hole.spawned_zombie) || b_all_points_used)
+      if(!isDefined(s_emergence_hole.spawned_zombie) || b_all_points_used)
         s_emergence_hole.spawned_zombie = 0;
 
       if(!s_emergence_hole.spawned_zombie)
@@ -875,7 +878,7 @@ init_anim_rate() {
 }
 
 zone_capture_gib_think(refs, point, weaponname) {
-  if(isdefined(self.is_recapture_zombie) && self.is_recapture_zombie) {
+  if(isDefined(self.is_recapture_zombie) && self.is_recapture_zombie) {
     arrayremovevalue(refs, "right_leg", 0);
     arrayremovevalue(refs, "left_leg", 0);
     arrayremovevalue(refs, "no_legs", 0);
@@ -888,7 +891,7 @@ init_capture_zombie(zone_struct, s_spawn_point) {
   self endon("death");
   self init_zone_capture_zombie_common(s_spawn_point);
 
-  if(isdefined(self.zombie_move_speed) && self.zombie_move_speed == "walk") {
+  if(isDefined(self.zombie_move_speed) && self.zombie_move_speed == "walk") {
     self.zombie_move_speed = "run";
     self set_zombie_run_cycle("run");
   }
@@ -910,14 +913,14 @@ init_recapture_zombie(zone_struct, s_spawn_point) {
   self.attacking_point = undefined;
   self thread recapture_zombie_poi_think();
 
-  while (true) {
+  while(true) {
     self.is_attacking_zone = 0;
 
     if(self.zombie_has_point_of_interest)
       v_attack_origin = self.point_of_interest;
     else {
-      if(self.attacking_new_generator || !isdefined(self.attacking_point)) {
-        if(isdefined(self.attacking_point))
+      if(self.attacking_new_generator || !isDefined(self.attacking_point)) {
+        if(isDefined(self.attacking_point))
           self.attacking_point unclaim_attacking_point();
 
         self.attacking_point = self get_unclaimed_attack_point(self.s_attack_generator);
@@ -935,13 +938,13 @@ init_recapture_zombie(zone_struct, s_spawn_point) {
       }
       self.is_attacking_zone = 1;
 
-      if(!isdefined(level.zone_capture.recapture_target) && !isdefined(self.s_attack_generator.script_noteworthy) || isdefined(level.zone_capture.recapture_target) && isdefined(self.s_attack_generator.script_noteworthy) && level.zone_capture.recapture_target == self.s_attack_generator.script_noteworthy) {
+      if(!isDefined(level.zone_capture.recapture_target) && !isDefined(self.s_attack_generator.script_noteworthy) || isDefined(level.zone_capture.recapture_target) && isDefined(self.s_attack_generator.script_noteworthy) && level.zone_capture.recapture_target == self.s_attack_generator.script_noteworthy) {
         flag_set("generator_under_attack");
         self.s_attack_generator ent_flag_set("attacked_by_recapture_zombies");
         self.attacking_new_generator = 0;
         zone_struct notify("zombies_attacking_generator");
       }
-    } else if(isdefined(self.attacking_point))
+    } else if(isDefined(self.attacking_point))
       self.attacking_point unclaim_attacking_point();
 
     self play_melee_attack_animation();
@@ -982,7 +985,7 @@ get_unclaimed_attack_point(s_zone) {
 
 clean_up_unused_attack_points() {
   foreach(s_attack_point in self.zombie_attack_points) {
-    if(s_attack_point.is_claimed && !isdefined(s_attack_point.claimed_by)) {
+    if(s_attack_point.is_claimed && !isDefined(s_attack_point.claimed_by)) {
       s_attack_point.is_claimed = 0;
       s_attack_point.claimed_by = undefined;
     }
@@ -992,7 +995,7 @@ clean_up_unused_attack_points() {
 get_unclaimed_attack_points_between_indicies(n_start, n_end) {
   a_valid_attack_points = [];
 
-  for (i = n_start; i < n_end; i++) {
+  for(i = n_start; i < n_end; i++) {
     if(!self.zombie_attack_points[i].is_claimed && !self.zombie_attack_points[i].inaccessible)
       a_valid_attack_points[a_valid_attack_points.size] = self.zombie_attack_points[i];
   }
@@ -1003,7 +1006,7 @@ get_unclaimed_attack_points_between_indicies(n_start, n_end) {
 get_claimed_attack_points_between_indicies(n_start, n_end) {
   a_valid_points = [];
 
-  for (i = n_start; i < n_end; i++) {
+  for(i = n_start; i < n_end; i++) {
     if(self.zombie_attack_points[i].is_claimed)
       a_valid_points[a_valid_points.size] = self.zombie_attack_points[i];
   }
@@ -1025,7 +1028,7 @@ capture_zombies_only_attack_nearby_players(s_zone) {
   self endon("death");
   n_goal_radius = self.goalradius;
 
-  while (true) {
+  while(true) {
     self.goalradius = n_goal_radius;
 
     if(self should_capture_zombie_attack_generator(s_zone)) {
@@ -1033,14 +1036,14 @@ capture_zombies_only_attack_nearby_players(s_zone) {
       self notify("zombie_acquire_enemy");
       self.goalradius = 30;
 
-      if(!isdefined(self.attacking_point))
+      if(!isDefined(self.attacking_point))
         self.attacking_point = self get_unclaimed_attack_point(s_zone);
 
       self setgoalpos(self.attacking_point.origin);
       self thread cancel_generator_attack_if_player_gets_close_to_generator(s_zone);
       str_notify = self waittill_any_return("goal", "stop_attacking_generator");
 
-      if(!isdefined(str_notify) && !isdefined("stop_attacking_generator") || isdefined(str_notify) && isdefined("stop_attacking_generator") && str_notify == "stop_attacking_generator")
+      if(!isDefined(str_notify) && !isDefined("stop_attacking_generator") || isDefined(str_notify) && isDefined("stop_attacking_generator") && str_notify == "stop_attacking_generator")
         self.attacking_point unclaim_attacking_point();
       else {
         self play_melee_attack_animation();
@@ -1057,7 +1060,7 @@ cancel_generator_attack_if_player_gets_close_to_generator(s_zone) {
   self endon("generator_attack_cancel_think");
   self endon("death");
 
-  while (true) {
+  while(true) {
     if(!self should_capture_zombie_attack_generator(s_zone)) {
       self notify("stop_attacking_generator");
       self thread maps\mp\zombies\_zm_ai_basic::find_flesh();
@@ -1073,7 +1076,7 @@ should_capture_zombie_attack_generator(s_zone) {
   a_valid_targets = arraysort(a_players, s_zone.origin, 1, undefined, 700);
 
   foreach(player in a_players) {
-    if(!isdefined(self.ignore_player))
+    if(!isDefined(self.ignore_player))
       self.ignore_player = [];
 
     b_is_valid_target = isinarray(a_valid_targets, player) && is_player_valid(player);
@@ -1088,7 +1091,7 @@ should_capture_zombie_attack_generator(s_zone) {
       self.ignore_player[self.ignore_player.size] = player;
   }
 
-  b_should_attack_generator = isdefined(self.enemy) && (a_valid_targets.size == 0 || self.ignore_player.size == a_players.size);
+  b_should_attack_generator = isDefined(self.enemy) && (a_valid_targets.size == 0 || self.ignore_player.size == a_players.size);
   return b_should_attack_generator;
 }
 
@@ -1097,14 +1100,14 @@ play_melee_attack_animation() {
   self endon("poi_state_changed");
   v_angles = self.angles;
 
-  if(isdefined(self.attacking_point)) {
+  if(isDefined(self.attacking_point)) {
     v_angles = self.attacking_point.v_center_pillar - self.origin;
     v_angles = vectortoangles((v_angles[0], v_angles[1], 0));
   }
 
   self animscripted(self.origin, v_angles, "zm_generator_melee");
 
-  while (true) {
+  while(true) {
     self waittill("static_melee_anim", note);
 
     if(note == "end") {
@@ -1117,16 +1120,16 @@ recapture_zombie_poi_think() {
   self endon("death");
   self.zombie_has_point_of_interest = 0;
 
-  while (isdefined(self) && isalive(self)) {
-    if(isdefined(level._poi_override))
+  while(isDefined(self) && isalive(self)) {
+    if(isDefined(level._poi_override))
       zombie_poi = self[[level._poi_override]]();
 
-    if(!isdefined(zombie_poi))
+    if(!isDefined(zombie_poi))
       zombie_poi = self get_zombie_point_of_interest(self.origin);
 
     self.using_poi_last_check = self.zombie_has_point_of_interest;
 
-    if(isdefined(zombie_poi) && isarray(zombie_poi) && isdefined(zombie_poi[1])) {
+    if(isDefined(zombie_poi) && isarray(zombie_poi) && isDefined(zombie_poi[1])) {
       self.goalradius = 16;
       self.zombie_has_point_of_interest = 1;
       self.is_attacking_zone = 0;
@@ -1148,9 +1151,9 @@ recapture_zombie_poi_think() {
 }
 
 kill_all_capture_zombies() {
-  while (isdefined(self.capture_zombies) && self.capture_zombies.size > 0) {
+  while(isDefined(self.capture_zombies) && self.capture_zombies.size > 0) {
     foreach(zombie in self.capture_zombies) {
-      if(isdefined(zombie) && isalive(zombie)) {
+      if(isDefined(zombie) && isalive(zombie)) {
         playfx(level._effect["tesla_elec_kill"], zombie.origin);
         zombie dodamage(zombie.health + 100, zombie.origin);
       }
@@ -1165,9 +1168,9 @@ kill_all_capture_zombies() {
 }
 
 kill_all_recapture_zombies() {
-  while (isdefined(level.zone_capture.recapture_zombies) && level.zone_capture.recapture_zombies.size > 0) {
+  while(isDefined(level.zone_capture.recapture_zombies) && level.zone_capture.recapture_zombies.size > 0) {
     foreach(zombie in level.zone_capture.recapture_zombies) {
-      if(isdefined(zombie) && isalive(zombie)) {
+      if(isDefined(zombie) && isalive(zombie)) {
         playfx(level._effect["tesla_elec_kill"], zombie.origin);
         zombie dodamage(zombie.health + 100, zombie.origin);
       }
@@ -1240,7 +1243,7 @@ set_player_controlled_zone() {
   level setclientfield("zone_capture_hud_generator_" + self.script_int, 1);
   level setclientfield("zone_capture_monolith_crystal_" + self.script_int, 0);
 
-  if(!isdefined(self.perk_fx_func) || [
+  if(!isDefined(self.perk_fx_func) || [
       [self.perk_fx_func]
     ]())
     level setclientfield("zone_capture_perk_machine_smoke_fx_" + self.script_int, 1);
@@ -1254,7 +1257,7 @@ set_player_controlled_zone() {
 }
 
 set_zombie_controlled_area(b_is_level_initializing) {
-  if(!isdefined(b_is_level_initializing))
+  if(!isDefined(b_is_level_initializing))
     b_is_level_initializing = 0;
 
   update_captured_zone_count();
@@ -1277,7 +1280,7 @@ play_pap_anim(b_assemble) {
 }
 
 set_zombie_controlled_zone(b_is_level_initializing) {
-  if(!isdefined(b_is_level_initializing))
+  if(!isDefined(b_is_level_initializing))
     b_is_level_initializing = 0;
 
   n_hud_state = 2;
@@ -1301,7 +1304,7 @@ capture_progress_think() {
   self show_zone_capture_objective(1);
   self get_zone_objective_index();
 
-  while (self ent_flag("zone_contested")) {
+  while(self ent_flag("zone_contested")) {
     a_players = get_players();
     a_players_in_capture_zone = self get_players_in_capture_zone();
 
@@ -1360,7 +1363,7 @@ update_objective_on_momentum_change() {
 }
 
 get_zone_objective_index() {
-  if(!isdefined(self.n_objective_index)) {
+  if(!isDefined(self.n_objective_index)) {
     if(self ent_flag("current_recapture_target_zone")) {
       if(flag("recapture_event_in_progress"))
         n_objective = 1;
@@ -1379,7 +1382,7 @@ get_zones_using_objective_index(n_index) {
   n_zones_using_objective_index = 0;
 
   foreach(zone in level.zone_capture.zones) {
-    if(isdefined(zone.n_objective_index) && zone.n_objective_index == n_index)
+    if(isDefined(zone.n_objective_index) && zone.n_objective_index == n_index)
       n_zones_using_objective_index++;
   }
 
@@ -1387,7 +1390,7 @@ get_zones_using_objective_index(n_index) {
 }
 
 zone_capture_sound_state_think() {
-  if(!isdefined(self.is_playing_audio))
+  if(!isDefined(self.is_playing_audio))
     self.is_playing_audio = 0;
 
   if(self.n_current_progress > self.n_last_progress) {
@@ -1423,7 +1426,6 @@ handle_generator_capture() {
     self set_zombie_controlled_area();
 
     if(flag("recapture_event_in_progress") && get_captured_zone_count() > 0) {
-
     } else
       self kill_all_capture_zombies();
   }
@@ -1433,19 +1435,19 @@ handle_generator_capture() {
 }
 
 init_capture_progress() {
-  if(!isdefined(level.zone_capture.rate_capture))
+  if(!isDefined(level.zone_capture.rate_capture))
     level.zone_capture.rate_capture = get_update_rate(10);
 
-  if(!isdefined(level.zone_capture.rate_capture_solo))
+  if(!isDefined(level.zone_capture.rate_capture_solo))
     level.zone_capture.rate_capture_solo = get_update_rate(12);
 
-  if(!isdefined(level.zone_capture.rate_decay))
+  if(!isDefined(level.zone_capture.rate_decay))
     level.zone_capture.rate_decay = get_update_rate(20) * -1;
 
-  if(!isdefined(level.zone_capture.rate_recapture))
+  if(!isDefined(level.zone_capture.rate_recapture))
     level.zone_capture.rate_recapture = get_update_rate(40) * -1;
 
-  if(!isdefined(level.zone_capture.rate_recapture_players))
+  if(!isDefined(level.zone_capture.rate_recapture_players))
     level.zone_capture.rate_recapture_players = get_update_rate(10);
 
   if(!self ent_flag("player_controlled")) {
@@ -1467,7 +1469,7 @@ get_progress_rate(n_players_in_zone, n_players_total) {
   } else if(self ent_flag("current_recapture_target_zone"))
     n_rate = level.zone_capture.rate_recapture_players;
   else if(n_players_in_zone > 0) {
-    if(isdefined(level.is_forever_solo_game) && level.is_forever_solo_game)
+    if(isDefined(level.is_forever_solo_game) && level.is_forever_solo_game)
       n_rate = level.zone_capture.rate_capture_solo;
     else
       n_rate = level.zone_capture.rate_capture * (n_players_in_zone / n_players_total);
@@ -1489,7 +1491,7 @@ show_zone_capture_objective(b_show_objective) {
 }
 
 clear_zone_objective_index() {
-  if(isdefined(self.n_objective_index) && get_zones_using_objective_index(self.n_objective_index) < 2) {
+  if(isDefined(self.n_objective_index) && get_zones_using_objective_index(self.n_objective_index) < 2) {
     objective_state(self.n_objective_index, "invisible");
     a_players = get_players();
 
@@ -1509,7 +1511,7 @@ hide_zone_objective_while_recapture_group_runs_to_next_generator(b_hide_icon) {
 
   do
     wait 1;
-  while (!flag("recapture_zombies_cleared") && self get_recapture_attacker_count() == 0);
+  while(!flag("recapture_zombies_cleared") && self get_recapture_attacker_count() == 0);
 
   if(!flag("recapture_zombies_cleared"))
     self thread generator_compromised_vo();
@@ -1518,8 +1520,8 @@ hide_zone_objective_while_recapture_group_runs_to_next_generator(b_hide_icon) {
 recapture_zombie_group_icon_show() {
   level endon("recapture_zombies_cleared");
 
-  if(isdefined(level.zone_capture.recapture_zombies) && flag("recapture_event_in_progress")) {
-    while (!level.zone_capture.recapture_zombies.size) {
+  if(isDefined(level.zone_capture.recapture_zombies) && flag("recapture_event_in_progress")) {
+    while(!level.zone_capture.recapture_zombies.size) {
       wait_network_frame();
       level.zone_capture.recapture_zombies = array_removedead(level.zone_capture.recapture_zombies);
     }
@@ -1536,8 +1538,9 @@ recapture_zombie_group_icon_show() {
 }
 
 recapture_zombie_icon_think() {
-  while (isalive(self) && !flag("generator_under_attack")) {
+  while(isalive(self) && !flag("generator_under_attack")) {
     debugstar(self.origin, 20, (1, 0, 0));
+
     wait 1;
   }
 
@@ -1604,6 +1607,7 @@ show_zone_capture_debug_info() {
       print3d(attack_point.origin + vectorscale((0, 0, 1), 10.0), n_index, v_color, 1, 1, 4);
     }
   }
+
 }
 
 get_players_in_capture_zone() {
@@ -1672,10 +1676,10 @@ generator_state_off() {
 }
 
 can_start_generator_power_up_anim() {
-  if(!isdefined(self.n_time_started_generator))
+  if(!isDefined(self.n_time_started_generator))
     self.n_time_started_generator = 0;
 
-  if(!isdefined(self.n_time_start_anim))
+  if(!isDefined(self.n_time_start_anim))
     self.n_time_start_anim = getanimlength( % fxanim_zom_tomb_generator_start_anim);
 
   return self.n_current_progress > self.n_last_progress && (gettime() - self.n_time_started_generator) * 0.001 > self.n_time_start_anim;
@@ -1685,7 +1689,7 @@ get_recapture_attacker_count() {
   n_zone_attacker_count = 0;
 
   foreach(zombie in level.zone_capture.recapture_zombies) {
-    if(isalive(zombie) && (isdefined(zombie.is_attacking_zone) && zombie.is_attacking_zone) && (!isdefined(self.script_noteworthy) && !isdefined(level.zone_capture.recapture_target) || isdefined(self.script_noteworthy) && isdefined(level.zone_capture.recapture_target) && self.script_noteworthy == level.zone_capture.recapture_target))
+    if(isalive(zombie) && (isDefined(zombie.is_attacking_zone) && zombie.is_attacking_zone) && (!isDefined(self.script_noteworthy) && !isDefined(level.zone_capture.recapture_target) || isDefined(self.script_noteworthy) && isDefined(level.zone_capture.recapture_target) && self.script_noteworthy == level.zone_capture.recapture_target))
       n_zone_attacker_count++;
   }
 
@@ -1702,10 +1706,11 @@ watch_for_open_sesame() {
     s_temp debug_set_generator_active();
     wait_network_frame();
   }
+
 }
 
 debug_watch_for_zone_capture() {
-  while (true) {
+  while(true) {
     level waittill("force_zone_capture", n_zone);
 
     foreach(zone in level.zone_capture.zones) {
@@ -1713,10 +1718,11 @@ debug_watch_for_zone_capture() {
         zone debug_set_generator_active();
     }
   }
+
 }
 
 debug_watch_for_zone_recapture() {
-  while (true) {
+  while(true) {
     level waittill("force_zone_recapture", n_zone);
 
     foreach(zone in level.zone_capture.zones) {
@@ -1724,6 +1730,7 @@ debug_watch_for_zone_recapture() {
         zone debug_set_generator_inactive();
     }
   }
+
 }
 
 debug_set_generator_active() {
@@ -1741,7 +1748,7 @@ debug_set_generator_inactive() {
 }
 
 set_magic_box_zbarrier_state(state) {
-  for (i = 0; i < self getnumzbarrierpieces(); i++)
+  for(i = 0; i < self getnumzbarrierpieces(); i++)
     self hidezbarrierpiece(i);
 
   self notify("zbarrier_state_change");
@@ -1780,7 +1787,7 @@ set_magic_box_zbarrier_state(state) {
       self.owner.is_locked = 0;
       break;
     case "zombie_controlled":
-      if(isdefined(level.zombie_vars["zombie_powerup_fire_sale_on"]) && level.zombie_vars["zombie_powerup_fire_sale_on"]) {
+      if(isDefined(level.zombie_vars["zombie_powerup_fire_sale_on"]) && level.zombie_vars["zombie_powerup_fire_sale_on"]) {
         self showzbarrierpiece(2);
         self setclientfield("magicbox_amb_fx", 0);
       }
@@ -1811,7 +1818,7 @@ set_magic_box_zbarrier_state(state) {
 
       break;
     default:
-      if(isdefined(level.custom_magicbox_state_handler))
+      if(isDefined(level.custom_magicbox_state_handler))
         self[[level.custom_magicbox_state_handler]](state);
 
       break;
@@ -1821,8 +1828,8 @@ set_magic_box_zbarrier_state(state) {
 magic_box_trigger_update_prompt(player) {
   can_use = self magic_box_stub_update_prompt(player);
 
-  if(isdefined(self.stub.hint_string)) {
-    if(isdefined(self.stub.hint_parm1))
+  if(isDefined(self.stub.hint_string)) {
+    if(isDefined(self.stub.hint_parm1))
       self sethintstring(self.stub.hint_string, self.stub.hint_parm1);
     else
       self sethintstring(self.stub.hint_string);
@@ -1839,7 +1846,7 @@ magic_box_stub_update_prompt(player) {
 
   self.stub.hint_parm1 = undefined;
 
-  if(isdefined(self.stub.trigger_target.grab_weapon_hint) && self.stub.trigger_target.grab_weapon_hint)
+  if(isDefined(self.stub.trigger_target.grab_weapon_hint) && self.stub.trigger_target.grab_weapon_hint)
     self.stub.hint_string = & "ZOMBIE_TRADE_WEAPONS";
   else if(!level.zone_capture.zones[self.stub.zone] ent_flag("player_controlled")) {
     self.stub.hint_string = & "ZM_TOMB_ZC";
@@ -1855,9 +1862,11 @@ magic_box_stub_update_prompt(player) {
 recapture_round_tracker() {
   n_next_recapture_round = 10;
 
-  while (true) {
+  while(true) {
     iprintln("Next Recapture Round = " + n_next_recapture_round);
+
     level waittill_any("between_round_over", "force_recapture_start");
+
     if(getdvarint(#"_id_EF89C4FC") > 0)
       n_next_recapture_round = level.round_number;
 
@@ -1870,8 +1879,10 @@ recapture_round_tracker() {
 
 get_player_controlled_zone_count_for_recapture() {
   n_zones_required = 4;
+
   if(getdvarint(#"_id_EF89C4FC") > 0)
     n_zones_required = 1;
+
   return n_zones_required;
 }
 
@@ -1886,19 +1897,20 @@ get_recapture_zone(s_last_recapture_zone) {
   s_recapture_zone = undefined;
 
   if(a_s_player_zones.size) {
-    if(isdefined(s_last_recapture_zone)) {
+    if(isDefined(s_last_recapture_zone)) {
       n_distance_closest = undefined;
 
       foreach(s_zone in a_s_player_zones) {
         n_distance = distancesquared(s_zone.origin, s_last_recapture_zone.origin);
 
-        if(!isdefined(n_distance_closest) || n_distance < n_distance_closest) {
+        if(!isDefined(n_distance_closest) || n_distance < n_distance_closest) {
           s_recapture_zone = s_zone;
           n_distance_closest = n_distance;
         }
       }
     } else {
       s_recapture_zone = random(a_s_player_zones);
+
       if(getdvarint(#"_id_8178CABA") > 0) {
         n_zone = getdvarint(#"_id_8178CABA");
 
@@ -1909,6 +1921,7 @@ get_recapture_zone(s_last_recapture_zone) {
           }
         }
       }
+
     }
   }
 
@@ -1925,7 +1938,7 @@ recapture_round_start() {
   capture_event_handle_ai_limit();
   recapture_round_audio_starts();
 
-  while (!flag("recapture_zombies_cleared") && get_captured_zone_count() > 0) {
+  while(!flag("recapture_zombies_cleared") && get_captured_zone_count() > 0) {
     s_recapture_target_zone = get_recapture_zone(s_recapture_target_zone);
     level.zone_capture.recapture_target = s_recapture_target_zone.script_noteworthy;
     s_recapture_target_zone maps\mp\zm_tomb_capture_zones_ffotd::recapture_event_start();
@@ -1960,7 +1973,7 @@ recapture_round_start() {
 }
 
 broadcast_vo_category_to_team(str_category, n_delay) {
-  if(!isdefined(n_delay))
+  if(!isDefined(n_delay))
     n_delay = 1;
 
   a_players = get_players();
@@ -1972,9 +1985,9 @@ broadcast_vo_category_to_team(str_category, n_delay) {
     arrayremovevalue(a_players, e_speaker);
     a_players = e_speaker get_players_too_far_to_hear(a_players);
   }
-  while (a_players.size > 0);
+  while(a_players.size > 0);
 
-  for (i = 0; i < a_speakers.size; i++)
+  for(i = 0; i < a_speakers.size; i++)
     a_speakers[i] delay_thread(n_delay, ::create_and_play_dialog, "zone_capture", str_category);
 }
 
@@ -1990,7 +2003,7 @@ get_players_too_far_to_hear(a_players) {
 }
 
 get_random_speaker(a_players) {
-  if(!isdefined(a_players))
+  if(!isDefined(a_players))
     a_players = get_players();
 
   a_valid_players = [];
@@ -2030,7 +2043,7 @@ sndrecaptureroundloop_stop() {
 }
 
 monitor_recapture_zombie_count() {
-  while (true) {
+  while(true) {
     level.zone_capture.recapture_zombies = array_removedead(level.zone_capture.recapture_zombies);
 
     if(level.zone_capture.recapture_zombies.size == 0) {
@@ -2038,7 +2051,7 @@ monitor_recapture_zombie_count() {
       flag_clear("recapture_event_in_progress");
       flag_clear("generator_under_attack");
 
-      if(isdefined(level.zone_capture.recapture_target)) {
+      if(isDefined(level.zone_capture.recapture_target)) {
         level.zone_capture.zones[level.zone_capture.recapture_target] ent_flag_clear("attacked_by_recapture_zombies");
         level.zone_capture.recapture_target = undefined;
       }
@@ -2051,10 +2064,10 @@ monitor_recapture_zombie_count() {
 }
 
 recapture_zombie_death_func() {
-  if(isdefined(self.is_recapture_zombie) && self.is_recapture_zombie) {
+  if(isDefined(self.is_recapture_zombie) && self.is_recapture_zombie) {
     level.recapture_zombies_killed++;
 
-    if(isdefined(self.attacker) && isplayer(self.attacker) && level.recapture_zombies_killed == get_recapture_zombies_needed()) {
+    if(isDefined(self.attacker) && isplayer(self.attacker) && level.recapture_zombies_killed == get_recapture_zombies_needed()) {
       self.attacker thread delay_thread(2, ::create_and_play_dialog, "zone_capture", "recapture_prevented");
 
       foreach(player in get_players()) {
@@ -2069,10 +2082,10 @@ recapture_zombie_death_func() {
 }
 
 drop_max_ammo_at_death_location() {
-  if(isdefined(self))
+  if(isDefined(self))
     v_powerup_origin = groundtrace(self.origin + vectorscale((0, 0, 1), 10.0), self.origin + vectorscale((0, 0, -1), 150.0), 0, undefined, 1)["position"];
 
-  if(isdefined(v_powerup_origin))
+  if(isDefined(v_powerup_origin))
     level thread maps\mp\zombies\_zm_powerups::specific_powerup_drop("full_ammo", v_powerup_origin);
 }
 
@@ -2095,7 +2108,7 @@ play_flare_effect() {
   self endon("death");
   n_end_time = gettime() + 5000;
 
-  while (flag("generator_under_attack")) {
+  while(flag("generator_under_attack")) {
     playfx(level._effect["lght_marker_flare"], self.origin);
     wait 4;
   }
@@ -2114,11 +2127,9 @@ recapture_round_audio_ends() {
 }
 
 custom_vending_power_on() {
-
 }
 
 custom_vending_power_off() {
-
 }
 
 generator_initiated_vo() {

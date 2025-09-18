@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\_trophy_system.gsc
-***************************************/
+**************************************/
 
 #include maps\mp\_utility;
 #include common_scripts\utility;
@@ -63,15 +63,15 @@ ontrophysystemspawn(watcher, player) {
   self setclientfield("trophy_system_state", 1);
   self playloopsound("wpn_trophy_spin", 0.25);
 
-  if(isdefined(watcher.reconmodel))
+  if(isDefined(watcher.reconmodel))
     self thread setreconmodeldeployed();
 }
 
 setreconmodeldeployed() {
   self endon("death");
 
-  for (;;) {
-    if(isdefined(self.reconmodelentity)) {
+  for(;;) {
+    if(isDefined(self.reconmodelentity)) {
       self.reconmodelentity setclientfield("trophy_system_state", 1);
       return;
     }
@@ -92,7 +92,7 @@ ontrophysystemsmashed(attacker) {
   self playsound("dst_tac_insert_break");
   self.owner maps\mp\gametypes\_globallogic_audio::leaderdialogonplayer("equipment_destroyed", "item_destroyed");
 
-  if(isdefined(attacker) && self.owner isenemyplayer(attacker)) {
+  if(isDefined(attacker) && self.owner isenemyplayer(attacker)) {
     attacker maps\mp\_challenges::destroyedequipment();
     maps\mp\_scoreevents::processscoreevent("destroyed_trophy_system", attacker, self.owner);
   }
@@ -105,32 +105,32 @@ trophyactive(owner) {
   self endon("death");
   self endon("hacked");
 
-  while (true) {
+  while(true) {
     tac_inserts = maps\mp\_tacticalinsertion::gettacticalinsertions();
 
-    if(level.missileentities.size < 1 && tac_inserts.size < 1 || isdefined(self.disabled)) {
+    if(level.missileentities.size < 1 && tac_inserts.size < 1 || isDefined(self.disabled)) {
       wait 0.05;
       continue;
     }
 
-    for (index = 0; index < level.missileentities.size; index++) {
+    for(index = 0; index < level.missileentities.size; index++) {
       wait 0.05;
       grenade = level.missileentities[index];
 
-      if(!isdefined(grenade)) {
+      if(!isDefined(grenade)) {
         continue;
       }
       if(grenade == self) {
         continue;
       }
-      if(isdefined(grenade.weaponname)) {
+      if(isDefined(grenade.weaponname)) {
         switch (grenade.weaponname) {
           case "claymore_mp":
             continue;
         }
       }
 
-      if(isdefined(grenade.name) && grenade.name == "tactical_insertion_mp") {
+      if(isDefined(grenade.name) && grenade.name == "tactical_insertion_mp") {
         continue;
       }
       switch (grenade.model) {
@@ -138,10 +138,10 @@ trophyactive(owner) {
           continue;
       }
 
-      if(!isdefined(grenade.owner))
+      if(!isDefined(grenade.owner))
         grenade.owner = getmissileowner(grenade);
 
-      if(isdefined(grenade.owner)) {
+      if(isDefined(grenade.owner)) {
         if(level.teambased) {
           if(grenade.owner.team == owner.team)
             continue;
@@ -165,14 +165,14 @@ trophyactive(owner) {
       }
     }
 
-    for (index = 0; index < tac_inserts.size; index++) {
+    for(index = 0; index < tac_inserts.size; index++) {
       wait 0.05;
       tac_insert = tac_inserts[index];
 
-      if(!isdefined(tac_insert)) {
+      if(!isDefined(tac_insert)) {
         continue;
       }
-      if(isdefined(tac_insert.owner)) {
+      if(isDefined(tac_insert.owner)) {
         if(level.teambased) {
           if(tac_insert.owner.team == owner.team)
             continue;
@@ -226,7 +226,7 @@ trophysystemdetonate(attacker, weaponname) {
   if(!from_emp)
     playfx(level._equipment_explode_fx_lg, self.origin);
 
-  if(isdefined(attacker) && self.owner isenemyplayer(attacker)) {
+  if(isDefined(attacker) && self.owner isenemyplayer(attacker)) {
     attacker maps\mp\_challenges::destroyedequipment(weaponname);
     maps\mp\_scoreevents::processscoreevent("destroyed_trophy_system", attacker, self.owner, weaponname);
   }
@@ -249,7 +249,7 @@ watchtrophysystemdamage(watcher) {
   self setmaxhealth(self.maxhealth);
   attacker = undefined;
 
-  while (true) {
+  while(true) {
     self waittill("damage", damage, attacker, direction_vec, point, type, modelname, tagname, partname, weaponname, idflags);
 
     if(!isplayer(attacker)) {
@@ -260,7 +260,7 @@ watchtrophysystemdamage(watcher) {
         continue;
     }
 
-    if(isdefined(weaponname)) {
+    if(isDefined(weaponname)) {
       switch (weaponname) {
         case "concussion_grenade_mp":
         case "flash_grenade_mp":

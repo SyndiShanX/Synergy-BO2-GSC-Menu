@@ -26,12 +26,12 @@ enable(handler) {
   level.handlerglobalflagval++;
   players = get_players();
 
-  for (i = 0; i < players.size; i++)
+  for(i = 0; i < players.size; i++)
     players[i].handlerflagval = level.handlerglobalflagval;
 
   players = handler.players;
 
-  for (i = 0; i < players.size; i++) {
+  for(i = 0; i < players.size; i++) {
     if(players[i].handlerflagval != level.handlerglobalflagval) {
       continue;
     }
@@ -48,12 +48,12 @@ disable(handler) {
   level.handlerglobalflagval++;
   players = get_players();
 
-  for (i = 0; i < players.size; i++)
+  for(i = 0; i < players.size; i++)
     players[i].handlerflagval = level.handlerglobalflagval;
 
   players = handler.players;
 
-  for (i = 0; i < players.size; i++) {
+  for(i = 0; i < players.size; i++) {
     if(players[i].handlerflagval != level.handlerglobalflagval) {
       continue;
     }
@@ -63,10 +63,10 @@ disable(handler) {
 }
 
 onplayerconnect(handler) {
-  for (;;) {
+  for(;;) {
     level waittill("connecting", player);
 
-    if(!isdefined(player.handlers))
+    if(!isDefined(player.handlers))
       player.handlers = [];
 
     player.handlers[handler.id] = spawnstruct();
@@ -86,7 +86,7 @@ onplayerdisconnect(handler) {
   self waittill("disconnect");
   newplayers = [];
 
-  for (i = 0; i < handler.players.size; i++) {
+  for(i = 0; i < handler.players.size; i++) {
     if(handler.players[i] != self)
       newplayers[newplayers.size] = handler.players[i];
   }
@@ -98,7 +98,7 @@ onplayerdisconnect(handler) {
 onjoinedteam(handler) {
   self endon("disconnect");
 
-  for (;;) {
+  for(;;) {
     self waittill("joined_team");
     self thread unhandleplayer(handler, 1, 0);
   }
@@ -107,7 +107,7 @@ onjoinedteam(handler) {
 onjoinedspectators(handler) {
   self endon("disconnect");
 
-  for (;;) {
+  for(;;) {
     self waittill("joined_spectators");
     self thread unhandleplayer(handler, 1, 0);
   }
@@ -116,7 +116,7 @@ onjoinedspectators(handler) {
 onplayerspawned(handler) {
   self endon("disconnect");
 
-  for (;;) {
+  for(;;) {
     self waittill("spawned_player");
     self thread handleplayer(handler);
   }
@@ -125,7 +125,7 @@ onplayerspawned(handler) {
 onplayerkilled(handler) {
   self endon("disconnect");
 
-  for (;;) {
+  for(;;) {
     self waittill("killed_player");
     self thread unhandleplayer(handler, 1, 0);
   }

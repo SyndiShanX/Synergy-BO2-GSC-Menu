@@ -33,13 +33,14 @@ main() {
   debug_anim_print("dog_move::main()");
   self setaimanimweights(0, 0);
   do_movement = 1;
+
   if(!debug_allow_movement())
     do_movement = 0;
 
-  if(isdefined(level.hostmigrationtimer))
+  if(isDefined(level.hostmigrationtimer))
     do_movement = 0;
 
-  if(!isdefined(self.traversecomplete) && !isdefined(self.skipstartmove) && self.a.movement == "run" && do_movement) {
+  if(!isDefined(self.traversecomplete) && !isDefined(self.skipstartmove) && self.a.movement == "run" && do_movement) {
     self startmove();
     blendtime = 0;
   } else
@@ -63,7 +64,7 @@ main() {
 
   self thread maps\mp\animscripts\dog_stop::lookattarget("normal");
 
-  while (true) {
+  while(true) {
     self moveloop();
 
     if(self.a.movement == "run") {
@@ -79,12 +80,13 @@ moveloop() {
   self endon("killanimscript");
   self endon("stop_soon");
 
-  while (true) {
+  while(true) {
     do_movement = 1;
+
     if(!debug_allow_movement())
       do_movement = 0;
 
-    if(isdefined(level.hostmigrationtimer))
+    if(isDefined(level.hostmigrationtimer))
       do_movement = 0;
 
     if(!do_movement) {
@@ -137,7 +139,7 @@ shouldrun() {
   else if(getdvarint(#"_id_D5D7999B") != 0)
     return false;
 
-  if(isdefined(self.enemy))
+  if(isDefined(self.enemy))
     return true;
 
   if(self.lookaheaddist <= 90)

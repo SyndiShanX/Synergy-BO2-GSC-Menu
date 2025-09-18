@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\zm_highrise_sq.gsc
-***************************************/
+**************************************/
 
 #include common_scripts\utility;
 #include maps\mp\_utility;
@@ -19,7 +19,7 @@
 #include maps\mp\zm_highrise_sq;
 
 init() {
-  if(isdefined(level.gamedifficulty) && level.gamedifficulty == 0) {
+  if(isDefined(level.gamedifficulty) && level.gamedifficulty == 0) {
     sq_easy_cleanup();
     return;
   }
@@ -36,7 +36,7 @@ init() {
   register_map_navcard("navcard_held_zm_highrise", "navcard_held_zm_transit");
   ss_buttons = getentarray("sq_ss_button", "targetname");
 
-  for (i = 0; i < ss_buttons.size; i++) {
+  for(i = 0; i < ss_buttons.size; i++) {
     ss_buttons[i] usetriggerrequirelookat();
     ss_buttons[i] sethintstring("");
     ss_buttons[i] setcursorhint("HINT_NOICON");
@@ -185,24 +185,23 @@ init_sidequest() {
 }
 
 init_sidequest_1() {
-
 }
 
 init_sidequest_2() {
-
 }
 
 generic_stage_start() {
   level thread cheat_complete_stage();
+
   level._stage_active = 1;
 }
 
 cheat_complete_stage() {
   level endon("reset_sundial");
 
-  while (true) {
+  while(true) {
     if(getdvar(#"_id_1186DB2D") != "") {
-      if(isdefined(level._last_stage_started)) {
+      if(isDefined(level._last_stage_started)) {
         setdvar("cheat_sq", "");
         stage_completed("sq", level._last_stage_started);
       }
@@ -307,6 +306,7 @@ tower_punch_watcher() {
   }
 
   flag_wait("sq_tower_active");
+
   iprintlnbold("TOWER ACTIVE");
 
   if(flag("sq_ric_tower_complete")) {
@@ -343,7 +343,7 @@ playtoweraudio() {
 }
 
 tower_punch_watch_leg(a_leg_trigs) {
-  while (!flag("sq_tower_active")) {
+  while(!flag("sq_tower_active")) {
     self waittill("trigger", who);
 
     if(level.n_cur_leg < a_leg_trigs.size && isplayer(who) && (who.current_melee_weapon == "tazer_knuckles_zm" || who.current_melee_weapon == "tazer_knuckles_upgraded_zm")) {
@@ -387,7 +387,7 @@ mahjong_tiles_setup() {
   assert(a_locs.size > a_winds.size, "zm_highrise_sq: not enough locations for mahjong tiles!");
   a_wind_order = array("none");
 
-  for (i = 0; i < a_winds.size; i++) {
+  for(i = 0; i < a_winds.size; i++) {
     a_wind_order[a_wind_order.size] = a_winds[i];
     m_wind_tile = getent("tile_" + a_winds[i] + "_" + a_colors[i], "targetname");
     m_wind_tile.script_noteworthy = undefined;
@@ -400,7 +400,7 @@ mahjong_tiles_setup() {
     m_wind_tile.angles = s_spot.angles;
   }
 
-  for (i = 0; i < a_colors.size; i++) {
+  for(i = 0; i < a_colors.size; i++) {
     m_num_tile = getent("tile_" + (i + 1) + "_" + a_colors[i], "targetname");
     m_num_tile.script_noteworthy = undefined;
     s_spot = a_locs[i + a_winds.size];
@@ -414,7 +414,7 @@ mahjong_tiles_setup() {
 }
 
 light_dragon_fireworks(str_dragon, n_num_fireworks) {
-  for (i = 0; i < n_num_fireworks; i++) {
+  for(i = 0; i < n_num_fireworks; i++) {
     wait 1;
     clientnotify(str_dragon + "_start_firework");
     wait 1;
@@ -427,7 +427,7 @@ temp_test_fx() {
   clientnotify("r_drg_tail");
   clientnotify("m_drg_tail");
 
-  while (n_index < 7) {
+  while(n_index < 7) {
     level waittill("temp_play_next_sq_fx");
     clientnotify("r_start_firework");
     clientnotify("m_start_firework");
@@ -466,11 +466,10 @@ complete_sidequest() {
 }
 
 sidequest_done() {
-
 }
 
 get_variant_from_entity_num(player_number) {
-  if(!isdefined(player_number))
+  if(!isDefined(player_number))
     player_number = 0;
 
   post_fix = "a";
@@ -538,16 +537,16 @@ init_navcomputer() {
   level.navcomputer_spawned = 1;
   get_players()[0] maps\mp\zombies\_zm_buildables::player_finish_buildable(level.sq_buildable.buildablezone);
 
-  if(isdefined(level.sq_buildable) && isdefined(level.sq_buildable.model)) {
+  if(isDefined(level.sq_buildable) && isDefined(level.sq_buildable.model)) {
     buildable = level.sq_buildable.buildablezone;
 
-    for (i = 0; i < buildable.pieces.size; i++) {
-      if(isdefined(buildable.pieces[i].model)) {
+    for(i = 0; i < buildable.pieces.size; i++) {
+      if(isDefined(buildable.pieces[i].model)) {
         buildable.pieces[i].model delete();
         maps\mp\zombies\_zm_unitrigger::unregister_unitrigger(buildable.pieces[i].unitrigger);
       }
 
-      if(isdefined(buildable.pieces[i].part_name)) {
+      if(isDefined(buildable.pieces[i].part_name)) {
         buildable.stub.model notsolid();
         buildable.stub.model show();
         buildable.stub.model showpart(buildable.pieces[i].part_name);
@@ -579,7 +578,7 @@ navcomputer_waitfor_navcard() {
   navcomputer_use_trig sethintstring(&"ZOMBIE_NAVCARD_USE");
   navcomputer_use_trig triggerignoreteam();
 
-  while (true) {
+  while(true) {
     navcomputer_use_trig waittill("trigger", who);
 
     if(isplayer(who) && is_player_valid(who)) {
@@ -641,7 +640,7 @@ sq_give_all_perks() {
   vending_triggers = getentarray("zombie_vending", "targetname");
   perks = [];
 
-  for (i = 0; i < vending_triggers.size; i++) {
+  for(i = 0; i < vending_triggers.size; i++) {
     perk = vending_triggers[i].script_noteworthy;
 
     if(perk == "specialty_weapupgrade") {
@@ -678,7 +677,7 @@ sq_give_player_perks(perks, v_fireball_start_loc, n_fireball_exploder) {
     v_move_spot = m_fireball.origin + v_to_player * 48;
     m_fireball.origin = v_move_spot;
   }
-  while (distancesquared(m_fireball.origin, self gettagorigin("J_SpineLower")) > 2304);
+  while(distancesquared(m_fireball.origin, self gettagorigin("J_SpineLower")) > 2304);
 
   m_fireball.origin = self gettagorigin("J_SpineLower");
   m_fireball linkto(self, "J_SpineLower");
@@ -688,7 +687,7 @@ sq_give_player_perks(perks, v_fireball_start_loc, n_fireball_exploder) {
   level notify("sq_fireball_hit_player");
 
   foreach(perk in perks) {
-    if(isdefined(self.perk_purchased) && self.perk_purchased == perk) {
+    if(isDefined(self.perk_purchased) && self.perk_purchased == perk) {
       continue;
     }
     if(self hasperk(perk) || self maps\mp\zombies\_zm_perks::has_perk_paused(perk)) {
@@ -703,10 +702,10 @@ sq_refresh_player_navcard_hud_internal() {
   self endon("disconnect");
   navcard_bits = 0;
 
-  for (i = 0; i < level.navcards.size; i++) {
+  for(i = 0; i < level.navcards.size; i++) {
     hasit = self maps\mp\zombies\_zm_stats::get_global_stat(level.navcards[i]);
 
-    if(isdefined(self.navcard_grabbed) && self.navcard_grabbed == level.navcards[i])
+    if(isDefined(self.navcard_grabbed) && self.navcard_grabbed == level.navcards[i])
       hasit = 1;
 
     if(hasit)
@@ -723,7 +722,7 @@ sq_refresh_player_navcard_hud_internal() {
 }
 
 sq_refresh_player_navcard_hud() {
-  if(!isdefined(level.navcards)) {
+  if(!isDefined(level.navcards)) {
     return;
   }
   players = get_players();
@@ -814,14 +813,14 @@ vo_maxis_punch_tower() {
 }
 
 vo_weapon_watcher() {
-  while (!flag("sq_player_has_sniper") || !flag("sq_player_has_ballistic")) {
+  while(!flag("sq_player_has_sniper") || !flag("sq_player_has_ballistic")) {
     players = getplayers();
 
     foreach(player in players) {
-      if(!flag("sq_player_has_sniper") && isdefined(player.currentweapon) && sq_is_weapon_sniper(player.currentweapon)) {
+      if(!flag("sq_player_has_sniper") && isDefined(player.currentweapon) && sq_is_weapon_sniper(player.currentweapon)) {
         flag_set("sq_player_has_sniper");
 
-        if(isdefined(level.rich_sq_player) && is_player_valid(level.rich_sq_player) && player == level.rich_sq_player)
+        if(isDefined(level.rich_sq_player) && is_player_valid(level.rich_sq_player) && player == level.rich_sq_player)
           level thread vo_richtofen_find_sniper();
         else
           level thread vo_maxis_find_sniper();
@@ -829,7 +828,7 @@ vo_weapon_watcher() {
         continue;
       }
 
-      if(!flag("sq_player_has_ballistic") && isdefined(player.currentweapon) && player.currentweapon == "knife_ballistic_upgraded_zm") {
+      if(!flag("sq_player_has_ballistic") && isDefined(player.currentweapon) && player.currentweapon == "knife_ballistic_upgraded_zm") {
         flag_set("sq_player_has_ballistic");
         level thread vo_maxis_player_has_pap_ballistic();
       }
@@ -862,14 +861,15 @@ richtofensay(vox_line, time) {
   }
   level endon("richtofen_c_complete");
 
-  if(!isdefined(time))
+  if(!isDefined(time))
     time = 2;
 
-  while (is_true(level.richtofen_talking_to_samuel))
+  while(is_true(level.richtofen_talking_to_samuel))
     wait 1;
 
-  if(isdefined(level.rich_sq_player) && is_player_valid(level.rich_sq_player)) {
+  if(isDefined(level.rich_sq_player) && is_player_valid(level.rich_sq_player)) {
     iprintlnbold("Richtoffen Says: " + vox_line);
+
     level.rich_sq_player playsoundtoplayer(vox_line, level.rich_sq_player);
 
     if(!is_true(level.richtofen_talking_to_samuel))
@@ -883,7 +883,7 @@ richtofen_talking(time) {
   wait(time);
   level.richtofen_talking_to_samuel = 0;
 
-  if(isdefined(level.rich_sq_player))
+  if(isDefined(level.rich_sq_player))
     level.rich_sq_player.dontspeak = 0;
 }
 
@@ -897,11 +897,13 @@ maxissay(line) {
   if(is_true(level.intermission)) {
     return;
   }
-  while (is_true(level.maxis_talking))
+  while(is_true(level.maxis_talking))
     wait 0.05;
 
   level.maxis_talking = 1;
+
   iprintlnbold("Maxis Says: " + line);
+
   players = getplayers();
 
   foreach(player in players)

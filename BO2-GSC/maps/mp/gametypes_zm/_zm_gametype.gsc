@@ -78,14 +78,14 @@ main() {
   map_name = level.script;
   mode = getdvar(#"ui_gametype");
 
-  if((!isdefined(mode) || mode == "") && isdefined(level.default_game_mode))
+  if((!isDefined(mode) || mode == "") && isDefined(level.default_game_mode))
     mode = level.default_game_mode;
 
   set_gamemode_var_once("mode", mode);
   set_game_var_once("side_selection", 1);
   location = getdvar(#"ui_zm_mapstartlocation");
 
-  if(location == "" && isdefined(level.default_start_location))
+  if(location == "" && isDefined(level.default_start_location))
     location = level.default_start_location;
 
   set_gamemode_var_once("location", location);
@@ -114,13 +114,13 @@ game_objects_allowed(mode, location) {
   entities = getentarray();
 
   foreach(entity in entities) {
-    if(isdefined(entity.script_gameobjectname)) {
+    if(isDefined(entity.script_gameobjectname)) {
       isallowed = maps\mp\gametypes_zm\_gameobjects::entity_is_allowed(entity, allowed);
       isvalidlocation = maps\mp\gametypes_zm\_gameobjects::location_is_allowed(entity, location);
 
       if(!isallowed || !isvalidlocation && !is_classic()) {
-        if(isdefined(entity.spawnflags) && entity.spawnflags == 1) {
-          if(isdefined(entity.classname) && entity.classname != "trigger_multiple")
+        if(isDefined(entity.spawnflags) && entity.spawnflags == 1) {
+          if(isDefined(entity.classname) && entity.classname != "trigger_multiple")
             entity connectpaths();
         }
 
@@ -128,18 +128,18 @@ game_objects_allowed(mode, location) {
         continue;
       }
 
-      if(isdefined(entity.script_vector)) {
+      if(isDefined(entity.script_vector)) {
         entity moveto(entity.origin + entity.script_vector, 0.05);
         entity waittill("movedone");
 
-        if(isdefined(entity.spawnflags) && entity.spawnflags == 1)
+        if(isDefined(entity.spawnflags) && entity.spawnflags == 1)
           entity disconnectpaths();
 
         continue;
       }
 
-      if(isdefined(entity.spawnflags) && entity.spawnflags == 1) {
-        if(isdefined(entity.classname) && entity.classname != "trigger_multiple")
+      if(isDefined(entity.spawnflags) && entity.spawnflags == 1) {
+        if(isDefined(entity.classname) && entity.classname != "trigger_multiple")
           entity connectpaths();
       }
     }
@@ -147,8 +147,8 @@ game_objects_allowed(mode, location) {
 }
 
 post_init_gametype() {
-  if(isdefined(level.gamemode_map_postinit)) {
-    if(isdefined(level.gamemode_map_postinit[level.scr_zm_ui_gametype]))
+  if(isDefined(level.gamemode_map_postinit)) {
+    if(isDefined(level.gamemode_map_postinit[level.scr_zm_ui_gametype]))
       [[level.gamemode_map_postinit[level.scr_zm_ui_gametype]]]();
   }
 }
@@ -157,8 +157,8 @@ post_gametype_main(mode) {
   set_game_var("ZM_roundWinLimit", get_game_var("ZM_roundLimit") * 0.5);
   level.roundlimit = get_game_var("ZM_roundLimit");
 
-  if(isdefined(level.gamemode_map_preinit)) {
-    if(isdefined(level.gamemode_map_preinit[mode]))
+  if(isDefined(level.gamemode_map_preinit)) {
+    if(isDefined(level.gamemode_map_preinit[mode]))
       [[level.gamemode_map_preinit[mode]]]();
   }
 }
@@ -219,10 +219,10 @@ setup_standard_objects(location) {
   structs = getstructarray("game_mode_object");
 
   foreach(struct in structs) {
-    if(isdefined(struct.script_noteworthy) && struct.script_noteworthy != location) {
+    if(isDefined(struct.script_noteworthy) && struct.script_noteworthy != location) {
       continue;
     }
-    if(isdefined(struct.script_string)) {
+    if(isDefined(struct.script_string)) {
       keep = 0;
       tokens = strtok(struct.script_string, " ");
 
@@ -251,18 +251,18 @@ setup_standard_objects(location) {
     if(!object is_survival_object()) {
       continue;
     }
-    if(isdefined(object.spawnflags) && object.spawnflags == 1 && object.classname != "trigger_multiple")
+    if(isDefined(object.spawnflags) && object.spawnflags == 1 && object.classname != "trigger_multiple")
       object connectpaths();
 
     object delete();
   }
 
-  if(isdefined(level._classic_setup_func))
+  if(isDefined(level._classic_setup_func))
     [[level._classic_setup_func]]();
 }
 
 is_survival_object() {
-  if(!isdefined(self.script_parameters))
+  if(!isDefined(self.script_parameters))
     return 0;
 
   tokens = strtok(self.script_parameters, " ");
@@ -279,33 +279,33 @@ is_survival_object() {
 game_module_player_damage_callback(einflictor, eattacker, idamage, idflags, smeansofdeath, sweapon, vpoint, vdir, shitloc, psoffsettime) {
   self.last_damage_from_zombie_or_player = 0;
 
-  if(isdefined(eattacker)) {
+  if(isDefined(eattacker)) {
     if(isplayer(eattacker) && eattacker == self) {
       return;
     }
-    if(isdefined(eattacker.is_zombie) && eattacker.is_zombie || isplayer(eattacker))
+    if(isDefined(eattacker.is_zombie) && eattacker.is_zombie || isplayer(eattacker))
       self.last_damage_from_zombie_or_player = 1;
   }
 
-  if(isdefined(self._being_shellshocked) && self._being_shellshocked || self maps\mp\zombies\_zm_laststand::player_is_in_laststand()) {
+  if(isDefined(self._being_shellshocked) && self._being_shellshocked || self maps\mp\zombies\_zm_laststand::player_is_in_laststand()) {
     return;
   }
-  if(isplayer(eattacker) && isdefined(eattacker._encounters_team) && eattacker._encounters_team != self._encounters_team) {
-    if(isdefined(self.hasriotshield) && self.hasriotshield && isdefined(vdir)) {
-      if(isdefined(self.hasriotshieldequipped) && self.hasriotshieldequipped) {
-        if(self maps\mp\zombies\_zm::player_shield_facing_attacker(vdir, 0.2) && isdefined(self.player_shield_apply_damage))
+  if(isplayer(eattacker) && isDefined(eattacker._encounters_team) && eattacker._encounters_team != self._encounters_team) {
+    if(isDefined(self.hasriotshield) && self.hasriotshield && isDefined(vdir)) {
+      if(isDefined(self.hasriotshieldequipped) && self.hasriotshieldequipped) {
+        if(self maps\mp\zombies\_zm::player_shield_facing_attacker(vdir, 0.2) && isDefined(self.player_shield_apply_damage))
           return;
-      } else if(!isdefined(self.riotshieldentity)) {
-        if(!self maps\mp\zombies\_zm::player_shield_facing_attacker(vdir, -0.2) && isdefined(self.player_shield_apply_damage))
+      } else if(!isDefined(self.riotshieldentity)) {
+        if(!self maps\mp\zombies\_zm::player_shield_facing_attacker(vdir, -0.2) && isDefined(self.player_shield_apply_damage))
           return;
       }
     }
 
-    if(isdefined(level._game_module_player_damage_grief_callback))
+    if(isDefined(level._game_module_player_damage_grief_callback))
       self[[level._game_module_player_damage_grief_callback]](einflictor, eattacker, idamage, idflags, smeansofdeath, sweapon, vpoint, vdir, shitloc, psoffsettime);
 
-    if(isdefined(level._effect["butterflies"])) {
-      if(isdefined(sweapon) && weapontype(sweapon) == "grenade")
+    if(isDefined(level._effect["butterflies"])) {
+      if(isDefined(sweapon) && weapontype(sweapon) == "grenade")
         playfx(level._effect["butterflies"], self.origin + vectorscale((0, 0, 1), 40.0));
       else
         playfx(level._effect["butterflies"], vpoint, vdir);
@@ -325,22 +325,22 @@ do_game_mode_shellshock() {
 }
 
 add_map_gamemode(mode, preinit_func, precache_func, main_func) {
-  if(!isdefined(level.gamemode_map_location_init))
+  if(!isDefined(level.gamemode_map_location_init))
     level.gamemode_map_location_init = [];
 
-  if(!isdefined(level.gamemode_map_location_main))
+  if(!isDefined(level.gamemode_map_location_main))
     level.gamemode_map_location_main = [];
 
-  if(!isdefined(level.gamemode_map_preinit))
+  if(!isDefined(level.gamemode_map_preinit))
     level.gamemode_map_preinit = [];
 
-  if(!isdefined(level.gamemode_map_postinit))
+  if(!isDefined(level.gamemode_map_postinit))
     level.gamemode_map_postinit = [];
 
-  if(!isdefined(level.gamemode_map_precache))
+  if(!isDefined(level.gamemode_map_precache))
     level.gamemode_map_precache = [];
 
-  if(!isdefined(level.gamemode_map_main))
+  if(!isDefined(level.gamemode_map_main))
     level.gamemode_map_main = [];
 
   level.gamemode_map_preinit[mode] = preinit_func;
@@ -351,8 +351,9 @@ add_map_gamemode(mode, preinit_func, precache_func, main_func) {
 }
 
 add_map_location_gamemode(mode, location, precache_func, main_func) {
-  if(!isdefined(level.gamemode_map_location_precache[mode])) {
+  if(!isDefined(level.gamemode_map_location_precache[mode])) {
     println("*** ERROR : " + mode + " has not been added to the map using add_map_gamemode.");
+
     return;
   }
 
@@ -361,55 +362,55 @@ add_map_location_gamemode(mode, location, precache_func, main_func) {
 }
 
 rungametypeprecache(gamemode) {
-  if(!isdefined(level.gamemode_map_location_main) || !isdefined(level.gamemode_map_location_main[gamemode])) {
+  if(!isDefined(level.gamemode_map_location_main) || !isDefined(level.gamemode_map_location_main[gamemode])) {
     return;
   }
-  if(isdefined(level.gamemode_map_precache)) {
-    if(isdefined(level.gamemode_map_precache[gamemode]))
+  if(isDefined(level.gamemode_map_precache)) {
+    if(isDefined(level.gamemode_map_precache[gamemode]))
       [[level.gamemode_map_precache[gamemode]]]();
   }
 
-  if(isdefined(level.gamemode_map_location_precache)) {
-    if(isdefined(level.gamemode_map_location_precache[gamemode])) {
+  if(isDefined(level.gamemode_map_location_precache)) {
+    if(isDefined(level.gamemode_map_location_precache[gamemode])) {
       loc = getdvar(#"ui_zm_mapstartlocation");
 
-      if(loc == "" && isdefined(level.default_start_location))
+      if(loc == "" && isDefined(level.default_start_location))
         loc = level.default_start_location;
 
-      if(isdefined(level.gamemode_map_location_precache[gamemode][loc]))
+      if(isDefined(level.gamemode_map_location_precache[gamemode][loc]))
         [[level.gamemode_map_location_precache[gamemode][loc]]]();
     }
   }
 
-  if(isdefined(level.precachecustomcharacters))
+  if(isDefined(level.precachecustomcharacters))
     self[[level.precachecustomcharacters]]();
 }
 
 rungametypemain(gamemode, mode_main_func, use_round_logic) {
-  if(!isdefined(level.gamemode_map_location_main) || !isdefined(level.gamemode_map_location_main[gamemode])) {
+  if(!isDefined(level.gamemode_map_location_main) || !isDefined(level.gamemode_map_location_main[gamemode])) {
     return;
   }
   level thread game_objects_allowed(get_gamemode_var("mode"), get_gamemode_var("location"));
 
-  if(isdefined(level.gamemode_map_main)) {
-    if(isdefined(level.gamemode_map_main[gamemode]))
+  if(isDefined(level.gamemode_map_main)) {
+    if(isDefined(level.gamemode_map_main[gamemode]))
       level thread[[level.gamemode_map_main[gamemode]]]();
   }
 
-  if(isdefined(level.gamemode_map_location_main)) {
-    if(isdefined(level.gamemode_map_location_main[gamemode])) {
+  if(isDefined(level.gamemode_map_location_main)) {
+    if(isDefined(level.gamemode_map_location_main[gamemode])) {
       loc = getdvar(#"ui_zm_mapstartlocation");
 
-      if(loc == "" && isdefined(level.default_start_location))
+      if(loc == "" && isDefined(level.default_start_location))
         loc = level.default_start_location;
 
-      if(isdefined(level.gamemode_map_location_main[gamemode][loc]))
+      if(isDefined(level.gamemode_map_location_main[gamemode][loc]))
         level thread[[level.gamemode_map_location_main[gamemode][loc]]]();
     }
   }
 
-  if(isdefined(mode_main_func)) {
-    if(isdefined(use_round_logic) && use_round_logic)
+  if(isDefined(mode_main_func)) {
+    if(isDefined(use_round_logic) && use_round_logic)
       level thread round_logic(mode_main_func);
     else
       level thread non_round_logic(mode_main_func);
@@ -421,19 +422,19 @@ rungametypemain(gamemode, mode_main_func, use_round_logic) {
 round_logic(mode_logic_func) {
   level.skit_vox_override = 1;
 
-  if(isdefined(level.flag["start_zombie_round_logic"]))
+  if(isDefined(level.flag["start_zombie_round_logic"]))
     flag_wait("start_zombie_round_logic");
 
   flag_wait("start_encounters_match_logic");
 
-  if(!isdefined(game["gamemode_match"]["rounds"]))
+  if(!isDefined(game["gamemode_match"]["rounds"]))
     game["gamemode_match"]["rounds"] = [];
 
   set_gamemode_var_once("current_round", 0);
   set_gamemode_var_once("team_1_score", 0);
   set_gamemode_var_once("team_2_score", 0);
 
-  if(isdefined(is_encounter()) && is_encounter()) {
+  if(isDefined(is_encounter()) && is_encounter()) {
     [
       [level._setteamscore]
     ]("allies", get_gamemode_var("team_2_score"));
@@ -469,7 +470,7 @@ round_logic(mode_logic_func) {
     set_gamemode_var("team_2_score", score + 1);
   }
 
-  if(isdefined(is_encounter()) && is_encounter()) {
+  if(isDefined(is_encounter()) && is_encounter()) {
     [
       [level._setteamscore]
     ]("allies", get_gamemode_var("team_2_score"));
@@ -493,13 +494,13 @@ round_logic(mode_logic_func) {
   if(startnextzmround(winner)) {
     level clientnotify("gme");
 
-    while (true)
+    while(true)
       wait 1;
   }
 
   level.match_is_ending = 1;
 
-  if(isdefined(is_encounter()) && is_encounter()) {
+  if(isDefined(is_encounter()) && is_encounter()) {
     matchwonteam = "";
 
     if(get_gamemode_var("team_1_score") > get_gamemode_var("team_2_score"))
@@ -523,14 +524,14 @@ end_rounds_early(winner) {
   cur_round = get_gamemode_var("current_round");
   set_gamemode_var("ZM_roundLimit", cur_round);
 
-  if(isdefined(winner))
+  if(isDefined(winner))
     level notify("game_module_ended", winner);
   else
     level notify("end_game");
 }
 
 checkzmroundswitch() {
-  if(!isdefined(level.zm_roundswitch) || !level.zm_roundswitch)
+  if(!isDefined(level.zm_roundswitch) || !level.zm_roundswitch)
     return false;
 
   assert(get_gamemode_var("current_round") > 0);
@@ -552,7 +553,7 @@ respawn_spectators_and_freeze_players() {
 
   foreach(player in players) {
     if(player.sessionstate == "spectator") {
-      if(isdefined(player.spectate_hud))
+      if(isDefined(player.spectate_hud))
         player.spectate_hud destroy();
 
       player[[level.spawnplayer]]();
@@ -648,7 +649,7 @@ createtimer() {
   elem.alpha = 2;
   elem thread maps\mp\gametypes_zm\_hud::fontpulseinit();
 
-  if(isdefined(level.timercountdown) && level.timercountdown)
+  if(isDefined(level.timercountdown) && level.timercountdown)
     elem settenthstimer(level.timelimit * 60);
   else
     elem settenthstimerup(0.1);
@@ -659,7 +660,7 @@ createtimer() {
 }
 
 revive_laststand_players() {
-  if(isdefined(level.match_is_ending) && level.match_is_ending) {
+  if(isDefined(level.match_is_ending) && level.match_is_ending) {
     return;
   }
   players = get_players();
@@ -687,14 +688,14 @@ team_icon_winner(elem) {
 delete_corpses() {
   corpses = getcorpsearray();
 
-  for (x = 0; x < corpses.size; x++)
+  for(x = 0; x < corpses.size; x++)
     corpses[x] delete();
 }
 
 track_encounters_win_stats(matchwonteam) {
   players = get_players();
 
-  for (i = 0; i < players.size; i++) {
+  for(i = 0; i < players.size; i++) {
     if(players[i]._encounters_team == matchwonteam) {
       players[i] maps\mp\zombies\_zm_stats::increment_client_stat("wins");
       players[i] maps\mp\zombies\_zm_stats::add_client_stat("losses", -1);
@@ -719,7 +720,7 @@ non_round_logic(mode_logic_func) {
 }
 
 game_end_func() {
-  if(!isdefined(get_gamemode_var("match_end_notify")) && !isdefined(get_gamemode_var("match_end_func"))) {
+  if(!isDefined(get_gamemode_var("match_end_notify")) && !isDefined(get_gamemode_var("match_end_func"))) {
     return;
   }
   level waittill(get_gamemode_var("match_end_notify"), winning_team);
@@ -730,7 +731,7 @@ setup_classic_gametype() {
   ents = getentarray();
 
   foreach(ent in ents) {
-    if(isdefined(ent.script_parameters)) {
+    if(isDefined(ent.script_parameters)) {
       parameters = strtok(ent.script_parameters, " ");
       should_remove = 0;
 
@@ -747,7 +748,7 @@ setup_classic_gametype() {
   structs = getstructarray("game_mode_object");
 
   foreach(struct in structs) {
-    if(!isdefined(struct.script_string)) {
+    if(!isDefined(struct.script_string)) {
       continue;
     }
     tokens = strtok(struct.script_string, " ");
@@ -792,7 +793,7 @@ canplayersuicide() {
 }
 
 onplayerdisconnect() {
-  if(isdefined(level.game_mode_custom_onplayerdisconnect))
+  if(isDefined(level.game_mode_custom_onplayerdisconnect))
     level[[level.game_mode_custom_onplayerdisconnect]](self);
 
   level thread maps\mp\zombies\_zm::check_quickrevive_for_hotjoin(1);
@@ -810,21 +811,21 @@ onspawnintermission() {
 
   if(spawnpoints.size < 1) {
     println("NO " + spawnpointname + " SPAWNPOINTS IN MAP");
+
     return;
   }
 
   spawnpoint = spawnpoints[randomint(spawnpoints.size)];
 
-  if(isdefined(spawnpoint))
+  if(isDefined(spawnpoint))
     self spawn(spawnpoint.origin, spawnpoint.angles);
 }
 
 onspawnspectator(origin, angles) {
-
 }
 
 mayspawn() {
-  if(isdefined(level.custommayspawnlogic))
+  if(isDefined(level.custommayspawnlogic))
     return self[[level.custommayspawnlogic]]();
 
   if(self.pers["lives"] == 0) {
@@ -881,13 +882,13 @@ create_final_score() {
 module_hud_team_winer_score() {
   players = get_players();
 
-  for (i = 0; i < players.size; i++) {
+  for(i = 0; i < players.size; i++) {
     players[i] thread create_module_hud_team_winer_score();
 
-    if(isdefined(players[i]._team_hud) && isdefined(players[i]._team_hud["team"]))
+    if(isDefined(players[i]._team_hud) && isDefined(players[i]._team_hud["team"]))
       players[i] thread team_icon_winner(players[i]._team_hud["team"]);
 
-    if(isdefined(level.lock_player_on_team_score) && level.lock_player_on_team_score) {
+    if(isDefined(level.lock_player_on_team_score) && level.lock_player_on_team_score) {
       players[i] freezecontrols(1);
       players[i] takeallweapons();
       players[i] setclientuivisibilityflag("hud_visible", 0);
@@ -950,7 +951,7 @@ displayroundend(round_winner) {
   foreach(player in players) {
     player thread module_hud_round_end(round_winner);
 
-    if(isdefined(player._team_hud) && isdefined(player._team_hud["team"]))
+    if(isDefined(player._team_hud) && isDefined(player._team_hud["team"]))
       player thread team_icon_winner(player._team_hud["team"]);
 
     player freeze_player_controls(1);
@@ -1032,10 +1033,10 @@ module_hud_create_team_name() {
   if(!is_encounter()) {
     return;
   }
-  if(!isdefined(self._team_hud))
+  if(!isDefined(self._team_hud))
     self._team_hud = [];
 
-  if(isdefined(self._team_hud["team"]))
+  if(isDefined(self._team_hud["team"]))
     self._team_hud["team"] destroy();
 
   elem = newclienthudelem(self);
@@ -1047,7 +1048,7 @@ module_hud_create_team_name() {
   elem.x = 0;
   elem.y = 0;
 
-  if(isdefined(level.game_module_team_name_override_og_x))
+  if(isDefined(level.game_module_team_name_override_og_x))
     elem.og_x = level.game_module_team_name_override_og_x;
   else
     elem.og_x = 85;
@@ -1084,7 +1085,7 @@ startnextzmround(winner) {
       game["state"] = "playing";
       level.allowbattlechatter = getgametypesetting("allowBattleChatter");
 
-      if(isdefined(level.zm_switchsides_on_roundswitch) && level.zm_switchsides_on_roundswitch)
+      if(isDefined(level.zm_switchsides_on_roundswitch) && level.zm_switchsides_on_roundswitch)
         set_game_var("switchedsides", !get_game_var("switchedsides"));
 
       map_restart(1);
@@ -1098,7 +1099,7 @@ startnextzmround(winner) {
 start_round() {
   flag_clear("start_encounters_match_logic");
 
-  if(!isdefined(level._module_round_hud)) {
+  if(!isDefined(level._module_round_hud)) {
     level._module_round_hud = newhudelem();
     level._module_round_hud.x = 0;
     level._module_round_hud.y = 70;
@@ -1114,7 +1115,7 @@ start_round() {
 
   players = get_players();
 
-  for (i = 0; i < players.size; i++)
+  for(i = 0; i < players.size; i++)
     players[i] freeze_player_controls(1);
 
   level._module_round_hud.alpha = 1;
@@ -1132,7 +1133,7 @@ start_round() {
   level thread play_sound_2d("zmb_air_horn");
   players = get_players();
 
-  for (i = 0; i < players.size; i++) {
+  for(i = 0; i < players.size; i++) {
     players[i] freeze_player_controls(0);
     players[i] sprintuprequired();
   }
@@ -1150,7 +1151,7 @@ isonezmround() {
 }
 
 waslastzmround() {
-  if(isdefined(level.forcedend) && level.forcedend)
+  if(isDefined(level.forcedend) && level.forcedend)
     return true;
 
   if(hitzmroundlimit() || hitzmscorelimit() || hitzmroundwinlimit())
@@ -1167,7 +1168,7 @@ hitzmroundlimit() {
 }
 
 hitzmroundwinlimit() {
-  if(!isdefined(get_game_var("ZM_roundWinLimit")) || get_game_var("ZM_roundWinLimit") <= 0)
+  if(!isDefined(get_game_var("ZM_roundWinLimit")) || get_game_var("ZM_roundWinLimit") <= 0)
     return false;
 
   if(get_gamemode_var("team_1_score") >= get_game_var("ZM_roundWinLimit") || get_gamemode_var("team_2_score") >= get_game_var("ZM_roundWinLimit"))
@@ -1202,20 +1203,21 @@ onspawnplayerunified() {
 }
 
 onspawnplayer(predictedspawn) {
-  if(!isdefined(predictedspawn))
+  if(!isDefined(predictedspawn))
     predictedspawn = 0;
 
   pixbeginevent("ZSURVIVAL:onSpawnPlayer");
   self.usingobj = undefined;
   self.is_zombie = 0;
 
-  if(isdefined(level.custom_spawnplayer) && (isdefined(self.player_initialized) && self.player_initialized)) {
+  if(isDefined(level.custom_spawnplayer) && (isDefined(self.player_initialized) && self.player_initialized)) {
     self[[level.custom_spawnplayer]]();
     return;
   }
 
-  if(isdefined(level.customspawnlogic)) {
+  if(isDefined(level.customspawnlogic)) {
     println("ZM >> USE CUSTOM SPAWNING");
+
     spawnpoint = self[[level.customspawnlogic]](predictedspawn);
 
     if(predictedspawn)
@@ -1225,24 +1227,26 @@ onspawnplayer(predictedspawn) {
 
     if(flag("begin_spawning")) {
       spawnpoint = maps\mp\zombies\_zm::check_for_valid_spawn_near_team(self, 1);
-      if(!isdefined(spawnpoint))
+
+      if(!isDefined(spawnpoint))
         println("ZM >> WARNING UNABLE TO FIND RESPAWN POINT NEAR TEAM - USING INITIAL SPAWN POINTS");
+
     }
 
-    if(!isdefined(spawnpoint)) {
+    if(!isDefined(spawnpoint)) {
       match_string = "";
       location = level.scr_zm_map_start_location;
 
-      if((location == "default" || location == "") && isdefined(level.default_start_location))
+      if((location == "default" || location == "") && isDefined(level.default_start_location))
         location = level.default_start_location;
 
       match_string = level.scr_zm_ui_gametype + "_" + location;
       spawnpoints = [];
       structs = getstructarray("initial_spawn", "script_noteworthy");
 
-      if(isdefined(structs)) {
+      if(isDefined(structs)) {
         foreach(struct in structs) {
-          if(isdefined(struct.script_string)) {
+          if(isDefined(struct.script_string)) {
             tokens = strtok(struct.script_string, " ");
 
             foreach(token in tokens) {
@@ -1253,10 +1257,10 @@ onspawnplayer(predictedspawn) {
         }
       }
 
-      if(!isdefined(spawnpoints) || spawnpoints.size == 0)
+      if(!isDefined(spawnpoints) || spawnpoints.size == 0)
         spawnpoints = getstructarray("initial_spawn_points", "targetname");
 
-      assert(isdefined(spawnpoints), "Could not find initial spawn points!");
+      assert(isDefined(spawnpoints), "Could not find initial spawn points!");
       spawnpoint = maps\mp\zombies\_zm::getfreespawnpoint(spawnpoints, self);
     }
 
@@ -1274,8 +1278,10 @@ onspawnplayer(predictedspawn) {
   self.spectator_respawn = spawnpoint;
   self.score = self maps\mp\gametypes_zm\_globallogic_score::getpersstat("score");
   self.pers["participation"] = 0;
+
   if(getdvarint(#"_id_FA81816F") >= 1)
     self.score = 100000;
+
   self.score_total = self.score;
   self.old_score = self.score;
   self.player_initialized = 0;
@@ -1283,12 +1289,12 @@ onspawnplayer(predictedspawn) {
   self.enabletext = 1;
   self thread maps\mp\zombies\_zm_blockers::rebuild_barrier_reward_reset();
 
-  if(!(isdefined(level.host_ended_game) && level.host_ended_game)) {
+  if(!(isDefined(level.host_ended_game) && level.host_ended_game)) {
     self freeze_player_controls(0);
     self enableweapons();
   }
 
-  if(isdefined(level.game_mode_spawn_player_logic)) {
+  if(isDefined(level.game_mode_spawn_player_logic)) {
     spawn_in_spectate = [
       [level.game_mode_spawn_player_logic]
     ]();
@@ -1304,7 +1310,7 @@ get_player_spawns_for_gametype() {
   match_string = "";
   location = level.scr_zm_map_start_location;
 
-  if((location == "default" || location == "") && isdefined(level.default_start_location))
+  if((location == "default" || location == "") && isDefined(level.default_start_location))
     location = level.default_start_location;
 
   match_string = level.scr_zm_ui_gametype + "_" + location;
@@ -1312,7 +1318,7 @@ get_player_spawns_for_gametype() {
   structs = getstructarray("player_respawn_point", "targetname");
 
   foreach(struct in structs) {
-    if(isdefined(struct.script_string)) {
+    if(isDefined(struct.script_string)) {
       tokens = strtok(struct.script_string, " ");
 
       foreach(token in tokens) {
@@ -1330,7 +1336,6 @@ get_player_spawns_for_gametype() {
 }
 
 onendgame(winningteam) {
-
 }
 
 onroundendgame(roundwinner) {
@@ -1386,7 +1391,7 @@ menu_init() {
 }
 
 menu_onplayerconnect() {
-  for (;;) {
+  for(;;) {
     level waittill("connecting", player);
     player thread menu_onmenuresponse();
   }
@@ -1395,7 +1400,7 @@ menu_onplayerconnect() {
 menu_onmenuresponse() {
   self endon("disconnect");
 
-  for (;;) {
+  for(;;) {
     self waittill("menuresponse", menu, response);
 
     if(response == "back") {
@@ -1466,7 +1471,7 @@ menu_onmenuresponse() {
       if(self issplitscreen()) {
         level.skipvote = 1;
 
-        if(!(isdefined(level.gameended) && level.gameended)) {
+        if(!(isDefined(level.gameended) && level.gameended)) {
           self maps\mp\zombies\_zm_laststand::add_weighted_down();
           self maps\mp\zombies\_zm_stats::increment_client_stat("deaths");
           self maps\mp\zombies\_zm_stats::increment_player_stat("deaths");
@@ -1494,7 +1499,7 @@ menu_onmenuresponse() {
     }
 
     if(response == "endround") {
-      if(!(isdefined(level.gameended) && level.gameended)) {
+      if(!(isDefined(level.gameended) && level.gameended)) {
         self maps\mp\gametypes_zm\_globallogic::gamehistoryplayerquit();
         self maps\mp\zombies\_zm_laststand::add_weighted_down();
         self closemenu();
@@ -1535,7 +1540,6 @@ menu_onmenuresponse() {
       self closeingamemenu();
 
       if(level.rankedmatch && issubstr(response, "custom")) {
-
       }
 
       self.selectedclass = 1;
@@ -1547,11 +1551,11 @@ menu_onmenuresponse() {
 menuallieszombies() {
   self maps\mp\gametypes_zm\_globallogic_ui::closemenus();
 
-  if(!level.console && level.allow_teamchange == "0" && (isdefined(self.hasdonecombat) && self.hasdonecombat)) {
+  if(!level.console && level.allow_teamchange == "0" && (isDefined(self.hasdonecombat) && self.hasdonecombat)) {
     return;
   }
   if(self.pers["team"] != "allies") {
-    if(level.ingraceperiod && (!isdefined(self.hasdonecombat) || !self.hasdonecombat))
+    if(level.ingraceperiod && (!isDefined(self.hasdonecombat) || !self.hasdonecombat))
       self.hasspawned = 0;
 
     if(self.sessionstate == "playing") {
@@ -1592,7 +1596,7 @@ kill_all_zombies() {
   ai = getaiarray(level.zombie_team);
 
   foreach(zombie in ai) {
-    if(isdefined(zombie)) {
+    if(isDefined(zombie)) {
       zombie dodamage(zombie.maxhealth * 2, zombie.origin, zombie, zombie, "none", "MOD_SUICIDE");
       wait 0.05;
     }
@@ -1606,11 +1610,11 @@ init() {
 }
 
 onplayerconnect() {
-  for (;;) {
+  for(;;) {
     level waittill("connected", player);
     player thread onplayerspawned();
 
-    if(isdefined(level.game_module_onplayerconnect))
+    if(isDefined(level.game_module_onplayerconnect))
       player[[level.game_module_onplayerconnect]]();
   }
 }
@@ -1619,16 +1623,16 @@ onplayerspawned() {
   level endon("end_game");
   self endon("disconnect");
 
-  for (;;) {
+  for(;;) {
     self waittill_either("spawned_player", "fake_spawned_player");
 
-    if(isdefined(level.match_is_ending) && level.match_is_ending) {
+    if(isDefined(level.match_is_ending) && level.match_is_ending) {
       return;
     }
     if(self maps\mp\zombies\_zm_laststand::player_is_in_laststand())
       self thread maps\mp\zombies\_zm_laststand::auto_revive(self);
 
-    if(isdefined(level.custom_player_fake_death_cleanup))
+    if(isDefined(level.custom_player_fake_death_cleanup))
       self[[level.custom_player_fake_death_cleanup]]();
 
     self setstance("stand");
@@ -1651,25 +1655,25 @@ onplayerspawned() {
 
     self takeallweapons();
 
-    if(isdefined(level.givecustomcharacters))
+    if(isDefined(level.givecustomcharacters))
       self[[level.givecustomcharacters]]();
 
     self giveweapon("knife_zm");
 
-    if(isdefined(level.onplayerspawned_restore_previous_weapons) && (isdefined(level.isresetting_grief) && level.isresetting_grief))
+    if(isDefined(level.onplayerspawned_restore_previous_weapons) && (isDefined(level.isresetting_grief) && level.isresetting_grief))
       weapons_restored = self[[level.onplayerspawned_restore_previous_weapons]]();
 
-    if(!(isdefined(weapons_restored) && weapons_restored))
+    if(!(isDefined(weapons_restored) && weapons_restored))
       self give_start_weapon(1);
 
     weapons_restored = 0;
 
-    if(isdefined(level._team_loadout)) {
+    if(isDefined(level._team_loadout)) {
       self giveweapon(level._team_loadout);
       self switchtoweapon(level._team_loadout);
     }
 
-    if(isdefined(level.gamemode_post_spawn_logic))
+    if(isDefined(level.gamemode_post_spawn_logic))
       self[[level.gamemode_post_spawn_logic]]();
   }
 }
@@ -1682,10 +1686,10 @@ wait_for_players() {
     return;
   }
 
-  while (!flag_exists("start_zombie_round_logic"))
+  while(!flag_exists("start_zombie_round_logic"))
     wait 0.05;
 
-  while (!flag("start_zombie_round_logic") && isdefined(level._module_connect_hud)) {
+  while(!flag("start_zombie_round_logic") && isDefined(level._module_connect_hud)) {
     level._module_connect_hud.alpha = 0;
     level._module_connect_hud.sort = 12;
     level._module_connect_hud fadeovertime(1.0);
@@ -1696,13 +1700,14 @@ wait_for_players() {
     wait 1.5;
   }
 
-  if(isdefined(level._module_connect_hud))
+  if(isDefined(level._module_connect_hud))
     level._module_connect_hud destroy();
 }
 
 onplayerconnect_check_for_hotjoin() {
-  if(getdvarint(#"_id_EA6D219A") > 0)
+  if(getdvarint(#"_id_EA6D219A") > 0) {
     return;
+  }
   map_logic_exists = level flag_exists("start_zombie_round_logic");
   map_logic_started = flag("start_zombie_round_logic");
 
@@ -1716,7 +1721,7 @@ hide_gump_loading_for_hotjoiners() {
   self.is_hotjoining = 1;
   num = self getsnapshotackindex();
 
-  while (num == self getsnapshotackindex())
+  while(num == self getsnapshotackindex())
     wait 0.25;
 
   wait 0.5;

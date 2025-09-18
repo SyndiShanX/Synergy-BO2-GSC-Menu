@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\mp_dockside.gsc
-***************************************/
+**************************************/
 
 #include maps\mp\_utility;
 #include maps\mp\mp_dockside_fx;
@@ -43,13 +43,14 @@ main() {
   else {
     crate_triggers = getentarray("crate_kill_trigger", "targetname");
 
-    for (i = 0; i < crate_triggers.size; i++)
+    for(i = 0; i < crate_triggers.size; i++)
       crate_triggers[i] delete();
   }
 
   setheliheightpatchenabled("war_mode_heli_height_lock", 0);
   level thread water_trigger_init();
   rts_remove();
+
   level thread devgui_dockside();
   execdevgui("devgui_mp_dockside");
 }
@@ -72,7 +73,7 @@ water_trigger_init() {
 }
 
 water_trigger_think() {
-  for (;;) {
+  for(;;) {
     self waittill("trigger", entity);
 
     if(isplayer(entity)) {
@@ -111,7 +112,7 @@ rts_remove() {
   removes = getentarray("rts_only", "targetname");
 
   foreach(remove in removes) {
-    if(isdefined(remove))
+    if(isDefined(remove))
       remove delete();
   }
 }
@@ -119,7 +120,7 @@ rts_remove() {
 devgui_dockside() {
   setdvar("devgui_notify", "");
 
-  for (;;) {
+  for(;;) {
     wait 0.5;
     devgui_string = getdvar(#"devgui_notify");
 
@@ -136,6 +137,7 @@ devgui_dockside() {
     if(getdvar(#"devgui_notify") != "")
       setdvar("devgui_notify", "");
   }
+
 }
 
 crane_print_dvars() {
@@ -152,4 +154,5 @@ crane_print_dvars() {
     print(dvar + ": ");
     println(getdvar(dvar));
   }
+
 }

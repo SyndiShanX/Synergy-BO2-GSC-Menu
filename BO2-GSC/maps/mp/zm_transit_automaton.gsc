@@ -114,12 +114,12 @@ automatondamagecallback() {
   self.health = 100000;
   triggers = getentarray("bus_door_trigger", "targetname");
 
-  while (true) {
+  while(true) {
     self waittill("damage", amount, attacker, directionvec, point, type);
     self.health = 100000;
     wait 1;
 
-    if(isdefined(self.disabled_by_emp) && self.disabled_by_emp || isdefined(self.isspeaking) && self.isspeaking || isdefined(level.playerattackingautomaton) && level.playerattackingautomaton) {
+    if(isDefined(self.disabled_by_emp) && self.disabled_by_emp || isDefined(self.isspeaking) && self.isspeaking || isDefined(level.playerattackingautomaton) && level.playerattackingautomaton) {
       continue;
     }
     self say_player_attack_vox();
@@ -129,14 +129,14 @@ automatondamagecallback() {
     }
     level.timesplayerattackingautomaton = 0;
 
-    if(isdefined(attacker) && isplayer(attacker)) {
+    if(isDefined(attacker) && isplayer(attacker)) {
       wait 5;
 
-      if(!isdefined(self.dmgfxorigin)) {
+      if(!isDefined(self.dmgfxorigin)) {
         self.dmgfxorigin = spawn("script_model", point);
         self.dmgfxorigin setmodel("tag_origin");
 
-        if(isdefined(type) && type == "MOD_GRENADE_SPLASH")
+        if(isDefined(type) && type == "MOD_GRENADE_SPLASH")
           self.dmgfxorigin.origin = self gettagorigin("tag_origin") + vectorscale((0, 0, 1), 40.0);
 
         self.dmgfxorigin linkto(self, "J_neck");
@@ -151,7 +151,7 @@ automatondamagecallback() {
       level.the_bus.force_lock_doors = 1;
 
       if(randomint(100) > 50) {
-        if(!(isdefined(level.the_bus.skip_next_destination) && level.the_bus.skip_next_destination))
+        if(!(isDefined(level.the_bus.skip_next_destination) && level.the_bus.skip_next_destination))
           level thread bus_skip_destination();
 
         level thread automatonspeak("inform", "player_pissed", undefined, 0);
@@ -183,7 +183,7 @@ automatondamagecallback() {
       level.the_bus.force_lock_doors = 0;
     }
 
-    if(isdefined(self.dmgfxorigin)) {
+    if(isDefined(self.dmgfxorigin)) {
       self.dmgfxorigin unlink();
       self.dmgfxorigin delete();
       self.dmgfxorigin = undefined;
@@ -200,16 +200,16 @@ bus_skip_destination() {
 automatonanimationsspeaking() {
   self thread bus_driver_idle();
 
-  while (true) {
+  while(true) {
     self waittill("want_to_be_speaking", speakingline);
     self.isplayingspeakinganim = 1;
 
-    while (isdefined(self.isplayingidleanim) && self.isplayingidleanim)
+    while(isDefined(self.isplayingidleanim) && self.isplayingidleanim)
       wait 0.05;
 
     self notify("startspeaking");
 
-    if(isdefined(self.disabled_by_emp) && self.disabled_by_emp) {
+    if(isDefined(self.disabled_by_emp) && self.disabled_by_emp) {
       self.isplayingspeakinganim = 0;
       continue;
     }
@@ -223,7 +223,7 @@ automatonanimationsspeaking() {
     } else if(issubstr(speakingline, "warning_out") || is_true(level.bus_driver_focused)) {
       speakinganim = % ai_zombie_bus_driver_idle_dialog_focused;
       speakingnum = 2;
-    } else if(issubstr(speakingline, "zombie_enter") || isdefined(level.bus_zombie_danger) && level.bus_zombie_danger) {
+    } else if(issubstr(speakingline, "zombie_enter") || isDefined(level.bus_zombie_danger) && level.bus_zombie_danger) {
       speakinganim = % ai_zombie_bus_driver_idle_dialog_panicked;
       speakingnum = 3;
     } else if(issubstr(speakingline, "stop_generic") || issubstr(speakingline, "warning_leaving")) {
@@ -246,15 +246,17 @@ automatonanimationsspeaking() {
     } else if(issubstr(speakingline, "discover")) {
       speakinganim = % ai_zombie_bus_driver_idle_dialog;
       speakingnum = 0;
-    } else if(isdefined(level.stops) && isdefined(level.stops["depot"]) && level.stops["depot"] < 1 && issubstr(speakingline, "near_")) {
+    } else if(isDefined(level.stops) && isDefined(level.stops["depot"]) && level.stops["depot"] < 1 && issubstr(speakingline, "near_")) {
       speakinganim = % ai_zombie_bus_driver_forward_short_dialog;
       speakingnum = 7;
     }
 
     self setanim(speakinganim);
     self thread sndspeakinganimaudio(speakingnum);
+
     if(getdvar(#"_id_96F6EBD9") != "")
       iprintlnbold("" + speakinganim);
+
     wait(getanimlength(speakinganim));
     self.isplayingspeakinganim = 0;
   }
@@ -279,13 +281,13 @@ bus_driver_idle() {
   idle_anims[3] = % ai_zombie_bus_driver_idle_d;
   idle_anims[4] = % ai_zombie_bus_driver_idle;
 
-  while (true) {
-    if(isdefined(self.isplayingspeakinganim) && self.isplayingspeakinganim || isdefined(self.disabled_by_emp) && self.disabled_by_emp) {
+  while(true) {
+    if(isDefined(self.isplayingspeakinganim) && self.isplayingspeakinganim || isDefined(self.disabled_by_emp) && self.disabled_by_emp) {
       wait 0.05;
       continue;
     }
 
-    if(isdefined(level.bus_zombie_danger) && level.bus_zombie_danger)
+    if(isDefined(level.bus_zombie_danger) && level.bus_zombie_danger)
       driveranim = random(danger_anims);
     else if(is_true(level.bus_driver_focused))
       driveranim = random(focused_anims);
@@ -294,11 +296,12 @@ bus_driver_idle() {
     else
       driveranim = random(idle_anims);
 
-    if(isdefined(self.previous_anim) && self.previous_anim == driveranim && driveranim != % ai_zombie_bus_driver_idle)
+    if(isDefined(self.previous_anim) && self.previous_anim == driveranim && driveranim != % ai_zombie_bus_driver_idle)
       driveranim = % ai_zombie_bus_driver_idle;
 
     if(getdvar(#"_id_6DF184E8") != "")
       iprintlnbold("Idle:" + driveranim);
+
     self.isplayingidleanim = 1;
     self setanim(driveranim);
     self thread sndplaydriveranimsnd(driveranim);
@@ -309,8 +312,8 @@ bus_driver_idle() {
 }
 
 automatonemp() {
-  while (true) {
-    if(!(isdefined(level.the_bus.disabled_by_emp) && level.the_bus.disabled_by_emp))
+  while(true) {
+    if(!(isDefined(level.the_bus.disabled_by_emp) && level.the_bus.disabled_by_emp))
       level.the_bus waittill("pre_power_off");
 
     level.automaton.disabled_by_emp = 1;
@@ -320,7 +323,7 @@ automatonemp() {
     wait(getanimlength( % ai_zombie_bus_driver_emp_powerdown));
     level.automaton setanim( % ai_zombie_bus_driver_emp_powerdown_idle);
 
-    if(isdefined(level.the_bus.pre_disabled_by_emp) && level.the_bus.pre_disabled_by_emp || isdefined(level.the_bus.disabled_by_emp) && level.the_bus.disabled_by_emp)
+    if(isDefined(level.the_bus.pre_disabled_by_emp) && level.the_bus.pre_disabled_by_emp || isDefined(level.the_bus.disabled_by_emp) && level.the_bus.disabled_by_emp)
       level.the_bus waittill("power_on");
 
     level.automaton setanim( % ai_zombie_bus_driver_emp_powerup);
@@ -332,10 +335,10 @@ automatonemp() {
 }
 
 say_player_attack_vox() {
-  if(isdefined(level.the_bus.force_lock_doors) && level.the_bus.force_lock_doors) {
+  if(isDefined(level.the_bus.force_lock_doors) && level.the_bus.force_lock_doors) {
     level.timesplayerattackingautomaton = 0;
     return;
-  } else if(isdefined(level.playerattackingautomaton) && level.playerattackingautomaton) {
+  } else if(isDefined(level.playerattackingautomaton) && level.playerattackingautomaton) {
     return;
   }
   level.playerattackingautomaton = 1;
@@ -368,8 +371,8 @@ bus_upgrade_vox() {
   plow_trig = getent("trigger_plow", "targetname");
   hatch_trig = getent("bus_hatch_bottom_trigger", "targetname");
 
-  while (true) {
-    if(isdefined(level.stops) && isdefined(level.stops["depot"]) && level.stops["depot"] < 1) {
+  while(true) {
+    if(isDefined(level.stops) && isDefined(level.stops["depot"]) && level.stops["depot"] < 1) {
       wait 1;
       continue;
     }
@@ -378,7 +381,7 @@ bus_upgrade_vox() {
     players = get_players();
 
     foreach(player in players) {
-      if(isdefined(player.isonbus) && player.isonbus) {
+      if(isDefined(player.isonbus) && player.isonbus) {
         if(distancesquared(player.origin, hatch_trig.origin) < 5184 && !flag("hatch_attached"))
           should_say_upgrade = 2;
 
@@ -410,7 +413,7 @@ shove_players_off_bus() {
   players = get_players();
 
   foreach(player in players) {
-    if(isdefined(player.isonbus) && player.isonbus) {
+    if(isDefined(player.isonbus) && player.isonbus) {
       dir = anglestoright(level.the_bus.angles);
       dir = vectornormalize(dir);
       player_velocity = dir * 900;

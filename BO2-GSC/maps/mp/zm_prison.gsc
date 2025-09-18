@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\zm_prison.gsc
-***************************************/
+**************************************/
 
 #include common_scripts\utility;
 #include maps\mp\_utility;
@@ -61,7 +61,7 @@ zclassic_preinit() {
 createfx_callback() {
   ents = getentarray();
 
-  for (i = 0; i < ents.size; i++) {
+  for(i = 0; i < ents.size; i++) {
     if(ents[i].classname != "info_player_start")
       ents[i] delete();
   }
@@ -163,7 +163,7 @@ main() {
 
   setculldist(level.culldist);
 
-  if(isdefined(level.optimise_for_splitscreen) && level.optimise_for_splitscreen) {
+  if(isDefined(level.optimise_for_splitscreen) && level.optimise_for_splitscreen) {
     if(is_classic())
       level.zombie_ai_limit = 20;
 
@@ -212,7 +212,6 @@ main() {
 }
 
 title_update_main_start() {
-
 }
 
 title_update_main_end() {
@@ -262,13 +261,13 @@ custom_vending_precaching() {
   if(level._custom_perks.size > 0) {
     a_keys = getarraykeys(level._custom_perks);
 
-    for (i = 0; i < a_keys.size; i++) {
-      if(isdefined(level._custom_perks[a_keys[i]].precache_func))
+    for(i = 0; i < a_keys.size; i++) {
+      if(isDefined(level._custom_perks[a_keys[i]].precache_func))
         level[[level._custom_perks[a_keys[i]].precache_func]]();
     }
   }
 
-  if(isdefined(level.zombiemode_using_pack_a_punch) && level.zombiemode_using_pack_a_punch) {
+  if(isDefined(level.zombiemode_using_pack_a_punch) && level.zombiemode_using_pack_a_punch) {
     precacheitem("zombie_knuckle_crack");
     precachemodel("p6_anim_zm_buildable_pap");
     precachemodel("p6_anim_zm_buildable_pap_on");
@@ -283,7 +282,7 @@ custom_vending_precaching() {
     level.machine_assets["packapunch"].power_off_callback = maps\mp\zm_prison::custom_vending_power_off;
   }
 
-  if(isdefined(level.zombiemode_using_additionalprimaryweapon_perk) && level.zombiemode_using_additionalprimaryweapon_perk) {
+  if(isDefined(level.zombiemode_using_additionalprimaryweapon_perk) && level.zombiemode_using_additionalprimaryweapon_perk) {
     precacheitem("zombie_perk_bottle_additionalprimaryweapon");
     precacheshader("specialty_additionalprimaryweapon_zombies");
     precachemodel("p6_zm_al_vending_three_gun_on");
@@ -297,7 +296,7 @@ custom_vending_precaching() {
     level.machine_assets["additionalprimaryweapon"].power_off_callback = maps\mp\zm_prison::custom_vending_power_off;
   }
 
-  if(isdefined(level.zombiemode_using_deadshot_perk) && level.zombiemode_using_deadshot_perk) {
+  if(isDefined(level.zombiemode_using_deadshot_perk) && level.zombiemode_using_deadshot_perk) {
     precacheitem("zombie_perk_bottle_deadshot");
     precacheshader("specialty_ads_zombies");
     precachemodel("p6_zm_al_vending_ads_on");
@@ -311,7 +310,7 @@ custom_vending_precaching() {
     level.machine_assets["deadshot"].power_off_callback = maps\mp\zm_prison::custom_vending_power_off;
   }
 
-  if(isdefined(level.zombiemode_using_divetonuke_perk) && level.zombiemode_using_divetonuke_perk) {
+  if(isDefined(level.zombiemode_using_divetonuke_perk) && level.zombiemode_using_divetonuke_perk) {
     precacheitem("zombie_perk_bottle_nuke");
     precacheshader("specialty_divetonuke_zombies");
     precachemodel("p6_zm_al_vending_nuke_on");
@@ -325,7 +324,7 @@ custom_vending_precaching() {
     level.machine_assets["divetonuke"].power_off_callback = maps\mp\zm_prison::custom_vending_power_off;
   }
 
-  if(isdefined(level.zombiemode_using_doubletap_perk) && level.zombiemode_using_doubletap_perk) {
+  if(isDefined(level.zombiemode_using_doubletap_perk) && level.zombiemode_using_doubletap_perk) {
     precacheitem("zombie_perk_bottle_doubletap");
     precacheshader("specialty_doubletap_zombies");
     precachemodel("p6_zm_al_vending_doubletap2_on");
@@ -339,7 +338,7 @@ custom_vending_precaching() {
     level.machine_assets["doubletap"].power_off_callback = maps\mp\zm_prison::custom_vending_power_off;
   }
 
-  if(isdefined(level.zombiemode_using_juggernaut_perk) && level.zombiemode_using_juggernaut_perk) {
+  if(isDefined(level.zombiemode_using_juggernaut_perk) && level.zombiemode_using_juggernaut_perk) {
     precacheitem("zombie_perk_bottle_jugg");
     precacheshader("specialty_juggernaut_zombies");
     precachemodel("p6_zm_al_vending_jugg_on");
@@ -353,7 +352,7 @@ custom_vending_precaching() {
     level.machine_assets["juggernog"].power_off_callback = maps\mp\zm_prison::custom_vending_power_off;
   }
 
-  if(isdefined(level.zombiemode_using_marathon_perk) && level.zombiemode_using_marathon_perk) {
+  if(isDefined(level.zombiemode_using_marathon_perk) && level.zombiemode_using_marathon_perk) {
     precacheitem("zombie_perk_bottle_marathon");
     precacheshader("specialty_marathon_zombies");
     precachemodel("zombie_vending_marathon");
@@ -366,7 +365,7 @@ custom_vending_precaching() {
     level.machine_assets["marathon"].on_model = "zombie_vending_marathon_on";
   }
 
-  if(isdefined(level.zombiemode_using_revive_perk) && level.zombiemode_using_revive_perk) {
+  if(isDefined(level.zombiemode_using_revive_perk) && level.zombiemode_using_revive_perk) {
     precacheitem("zombie_perk_bottle_revive");
     precacheshader("specialty_quickrevive_zombies");
     precachemodel("zombie_vending_revive");
@@ -380,7 +379,7 @@ custom_vending_precaching() {
     level.machine_assets["revive"].on_model = "zombie_vending_revive_on";
   }
 
-  if(isdefined(level.zombiemode_using_sleightofhand_perk) && level.zombiemode_using_sleightofhand_perk) {
+  if(isDefined(level.zombiemode_using_sleightofhand_perk) && level.zombiemode_using_sleightofhand_perk) {
     precacheitem("zombie_perk_bottle_sleight");
     precacheshader("specialty_fastreload_zombies");
     precachemodel("p6_zm_al_vending_sleight_on");
@@ -394,7 +393,7 @@ custom_vending_precaching() {
     level.machine_assets["speedcola"].power_off_callback = maps\mp\zm_prison::custom_vending_power_off;
   }
 
-  if(isdefined(level.zombiemode_using_tombstone_perk) && level.zombiemode_using_tombstone_perk) {
+  if(isDefined(level.zombiemode_using_tombstone_perk) && level.zombiemode_using_tombstone_perk) {
     precacheitem("zombie_perk_bottle_tombstone");
     precacheshader("specialty_tombstone_zombies");
     precachemodel("zombie_vending_tombstone");
@@ -408,7 +407,7 @@ custom_vending_precaching() {
     level.machine_assets["tombstone"].on_model = "zombie_vending_tombstone_on";
   }
 
-  if(isdefined(level.zombiemode_using_chugabud_perk) && level.zombiemode_using_chugabud_perk) {
+  if(isDefined(level.zombiemode_using_chugabud_perk) && level.zombiemode_using_chugabud_perk) {
     precacheitem("zombie_perk_bottle_whoswho");
     precacheshader("specialty_quickrevive_zombies");
     precachemodel("p6_zm_vending_chugabud");
@@ -443,17 +442,18 @@ precache_personality_characters() {
 }
 
 give_personality_characters() {
-  if(isdefined(level.hotjoin_player_setup) && [
+  if(isDefined(level.hotjoin_player_setup) && [
       [level.hotjoin_player_setup]
     ]("c_zom_arlington_coat_viewhands")) {
     return;
   }
   self detachall();
 
-  if(!isdefined(self.characterindex))
+  if(!isDefined(self.characterindex))
     self.characterindex = assign_lowest_unused_character_index();
 
   self.favorite_wall_weapons_list = [];
+
   if(getdvar(#"_id_40772CF1") != "")
     self.characterindex = getdvarint(#"_id_40772CF1");
 
@@ -524,7 +524,7 @@ assign_lowest_unused_character_index() {
     n_characters_defined = 0;
 
     foreach(player in players) {
-      if(isdefined(player.characterindex)) {
+      if(isDefined(player.characterindex)) {
         arrayremovevalue(charindexarray, player.characterindex, 0);
         n_characters_defined++;
       }
@@ -532,7 +532,7 @@ assign_lowest_unused_character_index() {
 
     if(charindexarray.size > 0) {
       if(n_characters_defined == players.size - 1) {
-        if(!(isdefined(level.has_weasel) && level.has_weasel)) {
+        if(!(isDefined(level.has_weasel) && level.has_weasel)) {
           level.has_weasel = 1;
           return 3;
         }
@@ -560,7 +560,7 @@ zombie_init_done() {
 }
 
 zm_player_fake_death_cleanup() {
-  if(isdefined(self._fall_down_anchor)) {
+  if(isDefined(self._fall_down_anchor)) {
     self._fall_down_anchor delete();
     self._fall_down_anchor = undefined;
   }
@@ -574,7 +574,7 @@ zm_player_fake_death(vdir) {
   self enableinvulnerability();
   self takeallweapons();
 
-  if(isdefined(self.insta_killed) && self.insta_killed) {
+  if(isDefined(self.insta_killed) && self.insta_killed) {
     self maps\mp\zombies\_zm::player_fake_death();
     self allowprone(1);
     self allowcrouch(0);
@@ -597,7 +597,7 @@ fall_down(vdir, stance) {
   angles = self getplayerangles();
   angles = (angles[0], angles[1], angles[2] + randomfloatrange(-5, 5));
 
-  if(isdefined(vdir) && length(vdir) > 0) {
+  if(isDefined(vdir) && length(vdir) > 0) {
     xyspeedmag = 40 + randomint(12) + randomint(12);
     xyspeed = xyspeedmag * vectornormalize((vdir[0], vdir[1], 0));
   }
@@ -666,10 +666,10 @@ offhand_weapon_overrride() {
 }
 
 equipment_safe_to_drop(weapon) {
-  if(!isdefined(self.origin))
+  if(!isDefined(self.origin))
     return true;
 
-  for (i = 0; i < level.equipment_tu_dead_zone_pos.size; i++) {
+  for(i = 0; i < level.equipment_tu_dead_zone_pos.size; i++) {
     if(distancesquared(level.equipment_tu_dead_zone_pos[i], weapon.origin) < level.equipment_tu_dead_zone_rad2[i])
       return false;
   }
@@ -685,7 +685,7 @@ equipment_safe_to_drop(weapon) {
 offhand_weapon_give_override(str_weapon) {
   self endon("death");
 
-  if(is_tactical_grenade(str_weapon) && isdefined(self get_player_tactical_grenade()) && !self is_player_tactical_grenade(str_weapon)) {
+  if(is_tactical_grenade(str_weapon) && isDefined(self get_player_tactical_grenade()) && !self is_player_tactical_grenade(str_weapon)) {
     self setweaponammoclip(self get_player_tactical_grenade(), 0);
     self takeweapon(self get_player_tactical_grenade());
   }
@@ -724,7 +724,7 @@ custom_add_weapons() {
   add_zombie_weapon_prison("bouncing_tomahawk_zm", "upgraded_tomahawk_zm", & "ZOMBIE_WEAPON_SATCHEL_2000", 2000, "", "", undefined, 1);
   add_zombie_weapon_prison("ray_gun_zm", "ray_gun_upgraded_zm", & "ZOMBIE_WEAPON_RAYGUN", 10000, "wpck_ray", "", undefined, 1);
 
-  if(isdefined(level.raygun2_included) && level.raygun2_included)
+  if(isDefined(level.raygun2_included) && level.raygun2_included)
     add_zombie_weapon_prison("raygun_mark2_zm", "raygun_mark2_upgraded_zm", & "ZOMBIE_WEAPON_RAYGUN_MARK2", 10000, "raygun_mark2", "", undefined);
 }
 
@@ -805,7 +805,7 @@ include_weapons() {
   include_weapon("tower_trap_zm", 0);
   include_weapon("tower_trap_upgraded_zm", 0);
 
-  if(isdefined(level.raygun2_included) && level.raygun2_included) {
+  if(isDefined(level.raygun2_included) && level.raygun2_included) {
     include_weapon("raygun_mark2_zm");
     include_weapon("raygun_mark2_upgraded_zm", 0);
     add_weapon_to_content("raygun_mark2_zm", "dlc3");
@@ -815,25 +815,25 @@ include_weapons() {
 }
 
 add_zombie_weapon_prison(weapon_name, upgrade_name, hint, cost, weaponvo, weaponvoresp, ammo_cost, create_vox) {
-  if(isdefined(level.zombie_include_weapons) && !isdefined(level.zombie_include_weapons[weapon_name])) {
+  if(isDefined(level.zombie_include_weapons) && !isDefined(level.zombie_include_weapons[weapon_name])) {
     return;
   }
   table = "mp/zombiemode.csv";
   table_ammo_cost = tablelookup(table, 0, weapon_name, 2);
 
-  if(isdefined(table_ammo_cost) && table_ammo_cost != "")
+  if(isDefined(table_ammo_cost) && table_ammo_cost != "")
     ammo_cost = round_up_to_ten(int(table_ammo_cost));
 
   precachestring(hint);
   struct = spawnstruct();
 
-  if(!isdefined(level.zombie_weapons))
+  if(!isDefined(level.zombie_weapons))
     level.zombie_weapons = [];
 
-  if(!isdefined(level.zombie_weapons_upgraded))
+  if(!isDefined(level.zombie_weapons_upgraded))
     level.zombie_weapons_upgraded = [];
 
-  if(isdefined(upgrade_name))
+  if(isDefined(upgrade_name))
     level.zombie_weapons_upgraded[upgrade_name] = weapon_name;
 
   struct.weapon_name = weapon_name;
@@ -843,22 +843,24 @@ add_zombie_weapon_prison(weapon_name, upgrade_name, hint, cost, weaponvo, weapon
   struct.cost = cost;
   struct.vox = weaponvo;
   struct.vox_response = weaponvoresp;
+
   println("ZM >> Looking for weapon - " + weapon_name);
+
   struct.is_in_box = level.zombie_include_weapons[weapon_name];
 
-  if(!isdefined(ammo_cost))
+  if(!isDefined(ammo_cost))
     ammo_cost = round_up_to_ten(int(cost * 0.5));
 
   struct.ammo_cost = ammo_cost;
   level.zombie_weapons[weapon_name] = struct;
 
-  if(isdefined(level.zombiemode_reusing_pack_a_punch) && level.zombiemode_reusing_pack_a_punch && isdefined(upgrade_name))
+  if(isDefined(level.zombiemode_reusing_pack_a_punch) && level.zombiemode_reusing_pack_a_punch && isDefined(upgrade_name))
     add_attachments(weapon_name, upgrade_name);
 
-  if(isdefined(create_vox))
+  if(isDefined(create_vox))
     level.vox maps\mp\zombies\_zm_audio::zmbvoxadd("player", "weapon_pickup", weapon_name, weaponvo, undefined);
 
-  if(isdefined(level.devgui_add_weapon))
+  if(isDefined(level.devgui_add_weapon))
     [[level.devgui_add_weapon]](weapon_name, upgrade_name, hint, cost, weaponvo, weaponvoresp, ammo_cost);
 }
 
@@ -882,7 +884,6 @@ setup_rex_starts() {
 }
 
 dummy() {
-
 }
 
 working_zone_init() {
@@ -893,7 +894,7 @@ working_zone_init() {
     a_s_spawner = getstructarray("zone_cellblock_west_roof_spawner", "targetname");
 
     foreach(spawner in a_s_spawner) {
-      if(isdefined(spawner.script_parameters) && spawner.script_parameters == "zclassic_prison")
+      if(isDefined(spawner.script_parameters) && spawner.script_parameters == "zclassic_prison")
         spawner structdelete();
     }
   }
@@ -969,7 +970,7 @@ working_zone_init() {
     playable_area = getentarray("player_volume", "script_noteworthy");
 
     foreach(area in playable_area) {
-      if(isdefined(area.script_parameters) && area.script_parameters == "classic_only")
+      if(isDefined(area.script_parameters) && area.script_parameters == "classic_only")
         area delete();
     }
   }
@@ -985,18 +986,21 @@ working_zone_init() {
 alcatraz_afterlife_doors() {
   wait 0.05;
 
-  if(!isdefined(level.shockbox_anim)) {
+  if(!isDefined(level.shockbox_anim)) {
     level.shockbox_anim["on"] = % fxanim_zom_al_shock_box_on_anim;
     level.shockbox_anim["off"] = % fxanim_zom_al_shock_box_off_anim;
   }
 
-  if(isdefined(self.script_noteworthy) && self.script_noteworthy == "afterlife_door") {
+  if(isDefined(self.script_noteworthy) && self.script_noteworthy == "afterlife_door") {
     self sethintstring(&"ZM_PRISON_AFTERLIFE_DOOR");
+
     self thread afterlife_door_open_sesame();
+
     s_struct = getstruct(self.target, "targetname");
 
-    if(!isdefined(s_struct)) {
+    if(!isDefined(s_struct)) {
       iprintln("Afterlife Door was not targeting a valid struct");
+
       return;
     } else {
       m_shockbox = getent(s_struct.target, "targetname");
@@ -1006,16 +1010,16 @@ alcatraz_afterlife_doors() {
       t_bump = spawn("trigger_radius", m_shockbox.origin, 0, 28, 64);
       t_bump.origin = m_shockbox.origin + anglestoforward(m_shockbox.angles) * 0 + anglestoright(m_shockbox.angles) * 28 + anglestoup(m_shockbox.angles) * 0;
 
-      if(isdefined(t_bump)) {
+      if(isDefined(t_bump)) {
         t_bump setcursorhint("HINT_NOICON");
         t_bump sethintstring(&"ZM_PRISON_AFTERLIFE_INTERACT");
       }
 
-      while (true) {
+      while(true) {
         m_shockbox waittill("damage", amount, attacker);
 
         if(isplayer(attacker) && attacker getcurrentweapon() == "lightning_hands_zm") {
-          if(isdefined(level.afterlife_interact_dist)) {
+          if(isDefined(level.afterlife_interact_dist)) {
             if(distance2d(attacker.origin, m_shockbox.origin) < level.afterlife_interact_dist) {
               t_bump delete();
               m_shockbox playsound("zmb_powerpanel_activate");
@@ -1023,7 +1027,7 @@ alcatraz_afterlife_doors() {
               m_shockbox setmodel("p6_zm_al_shock_box_on");
               m_shockbox setanim(level.shockbox_anim["on"]);
 
-              if(isdefined(m_shockbox.script_string) && (m_shockbox.script_string == "wires_shower_door" || m_shockbox.script_string == "wires_admin_door"))
+              if(isDefined(m_shockbox.script_string) && (m_shockbox.script_string == "wires_shower_door" || m_shockbox.script_string == "wires_admin_door"))
                 array_delete(getentarray(m_shockbox.script_string, "script_noteworthy"));
 
               attacker notify("player_opened_afterlife_door");
@@ -1034,7 +1038,7 @@ alcatraz_afterlife_doors() {
       }
     }
   } else {
-    while (true) {
+    while(true) {
       if(!self maps\mp\zombies\_zm_blockers::door_buy()) {
         continue;
       }
@@ -1052,7 +1056,7 @@ delete_perk_machine_clip() {
   perk_machines = getentarray("zombie_vending", "targetname");
 
   foreach(perk_machine in perk_machines) {
-    if(isdefined(perk_machine.clip))
+    if(isDefined(perk_machine.clip))
       perk_machine.clip delete();
   }
 }
@@ -1061,39 +1065,41 @@ alcatraz_round_spawn_failsafe() {
   self endon("death");
   prevorigin = self.origin;
 
-  while (true) {
-    if(isdefined(self.ignore_round_spawn_failsafe) && self.ignore_round_spawn_failsafe) {
+  while(true) {
+    if(isDefined(self.ignore_round_spawn_failsafe) && self.ignore_round_spawn_failsafe) {
       return;
     }
     wait 15;
 
-    if(isdefined(self.is_inert) && self.is_inert) {
+    if(isDefined(self.is_inert) && self.is_inert) {
       continue;
     }
-    if(isdefined(self.lastchunk_destroy_time)) {
+    if(isDefined(self.lastchunk_destroy_time)) {
       if(gettime() - self.lastchunk_destroy_time < 8000)
         continue;
     }
 
     if(self.origin[2] < -15000) {
-      if(isdefined(level.put_timed_out_zombies_back_in_queue) && level.put_timed_out_zombies_back_in_queue && !flag("dog_round") && !(isdefined(self.isscreecher) && self.isscreecher)) {
+      if(isDefined(level.put_timed_out_zombies_back_in_queue) && level.put_timed_out_zombies_back_in_queue && !flag("dog_round") && !(isDefined(self.isscreecher) && self.isscreecher)) {
         level.zombie_total++;
         level.zombie_total_subtract++;
       }
+
       self dodamage(self.health + 100, (0, 0, 0));
       break;
     }
 
     if(distancesquared(self.origin, prevorigin) < 576) {
-      if(isdefined(level.put_timed_out_zombies_back_in_queue) && level.put_timed_out_zombies_back_in_queue && !flag("dog_round")) {
-        if(!(isdefined(self.nuked) && self.nuked) && !(isdefined(self.marked_for_death) && self.marked_for_death) && !(isdefined(self.isscreecher) && self.isscreecher) && (isdefined(self.has_legs) && self.has_legs) && !(isdefined(self.is_brutus) && self.is_brutus)) {
+      if(isDefined(level.put_timed_out_zombies_back_in_queue) && level.put_timed_out_zombies_back_in_queue && !flag("dog_round")) {
+        if(!(isDefined(self.nuked) && self.nuked) && !(isDefined(self.marked_for_death) && self.marked_for_death) && !(isDefined(self.isscreecher) && self.isscreecher) && (isDefined(self.has_legs) && self.has_legs) && !(isDefined(self.is_brutus) && self.is_brutus)) {
           level.zombie_total++;
           level.zombie_total_subtract++;
         }
       }
 
       level.zombies_timeout_playspace++;
-      if(isdefined(self.is_brutus) && self.is_brutus) {
+
+      if(isDefined(self.is_brutus) && self.is_brutus) {
         self.suppress_brutus_powerup_drop = 1;
         self.brutus_round_spawn_failsafe = 1;
       }

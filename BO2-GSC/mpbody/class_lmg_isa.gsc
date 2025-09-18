@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: mpbody\class_lmg_isa.gsc
-***************************************/
+**************************************/
 
 #include common_scripts\utility;
 

@@ -24,7 +24,7 @@ init() {
   machinelocal.gump_loading = 0;
   machinelocal.gump_loading_slot = [];
 
-  if(!isdefined(level.uses_gumps))
+  if(!isDefined(level.uses_gumps))
     level.uses_gumps = 0;
 }
 
@@ -50,7 +50,7 @@ get_gump_info(localclientnum, test_ent, gump_trigs) {
       self.view = level.gump_view_index_camera_dolly;
   }
 
-  for (trig_index = 0; trig_index < gump_trigs.size; trig_index++) {
+  for(trig_index = 0; trig_index < gump_trigs.size; trig_index++) {
     if(test_ent istouching(gump_trigs[trig_index])) {
       self.gump = gump_trigs[trig_index].script_string;
       break;
@@ -59,7 +59,7 @@ get_gump_info(localclientnum, test_ent, gump_trigs) {
 }
 
 gump_demo_jump_listener() {
-  while (true) {
+  while(true) {
     level waittill("demo_jump");
     self.view = -1;
   }
@@ -86,7 +86,7 @@ demo_monitor(gump_trigs) {
   curr_gump_info.gump = "";
   curr_gump_info.view = -1;
 
-  while (true) {
+  while(true) {
     curr_gump_info get_gump_info(localclientnum, test_ent, gump_trigs);
 
     if(prev_gump_info.gump != curr_gump_info.gump) {
@@ -109,6 +109,7 @@ blackscreen_cb(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname,
 
 player_blackscreen(localclientnum, onoff) {
   println("CSCGUMP: blackscreen for player " + localclientnum + "\\n");
+
   players = getlocalplayers();
   player = players[localclientnum];
 
@@ -125,9 +126,11 @@ hostmigration_blackscreen() {
     hostmigrationcolor = (0, 0, 0);
     players = getlocalplayers();
 
-    for (i = 0; i < players.size; i++) {
+    for(i = 0; i < players.size; i++) {
       localclientnum = i;
+
       println("CSCGUMP: hostmigration blackscreen for player " + localclientnum + "\\n");
+
       player = players[localclientnum];
 
       if(!player islocalplayer()) {
@@ -145,7 +148,7 @@ player_hostmigration_blackscreen(localclientnum) {
   self endon("gump_blackscreen_off");
   hostmigrationcolor = (0, 0, 0);
 
-  while (true) {
+  while(true) {
     self notify("gump_blackscreen_on");
     sethidegumpalpha(localclientnum, hostmigrationcolor);
     wait 0.1;
@@ -164,7 +167,7 @@ watch_spectation(gump_trigs) {
   }
   players = getlocalplayers();
 
-  for (i = 0; i < players.size; i++)
+  for(i = 0; i < players.size; i++)
     players[i] thread watch_spectation_player(i, gump_trigs);
 }
 
@@ -172,7 +175,7 @@ watch_spectation_player(lcn, gump_trigs) {
   spectatecolor = vectorscale((1, 1, 1), 0.1);
   followed = playerbeingspectated(lcn);
 
-  for (;;) {
+  for(;;) {
     wait 0.01;
     new_followed = playerbeingspectated(lcn);
 
@@ -185,8 +188,8 @@ watch_spectation_player(lcn, gump_trigs) {
 }
 
 find_new_gump(gump_trigs, lcn, player) {
-  for (i = 0; i < gump_trigs.size; i++) {
-    if(isdefined(gump_trigs[i].script_string) && isdefined(player) && player istouching(gump_trigs[i])) {
+  for(i = 0; i < gump_trigs.size; i++) {
+    if(isDefined(gump_trigs[i].script_string) && isDefined(player) && player istouching(gump_trigs[i])) {
       load_gump_for_player(lcn, gump_trigs[i].script_string);
       return;
     }
@@ -208,10 +211,10 @@ gump_watch_trigger(localclientnum) {
   players = getlocalplayers();
   gump = localclientnum != 0;
 
-  while (true) {
+  while(true) {
     self waittill("trigger", who);
 
-    if(who isplayer() && isdefined(self.script_string)) {
+    if(who isplayer() && isDefined(self.script_string)) {
       if(same_player(who, playerbeingspectated(0))) {
         machinelocal.gumpnamequeued[0] = self.script_string;
         self thread trigger_thread(who, ::enter_gump_trigger0);
@@ -256,14 +259,15 @@ load_gump_for_player(gump, name) {
   if(is_true(machinelocal.gump_loading_slot[gump])) {
     return;
   }
-  while (is_true(machinelocal.gump_loading))
+  while(is_true(machinelocal.gump_loading))
     wait 0.25;
 
   machinelocal.gump_loading = 1;
   machinelocal.gump_loading_slot[gump] = 1;
 
-  while (machinelocal.gumpname[gump] != machinelocal.gumpnamequeued[gump]) {
+  while(machinelocal.gumpname[gump] != machinelocal.gumpnamequeued[gump]) {
     println("CSCGUMP: Loading " + machinelocal.gumpnamequeued[gump] + " in gump " + gump + " to replace " + machinelocal.gumpname[gump] + "\\n");
+
     machinelocal.gumpname[gump] = machinelocal.gumpnamequeued[gump];
     loadgump(machinelocal.gumpname[gump], gump);
     level waittill_notify_or_timeout("gump_loaded", 10);

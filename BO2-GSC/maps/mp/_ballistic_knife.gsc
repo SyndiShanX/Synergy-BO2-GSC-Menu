@@ -19,7 +19,7 @@ onspawn(watcher, player) {
   self waittill("stationary", endpos, normal, angles, attacker, prey, bone);
   isfriendly = 0;
 
-  if(isdefined(endpos)) {
+  if(isDefined(endpos)) {
     retrievable_model = spawn("script_model", endpos);
     retrievable_model setmodel("t6_wpn_ballistic_knife_projectile");
     retrievable_model setteam(player.team);
@@ -29,7 +29,7 @@ onspawn(watcher, player) {
     retrievable_model.name = watcher.weapon;
     retrievable_model.targetname = "sticky_weapon";
 
-    if(isdefined(prey)) {
+    if(isDefined(prey)) {
       if(level.teambased && isplayer(prey) && player.team == prey.team)
         isfriendly = 1;
       else if(level.teambased && isai(prey) && player.team == prey.aiteam)
@@ -70,7 +70,7 @@ wait_to_show_glowing_model(prey) {
   glowing_retrievable_model.angles = self.angles;
   glowing_retrievable_model linkto(self);
 
-  if(isdefined(prey) && !isalive(prey))
+  if(isDefined(prey) && !isalive(prey))
     wait 2;
 
   glowing_retrievable_model setmodel("t6_wpn_ballistic_knife_blade_retrieve");
@@ -81,10 +81,10 @@ watch_shutdown() {
   glowing_model = self.glowing_model;
   self waittill("death");
 
-  if(isdefined(pickuptrigger))
+  if(isDefined(pickuptrigger))
     pickuptrigger delete();
 
-  if(isdefined(glowing_model))
+  if(isDefined(glowing_model))
     glowing_model delete();
 }
 
@@ -94,13 +94,13 @@ onspawnretrievetrigger(watcher, player) {
   level endon("game_ended");
   player waittill("ballistic_knife_stationary", retrievable_model, normal, prey);
 
-  if(!isdefined(retrievable_model)) {
+  if(!isDefined(retrievable_model)) {
     return;
   }
   vec_scale = 10;
   trigger_pos = [];
 
-  if(isdefined(prey) && (isplayer(prey) || isai(prey))) {
+  if(isDefined(prey) && (isplayer(prey) || isai(prey))) {
     trigger_pos[0] = prey.origin[0];
     trigger_pos[1] = prey.origin[1];
     trigger_pos[2] = prey.origin[2] + vec_scale;
@@ -116,7 +116,7 @@ onspawnretrievetrigger(watcher, player) {
   retrievable_model.pickuptrigger = pickup_trigger;
   pickup_trigger enablelinkto();
 
-  if(isdefined(prey))
+  if(isDefined(prey))
     pickup_trigger linkto(prey);
   else
     pickup_trigger linkto(retrievable_model);
@@ -131,7 +131,7 @@ watch_use_trigger(trigger, model, callback, playersoundonuse, npcsoundonuse) {
   level endon("game_ended");
   max_ammo = weaponmaxammo("knife_ballistic_mp") + 1;
 
-  while (true) {
+  while(true) {
     trigger waittill("trigger", player);
 
     if(!isalive(player)) {
@@ -140,10 +140,10 @@ watch_use_trigger(trigger, model, callback, playersoundonuse, npcsoundonuse) {
     if(!player isonground()) {
       continue;
     }
-    if(isdefined(trigger.triggerteam) && player.team != trigger.triggerteam) {
+    if(isDefined(trigger.triggerteam) && player.team != trigger.triggerteam) {
       continue;
     }
-    if(isdefined(trigger.claimedby) && player != trigger.claimedby) {
+    if(isDefined(trigger.claimedby) && player != trigger.claimedby) {
       continue;
     }
     if(!player hasweapon("knife_ballistic_mp")) {
@@ -161,10 +161,10 @@ watch_use_trigger(trigger, model, callback, playersoundonuse, npcsoundonuse) {
     if(total_ammo >= max_ammo || !hasreloaded) {
       continue;
     }
-    if(isdefined(playersoundonuse))
+    if(isDefined(playersoundonuse))
       player playlocalsound(playersoundonuse);
 
-    if(isdefined(npcsoundonuse))
+    if(isDefined(npcsoundonuse))
       player playsound(npcsoundonuse);
 
     self thread[[callback]](player);
@@ -193,13 +193,13 @@ pick_up(player) {
 }
 
 destroy_ent() {
-  if(isdefined(self)) {
+  if(isDefined(self)) {
     pickuptrigger = self.pickuptrigger;
 
-    if(isdefined(pickuptrigger))
+    if(isDefined(pickuptrigger))
       pickuptrigger delete();
 
-    if(isdefined(self.glowing_model))
+    if(isDefined(self.glowing_model))
       self.glowing_model delete();
 
     self delete();
@@ -209,7 +209,7 @@ destroy_ent() {
 dropknivestoground() {
   self endon("death");
 
-  for (;;) {
+  for(;;) {
     level waittill("drop_objects_to_ground", origin, radius);
     self droptoground(origin, radius);
   }

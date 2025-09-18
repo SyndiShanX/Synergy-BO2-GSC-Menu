@@ -23,7 +23,6 @@ spawned(localclientnum) {
 }
 
 updateplayertazered(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump) {
-
 }
 
 proxygrenadefx(localclientnum) {
@@ -64,7 +63,7 @@ checkforplayerswitch(localclientnum, fxhandle) {
   level waittill("player_switch");
   self notify("player_switch");
 
-  if(isdefined(fxhandle))
+  if(isDefined(fxhandle))
     stopfx(localclientnum, fxhandle);
 
   waittillframeend;
@@ -87,10 +86,10 @@ taserhudfx(localclientnum, position) {
       self thread flickervisionset(localclientnum, 0.03, 1.25, 0.0);
       cycles = 3;
 
-      for (i = 0; i < 2; i++) {
+      for(i = 0; i < 2; i++) {
         zap_wait = 0.25;
 
-        for (j = 0; j < cycles; j++) {
+        for(j = 0; j < cycles; j++) {
           if(getclientfieldtoplayer("tazered") == 1) {
             menuname = "fullscreen_proximity";
             forwardvec = vectornormalize(anglestoforward(self.angles));
@@ -156,7 +155,7 @@ flickervisionset(localclientnum, period, duration_seconds, transition) {
   duration_ms = duration_seconds * 1000;
   wait 0.1;
 
-  while (true) {
+  while(true) {
     if(getrealtime() > flicker_start_time + duration_ms) {
       break;
     }

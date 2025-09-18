@@ -30,7 +30,7 @@ init() {
 }
 
 onplayerconnect() {
-  for (;;) {
+  for(;;) {
     level waittill("connected", player);
     player.enabletext = 1;
   }
@@ -101,8 +101,8 @@ uploadglobalstatcounters() {
     case "dem":
       bombzonesleft = 0;
 
-      for (index = 0; index < level.bombzones.size; index++) {
-        if(!isdefined(level.bombzones[index].bombexploded) || !level.bombzones[index].bombexploded) {
+      for(index = 0; index < level.bombzones.size; index++) {
+        if(!isDefined(level.bombzones[index].bombexploded) || !level.bombzones[index].bombexploded) {
           level.globaldembombsprotected++;
           continue;
         }
@@ -120,7 +120,7 @@ uploadglobalstatcounters() {
 
   players = get_players();
 
-  for (i = 0; i < players.size; i++) {
+  for(i = 0; i < players.size; i++) {
     player = players[i];
     totaltimeplayed = totaltimeplayed + min(player.timeplayed["total"], level.timeplayedcap);
   }
@@ -161,7 +161,7 @@ uploadglobalstatcounters() {
   wait 0.05;
   players = get_players();
 
-  for (i = 0; i < players.size; i++) {
+  for(i = 0; i < players.size; i++) {
     player = players[i];
     totalkills = totalkills + player.kills;
     totaldeaths = totaldeaths + player.deaths;
@@ -185,7 +185,7 @@ uploadglobalstatcounters() {
         totalsdplants = totalsdplants + player.plants;
         break;
       case "sab":
-        if(isdefined(player.team) && isdefined(level.teams[player.team]))
+        if(isDefined(player.team) && isDefined(level.teams[player.team]))
           totalsabdestroyedbyteam[player.team] = totalsabdestroyedbyteam[player.team] + player.destructions;
 
         break;
@@ -211,12 +211,12 @@ uploadglobalstatcounters() {
   incrementcounter("global_sab_destroyedbycommunists", totalsabdestroyedbyteam["axis"]);
   incrementcounter("global_humiliations", totalhumiliations);
 
-  if(isdefined(game["wager_pot"]))
+  if(isDefined(game["wager_pot"]))
     incrementcounter("global_wageredcp", game["wager_pot"]);
 }
 
 statgetwithgametype(dataname) {
-  if(isdefined(level.nopersistence) && level.nopersistence)
+  if(isDefined(level.nopersistence) && level.nopersistence)
     return 0;
 
   if(!level.onlinegame)
@@ -226,8 +226,8 @@ statgetwithgametype(dataname) {
 }
 
 getgametypename() {
-  if(!isdefined(level.fullgametypename)) {
-    if(isdefined(level.hardcoremode) && level.hardcoremode && ispartygamemode() == 0)
+  if(!isDefined(level.fullgametypename)) {
+    if(isDefined(level.hardcoremode) && level.hardcoremode && ispartygamemode() == 0)
       prefix = "HC";
     else
       prefix = "";
@@ -256,7 +256,7 @@ isstatmodifiable(dataname) {
 }
 
 statsetwithgametype(dataname, value, incvalue) {
-  if(isdefined(level.nopersistence) && level.nopersistence)
+  if(isDefined(level.nopersistence) && level.nopersistence)
     return 0;
 
   if(!isstatmodifiable(dataname)) {
@@ -269,8 +269,9 @@ statsetwithgametype(dataname, value, incvalue) {
 }
 
 adjustrecentstats() {
-  if(getdvarint(#"scr_writeConfigStrings") == 1 || getdvarint(#"scr_hostmigrationtest") == 1)
+  if(getdvarint(#"scr_writeConfigStrings") == 1 || getdvarint(#"scr_hostmigrationtest") == 1) {
     return;
+  }
   initializematchstats();
 }
 
@@ -285,7 +286,7 @@ getrecentstat(isglobal, index, statname) {
 }
 
 setrecentstat(isglobal, index, statname, value) {
-  if(isdefined(level.nopersistence) && level.nopersistence) {
+  if(isDefined(level.nopersistence) && level.nopersistence) {
     return;
   }
   if(!level.onlinegame) {
@@ -310,7 +311,7 @@ setrecentstat(isglobal, index, statname, value) {
 }
 
 addrecentstat(isglobal, index, statname, value) {
-  if(isdefined(level.nopersistence) && level.nopersistence) {
+  if(isDefined(level.nopersistence) && level.nopersistence) {
     return;
   }
   if(!level.onlinegame) {
@@ -336,7 +337,7 @@ addmatchhistorystat(statname, value) {
 }
 
 initializematchstats() {
-  if(isdefined(level.nopersistence) && level.nopersistence) {
+  if(isDefined(level.nopersistence) && level.nopersistence) {
     return;
   }
   if(!level.onlinegame) {
@@ -358,7 +359,7 @@ setafteractionreportstat(statname, value, index) {
     return;
   }
   if(level.rankedmatch || level.wagermatch || level.leaguematch) {
-    if(isdefined(index))
+    if(isDefined(index))
       self setdstat("AfterActionReportStats", statname, index, value);
     else
       self setdstat("AfterActionReportStats", statname, value);
@@ -376,15 +377,12 @@ codecallback_gunchallengecomplete(rewardxp, attachmentindex, itemindex, rankid) 
 }
 
 checkcontractexpirations() {
-
 }
 
 incrementcontracttimes(timeinc) {
-
 }
 
 addcontracttoqueue(index, passed) {
-
 }
 
 uploadstatssoon() {
@@ -396,13 +394,10 @@ uploadstatssoon() {
 }
 
 codecallback_onaddplayerstat(dataname, value) {
-
 }
 
 codecallback_onaddweaponstat(weapname, dataname, value) {
-
 }
 
 processcontractsonaddstat(stattype, dataname, value, weapname) {
-
 }

@@ -12,7 +12,6 @@ main() {
 }
 
 onprecachegametype() {
-
 }
 
 onstartgametype() {

@@ -1,7 +1,7 @@
-/************************************************************
+/*******************************************************************
  * Decompiled and Edited by SyndiShanX
  * Script: clientscripts\mp\zombies\_zm_weap_thundergun.csc
-************************************************************/
+*******************************************************************/
 
 #include clientscripts\mp\_utility;
 #include clientscripts\mp\_fx;
@@ -38,7 +38,7 @@ player_init() {
   level.thundergun_play_fx_power_cell = [];
   players = getlocalplayers();
 
-  for (i = 0; i < players.size; i++) {
+  for(i = 0; i < players.size; i++) {
     level.thundergun_play_fx_power_cell[i] = 1;
     players[i] thread thundergun_fx_power_cell(i);
   }
@@ -50,10 +50,10 @@ thundergun_fx_power_cell(localclientnum) {
   oldcount = -1;
   self thread thundergun_fx_listener(localclientnum);
 
-  for (;;) {
+  for(;;) {
     waitrealtime(0.1);
 
-    while (!clienthassnapshot(0))
+    while(!clienthassnapshot(0))
       wait 0.05;
 
     weaponname = undefined;
@@ -88,8 +88,8 @@ thundergun_fx_power_cell(localclientnum) {
 thundergun_play_power_cell_fx(localclientnum, count) {
   level notify("kill_power_cell_fx");
 
-  for (i = 0; i < level.thundergun_power_cell_fx_handles.size; i++) {
-    if(isdefined(level.thundergun_power_cell_fx_handles[i]) && level.thundergun_power_cell_fx_handles[i] != -1) {
+  for(i = 0; i < level.thundergun_power_cell_fx_handles.size; i++) {
+    if(isDefined(level.thundergun_power_cell_fx_handles[i]) && level.thundergun_power_cell_fx_handles[i] != -1) {
       deletefx(localclientnum, level.thundergun_power_cell_fx_handles[i]);
       level.thundergun_power_cell_fx_handles[i] = -1;
     }
@@ -100,7 +100,7 @@ thundergun_play_power_cell_fx(localclientnum, count) {
   }
   level endon("kill_power_cell_fx");
 
-  for (;;) {
+  for(;;) {
     currentweapon = getcurrentweapon(localclientnum);
 
     if(currentweapon != "thundergun_zm" && currentweapon != "thundergun_upgraded_zm") {
@@ -108,7 +108,7 @@ thundergun_play_power_cell_fx(localclientnum, count) {
       continue;
     }
 
-    for (i = count; i > 0; i--) {
+    for(i = count; i > 0; i--) {
       fx = level._effect["thundergun_viewmodel_power_cell" + i];
 
       if(currentweapon == "thundergun_upgraded_zm")
@@ -128,14 +128,14 @@ thundergun_fx_fire(localclientnum) {
   if(currentweapon == "thundergun_upgraded_zm")
     fx = level._effect["thundergun_viewmodel_steam_upgraded"];
 
-  for (i = level.thundergun_steam_vents; i > 0; i--)
+  for(i = level.thundergun_steam_vents; i > 0; i--)
     playviewmodelfx(localclientnum, fx, "tag_steam" + i);
 
   playsound(localclientnum, "wpn_thunder_breath", (0, 0, 0));
 }
 
 thundergun_notetrack_think() {
-  for (;;) {
+  for(;;) {
     level waittill("notetrack", localclientnum, note);
 
     switch (note) {
@@ -153,7 +153,6 @@ thundergun_notetrack_think() {
 }
 
 thundergun_death_effects(localclientnum, weaponname, userdata) {
-
 }
 
 thread_zombie_vox() {
@@ -166,7 +165,7 @@ thread_zombie_vox() {
 thundergun_fx_listener(localclientnum) {
   self endon("disconnect");
 
-  while (true) {
+  while(true) {
     level waittill("tgfx0");
     level.thundergun_play_fx_power_cell[localclientnum] = 0;
     level waittill("tgfx1");

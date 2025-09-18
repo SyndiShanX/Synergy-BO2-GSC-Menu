@@ -26,5 +26,6 @@ main() {
   setsaveddvar("r_waterwavephase", "0 0 0 0");
   waitforclient(0);
   setsaveddvar("sm_sunsamplesizenear", 0.3);
+
   println("*** Client : mp_studio running...");
 }

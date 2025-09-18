@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\mp_paintball.gsc
-***************************************/
+**************************************/
 
 #include maps\mp\_utility;
 #include common_scripts\utility;
@@ -96,14 +96,14 @@ glass_node_think() {
   node_origin = (-981.75, -934.5, 16.0);
   node = getnearestnode(node_origin);
 
-  if(isdefined(node) && node.type == "Begin") {
+  if(isDefined(node) && node.type == "Begin") {
     ent = spawn("script_model", node.origin, 1);
     ent setmodel(level.deployedshieldmodel);
     ent hide();
     ent disconnectpaths();
     ent.origin = ent.origin - vectorscale((0, 0, 1), 64.0);
 
-    for (;;) {
+    for(;;) {
       level waittill("glass_smash", origin);
 
       if(distancesquared(origin, glass_origin) < 16384) {

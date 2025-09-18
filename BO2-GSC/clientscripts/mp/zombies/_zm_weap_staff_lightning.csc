@@ -1,7 +1,7 @@
-/*****************************************************************
+/*****************************************************************************
  * Decompiled and Edited by SyndiShanX
  * Script: clientscripts\mp\zombies\_zm_weap_staff_lightning.csc
-*****************************************************************/
+*****************************************************************************/
 
 #include clientscripts\mp\_utility;
 #include clientscripts\mp\_fx;
@@ -52,7 +52,7 @@ lightning_arc_play_fx_thread(localclientnum) {
   self endon("entityshutdown");
   self endon("stop_arc_fx");
 
-  if(!isdefined(level.lightning_ball_fx[localclientnum]))
+  if(!isDefined(level.lightning_ball_fx[localclientnum]))
     level waittill("lightning_ball_created");
 
   e_ball = level.lightning_ball_fx[localclientnum];
@@ -62,7 +62,7 @@ lightning_arc_play_fx_thread(localclientnum) {
   self.e_fx setmodel("tag_origin");
   self.fx_arc = playfxontag(localclientnum, level._effect["lightning_arc"], self.e_fx, "tag_origin");
 
-  while (true) {
+  while(true) {
     v_spine = self gettagorigin("J_SpineUpper");
     self.e_fx moveto(v_spine, 0.1);
     serverwait(localclientnum, 0.5);
@@ -77,12 +77,12 @@ lightning_arc_play_fx(localclientnum, oldval, newval, bnewent, binitialsnap, fie
   else {
     self notify("stop_arc_fx");
 
-    if(isdefined(self.fx_arc)) {
+    if(isDefined(self.fx_arc)) {
       stopfx(localclientnum, self.fx_arc);
       self.fx_arc = undefined;
     }
 
-    if(isdefined(self.e_fx)) {
+    if(isDefined(self.e_fx)) {
       self.e_fx delete();
       self.e_fx = undefined;
     }

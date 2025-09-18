@@ -14,8 +14,8 @@ init() {
     return;
   }
   foreach(team in level.teams) {
-    assert(isdefined(level.teamprefix[team]));
-    assert(isdefined(level.teamprefix[team]));
+    assert(isDefined(level.teamprefix[team]));
+    assert(isDefined(level.teamprefix[team]));
     level.isteamspeaking[team] = 0;
     level.speakers[team] = [];
   }
@@ -109,7 +109,7 @@ init() {
 }
 
 onplayerconnect() {
-  for (;;) {
+  for(;;) {
     level waittill("connecting", player);
     player thread onjoinedteam();
     player thread onplayerspawned();
@@ -119,7 +119,7 @@ onplayerconnect() {
 updatebcdvars() {
   level endon("game_ended");
 
-  for (;;) {
+  for(;;) {
     level.bcweapondelay = getdvarint(#"bcmp_weapon_delay");
     level.bckillinformprobability = getdvarint(#"bcmp_kill_inform_probability");
     level.bcweaponfireprobability = getdvarint(#"bcmp_weapon_fire_probability");
@@ -132,7 +132,7 @@ updatebcdvars() {
 onjoinedteam() {
   self endon("disconnect");
 
-  for (;;) {
+  for(;;) {
     self waittill("joined_team");
     self.pers["bcVoiceNumber"] = randomintrange(0, 3);
     self.pilotisspeaking = 0;
@@ -142,14 +142,14 @@ onjoinedteam() {
 onjoinedspectators() {
   self endon("disconnect");
 
-  for (;;)
+  for(;;)
     self waittill("joined_spectators");
 }
 
 onplayerspawned() {
   self endon("disconnect");
 
-  for (;;) {
+  for(;;) {
     self waittill("spawned_player");
     self.lastbcattempttime = 0;
     self.heartbeatsnd = 0;
@@ -173,7 +173,7 @@ onplayerspawned() {
 }
 
 enemycontactleveldelay() {
-  while (true) {
+  while(true) {
     level waittill("level_enemy_spotted");
     level.enemyspotteddialog = 0;
     wait(level.bcmp_enemy_contact_level_delay);
@@ -186,7 +186,7 @@ breathinghurtvox() {
   self endon("disconnect");
   level endon("game_ended");
 
-  for (;;) {
+  for(;;) {
     self waittill("snd_breathing_hurt");
 
     if(randomintrange(0, 100) >= level.bcmp_breathing_probability) {
@@ -204,7 +204,7 @@ onfirescream() {
   self endon("death");
   self endon("disconnect");
 
-  for (;;) {
+  for(;;) {
     self waittill("snd_burn_scream");
 
     if(randomintrange(0, 100) >= level.bcmp_breathing_probability) {
@@ -223,7 +223,7 @@ breathingbettervox() {
   self endon("disconnect");
   level endon("game_ended");
 
-  for (;;) {
+  for(;;) {
     self waittill("snd_breathing_better");
 
     if(isalive(self))
@@ -236,7 +236,7 @@ laststandvox() {
   self endon("disconnect");
   self waittill("snd_last_stand");
 
-  for (;;) {
+  for(;;) {
     self waittill("weapon_fired");
 
     if(isalive(self))
@@ -250,7 +250,7 @@ allyrevive() {
   self endon("death");
   self endon("disconnect");
 
-  for (;;) {
+  for(;;) {
     self waittill("snd_ally_revive");
 
     if(isalive(self))
@@ -264,7 +264,7 @@ painvox() {
   self endon("death");
   self endon("disconnect");
 
-  for (;;) {
+  for(;;) {
     self waittill("snd_pain_player");
 
     if(randomintrange(0, 100) >= level.bcpainsmallprobability) {
@@ -293,10 +293,10 @@ stickygrenadetracking() {
   self endon("disconnect");
   self endon("sticky_explode");
 
-  for (;;) {
+  for(;;) {
     self waittill("grenade_stuck", grenade);
 
-    if(isdefined(grenade))
+    if(isDefined(grenade))
       grenade.stucktoplayer = self;
 
     if(isalive(self))
@@ -310,7 +310,7 @@ onplayersuicideorteamkill(player, type) {
   self endon("disconnect");
   waittillframeend;
 
-  if(!isdefined(level.battlechatter_init)) {
+  if(!isDefined(level.battlechatter_init)) {
     return;
   }
   if(!level.teambased) {
@@ -318,11 +318,11 @@ onplayersuicideorteamkill(player, type) {
   }
   myteam = player.team;
 
-  if(isdefined(level.aliveplayers[myteam])) {
+  if(isDefined(level.aliveplayers[myteam])) {
     if(level.aliveplayers[myteam].size) {
       index = checkdistancetoevent(player, 1000000);
 
-      if(isdefined(index)) {
+      if(isDefined(index)) {
         wait 1.0;
 
         if(isalive(level.aliveplayers[myteam][index]))
@@ -337,7 +337,6 @@ onplayerkillstreak(player) {
 }
 
 onkillstreakused(killstreak, team) {
-
 }
 
 onplayernearexplodable(object, type) {
@@ -349,7 +348,7 @@ shoeboxtracking() {
   self endon("death");
   self endon("disconnect");
 
-  while (true) {
+  while(true) {
     self waittill("begin_firing");
     weaponname = self getcurrentweapon();
 
@@ -375,7 +374,7 @@ reloadtracking() {
   self endon("death");
   self endon("disconnect");
 
-  for (;;) {
+  for(;;) {
     self waittill("reload_start");
 
     if(randomintrange(0, 100) >= level.bcweaponreloadprobability) {
@@ -398,7 +397,7 @@ enemythreat() {
   self endon("death");
   self endon("disconnect");
 
-  for (;;) {
+  for(;;) {
     self waittill("weapon_fired");
 
     if(level.enemyspotteddialog) {
@@ -408,7 +407,7 @@ enemythreat() {
         closest_enemy = shooter get_closest_player_enemy();
         self.lastbcattempttime = gettime();
 
-        if(isdefined(closest_enemy)) {
+        if(isDefined(closest_enemy)) {
           if(randomintrange(0, 100) >= level.bcweaponfirethreatprobability) {
             area = 360000;
 
@@ -427,7 +426,7 @@ weaponfired() {
   self endon("death");
   self endon("disconnect");
 
-  for (;;) {
+  for(;;) {
     self waittill("weapon_fired");
 
     if(gettime() - self.lastbcattempttime > level.bcweapondelay) {
@@ -436,7 +435,7 @@ weaponfired() {
       if(randomintrange(0, 100) >= level.bcweaponfireprobability) {
         self.landmarkent = self getlandmark();
 
-        if(isdefined(self.landmarkent)) {
+        if(isDefined(self.landmarkent)) {
           myteam = self.team;
 
           foreach(team in level.teams) {
@@ -445,7 +444,7 @@ weaponfired() {
             }
             keys = getarraykeys(level.squads[team]);
 
-            for (i = 0; i < keys.size; i++) {
+            for(i = 0; i < keys.size; i++) {
               if(level.squads[team][keys[i]].size) {
                 index = randomintrange(0, level.squads[team][keys[i]].size);
                 level thread mpsaylocalsound(level.squads[team][keys[i]][index], "enemy", "infantry");
@@ -463,7 +462,7 @@ killedbysniper(sniper) {
   sniper endon("disconnect");
   waittillframeend;
 
-  if(!isdefined(level.battlechatter_init)) {
+  if(!isDefined(level.battlechatter_init)) {
     return;
   }
   victim = self;
@@ -478,7 +477,7 @@ killedbysniper(sniper) {
     victimteam = self.team;
     index = checkdistancetoevent(victim, 1000000);
 
-    if(isdefined(index))
+    if(isDefined(index))
       level thread mpsaylocalsound(level.aliveplayers[victimteam][index], "enemy", "sniper", 0);
   }
 }
@@ -491,7 +490,7 @@ playerkilled(attacker) {
   }
   waittillframeend;
 
-  if(!isdefined(level.battlechatter_init)) {
+  if(!isDefined(level.battlechatter_init)) {
     return;
   }
   victim = self;
@@ -505,7 +504,7 @@ playerkilled(attacker) {
     closest_ally = victim get_closest_player_ally();
     area = 1000000;
 
-    if(isdefined(closest_ally)) {
+    if(isDefined(closest_ally)) {
       if(distancesquared(closest_ally.origin, self.origin) < area)
         level thread mpsaylocalsound(closest_ally, "inform_attack", "revive", 0);
     }
@@ -516,7 +515,7 @@ grenadetracking() {
   self endon("death");
   self endon("disconnect");
 
-  for (;;) {
+  for(;;) {
     self waittill("grenade_fire", grenade, weaponname);
 
     if(weaponname == "frag_grenade_mp") {
@@ -630,7 +629,7 @@ watchmissileusage() {
   self endon("disconnect");
   level endon("game_ended");
 
-  for (;;) {
+  for(;;) {
     self waittill("missile_fire", missile, weapon_name);
 
     if(weapon_name == "usrpg_mp") {
@@ -644,12 +643,12 @@ watchmissileusage() {
 
 incominggrenadetracking(thrower, grenade, type, waittime) {
   if(randomintrange(0, 100) >= level.bcincominggrenadeprobability) {
-    if(!isdefined(waittime))
+    if(!isDefined(waittime))
       waittime = 1.0;
 
     wait(waittime);
 
-    if(!isdefined(thrower)) {
+    if(!isDefined(thrower)) {
       return;
     }
     if(thrower.team == "spectator") {
@@ -660,7 +659,7 @@ incominggrenadetracking(thrower, grenade, type, waittime) {
     if(level.players.size) {
       player = checkdistancetoobject(250000, grenade, enemyteam, thrower);
 
-      if(isdefined(player))
+      if(isDefined(player))
         level thread mpsaylocalsound(player, "grenade_incoming", type);
     }
   }
@@ -671,7 +670,7 @@ incomingspecialgrenadetracking(type) {
   self endon("disconnect");
   self endon("grenade_ended");
 
-  for (;;) {
+  for(;;) {
     if(randomintrange(0, 100) >= level.bcincominggrenadeprobability) {
       if(level.aliveplayers[self.team].size || !level.teambased && level.players.size) {
         level thread mpsaylocalsound(self, "grenade_incoming", type);
@@ -688,11 +687,11 @@ gametypespecificbattlechatter(event, team) {
   self endon("disconnect");
   self endon("event_ended");
 
-  for (;;) {
-    if(isdefined(team)) {
+  for(;;) {
+    if(isDefined(team)) {
       index = checkdistancetoevent(self, 90000);
 
-      if(isdefined(index)) {
+      if(isDefined(index)) {
         level thread mpsaylocalsound(level.aliveplayers[team][index], "gametype", event);
         self notify("event_ended");
       }
@@ -721,10 +720,10 @@ saykillbattlechatter(attacker, sweapon, victim) {
   if(checkweaponkill(sweapon)) {
     return;
   }
-  if(isdefined(victim.issniperspotted) && victim.issniperspotted && randomintrange(0, 100) >= level.bckillinformprobability) {
+  if(isDefined(victim.issniperspotted) && victim.issniperspotted && randomintrange(0, 100) >= level.bckillinformprobability) {
     level thread saylocalsounddelayed(attacker, "kill", "sniper", 0.75);
     victim.issniperspotted = 0;
-  } else if(isdefined(level.bckillinformprobability) && randomintrange(0, 100) >= level.bckillinformprobability) {
+  } else if(isDefined(level.bckillinformprobability) && randomintrange(0, 100) >= level.bckillinformprobability) {
     if(!maps\mp\killstreaks\_killstreaks::iskillstreakweapon(sweapon))
       level thread saylocalsounddelayed(attacker, "kill", "infantry", 0.75);
   }
@@ -734,7 +733,7 @@ saylocalsounddelayed(player, soundtype1, soundtype2, delay) {
   player endon("death");
   player endon("disconnect");
 
-  if(!isdefined(level.battlechatter_init)) {
+  if(!isDefined(level.battlechatter_init)) {
     return;
   }
   wait(delay);
@@ -759,7 +758,7 @@ mpsaylocalsound(player, partone, parttwo, checkspeakers, is2d) {
   if(level.players.size <= 1) {
     return;
   }
-  if(!isdefined(checkspeakers)) {
+  if(!isDefined(checkspeakers)) {
     if(isspeakerinrange(player))
       return;
   }
@@ -770,7 +769,7 @@ mpsaylocalsound(player, partone, parttwo, checkspeakers, is2d) {
   if(player.team != "spectator") {
     soundalias = level.teamprefix[player.team] + player.bcvoicenumber + "_" + level.bcsounds[partone] + "_" + parttwo;
 
-    if(isdefined(is2d))
+    if(isDefined(is2d))
       player thread dosound(soundalias, is2d);
     else
       player thread dosound(soundalias);
@@ -798,7 +797,7 @@ dosound(soundalias, is2d) {
   team = self.team;
   level addspeaker(self, team);
 
-  if(isdefined(is2d))
+  if(isDefined(is2d))
     self playlocalsound(soundalias);
   else if(level.allowbattlechatter && level.teambased)
     self playsoundontag(soundalias, "J_Head");
@@ -839,8 +838,8 @@ isspeakerinrange(player) {
   player endon("disconnect");
   distsq = 1000000;
 
-  if(isdefined(player) && isdefined(player.team) && player.team != "spectator") {
-    for (index = 0; index < level.speakers[player.team].size; index++) {
+  if(isDefined(player) && isDefined(player.team) && player.team != "spectator") {
+    for(index = 0; index < level.speakers[player.team].size; index++) {
       teammate = level.speakers[player.team][index];
 
       if(teammate == player)
@@ -861,7 +860,7 @@ addspeaker(player, team) {
 removespeaker(player, team) {
   newspeakers = [];
 
-  for (index = 0; index < level.speakers[team].size; index++) {
+  for(index = 0; index < level.speakers[team].size; index++) {
     if(level.speakers[team][index] == player) {
       continue;
     }
@@ -874,8 +873,8 @@ removespeaker(player, team) {
 getlandmark() {
   landmarks = level.landmarks;
 
-  for (i = 0; i < landmarks.size; i++) {
-    if(self istouching(landmarks[i]) && isdefined(landmarks[i].script_landmark))
+  for(i = 0; i < landmarks.size; i++) {
+    if(self istouching(landmarks[i]) && isDefined(landmarks[i].script_landmark))
       return landmarks[i];
   }
 
@@ -883,13 +882,13 @@ getlandmark() {
 }
 
 checkdistancetoevent(player, area) {
-  if(!isdefined(player))
+  if(!isDefined(player))
     return undefined;
 
-  for (index = 0; index < level.aliveplayers[player.team].size; index++) {
+  for(index = 0; index < level.aliveplayers[player.team].size; index++) {
     teammate = level.aliveplayers[player.team][index];
 
-    if(!isdefined(teammate)) {
+    if(!isDefined(teammate)) {
       continue;
     }
     if(teammate == player) {
@@ -901,10 +900,10 @@ checkdistancetoevent(player, area) {
 }
 
 checkdistancetoenemy(enemy, area, team) {
-  if(!isdefined(enemy))
+  if(!isDefined(enemy))
     return undefined;
 
-  for (index = 0; index < level.aliveplayers[team].size; index++) {
+  for(index = 0; index < level.aliveplayers[team].size; index++) {
     player = level.aliveplayers[team][index];
 
     if(distancesquared(enemy.origin, player.origin) < area)
@@ -913,27 +912,27 @@ checkdistancetoenemy(enemy, area, team) {
 }
 
 checkdistancetoobject(area, object, ignoreteam, ignoreent) {
-  if(isdefined(ignoreteam)) {
+  if(isDefined(ignoreteam)) {
     foreach(team in level.teams) {
-      for (i = 0; i < level.aliveplayers[team].size; i++) {
+      for(i = 0; i < level.aliveplayers[team].size; i++) {
         player = level.aliveplayers[team][i];
 
-        if(isdefined(ignoreent) && player == ignoreent) {
+        if(isDefined(ignoreent) && player == ignoreent) {
           continue;
         }
-        if(isdefined(object) && distancesquared(player.origin, object.origin) < area)
+        if(isDefined(object) && distancesquared(player.origin, object.origin) < area)
           return player;
       }
     }
   } else {
-    for (i = 0; i < level.players.size; i++) {
+    for(i = 0; i < level.players.size; i++) {
       player = level.players[i];
 
-      if(isdefined(ignoreent) && player == ignoreent) {
+      if(isDefined(ignoreent) && player == ignoreent) {
         continue;
       }
       if(isalive(player)) {
-        if(isdefined(object) && distancesquared(player.origin, object.origin) < area)
+        if(isDefined(object) && distancesquared(player.origin, object.origin) < area)
           return player;
       }
     }
@@ -945,7 +944,7 @@ get_closest_player_enemy() {
   players = arraysort(players, self.origin);
 
   foreach(player in players) {
-    if(!isdefined(player) || !isalive(player)) {
+    if(!isDefined(player) || !isalive(player)) {
       continue;
     }
     if(player.sessionstate != "playing") {
@@ -971,7 +970,7 @@ get_closest_player_ally() {
   players = arraysort(players, self.origin);
 
   foreach(player in players) {
-    if(!isdefined(player) || !isalive(player)) {
+    if(!isDefined(player) || !isalive(player)) {
       continue;
     }
     if(player.sessionstate != "playing") {

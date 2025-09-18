@@ -39,6 +39,7 @@ init_stage_2() {
 
 stage_logic_1() {
   iprintlnbold("SSP1 Started");
+
   ssp1_sliquify_balls();
   stage_completed("sq_1", "ssp_1");
 }
@@ -50,10 +51,10 @@ ssp1_sliquify_balls() {
   level thread vo_richtofen_sliquify_confirm();
   level thread vo_maxis_sliquify_fail();
 
-  for (i = 0; i < a_balls.size; i++)
+  for(i = 0; i < a_balls.size; i++)
     a_balls[i] thread ssp1_watch_ball("ssp1_ball" + i + "_complete");
 
-  while (!flag("ssp1_ball0_complete") || !flag("ssp1_ball1_complete")) {
+  while(!flag("ssp1_ball0_complete") || !flag("ssp1_ball1_complete")) {
     flag_wait_any("ssp1_ball0_complete", "ssp1_ball1_complete");
     wait 0.5;
   }
@@ -68,7 +69,7 @@ ssp1_watch_ball(str_complete_flag) {
 }
 
 ssp1_rotate_ball() {
-  while (isdefined(self)) {
+  while(isDefined(self)) {
     self rotateyaw(360, 1);
     wait 0.9;
   }
@@ -81,6 +82,7 @@ ssp1_advance_dragon() {
 
 stage_logic_2() {
   iprintlnbold("SSP2 Started");
+
   level thread ssp2_advance_dragon();
   corpse_room_watcher();
   stage_completed("sq_2", "ssp_2");
@@ -90,7 +92,7 @@ corpse_room_watcher() {
   t_corpse_room = getent("corpse_room_trigger", "targetname");
   n_count = 0;
 
-  while (!flag("ssp2_resurrection_done")) {
+  while(!flag("ssp2_resurrection_done")) {
     level waittill("ssp2_corpse_made", is_in_room);
 
     if(is_in_room)
@@ -103,6 +105,7 @@ corpse_room_watcher() {
       level thread maps\mp\zm_highrise_sq::maxissay("vox_maxi_sidequest_reincar_zombie_0");
     } else if(n_count >= 15) {
       iprintlnbold("Corpse Count Reached");
+
       level thread vo_maxis_ssp_reincarnate();
       flag_set("ssp2_corpses_in_place");
       corpse_room_revive_watcher();
@@ -114,7 +117,7 @@ corpse_room_watcher() {
 ssp_2_zombie_death_check() {
   self waittill("death");
 
-  if(!isdefined(self)) {
+  if(!isDefined(self)) {
     return;
   }
   t_corpse_room = getent("corpse_room_trigger", "targetname");
@@ -129,7 +132,7 @@ corpse_room_cleanup_watcher() {
   level endon("ssp2_resurrection_done");
   t_corpse_room = getent("corpse_room_trigger", "targetname");
 
-  while (true) {
+  while(true) {
     wait 1;
     a_corpses = getcorpsearray();
 
@@ -160,7 +163,7 @@ corpse_room_revive_watcher() {
   str_type = "none";
   t_corpse_room_dmg = getent("corpse_room_trigger", "targetname");
 
-  while (weaponname != "knife_ballistic_upgraded_zm" || str_type != "MOD_IMPACT") {
+  while(weaponname != "knife_ballistic_upgraded_zm" || str_type != "MOD_IMPACT") {
     t_corpse_room_dmg waittill("damage", amount, inflictor, direction, point, type);
 
     if(isplayer(inflictor)) {
@@ -170,6 +173,7 @@ corpse_room_revive_watcher() {
   }
 
   iprintlnbold("Revive Complete");
+
   vo_maxis_ssp_complete();
   flag_set("ssp2_resurrection_done");
 }
@@ -186,14 +190,13 @@ exit_stage_1(success) {
 }
 
 exit_stage_2(success) {
-
 }
 
 watch_model_sliquification(n_end_limit, str_complete_flag) {
   n_count = 0;
   self setcandamage(1);
 
-  while (!flag(str_complete_flag)) {
+  while(!flag(str_complete_flag)) {
     self waittill("damage", amount, attacker, direction, point, mod, tagname, modelname, partname, weaponname);
 
     if(issubstr(weaponname, "slipgun") && !flag("sq_ball_picked_up")) {
@@ -201,9 +204,10 @@ watch_model_sliquification(n_end_limit, str_complete_flag) {
 
       if(n_count >= n_end_limit) {
         iprintlnbold("MODEL COMPLETE: " + str_complete_flag);
+
         self notify("sq_sliquified");
 
-        if(isdefined(self.t_pickup))
+        if(isDefined(self.t_pickup))
           self.t_pickup delete();
 
         flag_set(str_complete_flag);

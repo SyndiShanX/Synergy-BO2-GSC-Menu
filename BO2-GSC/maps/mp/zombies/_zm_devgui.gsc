@@ -39,7 +39,7 @@ zombie_devgui_player_commands() {
   wait 1;
   players = get_players();
 
-  for (i = 0; i < players.size; i++) {
+  for(i = 0; i < players.size; i++) {
     ip1 = i + 1;
     adddebugcommand("devgui_cmd \"Zombies:1/Players:1/Player:1/" + players[i].name + "/Give Money:1\" \"set zombie_devgui player" + ip1 + "_money\" \\n");
     adddebugcommand("devgui_cmd \"Zombies:1/Players:1/Player:1/" + players[i].name + "/Invulnerable:2\" \"set zombie_devgui player" + ip1 + "_invul_on\" \\n");
@@ -52,12 +52,13 @@ zombie_devgui_player_commands() {
     adddebugcommand("devgui_cmd \"Zombies:1/Players:1/Player:1/" + players[i].name + "/Debug Pers:9\" \"set zombie_devgui player" + ip1 + "_debug_pers\" \\n");
     adddebugcommand("devgui_cmd \"Zombies:1/Players:1/Player:1/" + players[i].name + "/Take Money:10\" \"set zombie_devgui player" + ip1 + "_moneydown\" \\n");
   }
+
 }
 
 devgui_add_weapon_entry(hint, up, weapon_name, root) {
   rootslash = "";
 
-  if(isdefined(root) && root.size)
+  if(isDefined(root) && root.size)
     rootslash = root + "/";
 
   uppath = "/" + up;
@@ -77,7 +78,7 @@ devgui_add_weapon(weapon_name, upgrade_name, hint, cost, weaponvo, weaponvoresp,
   if(is_offhand_weapon(weapon_name) && !is_melee_weapon(weapon_name)) {
     return;
   }
-  if(!isdefined(level.devgui_weapons_added))
+  if(!isDefined(level.devgui_weapons_added))
     level.devgui_weapons_added = 0;
 
   level.devgui_weapons_added++;
@@ -92,11 +93,11 @@ zombie_weapon_devgui_think() {
   level.zombie_devgui_gun = getdvar(#"_id_CE4F9F97");
   level.zombie_devgui_att = getdvar(#"_id_A965F402");
 
-  for (;;) {
+  for(;;) {
     wait 0.25;
     cmd = getdvar(#"_id_CE4F9F97");
 
-    if(!isdefined(level.zombie_devgui_gun) || level.zombie_devgui_gun != cmd) {
+    if(!isDefined(level.zombie_devgui_gun) || level.zombie_devgui_gun != cmd) {
       level.zombie_devgui_gun = cmd;
       array_thread(get_players(), ::zombie_devgui_weapon_give, level.zombie_devgui_gun);
     }
@@ -104,11 +105,12 @@ zombie_weapon_devgui_think() {
     wait 0.25;
     att = getdvar(#"_id_A965F402");
 
-    if(!isdefined(level.zombie_devgui_att) || level.zombie_devgui_att != att) {
+    if(!isDefined(level.zombie_devgui_att) || level.zombie_devgui_att != att) {
       level.zombie_devgui_att = att;
       array_thread(get_players(), ::zombie_devgui_attachment_give, level.zombie_devgui_att);
     }
   }
+
 }
 
 zombie_devgui_weapon_give(gun) {
@@ -144,38 +146,40 @@ devgui_add_ability(name, upgrade_active_func, stat_name, stat_desired_value, gam
 zombie_devgui_ability_give(name) {
   pers_upgrade = level.pers_upgrades[name];
 
-  if(isdefined(pers_upgrade)) {
-    for (i = 0; i < pers_upgrade.stat_names.size; i++) {
+  if(isDefined(pers_upgrade)) {
+    for(i = 0; i < pers_upgrade.stat_names.size; i++) {
       stat_name = pers_upgrade.stat_names[i];
       stat_value = pers_upgrade.stat_desired_values[i];
       self maps\mp\zombies\_zm_stats::set_global_stat(stat_name, stat_value);
       self.pers_upgrade_force_test = 1;
     }
   }
+
 }
 
 zombie_devgui_ability_take(name) {
   pers_upgrade = level.pers_upgrades[name];
 
-  if(isdefined(pers_upgrade)) {
-    for (i = 0; i < pers_upgrade.stat_names.size; i++) {
+  if(isDefined(pers_upgrade)) {
+    for(i = 0; i < pers_upgrade.stat_names.size; i++) {
       stat_name = pers_upgrade.stat_names[i];
       stat_value = 0;
       self maps\mp\zombies\_zm_stats::set_global_stat(stat_name, stat_value);
       self.pers_upgrade_force_test = 1;
     }
   }
+
 }
 
 zombie_ability_devgui_think() {
   level.zombie_devgui_give_ability = getdvar(#"_id_E2245F05");
   level.zombie_devgui_take_ability = getdvar(#"_id_0726367F");
 
-  for (;;) {
+  for(;;) {
     wait 0.25;
     cmd = getdvar(#"_id_E2245F05");
 
-    if(!isdefined(level.zombie_devgui_give_ability) || level.zombie_devgui_give_ability != cmd) {
+    if(!isDefined(level.zombie_devgui_give_ability) || level.zombie_devgui_give_ability != cmd) {
       if(cmd == "_disable")
         flag_set("sq_minigame_active");
       else if(cmd == "_enable")
@@ -189,11 +193,12 @@ zombie_ability_devgui_think() {
     wait 0.25;
     cmd = getdvar(#"_id_0726367F");
 
-    if(!isdefined(level.zombie_devgui_take_ability) || level.zombie_devgui_take_ability != cmd) {
+    if(!isDefined(level.zombie_devgui_take_ability) || level.zombie_devgui_take_ability != cmd) {
       level.zombie_devgui_take_ability = cmd;
       array_thread(get_players(), ::zombie_devgui_ability_take, level.zombie_devgui_take_ability);
     }
   }
+
 }
 
 zombie_healthbar(pos, dsquared) {
@@ -202,7 +207,7 @@ zombie_healthbar(pos, dsquared) {
   }
   rate = 1;
 
-  if(isdefined(self.maxhealth))
+  if(isDefined(self.maxhealth))
     rate = self.health / self.maxhealth;
 
   color = (1 - rate, rate, 0);
@@ -211,12 +216,12 @@ zombie_healthbar(pos, dsquared) {
 }
 
 devgui_zombie_healthbar() {
-  while (true) {
+  while(true) {
     if(getdvarint(#"_id_5B45DCAF") == 1) {
       lp = get_players()[0];
       zombies = getaispeciesarray("all", "all");
 
-      if(isdefined(zombies)) {
+      if(isDefined(zombies)) {
         foreach(zombie in zombies)
         zombie zombie_healthbar(lp.origin, 360000);
       }
@@ -224,6 +229,7 @@ devgui_zombie_healthbar() {
 
     wait 0.05;
   }
+
 }
 
 zombie_devgui_watch_input() {
@@ -231,7 +237,7 @@ zombie_devgui_watch_input() {
   wait 1;
   players = get_players();
 
-  for (i = 0; i < players.size; i++)
+  for(i = 0; i < players.size; i++)
     players[i] thread watch_debug_input();
 }
 
@@ -297,24 +303,25 @@ watch_debug_input(callback) {
   self endon("watch_debug_input");
   level.devgui_dpad_watch = 0;
 
-  if(isdefined(callback)) {
+  if(isDefined(callback)) {
     level.devgui_dpad_watch = 1;
 
-    for (;;) {
+    for(;;) {
       if(self actionslottwobuttonpressed()) {
         self thread[[callback]]();
 
-        while (self actionslottwobuttonpressed())
+        while(self actionslottwobuttonpressed())
           wait 0.05;
       }
 
       wait 0.05;
     }
   }
+
 }
 
 zombie_devgui_think() {
-  for (;;) {
+  for(;;) {
     cmd = getdvar(#"zombie_devgui");
 
     switch (cmd) {
@@ -633,20 +640,19 @@ zombie_devgui_think() {
         zombie_devgui_goto_round(level.round_number - 1);
         break;
       case "chest_move":
-        if(isdefined(level.chest_accessed)) {
+        if(isDefined(level.chest_accessed)) {
           level notify("devgui_chest_end_monitor");
           level.chest_accessed = 100;
         }
 
         break;
       case "chest_never_move":
-        if(isdefined(level.chest_accessed))
+        if(isDefined(level.chest_accessed))
           level thread zombie_devgui_chest_never_move();
 
         break;
       case "chest":
-        if(isdefined(level.zombie_weapons[getdvar(#"_id_45ED7744")])) {
-
+        if(isDefined(level.zombie_weapons[getdvar(#"_id_45ED7744")])) {
         }
 
         break;
@@ -860,7 +866,7 @@ zombie_devgui_think() {
       case "":
         break;
       default:
-        if(isdefined(level.custom_devgui)) {
+        if(isDefined(level.custom_devgui)) {
           if(isarray(level.custom_devgui)) {
             i = 0;
 
@@ -870,13 +876,12 @@ zombie_devgui_think() {
               ](cmd));
               i++;
             }
-            while (!b_found_entry && i < level.custom_devgui.size);
+            while(!b_found_entry && i < level.custom_devgui.size);
           } else
             [
               [level.custom_devgui]
             ](cmd);
         } else {
-
         }
 
         break;
@@ -885,6 +890,7 @@ zombie_devgui_think() {
     setdvar("zombie_devgui", "");
     wait 0.5;
   }
+
 }
 
 devgui_all_spawn() {
@@ -899,7 +905,7 @@ devgui_all_spawn() {
 }
 
 devgui_toggle_show_spawn_locations() {
-  if(!isdefined(level.toggle_show_spawn_locations))
+  if(!isDefined(level.toggle_show_spawn_locations))
     level.toggle_show_spawn_locations = 1;
   else
     level.toggle_show_spawn_locations = !level.toggle_show_spawn_locations;
@@ -920,13 +926,14 @@ devgui_zombie_spawn() {
   spawner = spawners[0];
   guy = maps\mp\zombies\_zm_utility::spawn_zombie(spawner);
 
-  if(isdefined(guy)) {
+  if(isDefined(guy)) {
     wait 0.5;
     guy.origin = trace["position"];
     guy.angles = player.angles + vectorscale((0, 1, 0), 180.0);
     guy forceteleport(trace["position"], player.angles + vectorscale((0, 1, 0), 180.0));
     guy thread maps\mp\zombies\_zm_ai_basic::find_flesh();
   }
+
 }
 
 devgui_bot_spawn(team) {
@@ -941,7 +948,7 @@ devgui_bot_spawn(team) {
   direction = vectortoangles(direction_vec);
   bot = addtestclient();
 
-  if(!isdefined(bot)) {
+  if(!isDefined(bot)) {
     println("Could not add test client");
     return;
   }
@@ -958,12 +965,13 @@ devgui_bot_spawn(team) {
 devgui_bot_spawn_think(origin, yaw) {
   self endon("disconnect");
 
-  for (;;) {
+  for(;;) {
     self waittill("spawned_player");
     self setorigin(origin);
     angles = (0, yaw, 0);
     self setplayerangles(angles);
   }
+
 }
 
 zombie_devgui_open_sesame() {
@@ -973,7 +981,7 @@ zombie_devgui_open_sesame() {
   array_thread(players, ::zombie_devgui_give_money);
   zombie_doors = getentarray("zombie_door", "targetname");
 
-  for (i = 0; i < zombie_doors.size; i++) {
+  for(i = 0; i < zombie_doors.size; i++) {
     zombie_doors[i] notify("trigger", players[0]);
 
     if(is_true(zombie_doors[i].power_door_ignore_flag_wait))
@@ -984,14 +992,14 @@ zombie_devgui_open_sesame() {
 
   zombie_airlock_doors = getentarray("zombie_airlock_buy", "targetname");
 
-  for (i = 0; i < zombie_airlock_doors.size; i++) {
+  for(i = 0; i < zombie_airlock_doors.size; i++) {
     zombie_airlock_doors[i] notify("trigger", players[0]);
     wait 0.05;
   }
 
   zombie_debris = getentarray("zombie_debris", "targetname");
 
-  for (i = 0; i < zombie_debris.size; i++) {
+  for(i = 0; i < zombie_debris.size; i++) {
     zombie_debris[i] notify("trigger", players[0]);
     wait 0.05;
   }
@@ -1016,25 +1024,26 @@ diable_fog_in_noclip() {
   level endon("allowfoginnoclip");
   flag_wait("start_zombie_round_logic");
 
-  while (true) {
-    while (!any_player_in_noclip())
+  while(true) {
+    while(!any_player_in_noclip())
       wait 1;
 
     setdvar("scr_fog_disable", "1");
     setdvar("r_fog_disable", "1");
 
-    if(isdefined(level.culldist))
+    if(isDefined(level.culldist))
       setculldist(0);
 
-    while (any_player_in_noclip())
+    while(any_player_in_noclip())
       wait 1;
 
     setdvar("scr_fog_disable", "0");
     setdvar("r_fog_disable", "0");
 
-    if(isdefined(level.culldist))
+    if(isDefined(level.culldist))
       setculldist(level.culldist);
   }
+
 }
 
 zombie_devgui_allow_fog() {
@@ -1048,7 +1057,7 @@ zombie_devgui_allow_fog() {
 }
 
 zombie_devgui_give_money() {
-  assert(isdefined(self));
+  assert(isDefined(self));
   assert(isplayer(self));
   assert(isalive(self));
   level.devcheater = 1;
@@ -1056,7 +1065,7 @@ zombie_devgui_give_money() {
 }
 
 zombie_devgui_take_money() {
-  assert(isdefined(self));
+  assert(isDefined(self));
   assert(isplayer(self));
   assert(isalive(self));
 
@@ -1069,12 +1078,12 @@ zombie_devgui_take_money() {
 zombie_devgui_turn_player(index) {
   players = get_players();
 
-  if(!isdefined(index) || index >= players.size)
+  if(!isDefined(index) || index >= players.size)
     player = players[0];
   else
     player = players[index];
 
-  assert(isdefined(player));
+  assert(isDefined(player));
   assert(isplayer(player));
   assert(isalive(player));
   level.devcheater = 1;
@@ -1086,29 +1095,30 @@ zombie_devgui_turn_player(index) {
     println("Player turned ZOMBIE");
     player maps\mp\zombies\_zm_turned::turn_to_zombie();
   }
+
 }
 
 zombie_devgui_debug_pers(index) {
   players = get_players();
 
-  if(!isdefined(index) || index >= players.size)
+  if(!isDefined(index) || index >= players.size)
     player = players[0];
   else
     player = players[index];
 
-  assert(isdefined(player));
+  assert(isDefined(player));
   assert(isplayer(player));
   assert(isalive(player));
   level.devcheater = 1;
   println("\\n\\n----------------------------------------------------------------------------------------------");
   println("Active Persistent upgrades [count=" + level.pers_upgrades_keys.size + "]");
 
-  for (pers_upgrade_index = 0; pers_upgrade_index < level.pers_upgrades_keys.size; pers_upgrade_index++) {
+  for(pers_upgrade_index = 0; pers_upgrade_index < level.pers_upgrades_keys.size; pers_upgrade_index++) {
     name = level.pers_upgrades_keys[pers_upgrade_index];
     println(pers_upgrade_index + ">pers_upgrade name = " + name);
     pers_upgrade = level.pers_upgrades[name];
 
-    for (i = 0; i < pers_upgrade.stat_names.size; i++) {
+    for(i = 0; i < pers_upgrade.stat_names.size; i++) {
       stat_name = pers_upgrade.stat_names[i];
       stat_desired_value = pers_upgrade.stat_desired_values[i];
       player_current_stat_value = player maps\mp\zombies\_zm_stats::get_global_stat(stat_name);
@@ -1129,7 +1139,7 @@ zombie_devgui_debug_pers(index) {
 }
 
 zombie_devgui_cool_jetgun() {
-  if(isdefined(level.zm_devgui_jetgun_never_overheat))
+  if(isDefined(level.zm_devgui_jetgun_never_overheat))
     self thread[[level.zm_devgui_jetgun_never_overheat]]();
 }
 
@@ -1141,7 +1151,7 @@ zombie_devgui_preserve_turbines() {
   if(!is_true(self.preserving_turbines)) {
     self.preserving_turbines = 1;
 
-    while (true) {
+    while(true) {
       self.turbine_health = 1200;
       wait 1;
     }
@@ -1158,13 +1168,13 @@ zombie_devgui_equipment_stays_healthy() {
   if(!is_true(self.preserving_equipment)) {
     self.preserving_equipment = 1;
 
-    while (true) {
+    while(true) {
       self.equipment_damage = [];
       self.shielddamagetaken = 0;
 
-      if(isdefined(level.destructible_equipment)) {
+      if(isDefined(level.destructible_equipment)) {
         foreach(equip in level.destructible_equipment) {
-          if(isdefined(equip)) {
+          if(isDefined(equip)) {
             equip.shielddamagetaken = 0;
             equip.damage = 0;
             equip.headchopper_kills = 0;
@@ -1186,7 +1196,7 @@ zombie_devgui_disown_equipment() {
 }
 
 zombie_devgui_equipment_give(equipment) {
-  assert(isdefined(self));
+  assert(isDefined(self));
   assert(isplayer(self));
   assert(isalive(self));
   level.devcheater = 1;
@@ -1196,8 +1206,8 @@ zombie_devgui_equipment_give(equipment) {
 }
 
 zombie_devgui_buildable_drop() {
-  if(isdefined(level.buildable_slot_count)) {
-    for (i = 0; i < level.buildable_slot_count; i++)
+  if(isDefined(level.buildable_slot_count)) {
+    for(i = 0; i < level.buildable_slot_count; i++)
       self maps\mp\zombies\_zm_buildables::player_drop_piece(undefined, i);
   } else
     self maps\mp\zombies\_zm_buildables::player_drop_piece();
@@ -1206,56 +1216,59 @@ zombie_devgui_buildable_drop() {
 zombie_devgui_build(buildable) {
   player = get_players()[0];
 
-  for (i = 0; i < level.buildable_stubs.size; i++) {
-    if(!isdefined(buildable) || level.buildable_stubs[i].equipname == buildable) {
-      if(!isdefined(buildable) && is_true(level.buildable_stubs[i].ignore_open_sesame)) {
+  for(i = 0; i < level.buildable_stubs.size; i++) {
+    if(!isDefined(buildable) || level.buildable_stubs[i].equipname == buildable) {
+      if(!isDefined(buildable) && is_true(level.buildable_stubs[i].ignore_open_sesame)) {
         continue;
       }
-      if(isdefined(buildable) || level.buildable_stubs[i].persistent != 3)
+      if(isDefined(buildable) || level.buildable_stubs[i].persistent != 3)
         level.buildable_stubs[i] maps\mp\zombies\_zm_buildables::buildablestub_finish_build(player);
     }
   }
+
 }
 
 zombie_devgui_give_claymores() {
   self endon("disconnect");
   self notify("give_planted_grenade_thread");
   self endon("give_planted_grenade_thread");
-  assert(isdefined(self));
+  assert(isDefined(self));
   assert(isplayer(self));
   assert(isalive(self));
   level.devcheater = 1;
 
-  if(isdefined(self get_player_placeable_mine()))
+  if(isDefined(self get_player_placeable_mine()))
     self takeweapon(self get_player_placeable_mine());
 
   self thread maps\mp\zombies\_zm_weap_claymore::claymore_setup();
 
-  while (true) {
+  while(true) {
     self givemaxammo("claymore_zm");
     wait 1;
   }
+
 }
 
 zombie_devgui_give_lethal(weapon) {
   self endon("disconnect");
   self notify("give_lethal_grenade_thread");
   self endon("give_lethal_grenade_thread");
-  assert(isdefined(self));
+  assert(isDefined(self));
   assert(isplayer(self));
   assert(isalive(self));
   level.devcheater = 1;
 
-  if(isdefined(self get_player_lethal_grenade()))
+  if(isDefined(self get_player_lethal_grenade()))
     self takeweapon(self get_player_lethal_grenade());
 
   self giveweapon(weapon);
   self set_player_lethal_grenade(weapon);
 
-  while (true) {
+  while(true) {
     self givemaxammo(weapon);
     wait 1;
   }
+
 }
 
 zombie_devgui_give_frags() {
@@ -1270,59 +1283,61 @@ zombie_devgui_give_monkey() {
   self endon("disconnect");
   self notify("give_tactical_grenade_thread");
   self endon("give_tactical_grenade_thread");
-  assert(isdefined(self));
+  assert(isDefined(self));
   assert(isplayer(self));
   assert(isalive(self));
   level.devcheater = 1;
 
-  if(isdefined(self get_player_tactical_grenade()))
+  if(isDefined(self get_player_tactical_grenade()))
     self takeweapon(self get_player_tactical_grenade());
 
-  if(isdefined(level.zombiemode_devgui_cymbal_monkey_give)) {
+  if(isDefined(level.zombiemode_devgui_cymbal_monkey_give)) {
     self[[level.zombiemode_devgui_cymbal_monkey_give]]();
 
-    while (true) {
+    while(true) {
       self givemaxammo("cymbal_monkey_zm");
       wait 1;
     }
   }
+
 }
 
 zombie_devgui_give_beacon() {
   self endon("disconnect");
   self notify("give_tactical_grenade_thread");
   self endon("give_tactical_grenade_thread");
-  assert(isdefined(self));
+  assert(isDefined(self));
   assert(isplayer(self));
   assert(isalive(self));
   level.devcheater = 1;
 
-  if(isdefined(self get_player_tactical_grenade()))
+  if(isDefined(self get_player_tactical_grenade()))
     self takeweapon(self get_player_tactical_grenade());
 
-  if(isdefined(level.zombiemode_devgui_beacon_give)) {
+  if(isDefined(level.zombiemode_devgui_beacon_give)) {
     self[[level.zombiemode_devgui_beacon_give]]();
 
-    while (true) {
+    while(true) {
       self givemaxammo("beacon_zm");
       wait 1;
     }
   }
+
 }
 
 zombie_devgui_give_time_bomb() {
   self endon("disconnect");
   self notify("give_tactical_grenade_thread");
   self endon("give_tactical_grenade_thread");
-  assert(isdefined(self));
+  assert(isDefined(self));
   assert(isplayer(self));
   assert(isalive(self));
   level.devcheater = 1;
 
-  if(isdefined(self get_player_tactical_grenade()))
+  if(isDefined(self get_player_tactical_grenade()))
     self takeweapon(self get_player_tactical_grenade());
 
-  if(isdefined(level.zombiemode_time_bomb_give_func))
+  if(isDefined(level.zombiemode_time_bomb_give_func))
     self[[level.zombiemode_time_bomb_give_func]]();
 }
 
@@ -1330,95 +1345,99 @@ zombie_devgui_give_black_hole_bomb() {
   self endon("disconnect");
   self notify("give_tactical_grenade_thread");
   self endon("give_tactical_grenade_thread");
-  assert(isdefined(self));
+  assert(isDefined(self));
   assert(isplayer(self));
   assert(isalive(self));
   level.devcheater = 1;
 
-  if(isdefined(self get_player_tactical_grenade()))
+  if(isDefined(self get_player_tactical_grenade()))
     self takeweapon(self get_player_tactical_grenade());
 
-  if(isdefined(level.zombiemode_devgui_black_hole_bomb_give)) {
+  if(isDefined(level.zombiemode_devgui_black_hole_bomb_give)) {
     self[[level.zombiemode_devgui_black_hole_bomb_give]]();
 
-    while (true) {
+    while(true) {
       self givemaxammo("zombie_black_hole_bomb");
       wait 1;
     }
   }
+
 }
 
 zombie_devgui_give_dolls() {
   self endon("disconnect");
   self notify("give_tactical_grenade_thread");
   self endon("give_tactical_grenade_thread");
-  assert(isdefined(self));
+  assert(isDefined(self));
   assert(isplayer(self));
   assert(isalive(self));
   level.devcheater = 1;
 
-  if(isdefined(self get_player_tactical_grenade()))
+  if(isDefined(self get_player_tactical_grenade()))
     self takeweapon(self get_player_tactical_grenade());
 
-  if(isdefined(level.zombiemode_devgui_nesting_dolls_give)) {
+  if(isDefined(level.zombiemode_devgui_nesting_dolls_give)) {
     self[[level.zombiemode_devgui_nesting_dolls_give]]();
 
-    while (true) {
+    while(true) {
       self givemaxammo("zombie_nesting_dolls");
       wait 1;
     }
   }
+
 }
 
 zombie_devgui_give_quantum_bomb() {
   self endon("disconnect");
   self notify("give_tactical_grenade_thread");
   self endon("give_tactical_grenade_thread");
-  assert(isdefined(self));
+  assert(isDefined(self));
   assert(isplayer(self));
   assert(isalive(self));
   level.devcheater = 1;
 
-  if(isdefined(self get_player_tactical_grenade()))
+  if(isDefined(self get_player_tactical_grenade()))
     self takeweapon(self get_player_tactical_grenade());
 
-  if(isdefined(level.zombiemode_devgui_quantum_bomb_give)) {
+  if(isDefined(level.zombiemode_devgui_quantum_bomb_give)) {
     self[[level.zombiemode_devgui_quantum_bomb_give]]();
 
-    while (true) {
+    while(true) {
       self givemaxammo("zombie_quantum_bomb");
       wait 1;
     }
   }
+
 }
 
 zombie_devgui_give_emp_bomb() {
   self endon("disconnect");
   self notify("give_tactical_grenade_thread");
   self endon("give_tactical_grenade_thread");
-  assert(isdefined(self));
+  assert(isDefined(self));
   assert(isplayer(self));
   assert(isalive(self));
   level.devcheater = 1;
 
-  if(isdefined(self get_player_tactical_grenade()))
+  if(isDefined(self get_player_tactical_grenade()))
     self takeweapon(self get_player_tactical_grenade());
 
-  if(isdefined(level.zombiemode_devgui_emp_bomb_give)) {
+  if(isDefined(level.zombiemode_devgui_emp_bomb_give)) {
     self[[level.zombiemode_devgui_emp_bomb_give]]();
 
-    while (true) {
+    while(true) {
       self givemaxammo("emp_grenade_zm");
       wait 1;
     }
   }
+
 }
 
 zombie_devgui_invulnerable(playerindex, onoff) {
   players = get_players();
 
-  if(!isdefined(playerindex)) {
-    for (i = 0; i < players.size; i++)
+  if(!isDefined(playerindex)) {
+    for(i = 0; i < players.size; i++)
       zombie_devgui_invulnerable(i, onoff);
   } else if(players.size > playerindex) {
     if(onoff)
@@ -1426,10 +1445,11 @@ zombie_devgui_invulnerable(playerindex, onoff) {
     else
       players[playerindex] disableinvulnerability();
   }
+
 }
 
 zombie_devgui_kill() {
-  assert(isdefined(self));
+  assert(isDefined(self));
   assert(isplayer(self));
   assert(isalive(self));
   self disableinvulnerability();
@@ -1438,36 +1458,37 @@ zombie_devgui_kill() {
 }
 
 zombie_devgui_toggle_ammo() {
-  assert(isdefined(self));
+  assert(isDefined(self));
   assert(isplayer(self));
   assert(isalive(self));
   self notify("devgui_toggle_ammo");
   self endon("devgui_toggle_ammo");
   self.ammo4evah = !is_true(self.ammo4evah);
 
-  while (isdefined(self) && self.ammo4evah) {
+  while(isDefined(self) && self.ammo4evah) {
     weapon = self getcurrentweapon();
 
     if(weapon != "none") {
       self setweaponoverheating(0, 0);
       max = weaponmaxammo(weapon);
 
-      if(isdefined(max))
+      if(isDefined(max))
         self setweaponammostock(weapon, max);
 
-      if(isdefined(self get_player_tactical_grenade()))
+      if(isDefined(self get_player_tactical_grenade()))
         self givemaxammo(self get_player_tactical_grenade());
 
-      if(isdefined(self get_player_lethal_grenade()))
+      if(isDefined(self get_player_lethal_grenade()))
         self givemaxammo(self get_player_lethal_grenade());
     }
 
     wait 1;
   }
+
 }
 
 zombie_devgui_toggle_ignore() {
-  assert(isdefined(self));
+  assert(isDefined(self));
   assert(isplayer(self));
   assert(isalive(self));
   self.ignoreme = !self.ignoreme;
@@ -1477,13 +1498,13 @@ zombie_devgui_toggle_ignore() {
 }
 
 zombie_devgui_revive() {
-  assert(isdefined(self));
+  assert(isDefined(self));
   assert(isplayer(self));
   assert(isalive(self));
   self reviveplayer();
   self notify("stop_revive_trigger");
 
-  if(isdefined(self.revivetrigger)) {
+  if(isDefined(self.revivetrigger)) {
     self.revivetrigger delete();
     self.revivetrigger = undefined;
   }
@@ -1495,7 +1516,7 @@ zombie_devgui_revive() {
 }
 
 zombie_devgui_give_health() {
-  assert(isdefined(self));
+  assert(isDefined(self));
   assert(isplayer(self));
   assert(isalive(self));
   self notify("devgui_health");
@@ -1504,12 +1525,13 @@ zombie_devgui_give_health() {
   self endon("death");
   level.devcheater = 1;
 
-  while (true) {
+  while(true) {
     self.maxhealth = 100000;
     self.health = 100000;
     self waittill_any("player_revived", "perk_used", "spawned_player");
     wait 2;
   }
+
 }
 
 zombie_devgui_give_perk(perk) {
@@ -1520,12 +1542,13 @@ zombie_devgui_give_perk(perk) {
   if(vending_triggers.size < 1) {
     return;
   }
-  for (i = 0; i < vending_triggers.size; i++) {
+  for(i = 0; i < vending_triggers.size; i++) {
     if(vending_triggers[i].script_noteworthy == perk) {
       vending_triggers[i] notify("trigger", player);
       return;
     }
   }
+
 }
 
 zombie_devgui_give_powerup(powerup_name, now, origin) {
@@ -1533,7 +1556,7 @@ zombie_devgui_give_powerup(powerup_name, now, origin) {
   found = 0;
   level.devcheater = 1;
 
-  for (i = 0; i < level.zombie_powerup_array.size; i++) {
+  for(i = 0; i < level.zombie_powerup_array.size; i++) {
     if(level.zombie_powerup_array[i] == powerup_name) {
       level.zombie_powerup_index = i;
       found = 1;
@@ -1554,9 +1577,9 @@ zombie_devgui_give_powerup(powerup_name, now, origin) {
   level.zombie_vars["zombie_drop_item"] = 1;
   level.powerup_drop_count = 0;
 
-  if(isdefined(origin))
+  if(isDefined(origin))
     level thread maps\mp\zombies\_zm_powerups::powerup_drop(origin);
-  else if(!isdefined(now) || now)
+  else if(!isDefined(now) || now)
     level thread maps\mp\zombies\_zm_powerups::powerup_drop(trace["position"]);
 }
 
@@ -1574,52 +1597,52 @@ zombie_devgui_goto_round(target_round) {
   wait 1;
   zombies = get_round_enemy_array();
 
-  if(isdefined(zombies)) {
-    for (i = 0; i < zombies.size; i++) {
+  if(isDefined(zombies)) {
+    for(i = 0; i < zombies.size; i++) {
       if(is_true(zombies[i].ignore_devgui_death)) {
         continue;
       }
       zombies[i] dodamage(zombies[i].health + 666, zombies[i].origin);
     }
   }
+
 }
 
 zombie_devgui_monkey_round() {
-  if(isdefined(level.next_monkey_round))
+  if(isDefined(level.next_monkey_round))
     zombie_devgui_goto_round(level.next_monkey_round);
 }
 
 zombie_devgui_thief_round() {
-  if(isdefined(level.next_thief_round))
+  if(isDefined(level.next_thief_round))
     zombie_devgui_goto_round(level.next_thief_round);
 }
 
 zombie_devgui_dog_round(num_dogs) {
-  if(!isdefined(level.dogs_enabled) || !level.dogs_enabled) {
+  if(!isDefined(level.dogs_enabled) || !level.dogs_enabled) {
     return;
   }
-  if(!isdefined(level.dog_rounds_enabled) || !level.dog_rounds_enabled) {
+  if(!isDefined(level.dog_rounds_enabled) || !level.dog_rounds_enabled) {
     return;
   }
-  if(!isdefined(level.enemy_dog_spawns) || level.enemy_dog_spawns.size < 1) {
+  if(!isDefined(level.enemy_dog_spawns) || level.enemy_dog_spawns.size < 1) {
     return;
   }
   if(!flag("dog_round"))
     setdvar("force_dogs", num_dogs);
   else {
-
   }
 
   zombie_devgui_goto_round(level.round_number + 1);
 }
 
 zombie_devgui_dog_round_skip() {
-  if(isdefined(level.next_dog_round))
+  if(isDefined(level.next_dog_round))
     zombie_devgui_goto_round(level.next_dog_round);
 }
 
 zombie_devgui_dump_zombie_vars() {
-  if(!isdefined(level.zombie_vars)) {
+  if(!isDefined(level.zombie_vars)) {
     return;
   }
   if(level.zombie_vars.size > 0)
@@ -1629,7 +1652,7 @@ zombie_devgui_dump_zombie_vars() {
 
   var_names = getarraykeys(level.zombie_vars);
 
-  for (i = 0; i < level.zombie_vars.size; i++) {
+  for(i = 0; i < level.zombie_vars.size; i++) {
     key = var_names[i];
     println(key + ": " + level.zombie_vars[key]);
   }
@@ -1642,12 +1665,12 @@ zombie_devgui_pack_current_weapon() {
   reviver = players[0];
   level.devcheater = 1;
 
-  for (i = 0; i < players.size; i++) {
+  for(i = 0; i < players.size; i++) {
     if(!players[i] maps\mp\zombies\_zm_laststand::player_is_in_laststand()) {
       weap = maps\mp\zombies\_zm_weapons::get_base_name(players[i] getcurrentweapon());
       weapon = get_upgrade(weap);
 
-      if(isdefined(weapon)) {
+      if(isDefined(weapon)) {
         players[i] takeweapon(weap);
         players[i] giveweapon(weapon, 0, players[i] maps\mp\zombies\_zm_weapons::get_pack_a_punch_weapon_options(weapon));
         players[i] givestartammo(weapon);
@@ -1655,6 +1678,7 @@ zombie_devgui_pack_current_weapon() {
       }
     }
   }
+
 }
 
 zombie_devgui_unpack_current_weapon() {
@@ -1662,12 +1686,12 @@ zombie_devgui_unpack_current_weapon() {
   reviver = players[0];
   level.devcheater = 1;
 
-  for (i = 0; i < players.size; i++) {
+  for(i = 0; i < players.size; i++) {
     if(!players[i] maps\mp\zombies\_zm_laststand::player_is_in_laststand()) {
       weap = players[i] getcurrentweapon();
       weapon = maps\mp\zombies\_zm_weapons::get_base_weapon_name(weap, 1);
 
-      if(isdefined(weapon)) {
+      if(isDefined(weapon)) {
         players[i] takeweapon(weap);
         players[i] giveweapon(weapon, 0, players[i] maps\mp\zombies\_zm_weapons::get_pack_a_punch_weapon_options(weapon));
         players[i] givestartammo(weapon);
@@ -1675,6 +1699,7 @@ zombie_devgui_unpack_current_weapon() {
       }
     }
   }
+
 }
 
 zombie_devgui_reopt_current_weapon() {
@@ -1682,13 +1707,13 @@ zombie_devgui_reopt_current_weapon() {
   reviver = players[0];
   level.devcheater = 1;
 
-  for (i = 0; i < players.size; i++) {
+  for(i = 0; i < players.size; i++) {
     if(!players[i] maps\mp\zombies\_zm_laststand::player_is_in_laststand()) {
       weap = players[i] getcurrentweapon();
       weapon = weap;
 
-      if(isdefined(weapon)) {
-        if(isdefined(players[i].pack_a_punch_weapon_options))
+      if(isDefined(weapon)) {
+        if(isDefined(players[i].pack_a_punch_weapon_options))
           players[i].pack_a_punch_weapon_options[weapon] = undefined;
 
         players[i] takeweapon(weap);
@@ -1698,6 +1723,7 @@ zombie_devgui_reopt_current_weapon() {
       }
     }
   }
+
 }
 
 zombie_devgui_take_weapon() {
@@ -1705,17 +1731,18 @@ zombie_devgui_take_weapon() {
   reviver = players[0];
   level.devcheater = 1;
 
-  for (i = 0; i < players.size; i++) {
+  for(i = 0; i < players.size; i++) {
     if(!players[i] maps\mp\zombies\_zm_laststand::player_is_in_laststand()) {
       weap = players[i] getcurrentweapon();
       weapon = weap;
 
-      if(isdefined(weapon)) {
+      if(isDefined(weapon)) {
         players[i] takeweapon(weap);
         players[i] switch_back_primary_weapon(undefined);
       }
     }
   }
+
 }
 
 zombie_devgui_take_weapons(give_fallback) {
@@ -1723,7 +1750,7 @@ zombie_devgui_take_weapons(give_fallback) {
   reviver = players[0];
   level.devcheater = 1;
 
-  for (i = 0; i < players.size; i++) {
+  for(i = 0; i < players.size; i++) {
     if(!players[i] maps\mp\zombies\_zm_laststand::player_is_in_laststand()) {
       players[i] takeallweapons();
 
@@ -1731,17 +1758,18 @@ zombie_devgui_take_weapons(give_fallback) {
         players[i] give_fallback_weapon();
     }
   }
+
 }
 
 get_upgrade(weaponname) {
-  if(isdefined(level.zombie_weapons[weaponname]) && isdefined(level.zombie_weapons[weaponname].upgrade_name))
+  if(isDefined(level.zombie_weapons[weaponname]) && isDefined(level.zombie_weapons[weaponname].upgrade_name))
     return maps\mp\zombies\_zm_weapons::get_upgrade_weapon(weaponname, 0);
   else
     return maps\mp\zombies\_zm_weapons::get_upgrade_weapon(weaponname, 1);
 }
 
 zombie_devgui_director_easy() {
-  if(isdefined(level.director_devgui_health))
+  if(isDefined(level.director_devgui_health))
     [[level.director_devgui_health]]();
 }
 
@@ -1749,10 +1777,11 @@ zombie_devgui_chest_never_move() {
   level notify("devgui_chest_end_monitor");
   level endon("devgui_chest_end_monitor");
 
-  for (;;) {
+  for(;;) {
     level.chest_accessed = 0;
     wait 5;
   }
+
 }
 
 zombie_devgui_disable_kill_thread_toggle() {
@@ -1777,10 +1806,10 @@ zombie_devgui_kill_thread_test_mode_toggle() {
 }
 
 showonespawnpoint(spawn_point, color, notification, height, print) {
-  if(!isdefined(height) || height <= 0)
+  if(!isDefined(height) || height <= 0)
     height = get_player_height();
 
-  if(!isdefined(print))
+  if(!isDefined(print))
     print = spawn_point.classname;
 
   center = spawn_point.origin;
@@ -1828,62 +1857,64 @@ showonespawnpoint(spawn_point, color, notification, height, print) {
 print3duntilnotified(origin, text, color, alpha, scale, notification) {
   level endon(notification);
 
-  for (;;) {
+  for(;;) {
     print3d(origin, text, color, alpha, scale);
     wait 0.05;
   }
+
 }
 
 lineuntilnotified(start, end, color, depthtest, notification) {
   level endon(notification);
 
-  for (;;) {
+  for(;;) {
     line(start, end, color, depthtest);
     wait 0.05;
   }
+
 }
 
 devgui_debug_hud() {
-  if(isdefined(self get_player_lethal_grenade()))
+  if(isDefined(self get_player_lethal_grenade()))
     self givemaxammo(self get_player_lethal_grenade());
 
   self thread maps\mp\zombies\_zm_weap_claymore::claymore_setup();
 
-  if(isdefined(level.zombiemode_time_bomb_give_func)) {
-    if(isdefined(self get_player_tactical_grenade()))
+  if(isDefined(level.zombiemode_time_bomb_give_func)) {
+    if(isDefined(self get_player_tactical_grenade()))
       self takeweapon(self get_player_tactical_grenade());
 
     self[[level.zombiemode_time_bomb_give_func]]();
-  } else if(isdefined(level.zombiemode_devgui_cymbal_monkey_give)) {
-    if(isdefined(self get_player_tactical_grenade()))
+  } else if(isDefined(level.zombiemode_devgui_cymbal_monkey_give)) {
+    if(isDefined(self get_player_tactical_grenade()))
       self takeweapon(self get_player_tactical_grenade());
 
     self[[level.zombiemode_devgui_cymbal_monkey_give]]();
-  } else if(isdefined(self get_player_tactical_grenade()))
+  } else if(isDefined(self get_player_tactical_grenade()))
     self givemaxammo(self get_player_tactical_grenade());
 
-  if(isdefined(level.zombie_include_equipment) && !isdefined(self get_player_equipment())) {
+  if(isDefined(level.zombie_include_equipment) && !isDefined(self get_player_equipment())) {
     equipment = getarraykeys(level.zombie_include_equipment);
 
-    if(isdefined(equipment[0]))
+    if(isDefined(equipment[0]))
       self zombie_devgui_equipment_give(equipment[0]);
   }
 
   candidate_list = [];
 
   foreach(zone in level.zones) {
-    if(isdefined(zone.unitrigger_stubs))
+    if(isDefined(zone.unitrigger_stubs))
       candidate_list = arraycombine(candidate_list, zone.unitrigger_stubs, 1, 0);
   }
 
   foreach(stub in candidate_list) {
-    if(isdefined(stub.piece) && isdefined(stub.piece.buildable_slot)) {
-      if(!isdefined(self player_get_buildable_piece(stub.piece.buildable_slot)))
+    if(isDefined(stub.piece) && isDefined(stub.piece.buildable_slot)) {
+      if(!isDefined(self player_get_buildable_piece(stub.piece.buildable_slot)))
         self thread maps\mp\zombies\_zm_buildables::player_take_piece(stub.piece);
     }
   }
 
-  for (i = 0; i < 10; i++) {
+  for(i = 0; i < 10; i++) {
     zombie_devgui_give_powerup("free_perk", 1, self.origin);
     wait 0.25;
   }

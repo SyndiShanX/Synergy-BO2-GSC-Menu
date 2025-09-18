@@ -18,5 +18,6 @@ main() {
   setsaveddvar("sm_sunshadowsmall", 1);
   setsaveddvar("sm_sunsamplesizenear", 0.25);
   waitforclient(0);
+
   println("*** Client : mp_frostbite running...");
 }

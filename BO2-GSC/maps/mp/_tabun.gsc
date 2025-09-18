@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\_tabun.gsc
-***************************************/
+**************************************/
 
 #include maps\mp\_utility;
 #include common_scripts\utility;
@@ -40,11 +40,12 @@ init() {
   level.sound_shock_tabun_start = "";
   level.sound_shock_tabun_loop = "";
   level.sound_shock_tabun_stop = "";
+
   level thread checkdvarupdates();
 }
 
 checkdvarupdates() {
-  while (true) {
+  while(true) {
     level.tabungaspoisonradius = weapons_get_dvar_int("scr_tabun_effect_radius", level.tabungaspoisonradius);
     level.tabungaspoisonheight = weapons_get_dvar_int("scr_tabun_shock_height", level.tabungaspoisonheight);
     level.tabungasshockradius = weapons_get_dvar_int("scr_tabun_shock_radius", level.tabungasshockradius);
@@ -66,8 +67,8 @@ checkdvarupdates() {
 watchtabungrenadedetonation(owner) {
   self waittill("explode", position, surface);
 
-  if(!isdefined(level.water_duds) || level.water_duds == 1) {
-    if(isdefined(surface) && surface == "water")
+  if(!isDefined(level.water_duds) || level.water_duds == 1) {
+    if(isDefined(surface) && surface == "water")
       return;
   }
 
@@ -80,19 +81,21 @@ watchtabungrenadedetonation(owner) {
 damageeffectarea(owner, position, radius, height, killcament) {
   shockeffectarea = spawn("trigger_radius", position, 0, radius, height);
   gaseffectarea = spawn("trigger_radius", position, 0, radius, height);
+
   if(getdvarint(#"scr_draw_triggers"))
     level thread drawcylinder(position, radius, height, undefined, "tabun_draw_cylinder_stop");
+
   owner thread maps\mp\killstreaks\_dogs::flash_dogs(shockeffectarea);
   owner thread maps\mp\killstreaks\_dogs::flash_dogs(gaseffectarea);
   loopwaittime = 0.5;
 
-  for (durationoftabun = level.tabungasduration; durationoftabun > 0; durationoftabun = durationoftabun - loopwaittime) {
+  for(durationoftabun = level.tabungasduration; durationoftabun > 0; durationoftabun = durationoftabun - loopwaittime) {
     players = get_players();
 
-    for (i = 0; i < players.size; i++) {
+    for(i = 0; i < players.size; i++) {
       if(level.friendlyfire == 0) {
         if(players[i] != owner) {
-          if(!isdefined(owner) || !isdefined(owner.team)) {
+          if(!isDefined(owner) || !isDefined(owner.team)) {
             continue;
           }
           if(level.teambased && players[i].team == owner.team)
@@ -100,7 +103,7 @@ damageeffectarea(owner, position, radius, height, killcament) {
         }
       }
 
-      if(!isdefined(players[i].inpoisonarea) || players[i].inpoisonarea == 0) {
+      if(!isDefined(players[i].inpoisonarea) || players[i].inpoisonarea == 0) {
         if(players[i] istouching(gaseffectarea) && players[i].sessionstate == "playing") {
           if(!players[i] hasperk("specialty_proximityprotection")) {
             trace = bullettrace(position, players[i].origin + vectorscale((0, 0, 1), 12.0), 0, players[i]);
@@ -124,6 +127,7 @@ damageeffectarea(owner, position, radius, height, killcament) {
 
   shockeffectarea delete();
   gaseffectarea delete();
+
   if(getdvarint(#"scr_draw_triggers"))
     level notify("tabun_draw_cylinder_stop");
 }
@@ -141,7 +145,7 @@ damageinpoisonarea(gaseffectarea, killcament, trace, position) {
   tabunshocksound playloopsound(level.sound_shock_tabun_loop);
   timer = 0;
 
-  while (trace["fraction"] == 1 && isdefined(gaseffectarea) && self istouching(gaseffectarea) && self.sessionstate == "playing" && isdefined(self.lastpoisonedby)) {
+  while(trace["fraction"] == 1 && isDefined(gaseffectarea) && self istouching(gaseffectarea) && self.sessionstate == "playing" && isDefined(self.lastpoisonedby)) {
     damage = level.poisondamage;
 
     if(level.hardcoremode)
@@ -219,12 +223,14 @@ weapons_get_dvar(dvar, def) {
 generatelocations(position, owner) {
   onefoot = vectorscale((0, 0, 1), 12.0);
   startpos = position + onefoot;
+
   level.tabun_debug = getdvarintdefault("scr_tabun_debug", 0);
 
   if(level.tabun_debug) {
     black = vectorscale((1, 1, 1), 0.2);
     debugstar(startpos, 2000, black);
   }
+
   spawnalllocs(owner, startpos);
 }
 
@@ -238,12 +244,14 @@ singlelocation(position, owner) {
 
 hitpos(start, end, color) {
   trace = bullettrace(start, end, 0, undefined);
+
   level.tabun_debug = getdvarintdefault("scr_tabun_debug", 0);
 
   if(level.tabun_debug)
     debugstar(trace["position"], 2000, color);
 
   thread debug_line(start, trace["position"], color, 80);
+
   return trace["position"];
 }
 
@@ -287,7 +295,7 @@ spawnalllocs(owner, startpos) {
   locations["point"][6] = west;
   locations["point"][7] = nw;
 
-  for (count = 0; count < 8; count++) {
+  for(count = 0; count < 8; count++) {
     trace = hitpos(startpos, locations["point"][count], locations["color"][count]);
     locations["tracePos"][count] = trace;
     locations["loc"][count] = startpos / 2 + trace / 2;
@@ -301,7 +309,7 @@ spawnalllocs(owner, startpos) {
   killcament.starttime = gettime();
   center = getcenter(locations);
 
-  for (i = 0; i < 8; i++) {
+  for(i = 0; i < 8; i++) {
     fxtoplay = setuptabunfx(owner, locations, i);
 
     switch (fxtoplay) {
@@ -330,7 +338,7 @@ spawnalllocs(owner, startpos) {
   singleeffect = 1;
   freepassused = 0;
 
-  for (i = 0; i < 8; i++) {
+  for(i = 0; i < 8; i++) {
     if(locations["radius"][i] != level.fx_tabun_radius0) {
       if(freepassused == 0 && locations["radius"][i] == level.fx_tabun_radius1) {
         freepassused = 1;
@@ -350,8 +358,8 @@ spawnalllocs(owner, startpos) {
   else {
     spawntimedfx(level.fx_tabun_3, startpos);
 
-    for (count = 0; count < 8; count++) {
-      if(isdefined(locations["fxtoplay"][count])) {
+    for(count = 0; count < 8; count++) {
+      if(isDefined(locations["fxtoplay"][count])) {
         spawntimedfx(locations["fxtoplay"][count], locations["loc"][count]);
         thread damageeffectarea(owner, locations["loc"][count], locations["radius"][count], locations["radius"][count], killcament);
       }
@@ -405,7 +413,7 @@ setuptabunfx(owner, locations, count) {
 getcentroid(locations) {
   centroid = (0, 0, 0);
 
-  for (i = 0; i < locations["loc"].size; i++)
+  for(i = 0; i < locations["loc"].size; i++)
     centroid = centroid + locations["loc"][i] / locations["loc"].size;
 
   level.tabun_debug = getdvarintdefault("scr_tabun_debug", 0);
@@ -414,6 +422,7 @@ getcentroid(locations) {
     purple = (0.9, 0.2, 0.9);
     debugstar(centroid, 2000, purple);
   }
+
   return centroid;
 }
 
@@ -426,7 +435,7 @@ getcenter(locations) {
   miny = cury;
   maxy = cury;
 
-  for (i = 1; i < locations["tracePos"].size; i++) {
+  for(i = 1; i < locations["tracePos"].size; i++) {
     curx = locations["tracePos"][i][0];
     cury = locations["tracePos"][i][1];
 
@@ -447,11 +456,13 @@ getcenter(locations) {
   avgx = (maxx + minx) / 2;
   avgy = (maxy + miny) / 2;
   center = (avgx, avgy, locations["tracePos"][0][2]);
+
   level.tabun_debug = getdvarintdefault("scr_tabun_debug", 0);
 
   if(level.tabun_debug) {
     cyan = (0.2, 0.9, 0.9);
     debugstar(center, 2000, cyan);
   }
+
   return center;
 }

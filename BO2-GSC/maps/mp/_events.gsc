@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\_events.gsc
-***************************************/
+**************************************/
 
 #include maps\mp\_utility;
 #include maps\mp\gametypes\_globallogic_utils;
@@ -14,10 +14,10 @@ add_timed_event(seconds, notify_string, client_notify_string) {
 }
 
 timed_event_monitor(seconds, notify_string, client_notify_string) {
-  for (;;) {
+  for(;;) {
     wait 0.5;
 
-    if(!isdefined(level.starttime)) {
+    if(!isDefined(level.starttime)) {
       continue;
     }
     millisecs_remaining = maps\mp\gametypes\_globallogic_utils::gettimeremaining();
@@ -51,7 +51,7 @@ any_team_reach_score(score) {
 }
 
 score_team_event_monitor(score, notify_string, client_notify_string) {
-  for (;;) {
+  for(;;) {
     wait 0.5;
 
     if(any_team_reach_score(score)) {
@@ -62,12 +62,12 @@ score_team_event_monitor(score, notify_string, client_notify_string) {
 }
 
 score_event_monitor(score, notify_string, client_notify_string) {
-  for (;;) {
+  for(;;) {
     wait 0.5;
     players = get_players();
 
-    for (i = 0; i < players.size; i++) {
-      if(isdefined(players[i].score) && players[i].score >= score) {
+    for(i = 0; i < players.size; i++) {
+      if(isDefined(players[i].score) && players[i].score >= score) {
         event_notify(notify_string, client_notify_string);
         return;
       }
@@ -76,9 +76,9 @@ score_event_monitor(score, notify_string, client_notify_string) {
 }
 
 event_notify(notify_string, client_notify_string) {
-  if(isdefined(notify_string))
+  if(isDefined(notify_string))
     level notify(notify_string);
 
-  if(isdefined(client_notify_string))
+  if(isDefined(client_notify_string))
     clientnotify(client_notify_string);
 }

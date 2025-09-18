@@ -1,7 +1,7 @@
-/*********************************************************
+/*************************************************************
  * Decompiled and Edited by SyndiShanX
  * Script: aitype\clientscripts\zm_highrise_basic_03.csc
-*********************************************************/
+*************************************************************/
 
 #include character\clientscripts\c_zom_zombie_soldier;
 

@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\_gamerep.gsc
-***************************************/
+**************************************/
 
 #include maps\mp\_utility;
 #include maps\mp\gametypes\_rank;
@@ -23,7 +23,7 @@ init() {
 }
 
 isgamerepinitialized() {
-  if(!isdefined(game["gameRepInitialized"]) || !game["gameRepInitialized"])
+  if(!isDefined(game["gameRepInitialized"]) || !game["gameRepInitialized"])
     return false;
 
   return true;
@@ -141,10 +141,11 @@ gamerepplayerconnected() {
     return;
   }
   name = self.name;
-  if(!isdefined(game["gameRep"]["players"][name])) {
+
+  if(!isDefined(game["gameRep"]["players"][name])) {
     game["gameRep"]["players"][name] = [];
 
-    for (j = 0; j < game["gameRep"]["params"].size; j++) {
+    for(j = 0; j < game["gameRep"]["params"].size; j++) {
       paramname = game["gameRep"]["params"][j];
       game["gameRep"]["players"][name][paramname] = 0;
     }
@@ -168,8 +169,9 @@ gamerepplayerdisconnected() {
   }
   name = self.name;
 
-  if(!isdefined(game["gameRep"]["players"][name]) || !isdefined(self.pers["summary"]))
+  if(!isDefined(game["gameRep"]["players"][name]) || !isDefined(self.pers["summary"])) {
     return;
+  }
   self gamerepupdatenonpersistentplayerinformation();
   self gamerepupdatepersistentplayerinformation();
   game["gameRep"]["players"][name]["connected"] = 0;
@@ -178,19 +180,19 @@ gamerepplayerdisconnected() {
 gamerepupdatenonpersistentplayerinformation() {
   name = self.name;
 
-  if(!isdefined(game["gameRep"]["players"][name])) {
+  if(!isDefined(game["gameRep"]["players"][name])) {
     return;
   }
   game["gameRep"]["players"][name]["totalTimePlayed"] = game["gameRep"]["players"][name]["totalTimePlayed"] + self.timeplayed["total"];
 
-  if(isdefined(self.tacticalinsertioncount))
+  if(isDefined(self.tacticalinsertioncount))
     game["gameRep"]["players"][name]["tacticalInsertions"] = game["gameRep"]["players"][name]["tacticalInsertions"] + self.tacticalinsertioncount;
 }
 
 gamerepupdatepersistentplayerinformation() {
   name = self.name;
 
-  if(!isdefined(game["gameRep"]["players"][name])) {
+  if(!isDefined(game["gameRep"]["players"][name])) {
     return;
   }
   if(game["gameRep"]["players"][name]["totalTimePlayed"] != 0)
@@ -218,7 +220,7 @@ gamerepupdatepersistentplayerinformation() {
 }
 
 getparamvalueforplayer(playername, paramname) {
-  if(isdefined(game["gameRep"]["players"][playername][paramname]))
+  if(isDefined(game["gameRep"]["players"][playername][paramname]))
     return game["gameRep"]["players"][playername][paramname];
 
   assertmsg("Unknown parameter " + paramname + "for individual player");
@@ -227,23 +229,23 @@ getparamvalueforplayer(playername, paramname) {
 isgamerepparamvalid(paramname) {
   gametype = level.gametype;
 
-  if(!isdefined(game["gameRep"]))
+  if(!isDefined(game["gameRep"]))
     return false;
 
-  if(!isdefined(game["gameRep"]["gameLimit"]))
+  if(!isDefined(game["gameRep"]["gameLimit"]))
     return false;
 
-  if(!isdefined(game["gameRep"]["gameLimit"][gametype]))
+  if(!isDefined(game["gameRep"]["gameLimit"][gametype]))
     return false;
 
-  if(!isdefined(game["gameRep"]["gameLimit"][gametype][paramname]) && !isdefined(game["gameRep"]["gameLimit"]["default"][paramname]))
+  if(!isDefined(game["gameRep"]["gameLimit"][gametype][paramname]) && !isDefined(game["gameRep"]["gameLimit"]["default"][paramname]))
     return false;
 
   return true;
 }
 
 isgamerepparamignoredforreporting(paramname) {
-  if(isdefined(game["gameRep"]["ignoreParams"][paramname]))
+  if(isDefined(game["gameRep"]["ignoreParams"][paramname]))
     return true;
 
   return false;
@@ -252,19 +254,19 @@ isgamerepparamignoredforreporting(paramname) {
 getgamerepparamlimit(paramname) {
   gametype = level.gametype;
 
-  if(isdefined(game["gameRep"]["gameLimit"][gametype])) {
-    if(isdefined(game["gameRep"]["gameLimit"][gametype][paramname]))
+  if(isDefined(game["gameRep"]["gameLimit"][gametype])) {
+    if(isDefined(game["gameRep"]["gameLimit"][gametype][paramname]))
       return game["gameRep"]["gameLimit"][gametype][paramname];
   }
 
-  if(isdefined(game["gameRep"]["gameLimit"]["default"][paramname]))
+  if(isDefined(game["gameRep"]["gameLimit"]["default"][paramname]))
     return game["gameRep"]["gameLimit"]["default"][paramname];
 
   assertmsg("Default values for parameter " + paramname + " is not defined.");
 }
 
 setmaximumparamvalueforcurrentgame(paramname, value) {
-  if(!isdefined(game["gameRep"]["max"][paramname])) {
+  if(!isDefined(game["gameRep"]["max"][paramname])) {
     game["gameRep"]["max"][paramname] = value;
     return;
   }
@@ -279,7 +281,7 @@ gamerepupdateinformationforround() {
   }
   players = get_players();
 
-  for (i = 0; i < players.size; i++) {
+  for(i = 0; i < players.size; i++) {
     player = players[i];
     player gamerepupdatenonpersistentplayerinformation();
   }
@@ -291,17 +293,17 @@ gamerepanalyzeandreport() {
   }
   players = get_players();
 
-  for (i = 0; i < players.size; i++) {
+  for(i = 0; i < players.size; i++) {
     player = players[i];
     player gamerepupdatepersistentplayerinformation();
   }
 
   splitscreenplayercount = 0;
 
-  for (i = 0; i < game["gameRep"]["playerNames"].size; i++) {
+  for(i = 0; i < game["gameRep"]["playerNames"].size; i++) {
     playername = game["gameRep"]["playerNames"][i];
 
-    for (j = 0; j < game["gameRep"]["params"].size; j++) {
+    for(j = 0; j < game["gameRep"]["params"].size; j++) {
       paramname = game["gameRep"]["params"][j];
 
       if(isgamerepparamvalid(paramname))
@@ -314,7 +316,7 @@ gamerepanalyzeandreport() {
 
   setmaximumparamvalueforcurrentgame(paramname, splitscreenplayercount);
 
-  for (j = 0; j < game["gameRep"]["params"].size; j++) {
+  for(j = 0; j < game["gameRep"]["params"].size; j++) {
     paramname = game["gameRep"]["params"][j];
 
     if(isgamerepparamvalid(paramname) && game["gameRep"]["max"][paramname] >= getgamerepparamlimit(paramname))
@@ -328,7 +330,7 @@ gamerepanalyzeandreport() {
 }
 
 gamerepprepareandreport(paramname) {
-  if(!isdefined(game["gameRep"]["gameLimit"]["id"][paramname])) {
+  if(!isDefined(game["gameRep"]["gameLimit"]["id"][paramname])) {
     return;
   }
   if(isgamerepparamignoredforreporting(paramname)) {

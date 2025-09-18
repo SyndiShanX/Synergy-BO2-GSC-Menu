@@ -25,6 +25,7 @@ main() {
   setsaveddvar("sm_sunsamplesizenear", 0.39);
   setsaveddvar("sm_sunshadowsmall", 1);
   waitforclient(0);
+
   println("*** Client : mp_express running...");
 }
 
@@ -33,7 +34,7 @@ train_move(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bwa
   self endon("entityshutdown");
   player = getlocalplayer(localclientnum);
 
-  if(!isdefined(player)) {
+  if(!isDefined(player)) {
     return;
   }
   if(player getinkillcam(localclientnum)) {
@@ -80,10 +81,10 @@ train_move_think(localclientnum) {
   self endon("death");
   self endon("entityshutdown");
 
-  for (;;) {
+  for(;;) {
     player = getlocalplayer(localclientnum);
 
-    if(!isdefined(player)) {
+    if(!isDefined(player)) {
       serverwait(localclientnum, 0.05);
       continue;
     } else if(player getinkillcam(localclientnum)) {
@@ -107,7 +108,7 @@ train_fx_think(id, id_end) {
   self endon("death");
   self endon("entityshutdown");
 
-  for (;;) {
+  for(;;) {
     if(id > id_end) {
       return;
     }

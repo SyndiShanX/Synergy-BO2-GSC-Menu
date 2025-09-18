@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\_script_gen.gsc
-***************************************/
+**************************************/
 
 #include common_scripts\utility;
 #include maps\mp\_utility;
@@ -10,8 +10,8 @@
 script_gen_dump_checksaved() {
   signatures = getarraykeys(level.script_gen_dump);
 
-  for (i = 0; i < signatures.size; i++) {
-    if(!isdefined(level.script_gen_dump2[signatures[i]])) {
+  for(i = 0; i < signatures.size; i++) {
+    if(!isDefined(level.script_gen_dump2[signatures[i]])) {
       level.script_gen_dump[signatures[i]] = undefined;
       level.script_gen_dump_reasons[level.script_gen_dump_reasons.size] = "Signature unmatched( removed feature ): " + signatures[i];
     }
@@ -36,7 +36,7 @@ script_gen_dump() {
     println("^3Dumping scriptgen dump for these reasons");
     println("^2 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- ");
 
-    for (i = 0; i < level.script_gen_dump_reasons.size; i++) {
+    for(i = 0; i < level.script_gen_dump_reasons.size; i++) {
       if(issubstr(level.script_gen_dump_reasons[i], "nowrite")) {
         substr = getsubstr(level.script_gen_dump_reasons[i], 15);
         println(i + ". ) " + substr);
@@ -87,12 +87,12 @@ script_gen_dump() {
   script_gen_dumpprintln(file, "");
   signatures = getarraykeys(level.script_gen_dump);
 
-  for (i = 0; i < signatures.size; i++) {
+  for(i = 0; i < signatures.size; i++) {
     if(!issubstr(level.script_gen_dump[signatures[i]], "nowrite"))
       script_gen_dumpprintln(file, "\\t" + level.script_gen_dump[signatures[i]]);
   }
 
-  for (i = 0; i < signatures.size; i++) {
+  for(i = 0; i < signatures.size; i++) {
     if(!issubstr(level.script_gen_dump[signatures[i]], "nowrite")) {
       script_gen_dumpprintln(file, "\\tlevel.script_gen_dump[ " + "\"" + signatures[i] + "\"" + " ] = " + "\"" + signatures[i] + "\"" + ";");
       continue;
@@ -105,11 +105,11 @@ script_gen_dump() {
   keys1 = undefined;
   keys2 = undefined;
 
-  if(isdefined(level.sg_precacheanims))
+  if(isDefined(level.sg_precacheanims))
     keys1 = getarraykeys(level.sg_precacheanims);
 
-  if(isdefined(keys1)) {
-    for (i = 0; i < keys1.size; i++)
+  if(isDefined(keys1)) {
+    for(i = 0; i < keys1.size; i++)
       script_gen_dumpprintln(file, "\\tanim_precach_" + keys1[i] + "();");
   }
 
@@ -117,19 +117,19 @@ script_gen_dump() {
   script_gen_dumpprintln(file, "}");
   script_gen_dumpprintln(file, "");
 
-  if(isdefined(level.sg_precacheanims))
+  if(isDefined(level.sg_precacheanims))
     keys1 = getarraykeys(level.sg_precacheanims);
 
-  if(isdefined(keys1)) {
-    for (i = 0; i < keys1.size; i++) {
+  if(isDefined(keys1)) {
+    for(i = 0; i < keys1.size; i++) {
       script_gen_dumpprintln(file, "#using_animtree( \"" + keys1[i] + "\" );");
       script_gen_dumpprintln(file, "anim_precach_" + keys1[i] + "()");
       script_gen_dumpprintln(file, "{");
       script_gen_dumpprintln(file, "\\tlevel.sg_animtree[ \"" + keys1[i] + "\" ] = #animtree;");
       keys2 = getarraykeys(level.sg_precacheanims[keys1[i]]);
 
-      if(isdefined(keys2)) {
-        for (j = 0; j < keys2.size; j++)
+      if(isDefined(keys2)) {
+        for(j = 0; j < keys2.size; j++)
           script_gen_dumpprintln(file, "\\tlevel.sg_anim[ \"" + keys2[j] + "\" ] = %" + keys2[j] + ";");
       }
 
@@ -151,7 +151,7 @@ script_gen_dump() {
   assert(csvfile != -1, "File not writeable( check it and and restart the map ): " + csvfilename);
   signatures = getarraykeys(level.script_gen_dump);
 
-  for (i = 0; i < signatures.size; i++)
+  for(i = 0; i < signatures.size; i++)
     script_gen_csvdumpprintln(csvfile, signatures[i]);
 
   if(level.bcsvgened)
@@ -161,10 +161,12 @@ script_gen_dump() {
 
   assert(csvfilesaved == 1, "csv not saved( see above message? ): " + csvfilename);
   assert(saved == 1, "map not saved( see above message? ): " + filename);
+
   assert(!level.bscriptgened, "SCRIPTGEN generated: follow instructions listed above this error in the console");
 
   if(level.bscriptgened) {
     assertmsg("SCRIPTGEN updated: Rebuild fast file and run map again");
+
   }
 
   flag_set("scriptgen_done");
@@ -215,7 +217,9 @@ script_gen_csvdumpprintln(file, signature) {
     path = "shock/";
   } else if(issubstr(signature, "string")) {
     prefix = "string";
+
     assertmsg("string not yet supported by scriptgen");
+
   } else if(issubstr(signature, "turret")) {
     prefix = "turret";
     writtenprefix = "weapon";
@@ -226,10 +230,10 @@ script_gen_csvdumpprintln(file, signature) {
     path = "vehicles/";
   }
 
-  if(!isdefined(prefix)) {
+  if(!isDefined(prefix)) {
     return;
   }
-  if(!isdefined(writtenprefix))
+  if(!isDefined(writtenprefix))
     string = prefix + ", " + getsubstr(signature, prefix.size + 1, signature.size);
   else
     string = writtenprefix + ", " + path + getsubstr(signature, prefix.size + 1, signature.size) + extension;

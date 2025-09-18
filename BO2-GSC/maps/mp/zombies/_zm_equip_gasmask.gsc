@@ -21,7 +21,6 @@ init() {
 }
 
 gasmask_on_player_connect() {
-
 }
 
 gasmask_removed_watcher_thread() {
@@ -30,19 +29,19 @@ gasmask_removed_watcher_thread() {
   self endon("disconnect");
   self waittill("equip_gasmask_zm_taken");
 
-  if(isdefined(level.zombiemode_gasmask_reset_player_model)) {
+  if(isDefined(level.zombiemode_gasmask_reset_player_model)) {
     ent_num = self.characterindex;
 
-    if(isdefined(self.zm_random_char))
+    if(isDefined(self.zm_random_char))
       ent_num = self.zm_random_char;
 
     self[[level.zombiemode_gasmask_reset_player_model]](ent_num);
   }
 
-  if(isdefined(level.zombiemode_gasmask_reset_player_viewmodel)) {
+  if(isDefined(level.zombiemode_gasmask_reset_player_viewmodel)) {
     ent_num = self.characterindex;
 
-    if(isdefined(self.zm_random_char))
+    if(isDefined(self.zm_random_char))
       ent_num = self.zm_random_char;
 
     self[[level.zombiemode_gasmask_reset_player_viewmodel]](ent_num);
@@ -58,35 +57,35 @@ gasmask_activation_watcher_thread() {
   self thread gasmask_removed_watcher_thread();
   self thread remove_gasmask_on_game_over();
 
-  if(isdefined(level.zombiemode_gasmask_set_player_model)) {
+  if(isDefined(level.zombiemode_gasmask_set_player_model)) {
     ent_num = self.characterindex;
 
-    if(isdefined(self.zm_random_char))
+    if(isDefined(self.zm_random_char))
       ent_num = self.zm_random_char;
 
     self[[level.zombiemode_gasmask_set_player_model]](ent_num);
   }
 
-  if(isdefined(level.zombiemode_gasmask_set_player_viewmodel)) {
+  if(isDefined(level.zombiemode_gasmask_set_player_viewmodel)) {
     ent_num = self.characterindex;
 
-    if(isdefined(self.zm_random_char))
+    if(isDefined(self.zm_random_char))
       ent_num = self.zm_random_char;
 
     self[[level.zombiemode_gasmask_set_player_viewmodel]](ent_num);
   }
 
-  while (true) {
+  while(true) {
     self waittill_either("equip_gasmask_zm_activate", "equip_gasmask_zm_deactivate");
 
     if(self maps\mp\zombies\_zm_equipment::is_equipment_active("equip_gasmask_zm")) {
       self increment_is_drinking();
       self setactionslot(1, "");
 
-      if(isdefined(level.zombiemode_gasmask_set_player_model)) {
+      if(isDefined(level.zombiemode_gasmask_set_player_model)) {
         ent_num = self.characterindex;
 
-        if(isdefined(self.zm_random_char))
+        if(isDefined(self.zm_random_char))
           ent_num = self.zm_random_char;
 
         self[[level.zombiemode_gasmask_change_player_headmodel]](ent_num, 1);
@@ -99,10 +98,10 @@ gasmask_activation_watcher_thread() {
       self increment_is_drinking();
       self setactionslot(1, "");
 
-      if(isdefined(level.zombiemode_gasmask_set_player_model)) {
+      if(isDefined(level.zombiemode_gasmask_set_player_model)) {
         ent_num = self.characterindex;
 
-        if(isdefined(self.zm_random_char))
+        if(isDefined(self.zm_random_char))
           ent_num = self.zm_random_char;
 
         self[[level.zombiemode_gasmask_change_player_headmodel]](ent_num, 0);
@@ -124,7 +123,7 @@ gasmask_activation_watcher_thread() {
         self setactionslot(1, "weapon", "equip_gasmask_zm");
         self notify("equipment_select_response_done");
         continue;
-      } else if(isdefined(self.prev_weapon_before_equipment_change) && self hasweapon(self.prev_weapon_before_equipment_change)) {
+      } else if(isDefined(self.prev_weapon_before_equipment_change) && self hasweapon(self.prev_weapon_before_equipment_change)) {
         if(self.prev_weapon_before_equipment_change != self getcurrentweapon()) {
           self switchtoweapon(self.prev_weapon_before_equipment_change);
           self waittill("weapon_change_complete");
@@ -132,7 +131,7 @@ gasmask_activation_watcher_thread() {
       } else {
         primaryweapons = self getweaponslistprimaries();
 
-        if(isdefined(primaryweapons) && primaryweapons.size > 0) {
+        if(isDefined(primaryweapons) && primaryweapons.size > 0) {
           if(primaryweapons[0] != self getcurrentweapon()) {
             self switchtoweapon(primaryweapons[0]);
             self waittill("weapon_change_complete");
@@ -144,7 +143,7 @@ gasmask_activation_watcher_thread() {
 
     self setactionslot(1, "weapon", "equip_gasmask_zm");
 
-    if(!self maps\mp\zombies\_zm_laststand::player_is_in_laststand() && !(isdefined(self.intermission) && self.intermission))
+    if(!self maps\mp\zombies\_zm_laststand::player_is_in_laststand() && !(isDefined(self.intermission) && self.intermission))
       self decrement_is_drinking();
 
     self notify("equipment_select_response_done");
@@ -172,7 +171,7 @@ gasmask_debug_print(msg, color) {
   if(!getdvarint(#"_id_4D1BCA99")) {
     return;
   }
-  if(!isdefined(color))
+  if(!isDefined(color))
     color = (1, 1, 1);
 
   print3d(self.origin + vectorscale((0, 0, 1), 60.0), msg, color, 1, 1, 40);

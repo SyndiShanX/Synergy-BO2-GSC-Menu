@@ -12,7 +12,3 @@ sloth_ffotd_init() {
   level.double_wide_override = undefined;
   level.interior_override = undefined;
 }
-
-sloth_ffotd_prespawn() {
-
-}

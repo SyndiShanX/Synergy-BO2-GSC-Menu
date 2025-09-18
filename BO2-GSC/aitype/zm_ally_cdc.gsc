@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: aitype\zm_ally_cdc.gsc
-***************************************/
+**************************************/
 
 #include character\c_zom_ally_cdc;
 #using_animtree("zm_ally");

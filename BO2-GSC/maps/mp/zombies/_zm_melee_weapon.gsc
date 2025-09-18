@@ -18,18 +18,18 @@ init(weapon_name, flourish_weapon_name, ballistic_weapon_name, ballistic_upgrade
   add_melee_weapon(weapon_name, flourish_weapon_name, ballistic_weapon_name, ballistic_upgraded_weapon_name, cost, wallbuy_targetname, hint_string, vo_dialog_id, flourish_fn);
   melee_weapon_triggers = getentarray(wallbuy_targetname, "targetname");
 
-  for (i = 0; i < melee_weapon_triggers.size; i++) {
+  for(i = 0; i < melee_weapon_triggers.size; i++) {
     knife_model = getent(melee_weapon_triggers[i].target, "targetname");
 
-    if(isdefined(knife_model))
+    if(isDefined(knife_model))
       knife_model hide();
 
     melee_weapon_triggers[i] thread melee_weapon_think(weapon_name, cost, flourish_fn, vo_dialog_id, flourish_weapon_name, ballistic_weapon_name, ballistic_upgraded_weapon_name);
 
-    if(!(isdefined(level.monolingustic_prompt_format) && level.monolingustic_prompt_format)) {
+    if(!(isDefined(level.monolingustic_prompt_format) && level.monolingustic_prompt_format)) {
       melee_weapon_triggers[i] sethintstring(hint_string, cost);
 
-      if(getdvarint(#"tu12_zombies_allow_hint_weapon_from_script") && !(isdefined(level.disable_melee_wallbuy_icons) && level.disable_melee_wallbuy_icons)) {
+      if(getdvarint(#"tu12_zombies_allow_hint_weapon_from_script") && !(isDefined(level.disable_melee_wallbuy_icons) && level.disable_melee_wallbuy_icons)) {
         cursor_hint = "HINT_WEAPON";
         cursor_hint_weapon = weapon_name;
         melee_weapon_triggers[i] setcursorhint(cursor_hint, cursor_hint_weapon);
@@ -40,7 +40,7 @@ init(weapon_name, flourish_weapon_name, ballistic_weapon_name, ballistic_upgrade
       hint_string = & "ZOMBIE_WEAPONCOSTONLY";
       melee_weapon_triggers[i] sethintstring(hint_string, weapon_display, cost);
 
-      if(getdvarint(#"tu12_zombies_allow_hint_weapon_from_script") && !(isdefined(level.disable_melee_wallbuy_icons) && level.disable_melee_wallbuy_icons)) {
+      if(getdvarint(#"tu12_zombies_allow_hint_weapon_from_script") && !(isDefined(level.disable_melee_wallbuy_icons) && level.disable_melee_wallbuy_icons)) {
         cursor_hint = "HINT_WEAPON";
         cursor_hint_weapon = weapon_name;
         melee_weapon_triggers[i] setcursorhint(cursor_hint, cursor_hint_weapon);
@@ -53,32 +53,34 @@ init(weapon_name, flourish_weapon_name, ballistic_weapon_name, ballistic_upgrade
 
   melee_weapon_structs = getstructarray(wallbuy_targetname, "targetname");
 
-  for (i = 0; i < melee_weapon_structs.size; i++)
+  for(i = 0; i < melee_weapon_structs.size; i++)
     prepare_stub(melee_weapon_structs[i].trigger_stub, weapon_name, flourish_weapon_name, ballistic_weapon_name, ballistic_upgraded_weapon_name, cost, wallbuy_targetname, hint_string, vo_dialog_id, flourish_fn);
 
   register_melee_weapon_for_level(weapon_name);
 
-  if(!isdefined(level.ballistic_weapon_name))
+  if(!isDefined(level.ballistic_weapon_name))
     level.ballistic_weapon_name = [];
 
   level.ballistic_weapon_name[weapon_name] = ballistic_weapon_name;
 
-  if(!isdefined(level.ballistic_upgraded_weapon_name))
+  if(!isDefined(level.ballistic_upgraded_weapon_name))
     level.ballistic_upgraded_weapon_name = [];
 
   level.ballistic_upgraded_weapon_name[weapon_name] = ballistic_upgraded_weapon_name;
-  if(!isdefined(level.zombie_weapons[weapon_name])) {
-    if(isdefined(level.devgui_add_weapon))
+
+  if(!isDefined(level.zombie_weapons[weapon_name])) {
+    if(isDefined(level.devgui_add_weapon))
       [[level.devgui_add_weapon]](weapon_name, "", weapon_name, cost);
   }
+
 }
 
 prepare_stub(stub, weapon_name, flourish_weapon_name, ballistic_weapon_name, ballistic_upgraded_weapon_name, cost, wallbuy_targetname, hint_string, vo_dialog_id, flourish_fn) {
-  if(isdefined(stub)) {
-    if(!(isdefined(level.monolingustic_prompt_format) && level.monolingustic_prompt_format)) {
+  if(isDefined(stub)) {
+    if(!(isDefined(level.monolingustic_prompt_format) && level.monolingustic_prompt_format)) {
       stub.hint_string = hint_string;
 
-      if(getdvarint(#"tu12_zombies_allow_hint_weapon_from_script") && !(isdefined(level.disable_melee_wallbuy_icons) && level.disable_melee_wallbuy_icons)) {
+      if(getdvarint(#"tu12_zombies_allow_hint_weapon_from_script") && !(isDefined(level.disable_melee_wallbuy_icons) && level.disable_melee_wallbuy_icons)) {
         stub.cursor_hint = "HINT_WEAPON";
         stub.cursor_hint_weapon = weapon_name;
       } else {
@@ -90,7 +92,7 @@ prepare_stub(stub, weapon_name, flourish_weapon_name, ballistic_weapon_name, bal
       stub.hint_parm2 = cost;
       stub.hint_string = & "ZOMBIE_WEAPONCOSTONLY";
 
-      if(getdvarint(#"tu12_zombies_allow_hint_weapon_from_script") && !(isdefined(level.disable_melee_wallbuy_icons) && level.disable_melee_wallbuy_icons)) {
+      if(getdvarint(#"tu12_zombies_allow_hint_weapon_from_script") && !(isDefined(level.disable_melee_wallbuy_icons) && level.disable_melee_wallbuy_icons)) {
         stub.cursor_hint = "HINT_WEAPON";
         stub.cursor_hint_weapon = weapon_name;
       } else {
@@ -113,28 +115,28 @@ prepare_stub(stub, weapon_name, flourish_weapon_name, ballistic_weapon_name, bal
 add_stub(stub, weapon_name) {
   melee_weapon = undefined;
 
-  for (i = 0; i < level._melee_weapons.size; i++) {
+  for(i = 0; i < level._melee_weapons.size; i++) {
     if(level._melee_weapons[i].weapon_name == weapon_name) {
       melee_weapon = level._melee_weapons[i];
       break;
     }
   }
 
-  if(isdefined(stub) && isdefined(melee_weapon))
+  if(isDefined(stub) && isDefined(melee_weapon))
     prepare_stub(stub, melee_weapon.weapon_name, melee_weapon.flourish_weapon_name, melee_weapon.ballistic_weapon_name, melee_weapon.ballistic_upgraded_weapon_name, melee_weapon.cost, melee_weapon.wallbuy_targetname, melee_weapon.hint_string, melee_weapon.vo_dialog_id, melee_weapon.flourish_fn);
 }
 
 give_melee_weapon_by_name(weapon_name) {
   melee_weapon = undefined;
 
-  for (i = 0; i < level._melee_weapons.size; i++) {
+  for(i = 0; i < level._melee_weapons.size; i++) {
     if(level._melee_weapons[i].weapon_name == weapon_name) {
       melee_weapon = level._melee_weapons[i];
       break;
     }
   }
 
-  if(isdefined(melee_weapon))
+  if(isDefined(melee_weapon))
     self thread give_melee_weapon(melee_weapon.vo_dialog_id, melee_weapon.flourish_weapon_name, melee_weapon.weapon_name, melee_weapon.ballistic_weapon_name, melee_weapon.ballistic_upgraded_weapon_name, melee_weapon.flourish_fn, undefined);
 }
 
@@ -150,7 +152,7 @@ add_melee_weapon(weapon_name, flourish_weapon_name, ballistic_weapon_name, balli
   melee_weapon.vo_dialog_id = vo_dialog_id;
   melee_weapon.flourish_fn = flourish_fn;
 
-  if(!isdefined(level._melee_weapons))
+  if(!isDefined(level._melee_weapons))
     level._melee_weapons = [];
 
   level._melee_weapons[level._melee_weapons.size] = melee_weapon;
@@ -160,14 +162,14 @@ player_can_see_weapon_prompt(weapon_name) {
   if(is_true(level._allow_melee_weapon_switching))
     return true;
 
-  if(isdefined(self get_player_melee_weapon()) && self hasweapon(self get_player_melee_weapon()))
+  if(isDefined(self get_player_melee_weapon()) && self hasweapon(self get_player_melee_weapon()))
     return false;
 
   return true;
 }
 
 spectator_respawn_all() {
-  for (i = 0; i < level._melee_weapons.size; i++)
+  for(i = 0; i < level._melee_weapons.size; i++)
     self spectator_respawn(level._melee_weapons[i].wallbuy_targetname, level._melee_weapons[i].weapon_name);
 }
 
@@ -175,11 +177,11 @@ spectator_respawn(wallbuy_targetname, weapon_name) {
   melee_triggers = getentarray(wallbuy_targetname, "targetname");
   players = get_players();
 
-  for (i = 0; i < melee_triggers.size; i++) {
+  for(i = 0; i < melee_triggers.size; i++) {
     melee_triggers[i] setvisibletoall();
 
-    if(!(isdefined(level._allow_melee_weapon_switching) && level._allow_melee_weapon_switching)) {
-      for (j = 0; j < players.size; j++) {
+    if(!(isDefined(level._allow_melee_weapon_switching) && level._allow_melee_weapon_switching)) {
+      for(j = 0; j < players.size; j++) {
         if(!players[j] player_can_see_weapon_prompt(weapon_name))
           melee_triggers[i] setinvisibletoplayer(players[j]);
       }
@@ -188,14 +190,14 @@ spectator_respawn(wallbuy_targetname, weapon_name) {
 }
 
 trigger_hide_all() {
-  for (i = 0; i < level._melee_weapons.size; i++)
+  for(i = 0; i < level._melee_weapons.size; i++)
     self trigger_hide(level._melee_weapons[i].wallbuy_targetname);
 }
 
 trigger_hide(wallbuy_targetname) {
   melee_triggers = getentarray(wallbuy_targetname, "targetname");
 
-  for (i = 0; i < melee_triggers.size; i++)
+  for(i = 0; i < melee_triggers.size; i++)
     melee_triggers[i] setinvisibletoplayer(self);
 }
 
@@ -206,7 +208,7 @@ has_any_ballistic_knife() {
   if(self hasweapon("knife_ballistic_upgraded_zm"))
     return true;
 
-  for (i = 0; i < level._melee_weapons.size; i++) {
+  for(i = 0; i < level._melee_weapons.size; i++) {
     if(self hasweapon(level._melee_weapons[i].ballistic_weapon_name))
       return true;
 
@@ -221,7 +223,7 @@ has_upgraded_ballistic_knife() {
   if(self hasweapon("knife_ballistic_upgraded_zm"))
     return true;
 
-  for (i = 0; i < level._melee_weapons.size; i++) {
+  for(i = 0; i < level._melee_weapons.size; i++) {
     if(self hasweapon(level._melee_weapons[i].ballistic_upgraded_weapon_name))
       return true;
   }
@@ -232,11 +234,11 @@ has_upgraded_ballistic_knife() {
 give_ballistic_knife(weapon_string, upgraded) {
   current_melee_weapon = self get_player_melee_weapon();
 
-  if(isdefined(current_melee_weapon)) {
-    if(upgraded && isdefined(level.ballistic_upgraded_weapon_name) && isdefined(level.ballistic_upgraded_weapon_name[current_melee_weapon]))
+  if(isDefined(current_melee_weapon)) {
+    if(upgraded && isDefined(level.ballistic_upgraded_weapon_name) && isDefined(level.ballistic_upgraded_weapon_name[current_melee_weapon]))
       weapon_string = level.ballistic_upgraded_weapon_name[current_melee_weapon];
 
-    if(!upgraded && isdefined(level.ballistic_weapon_name) && isdefined(level.ballistic_weapon_name[current_melee_weapon]))
+    if(!upgraded && isDefined(level.ballistic_weapon_name) && isDefined(level.ballistic_weapon_name[current_melee_weapon]))
       weapon_string = level.ballistic_weapon_name[current_melee_weapon];
   }
 
@@ -246,7 +248,7 @@ give_ballistic_knife(weapon_string, upgraded) {
 change_melee_weapon(weapon_name, current_weapon) {
   current_melee_weapon = self get_player_melee_weapon();
 
-  if(isdefined(current_melee_weapon) && current_melee_weapon != weapon_name) {
+  if(isDefined(current_melee_weapon) && current_melee_weapon != weapon_name) {
     self takeweapon(current_melee_weapon);
     unacquire_weapon_toggle(current_melee_weapon);
   }
@@ -257,7 +259,7 @@ change_melee_weapon(weapon_name, current_weapon) {
   ballistic_was_primary = 0;
   primaryweapons = self getweaponslistprimaries();
 
-  for (i = 0; i < primaryweapons.size; i++) {
+  for(i = 0; i < primaryweapons.size; i++) {
     primary_weapon = primaryweapons[i];
 
     if(issubstr(primary_weapon, "knife_ballistic_")) {
@@ -299,10 +301,10 @@ change_melee_weapon(weapon_name, current_weapon) {
 melee_weapon_think(weapon_name, cost, flourish_fn, vo_dialog_id, flourish_weapon_name, ballistic_weapon_name, ballistic_upgraded_weapon_name) {
   self.first_time_triggered = 0;
 
-  if(isdefined(self.stub)) {
+  if(isDefined(self.stub)) {
     self endon("kill_trigger");
 
-    if(isdefined(self.stub.first_time_triggered))
+    if(isDefined(self.stub.first_time_triggered))
       self.first_time_triggered = self.stub.first_time_triggered;
 
     weapon_name = self.stub.weapon_name;
@@ -314,15 +316,15 @@ melee_weapon_think(weapon_name, cost, flourish_fn, vo_dialog_id, flourish_weapon
     ballistic_upgraded_weapon_name = self.stub.ballistic_upgraded_weapon_name;
     players = getplayers();
 
-    if(!(isdefined(level._allow_melee_weapon_switching) && level._allow_melee_weapon_switching)) {
-      for (i = 0; i < players.size; i++) {
+    if(!(isDefined(level._allow_melee_weapon_switching) && level._allow_melee_weapon_switching)) {
+      for(i = 0; i < players.size; i++) {
         if(!players[i] player_can_see_weapon_prompt(weapon_name))
           self setinvisibletoplayer(players[i]);
       }
     }
   }
 
-  for (;;) {
+  for(;;) {
     self waittill("trigger", player);
 
     if(!is_player_valid(player)) {
@@ -362,7 +364,7 @@ melee_weapon_think(weapon_name, cost, flourish_fn, vo_dialog_id, flourish_weapon
       continue;
     }
 
-    if(player maps\mp\zombies\_zm_laststand::player_is_in_laststand() || isdefined(player.intermission) && player.intermission) {
+    if(player maps\mp\zombies\_zm_laststand::player_is_in_laststand() || isDefined(player.intermission) && player.intermission) {
       wait 0.1;
       continue;
     }
@@ -379,14 +381,14 @@ melee_weapon_think(weapon_name, cost, flourish_fn, vo_dialog_id, flourish_weapon
         if(self.first_time_triggered == 0) {
           model = getent(self.target, "targetname");
 
-          if(isdefined(model))
+          if(isDefined(model))
             model thread melee_weapon_show(player);
-          else if(isdefined(self.clientfieldname))
+          else if(isDefined(self.clientfieldname))
             level setclientfield(self.clientfieldname, 1);
 
           self.first_time_triggered = 1;
 
-          if(isdefined(self.stub))
+          if(isDefined(self.stub))
             self.stub.first_time_triggered = 1;
         }
 
@@ -401,7 +403,7 @@ melee_weapon_think(weapon_name, cost, flourish_fn, vo_dialog_id, flourish_weapon
       continue;
     }
 
-    if(!(isdefined(level._allow_melee_weapon_switching) && level._allow_melee_weapon_switching))
+    if(!(isDefined(level._allow_melee_weapon_switching) && level._allow_melee_weapon_switching))
       self setinvisibletoplayer(player);
   }
 }
@@ -427,7 +429,7 @@ melee_weapon_show(player) {
 }
 
 give_melee_weapon(vo_dialog_id, flourish_weapon_name, weapon_name, ballistic_weapon_name, ballistic_upgraded_weapon_name, flourish_fn, trigger) {
-  if(isdefined(flourish_fn))
+  if(isDefined(flourish_fn))
     self thread[[flourish_fn]]();
 
   gun = self do_melee_weapon_flourish_begin(flourish_weapon_name);
@@ -435,11 +437,11 @@ give_melee_weapon(vo_dialog_id, flourish_weapon_name, weapon_name, ballistic_wea
   self waittill_any("fake_death", "death", "player_downed", "weapon_change_complete");
   self do_melee_weapon_flourish_end(gun, flourish_weapon_name, weapon_name, ballistic_weapon_name, ballistic_upgraded_weapon_name);
 
-  if(self maps\mp\zombies\_zm_laststand::player_is_in_laststand() || isdefined(self.intermission) && self.intermission) {
+  if(self maps\mp\zombies\_zm_laststand::player_is_in_laststand() || isDefined(self.intermission) && self.intermission) {
     return;
   }
-  if(!(isdefined(level._allow_melee_weapon_switching) && level._allow_melee_weapon_switching)) {
-    if(isdefined(trigger))
+  if(!(isDefined(level._allow_melee_weapon_switching) && level._allow_melee_weapon_switching)) {
+    if(isDefined(trigger))
       trigger setinvisibletoplayer(self);
 
     self trigger_hide_all();
@@ -462,7 +464,7 @@ do_melee_weapon_flourish_end(gun, flourish_weapon_name, weapon_name, ballistic_w
   self enable_player_move_states();
   weapon = flourish_weapon_name;
 
-  if(self maps\mp\zombies\_zm_laststand::player_is_in_laststand() || isdefined(self.intermission) && self.intermission) {
+  if(self maps\mp\zombies\_zm_laststand::player_is_in_laststand() || isDefined(self.intermission) && self.intermission) {
     self takeweapon(weapon);
     self.lastactiveweapon = "none";
     return;
@@ -487,12 +489,12 @@ do_melee_weapon_flourish_end(gun, flourish_weapon_name, weapon_name, ballistic_w
   else {
     primaryweapons = self getweaponslistprimaries();
 
-    if(isdefined(primaryweapons) && primaryweapons.size > 0)
+    if(isDefined(primaryweapons) && primaryweapons.size > 0)
       self switchtoweapon(primaryweapons[0]);
   }
 
   self waittill("weapon_change_complete");
 
-  if(!self maps\mp\zombies\_zm_laststand::player_is_in_laststand() && !(isdefined(self.intermission) && self.intermission))
+  if(!self maps\mp\zombies\_zm_laststand::player_is_in_laststand() && !(isDefined(self.intermission) && self.intermission))
     self decrement_is_drinking();
 }

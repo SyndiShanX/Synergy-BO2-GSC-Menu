@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: character\c_zom_guard.gsc
-***************************************/
+**************************************/
 
 #include codescripts\character;
 #include xmodelalias\c_zom_prison_guard_head_als;

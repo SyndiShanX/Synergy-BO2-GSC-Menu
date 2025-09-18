@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\bots\_bot_conf.gsc
-***************************************/
+**************************************/
 
 #include common_scripts\utility;
 #include maps\mp\_utility;
@@ -15,7 +15,7 @@ bot_conf_think() {
   self.bot.update_objective = time + randomintrange(500, 1500);
   goal = self getgoal("conf_dogtag");
 
-  if(isdefined(goal)) {
+  if(isDefined(goal)) {
     if(!conf_tag_in_radius(goal, 64))
       self cancelgoal("conf_dogtag");
   }
@@ -50,7 +50,7 @@ conf_get_tag_in_sight() {
     }
     nearest = getnearestnode(tag.curorigin);
 
-    if(!isdefined(nearest)) {
+    if(!isDefined(nearest)) {
       tag.unreachable = 1;
       continue;
     }
@@ -60,7 +60,7 @@ conf_get_tag_in_sight() {
       continue;
     }
 
-    if(!isdefined(tag.unreachable) && !findpath(self.origin, tag.curorigin, tag, 0, 1))
+    if(!isDefined(tag.unreachable) && !findpath(self.origin, tag.curorigin, tag, 0, 1))
       tag.unreachable = 1;
     else
       tag.unreachable = 0;
@@ -69,7 +69,7 @@ conf_get_tag_in_sight() {
     closetag = tag;
   }
 
-  if(isdefined(closetag))
+  if(isDefined(closetag))
     self addgoal(closetag.curorigin, 16, 3, "conf_dogtag");
 }
 

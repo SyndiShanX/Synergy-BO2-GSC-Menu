@@ -1,7 +1,7 @@
-/*********************************************************
+/*************************************************************
  * Decompiled and Edited by SyndiShanX
  * Script: clientscripts\mp\zombies\_zm_perk_vulture.csc
-*********************************************************/
+*************************************************************/
 
 #include clientscripts\mp\_utility;
 #include clientscripts\mp\zombies\_zm_utility;
@@ -62,10 +62,10 @@ init_vulture() {
   level.perk_vulture.clientfields.toplayer[0] = ::vulture_toggle;
   level.perk_vulture.disable_solo_quick_revive_glow = 0;
 
-  if(!isdefined(level.perk_vulture.custom_funcs_enable))
+  if(!isDefined(level.perk_vulture.custom_funcs_enable))
     level.perk_vulture.custom_funcs_enable = [];
 
-  if(!isdefined(level.perk_vulture.custom_funcs_disable))
+  if(!isDefined(level.perk_vulture.custom_funcs_disable))
     level.perk_vulture.custom_funcs_disable = [];
 
   level.zombie_eyes_clientfield_cb_additional = ::vulture_eye_glow_callback_from_system;
@@ -87,21 +87,21 @@ vulture_on_player_connect(localclientnumber) {
 }
 
 vulture_add_custom_func_on_enable(func) {
-  if(!isdefined(level.perk_vulture.custom_funcs_enable))
+  if(!isDefined(level.perk_vulture.custom_funcs_enable))
     level.perk_vulture.custom_funcs_enable = [];
 
   level.perk_vulture.custom_funcs_enable[level.perk_vulture.custom_funcs_enable.size] = func;
 }
 
 vulture_add_fx_to_client_array(localclientnumber, n_fx_id, str_special) {
-  if(isdefined(str_special) && isdefined(level.perk_vulture.fx_array[localclientnumber].fx_list_special))
+  if(isDefined(str_special) && isDefined(level.perk_vulture.fx_array[localclientnumber].fx_list_special))
     level.perk_vulture.fx_array[localclientnumber].fx_list_special[str_special] = n_fx_id;
 
   level.perk_vulture.fx_array[localclientnumber].fx_list[level.perk_vulture.fx_array[localclientnumber].fx_list.size] = n_fx_id;
 }
 
 vulture_add_custom_func_on_disable(func) {
-  if(!isdefined(level.perk_vulture.custom_funcs_disable))
+  if(!isDefined(level.perk_vulture.custom_funcs_disable))
     level.perk_vulture.custom_funcs_disable = [];
 
   level.perk_vulture.custom_funcs_disable[level.perk_vulture.custom_funcs_disable.size] = func;
@@ -129,7 +129,7 @@ vulture_eye_glow_callback_from_system(localclientnumber, oldval, newval, bnewent
 }
 
 vulture_callback_actor(localclientnumber, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump) {
-  for (i = 0; i < level.perk_vulture.clientfields.actors.size; i++) {
+  for(i = 0; i < level.perk_vulture.clientfields.actors.size; i++) {
     n_value_old = oldval & 1 << i;
     n_value_new = newval & 1 << i;
     b_value_old = 1 << i == n_value_old;
@@ -141,7 +141,7 @@ vulture_callback_actor(localclientnumber, oldval, newval, bnewent, binitialsnap,
 }
 
 vulture_callback_scriptmover(localclientnumber, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump) {
-  for (i = 0; i < level.perk_vulture.clientfields.scriptmovers.size; i++) {
+  for(i = 0; i < level.perk_vulture.clientfields.scriptmovers.size; i++) {
     n_value_old = oldval & 1 << i;
     n_value_new = newval & 1 << i;
     b_value_old = 1 << i == n_value_old;
@@ -153,7 +153,7 @@ vulture_callback_scriptmover(localclientnumber, oldval, newval, bnewent, binitia
 }
 
 vulture_callback_toplayer(localclientnumber, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump) {
-  for (i = 0; i < level.perk_vulture.clientfields.toplayer.size; i++) {
+  for(i = 0; i < level.perk_vulture.clientfields.toplayer.size; i++) {
     n_value_old = oldval & 1 << i;
     n_value_new = newval & 1 << i;
     b_value_old = 1 << i == n_value_old;
@@ -183,18 +183,18 @@ vulture_drop_fx(localclientnumber, oldval, newval, bnewent, binitialsnap, fieldn
     self.n_vulture_drop_fx = playfxontag(localclientnumber, level._effect["vulture_perk_bonus_drop"], self, "tag_origin");
     playsound(localclientnumber, "zmb_vulture_drop_spawn", self.origin);
 
-    if(!isdefined(self.vulture_sound_locations))
+    if(!isDefined(self.vulture_sound_locations))
       self.vulture_sound_locations = [];
 
-    if(isdefined(self.vulture_sound_locations[localclientnumber]))
+    if(isDefined(self.vulture_sound_locations[localclientnumber]))
       stoploopat("zmb_vulture_drop_loop", self.vulture_sound_locations[localclientnumber]);
 
     self.vulture_sound_locations[localclientnumber] = self.origin;
     playloopat("zmb_vulture_drop_loop", self.vulture_sound_locations[localclientnumber]);
-  } else if(isdefined(self) && isdefined(self.n_vulture_drop_fx)) {
+  } else if(isDefined(self) && isDefined(self.n_vulture_drop_fx)) {
     deletefx(localclientnumber, self.n_vulture_drop_fx, 1);
 
-    if(isdefined(self.vulture_sound_locations) && isdefined(self.vulture_sound_locations[localclientnumber]))
+    if(isDefined(self.vulture_sound_locations) && isDefined(self.vulture_sound_locations[localclientnumber]))
       stoploopat("zmb_vulture_drop_loop", self.vulture_sound_locations[localclientnumber]);
   }
 }
@@ -203,7 +203,6 @@ vulture_drop_pickup(localclientnumber, oldval, newval, bnewent, binitialsnap, fi
   if(newval)
     playfx(localclientnumber, level._effect["vulture_drop_picked_up"], self.origin);
   else {
-
   }
 }
 
@@ -221,11 +220,11 @@ vulture_vision_mystery_box(localclientnumber, oldval, newval, bnewent, binitials
 
 vulture_stink_fx(localclientnumber, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump) {
   if(newval) {
-    if(isdefined(self)) {
+    if(isDefined(self)) {
       level.perk_vulture.array_stink_drop_locations[level.perk_vulture.array_stink_drop_locations.size] = self;
       self _stink_fx_enable(localclientnumber);
     }
-  } else if(isdefined(self)) {
+  } else if(isDefined(self)) {
     arrayremovevalue(level.perk_vulture.array_stink_drop_locations, self, 0);
     level.perk_vulture.array_stink_drop_locations = remove_undefined_from_array(level.perk_vulture.array_stink_drop_locations);
     self _stink_fx_disable(localclientnumber, bnewent);
@@ -245,7 +244,7 @@ vulture_toggle(localclientnumber, oldval, newval, bnewent, binitialsnap, fieldna
 
     self vulture_vision_enable(localclientnumber);
 
-    for (i = 0; i < level.perk_vulture.custom_funcs_enable.size; i++)
+    for(i = 0; i < level.perk_vulture.custom_funcs_enable.size; i++)
       [[level.perk_vulture.custom_funcs_enable[i]]](localclientnumber);
   } else {
     level.perk_vulture.players_with_vulture_perk[localclientnumber] = undefined;
@@ -259,13 +258,13 @@ vulture_toggle(localclientnumber, oldval, newval, bnewent, binitialsnap, fieldna
 
     self vulture_vision_disable(localclientnumber);
 
-    for (i = 0; i < level.perk_vulture.custom_funcs_disable.size; i++)
+    for(i = 0; i < level.perk_vulture.custom_funcs_disable.size; i++)
       [[level.perk_vulture.custom_funcs_disable[i]]](localclientnumber);
   }
 }
 
 vulture_stink_trail_fx(localclientnumber, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump) {
-  if(!isdefined(level.perk_vulture.array_stink_zombies))
+  if(!isDefined(level.perk_vulture.array_stink_zombies))
     level.perk_vulture.array_stink_zombies = [];
 
   if(newval) {
@@ -279,8 +278,8 @@ vulture_stink_trail_fx(localclientnumber, oldval, newval, bnewent, binitialsnap,
 }
 
 _powerup_drop_fx_enable(localclientnumber) {
-  if(isdefined(self)) {
-    if(!isdefined(self.perk_vulture_fx_id))
+  if(isDefined(self)) {
+    if(!isDefined(self.perk_vulture_fx_id))
       self.perk_vulture_fx_id = [];
 
     if(_player_has_vulture(localclientnumber)) {
@@ -291,22 +290,22 @@ _powerup_drop_fx_enable(localclientnumber) {
 }
 
 _powerup_drop_fx_disable(localclientnumber) {
-  if(isdefined(self) && isdefined(self.perk_vulture_fx_id) && isdefined(self.perk_vulture_fx_id[localclientnumber]))
+  if(isDefined(self) && isDefined(self.perk_vulture_fx_id) && isDefined(self.perk_vulture_fx_id[localclientnumber]))
     deletefx(localclientnumber, self.perk_vulture_fx_id[localclientnumber], 1);
 }
 
 _stink_trail_enable(localclientnumber) {
-  if(isdefined(self) && !isdefined(self.n_vulture_fx_trail) && _player_has_vulture(localclientnumber))
+  if(isDefined(self) && !isDefined(self.n_vulture_fx_trail) && _player_has_vulture(localclientnumber))
     self thread _loop_stink_trail(localclientnumber);
 }
 
 _loop_stink_trail(localclientnumber) {
   self endon("vulture_stop_stink_trail_fx");
 
-  if(!isdefined(self.perk_vulture_stink_trail))
+  if(!isDefined(self.perk_vulture_stink_trail))
     self.perk_vulture_stink_trail = [];
 
-  if(!isdefined(self.sndent)) {
+  if(!isDefined(self.sndent)) {
     self.sndent = spawn(0, self.origin, "script_origin");
     self.sndent linkto(self);
   }
@@ -315,12 +314,12 @@ _loop_stink_trail(localclientnumber) {
   sndent playloopsound("zmb_vulture_stink_loop", 1);
   self thread sndloopstinktraildelete(sndent);
 
-  while (isdefined(self)) {
+  while(isDefined(self)) {
     self.perk_vulture_stink_trail[localclientnumber] = playfx(localclientnumber, level._effect["vulture_perk_zombie_stink_trail"], self.origin);
     wait 0.1;
   }
 
-  if(isdefined(sndent)) {
+  if(isDefined(sndent)) {
     sndent stoploopsound();
     sndent delete();
   }
@@ -330,17 +329,17 @@ sndloopstinktraildelete(sndent) {
   self endon("death");
   self waittill_any("vulture_stop_stink_trail_fx", "vulture_stop_stink_fx");
 
-  if(isdefined(sndent)) {
+  if(isDefined(sndent)) {
     sndent stoploopsound();
     sndent delete();
   }
 }
 
 _stink_trail_disable(localclientnumber, b_kill_fx_immediately) {
-  if(!isdefined(b_kill_fx_immediately))
+  if(!isDefined(b_kill_fx_immediately))
     b_kill_fx_immediately = 0;
 
-  if(isdefined(self) && isdefined(self.perk_vulture_stink_trail) && isdefined(self.perk_vulture_stink_trail[localclientnumber])) {
+  if(isDefined(self) && isDefined(self.perk_vulture_stink_trail) && isDefined(self.perk_vulture_stink_trail[localclientnumber])) {
     self notify("vulture_stop_stink_trail_fx");
     deletefx(localclientnumber, self.perk_vulture_stink_trail[localclientnumber], b_kill_fx_immediately);
     self.perk_vulture_stink_trail[localclientnumber] = undefined;
@@ -348,12 +347,12 @@ _stink_trail_disable(localclientnumber, b_kill_fx_immediately) {
 }
 
 _stink_fx_enable(localclientnumber) {
-  if(isdefined(self) && !isdefined(self.n_vulture_fx_id) && _player_has_vulture(localclientnumber))
+  if(isDefined(self) && !isDefined(self.n_vulture_fx_id) && _player_has_vulture(localclientnumber))
     self thread _loop_stink_stationary(localclientnumber);
 }
 
 _loop_stink_stationary(localclientnumber) {
-  if(!isdefined(self.perk_vulture_fx))
+  if(!isDefined(self.perk_vulture_fx))
     self.perk_vulture_fx = [];
 
   self.perk_vulture_fx_active = 1;
@@ -361,7 +360,7 @@ _loop_stink_stationary(localclientnumber) {
   playloopat("zmb_vulture_stink_loop", sndorigin);
   self thread sndloopstinkstationarydelete(sndorigin);
 
-  while (isdefined(self) && (isdefined(self.perk_vulture_fx_active) && self.perk_vulture_fx_active)) {
+  while(isDefined(self) && (isDefined(self.perk_vulture_fx_active) && self.perk_vulture_fx_active)) {
     self.perk_vulture_fx[localclientnumber] = playfx(localclientnumber, level._effect["vulture_perk_zombie_stink"], self.origin);
     wait 0.125;
   }
@@ -373,19 +372,19 @@ sndloopstinkstationarydelete(sndorigin) {
   self endon("death");
   self waittill_any("vulture_stop_stink_trail_fx", "vulture_stop_stink_fx");
 
-  if(isdefined(sndorigin))
+  if(isDefined(sndorigin))
     stoploopat("zmb_vulture_stink_loop", sndorigin);
 }
 
 _stink_fx_disable(localclientnumber, b_kill_fx_immediately) {
-  if(!isdefined(b_kill_fx_immediately))
+  if(!isDefined(b_kill_fx_immediately))
     b_kill_fx_immediately = 1;
 
-  if(isdefined(self)) {
+  if(isDefined(self)) {
     self.perk_vulture_fx_active = 0;
     self notify("vulture_stop_stink_fx");
 
-    if(isdefined(self.perk_vulture_fx) && isdefined(self.perk_vulture_fx[localclientnumber])) {
+    if(isDefined(self.perk_vulture_fx) && isDefined(self.perk_vulture_fx[localclientnumber])) {
       deletefx(localclientnumber, self.perk_vulture_fx[localclientnumber], b_kill_fx_immediately);
       self.perk_vulture_fx[localclientnumber] = undefined;
     }
@@ -396,7 +395,7 @@ _mystery_box_fx_enable(localclientnumber) {
   if(!isinarray(level.perk_vulture.vulture_vision.mystery_box, self))
     level.perk_vulture.vulture_vision.mystery_box[level.perk_vulture.vulture_vision.mystery_box.size] = self;
 
-  if(!isdefined(self.perk_vulture_fx_id))
+  if(!isDefined(self.perk_vulture_fx_id))
     self.perk_vulture_fx_id = [];
 
   if(_player_has_vulture(localclientnumber)) {
@@ -407,10 +406,10 @@ _mystery_box_fx_enable(localclientnumber) {
 }
 
 _mystery_box_fx_disable(localclientnumber, b_force_kill_fx) {
-  if(!isdefined(b_force_kill_fx))
+  if(!isDefined(b_force_kill_fx))
     b_force_kill_fx = 0;
 
-  if((!_player_has_vulture(localclientnumber) || b_force_kill_fx) && isdefined(level.perk_vulture.vulture_vision.mystery_box) && isdefined(level.perk_vulture.vulture_vision_fx_list[localclientnumber]) && isdefined(self.perk_vulture_fx_id) && isdefined(self.perk_vulture_fx_id[localclientnumber]))
+  if((!_player_has_vulture(localclientnumber) || b_force_kill_fx) && isDefined(level.perk_vulture.vulture_vision.mystery_box) && isDefined(level.perk_vulture.vulture_vision_fx_list[localclientnumber]) && isDefined(self.perk_vulture_fx_id) && isDefined(self.perk_vulture_fx_id[localclientnumber]))
     deletefx(localclientnumber, self.perk_vulture_fx_id[localclientnumber], 1);
 }
 
@@ -421,16 +420,16 @@ _zombie_eye_glow_think() {
 }
 
 _zombie_eye_glow_enable(localclientnumber) {
-  if(_player_has_vulture(localclientnumber) && isdefined(self)) {
-    if(!isdefined(self.perk_vulture_fx_id))
+  if(_player_has_vulture(localclientnumber) && isDefined(self)) {
+    if(!isDefined(self.perk_vulture_fx_id))
       self.perk_vulture_fx_id = [];
 
     n_fx_id = level._effect["vulture_perk_zombie_eye_glow"];
 
-    if(isdefined(level.perk_vulture.vulture_vision.actors_eye_glow_override))
+    if(isDefined(level.perk_vulture.vulture_vision.actors_eye_glow_override))
       n_fx_id = level.perk_vulture.vulture_vision.actors_eye_glow_override;
 
-    if(isdefined(self.vulture_perk_actor_eye_glow_override))
+    if(isDefined(self.vulture_perk_actor_eye_glow_override))
       n_fx_id = self.vulture_perk_actor_eye_glow_override;
 
     self.perk_vulture_fx_id[localclientnumber] = playfxontag(localclientnumber, n_fx_id, self, "J_Eyeball_LE");
@@ -442,21 +441,21 @@ set_vulture_custom_eye_glow(n_fx_id) {
 }
 
 _zombie_eye_glow_disable(localclientnumber) {
-  if(isdefined(self) && isdefined(self.perk_vulture_fx_id) && isdefined(self.perk_vulture_fx_id[localclientnumber])) {
+  if(isDefined(self) && isDefined(self.perk_vulture_fx_id) && isDefined(self.perk_vulture_fx_id[localclientnumber])) {
     deletefx(localclientnumber, self.perk_vulture_fx_id[localclientnumber], 1);
     self.perk_vulture_fx_id[localclientnumber] = undefined;
   }
 }
 
 _player_has_vulture(localclientnumber) {
-  return isdefined(level.perk_vulture.players_with_vulture_perk[localclientnumber]);
+  return isDefined(level.perk_vulture.players_with_vulture_perk[localclientnumber]);
 }
 
 remove_undefined_from_array(array) {
   newarray = [];
 
-  for (i = 0; i < array.size; i++) {
-    if(!isdefined(array[i])) {
+  for(i = 0; i < array.size; i++) {
+    if(!isDefined(array[i])) {
       continue;
     }
     newarray[newarray.size] = array[i];
@@ -466,15 +465,15 @@ remove_undefined_from_array(array) {
 }
 
 _clean_up_global_zombie_arrays(localclientnumber) {
-  if(isdefined(level.perk_vulture.array_stink_zombies))
+  if(isDefined(level.perk_vulture.array_stink_zombies))
     level.perk_vulture.array_stink_zombies = remove_undefined_from_array(level.perk_vulture.array_stink_zombies);
 }
 
 vulture_vision_init(localclientnumber, b_first_run) {
-  if(!isdefined(b_first_run))
+  if(!isDefined(b_first_run))
     b_first_run = 0;
 
-  if(!isdefined(level.perk_vulture.vulture_vision)) {
+  if(!isDefined(level.perk_vulture.vulture_vision)) {
     level.perk_vulture.vulture_vision = spawnstruct();
     level.perk_vulture.vulture_vision.perk_machines = [];
     level.perk_vulture.vulture_vision.mystery_box = [];
@@ -494,17 +493,17 @@ vulture_vision_init(localclientnumber, b_first_run) {
 }
 
 wallbuy_update_listener(localclientnumber) {
-  while (true) {
+  while(true) {
     level waittill("wallbuy_updated");
     vulture_vision_update_wallbuy_list(localclientnumber);
   }
 }
 
 vulture_vision_update_wallbuy_list(localclientnumber, b_first_run) {
-  if(!isdefined(b_first_run))
+  if(!isDefined(b_first_run))
     b_first_run = 0;
 
-  if(isdefined(level.perk_vulture.vulture_vision_fx_list[localclientnumber]) && isdefined(level.perk_vulture.vulture_vision_fx_list[localclientnumber].fx_list_wallbuy)) {
+  if(isDefined(level.perk_vulture.vulture_vision_fx_list[localclientnumber]) && isDefined(level.perk_vulture.vulture_vision_fx_list[localclientnumber].fx_list_wallbuy)) {
     foreach(n_fx_id in level.perk_vulture.vulture_vision_fx_list[localclientnumber].fx_list_wallbuy)
     deletefx(localclientnumber, n_fx_id, 1);
   }
@@ -514,11 +513,11 @@ vulture_vision_update_wallbuy_list(localclientnumber, b_first_run) {
   a_wall_buys = _get_wallbuy_array();
   a_keys = getarraykeys(a_wall_buys);
 
-  for (i = 0; i < a_keys.size; i++) {
+  for(i = 0; i < a_keys.size; i++) {
     s_temp = a_wall_buys[a_keys[i]];
 
     if(s_temp.zombie_weapon_upgrade == "dynamic") {
-      if(isdefined(s_temp.models) && s_temp.models.size > 0)
+      if(isDefined(s_temp.models) && s_temp.models.size > 0)
         level.perk_vulture.vulture_vision.wall_buys_static[level.perk_vulture.vulture_vision.wall_buys_static.size] = s_temp;
       else
         level.perk_vulture.vulture_vision.wall_buys_dynamic[level.perk_vulture.vulture_vision.wall_buys_dynamic.size] = s_temp;
@@ -537,12 +536,12 @@ vulture_vision_show_wallbuy_fx(localclientnumber) {
   if(_player_has_vulture(localclientnumber)) {
     s_temp = level.perk_vulture.vulture_vision_fx_list[localclientnumber];
 
-    for (i = 0; i < level.perk_vulture.vulture_vision.wall_buys_static.size; i++) {
+    for(i = 0; i < level.perk_vulture.vulture_vision.wall_buys_static.size; i++) {
       ent = level.perk_vulture.vulture_vision.wall_buys_static[i];
       s_temp.fx_list_wallbuy[s_temp.fx_list_wallbuy.size] = playfx(localclientnumber, level._effect["vulture_perk_wallbuy_static"], ent.origin, anglestoforward(ent.angles), anglestoup(ent.angles));
     }
 
-    for (i = 0; i < level.perk_vulture.vulture_vision.wall_buys_dynamic.size; i++) {
+    for(i = 0; i < level.perk_vulture.vulture_vision.wall_buys_dynamic.size; i++) {
       ent = level.perk_vulture.vulture_vision.wall_buys_dynamic[i];
       s_temp.fx_list_wallbuy[s_temp.fx_list_wallbuy.size] = playfx(localclientnumber, level._effect["vulture_perk_wallbuy_dynamic"], ent.origin, anglestoforward(ent.angles), anglestoup(ent.angles));
     }
@@ -550,7 +549,7 @@ vulture_vision_show_wallbuy_fx(localclientnumber) {
 }
 
 vulture_vision_enable(localclientnumber) {
-  if(isdefined(level.perk_vulture.vulture_vision_fx_list[localclientnumber]))
+  if(isDefined(level.perk_vulture.vulture_vision_fx_list[localclientnumber]))
     vulture_vision_disable(localclientnumber);
 
   level.perk_vulture.vulture_vision_fx_list[localclientnumber] = spawnstruct();
@@ -562,14 +561,16 @@ vulture_vision_enable(localclientnumber) {
   vulture_vision_show_wallbuy_fx(localclientnumber);
   a_keys = getarraykeys(level.perk_vulture.vulture_vision.perk_machines);
 
-  for (i = 0; i < a_keys.size; i++) {
+  for(i = 0; i < a_keys.size; i++) {
     s_perk_machine = level.perk_vulture.vulture_vision.perk_machines[a_keys[i]];
 
-    if(isdefined(level.perk_vulture.vulture_vision.perk_machine_fx[a_keys[i]]))
+    if(isDefined(level.perk_vulture.vulture_vision.perk_machine_fx[a_keys[i]]))
       str_perk_machine_fx = level.perk_vulture.vulture_vision.perk_machine_fx[a_keys[i]];
     else {
       str_perk_machine_fx = "vulture_perk_machine_glow_speed";
+
       println("ZM PERK VULTURE >> perk machine with name '" + a_keys[i] + "' is missing vulture perk fx!");
+
     }
 
     if(a_keys[i] == "specialty_weapupgrade" || a_keys[i] == "specialty_nomotionsensor" || !self hasperk(localclientnumber, a_keys[i])) {
@@ -581,7 +582,7 @@ vulture_vision_enable(localclientnumber) {
   if(level.perk_vulture.vulture_vision.mystery_box.size > 0) {
     level.perk_vulture.vulture_vision.mystery_box = remove_undefined_from_array(level.perk_vulture.vulture_vision.mystery_box);
 
-    for (i = 0; i < level.perk_vulture.vulture_vision.mystery_box.size; i++)
+    for(i = 0; i < level.perk_vulture.vulture_vision.mystery_box.size; i++)
       level.perk_vulture.vulture_vision.mystery_box[i] _mystery_box_fx_enable(localclientnumber);
   }
 
@@ -607,28 +608,28 @@ setup_perk_machine_fx() {
 }
 
 register_perk_machine_fx(str_perk, str_fx_reference) {
-  if(!isdefined(level.perk_vulture.vulture_vision.perk_machine_fx))
+  if(!isDefined(level.perk_vulture.vulture_vision.perk_machine_fx))
     level.perk_vulture.vulture_vision.perk_machine_fx = [];
 
-  if(!isdefined(level.perk_vulture.vulture_vision.perk_machine_fx[str_perk]))
+  if(!isDefined(level.perk_vulture.vulture_vision.perk_machine_fx[str_perk]))
     level.perk_vulture.vulture_vision.perk_machine_fx[str_perk] = str_fx_reference;
 }
 
 vulture_vision_disable(localclientnumber) {
   b_removed_fx = 0;
 
-  if(isdefined(level.perk_vulture.vulture_vision_fx_list[localclientnumber])) {
-    if(isdefined(level.perk_vulture.vulture_vision_fx_list[localclientnumber].fx_list)) {
+  if(isDefined(level.perk_vulture.vulture_vision_fx_list[localclientnumber])) {
+    if(isDefined(level.perk_vulture.vulture_vision_fx_list[localclientnumber].fx_list)) {
       foreach(n_fx_id in level.perk_vulture.vulture_vision_fx_list[localclientnumber].fx_list)
       deletefx(localclientnumber, n_fx_id, 1);
     }
 
-    if(isdefined(level.perk_vulture.vulture_vision_fx_list[localclientnumber].fx_list_wallbuy)) {
+    if(isDefined(level.perk_vulture.vulture_vision_fx_list[localclientnumber].fx_list_wallbuy)) {
       foreach(n_fx_id in level.perk_vulture.vulture_vision_fx_list[localclientnumber].fx_list_wallbuy)
       deletefx(localclientnumber, n_fx_id, 1);
     }
 
-    if(isdefined(level.perk_vulture.vulture_vision_fx_list[localclientnumber].fx_list_special)) {
+    if(isDefined(level.perk_vulture.vulture_vision_fx_list[localclientnumber].fx_list_special)) {
       foreach(n_fx_id in level.perk_vulture.vulture_vision_fx_list[localclientnumber].fx_list_special)
       deletefx(localclientnumber, n_fx_id, 1);
 
@@ -650,12 +651,12 @@ _get_wallbuy_array() {
 vulture_global_perk_client_callback(localclientnumber, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump) {
   b_icon_should_appear = newval & 1;
 
-  if(isdefined(level.perk_vulture) && b_icon_should_appear) {
-    if(isdefined(level.perk_vulture.vulture_vision.perk_clientfields[fieldname])) {
+  if(isDefined(level.perk_vulture) && b_icon_should_appear) {
+    if(isDefined(level.perk_vulture.vulture_vision.perk_clientfields[fieldname])) {
       str_perk = level.perk_vulture.vulture_vision.perk_clientfields[fieldname];
 
       if(str_perk != "specialty_weapupgrade" && str_perk != "specialty_nomotionsensor" && self hasperk(localclientnumber, str_perk) || str_perk == "specialty_quickrevive" && level.perk_vulture.disable_solo_quick_revive_glow) {
-        if(_player_has_vulture(localclientnumber) && isdefined(level.perk_vulture.vulture_vision_fx_list[localclientnumber]) && isdefined(level.perk_vulture.vulture_vision_fx_list[localclientnumber].fx_list_special[str_perk]))
+        if(_player_has_vulture(localclientnumber) && isDefined(level.perk_vulture.vulture_vision_fx_list[localclientnumber]) && isDefined(level.perk_vulture.vulture_vision_fx_list[localclientnumber].fx_list_special[str_perk]))
           deletefx(localclientnumber, level.perk_vulture.vulture_vision_fx_list[localclientnumber].fx_list_special[str_perk], 1);
       }
     }
@@ -663,10 +664,10 @@ vulture_global_perk_client_callback(localclientnumber, oldval, newval, bnewent, 
 }
 
 register_perk_with_clientfield(str_clientfield, str_perk) {
-  if(!isdefined(level.perk_vulture.vulture_vision.perk_clientfields))
+  if(!isDefined(level.perk_vulture.vulture_vision.perk_clientfields))
     level.perk_vulture.vulture_vision.perk_clientfields = [];
 
-  if(!isdefined(level.perk_vulture.vulture_vision.perk_clientfields[str_clientfield]))
+  if(!isDefined(level.perk_vulture.vulture_vision.perk_clientfields[str_clientfield]))
     level.perk_vulture.vulture_vision.perk_clientfields[str_clientfield] = str_perk;
 }
 
@@ -700,7 +701,7 @@ sndvulturestink(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname
 }
 
 sndactivatevulturestink() {
-  if(!isdefined(self.sndstinkent)) {
+  if(!isDefined(self.sndstinkent)) {
     self.sndstinkent = spawn(0, (0, 0, 0), "script_origin");
     self.sndstinkent playloopsound("zmb_vulture_stink_player_loop", 0.5);
   }
@@ -713,7 +714,7 @@ snddeactivatevulturestink() {
   playsound(0, "zmb_vulture_stink_player_stop", (0, 0, 0));
   snd_set_snapshot("default");
 
-  if(isdefined(self.sndstinkent)) {
+  if(isDefined(self.sndstinkent)) {
     self.sndstinkent stoploopsound();
     self.sndstinkent delete();
     self.sndstinkent = undefined;
@@ -727,7 +728,7 @@ set_vulture_stink_fogbanks(fogbank_enabled, fogbank_disabled) {
 }
 
 vulture_callback_stink_active(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump) {
-  if(isdefined(self)) {
+  if(isDefined(self)) {
     if(newval > 0)
       self vulture_fogbank_enable(localclientnum);
     else
@@ -736,11 +737,11 @@ vulture_callback_stink_active(localclientnum, oldval, newval, bnewent, binitials
 }
 
 vulture_fogbank_disable(localclientnumber) {
-  if(isdefined(level.perk_vulture.fog_banks_enabled) && isdefined(level.perk_vulture.fog_bank_stink_off))
+  if(isDefined(level.perk_vulture.fog_banks_enabled) && isDefined(level.perk_vulture.fog_bank_stink_off))
     setworldfogactivebank(localclientnumber, level.perk_vulture.fog_bank_stink_off);
 }
 
 vulture_fogbank_enable(localclientnumber) {
-  if(isdefined(level.perk_vulture.fog_banks_enabled) && isdefined(level.perk_vulture.fog_bank_stink_on))
+  if(isDefined(level.perk_vulture.fog_banks_enabled) && isDefined(level.perk_vulture.fog_bank_stink_on))
     setworldfogactivebank(localclientnumber, level.perk_vulture.fog_bank_stink_on);
 }

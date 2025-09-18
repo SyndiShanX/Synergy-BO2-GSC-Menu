@@ -18,7 +18,7 @@
 #include maps\mp\zombies\_zm_audio;
 
 set_zombie_var_once(var, value, is_float, column, is_team_based) {
-  if(!isdefined(level.zombie_vars) || !isdefined(level.zombie_vars[var]))
+  if(!isDefined(level.zombie_vars) || !isDefined(level.zombie_vars[var]))
     set_zombie_var(var, value, is_float, column, is_team_based);
 }
 
@@ -57,7 +57,7 @@ init() {
 }
 
 wait_init_damage() {
-  while (!isdefined(level.zombie_vars) || !isdefined(level.zombie_vars["zombie_health_start"]))
+  while(!isDefined(level.zombie_vars) || !isDefined(level.zombie_vars["zombie_health_start"]))
     wait 1;
 
   wait 1;
@@ -73,7 +73,7 @@ watch_for_slip_bolt() {
   self endon("death");
   self endon("disconnect");
 
-  for (;;) {
+  for(;;) {
     self waittill("grenade_fire", grenade, weaponname, parent);
     self.num_sliquifier_kills = 0;
 
@@ -102,7 +102,7 @@ slip_bolt(player, upgraded) {
 dropslipgun() {
   item = self maps\mp\zombies\_zm_equipment::placed_equipment_think("t6_wpn_zmb_slipgun_world", "slipgun_zm", self.origin + vectorscale((0, 0, 1), 30.0), self.angles);
 
-  if(isdefined(item)) {
+  if(isDefined(item)) {
     item.original_owner = self;
     item.owner = undefined;
     item.name = "slipgun_zm";
@@ -119,7 +119,7 @@ pickupslipgun(item) {
   item.owner = self;
   self giveweapon(item.name);
 
-  if(isdefined(item.clipammo) && isdefined(item.stockammo)) {
+  if(isDefined(item.clipammo) && isDefined(item.stockammo)) {
     self setweaponammoclip(item.name, item.clipammo);
     self setweaponammostock(item.name, item.stockammo);
     item.clipammo = undefined;
@@ -137,7 +137,7 @@ slipgun_activation_watcher_thread() {
   self endon("disconnect");
   self endon("slipgun_zm_taken");
 
-  while (true)
+  while(true)
     self waittill_either("slipgun_zm_activate", "slipgun_zm_deactivate");
 }
 
@@ -145,14 +145,14 @@ slipgun_debug_circle(origin, radius, seconds, onslope, parent, start) {
   if(getdvarint(#"_id_6136A815")) {
     frames = int(20 * seconds);
 
-    if(isdefined(parent)) {
+    if(isDefined(parent)) {
       time = seconds;
       frames = 1;
 
-      while (time > 0) {
+      while(time > 0) {
         morigin = origin + (parent.origin - start);
 
-        if(isdefined(onslope) && onslope)
+        if(isDefined(onslope) && onslope)
           circle(morigin, radius, (1, 0, 0), 0, 1, frames);
         else
           circle(morigin, radius, (1, 1, 1), 0, 1, frames);
@@ -160,11 +160,12 @@ slipgun_debug_circle(origin, radius, seconds, onslope, parent, start) {
         time = time - 0.05;
         wait 0.05;
       }
-    } else if(isdefined(onslope) && onslope)
+    } else if(isDefined(onslope) && onslope)
       circle(origin, radius, (1, 0, 0), 0, 1, frames);
     else
       circle(origin, radius, (1, 1, 1), 0, 1, frames);
   }
+
 }
 
 slipgun_debug_line(start, end, color, seconds) {
@@ -172,6 +173,7 @@ slipgun_debug_line(start, end, color, seconds) {
     frames = int(20 * seconds);
     line(start, end, color, 1, 0, frames);
   }
+
 }
 
 canzombieongoofall() {
@@ -240,11 +242,11 @@ zombiemoveongoo() {
   self.sliding_on_goo = 0;
   self thread zombiemoveongoo_on_killanimscript();
 
-  while (true) {
-    self_on_goo = isdefined(self.is_on_goo) && self.is_on_goo;
+  while(true) {
+    self_on_goo = isDefined(self.is_on_goo) && self.is_on_goo;
     velocity = self getvelocity();
     velocitylength = length(self getvelocity());
-    iscrawler = isdefined(self.has_legs) && !self.has_legs;
+    iscrawler = isDefined(self.has_legs) && !self.has_legs;
     isleaper = self is_leaper();
 
     if(is_true(self.is_leaping)) {
@@ -265,7 +267,7 @@ zombiemoveongoo() {
     }
 
     if(!self.sliding_on_goo || !issubstr(self.zombie_move_speed, "slide")) {
-      if(!iscrawler && !isleaper && !isdefined(self.fell_while_sliding) && canzombieongoofall()) {
+      if(!iscrawler && !isleaper && !isDefined(self.fell_while_sliding) && canzombieongoofall()) {
         self animcustom(::zombie_moveongoo_animcustom_fall);
         self waittill("zombie_MoveOnGoo_animCustom_fall_done");
         continue;
@@ -279,16 +281,16 @@ zombiemoveongoo() {
         self orientmode("face enemy");
 
         if(self.zombie_move_speed == "sprint") {
-          if(!isdefined(self.zombie_move_speed) || isdefined(self.zombie_move_speed) && self.zombie_move_speed != "sprint_slide") {
+          if(!isDefined(self.zombie_move_speed) || isDefined(self.zombie_move_speed) && self.zombie_move_speed != "sprint_slide") {
             animstatedef = self maps\mp\animscripts\zm_utility::append_missing_legs_suffix("sprint_slide");
             self set_zombie_run_cycle(animstatedef);
           }
         } else if(self.zombie_move_speed == "run") {
-          if(!isdefined(self.zombie_move_speed) || isdefined(self.zombie_move_speed) && self.zombie_move_speed != "run_slide") {
+          if(!isDefined(self.zombie_move_speed) || isDefined(self.zombie_move_speed) && self.zombie_move_speed != "run_slide") {
             animstatedef = self maps\mp\animscripts\zm_utility::append_missing_legs_suffix("run_slide");
             self set_zombie_run_cycle(animstatedef);
           }
-        } else if(!isdefined(self.zombie_move_speed) || isdefined(self.zombie_move_speed) && self.zombie_move_speed != "walk_slide") {
+        } else if(!isDefined(self.zombie_move_speed) || isDefined(self.zombie_move_speed) && self.zombie_move_speed != "walk_slide") {
           animstatedef = self maps\mp\animscripts\zm_utility::append_missing_legs_suffix("walk_slide");
           self set_zombie_run_cycle(animstatedef);
         }
@@ -351,7 +353,7 @@ zombiemoveongoo_gobacktonormal() {
   self.forcemovementscriptstate = 0;
 
   if(!is_true(self.completed_emerging_into_playable_area)) {
-    assert(isdefined(self.first_node));
+    assert(isDefined(self.first_node));
     self maps\mp\zombies\_zm_spawner::reset_attack_spot();
     self orientmode("face default");
     self thread maps\mp\zombies\_zm_spawner::zombie_goto_entrance(self.first_node);
@@ -368,7 +370,7 @@ zombie_can_slip() {
   if(is_true(self.is_traversing))
     return false;
 
-  if(!is_true(self.completed_emerging_into_playable_area) && !isdefined(self.first_node))
+  if(!is_true(self.completed_emerging_into_playable_area) && !isDefined(self.first_node))
     return false;
 
   if(is_true(self.is_leaping))
@@ -378,7 +380,7 @@ zombie_can_slip() {
 }
 
 zombie_set_slipping(onoff) {
-  if(isdefined(self)) {
+  if(isDefined(self)) {
     self.is_on_goo = onoff;
 
     if(onoff)
@@ -406,7 +408,7 @@ add_slippery_spot(origin, duration, startpos) {
   trace_height = 120;
   trace = bullettrace(origin + hit_from, origin + hit_from + (0, 0, trace_height * -1), 0, undefined);
 
-  if(isdefined(trace["entity"])) {
+  if(isDefined(trace["entity"])) {
     parent = trace["entity"];
 
     if(is_true(parent.can_move))
@@ -414,6 +416,7 @@ add_slippery_spot(origin, duration, startpos) {
   }
 
   fxorigin = origin + hit_from;
+
   red = (1, 0, 0);
   green = (0, 1, 0);
   dkgreen = vectorscale((0, 1, 0), 0.15);
@@ -435,7 +438,7 @@ add_slippery_spot(origin, duration, startpos) {
   moving_parent = undefined;
   moving_parent_start = (0, 0, 0);
 
-  if(isdefined(trace["entity"])) {
+  if(isDefined(trace["entity"])) {
     parent = trace["entity"];
 
     if(is_true(parent.can_move))
@@ -445,33 +448,35 @@ add_slippery_spot(origin, duration, startpos) {
   origin = trace["position"];
   thread pool_of_goo(fxorigin, duration);
 
-  if(!isdefined(level.slippery_spots))
+  if(!isDefined(level.slippery_spots))
     level.slippery_spots = [];
 
   level.slippery_spots[level.slippery_spots.size] = origin;
   radius = 60;
   height = 48;
+
   thread slipgun_debug_circle(origin, radius, duration, 0, moving_parent, moving_parent_start);
+
   slicked_players = [];
   slicked_zombies = [];
   lifetime = duration;
   radius2 = radius * radius;
 
-  while (lifetime > 0) {
+  while(lifetime > 0) {
     oldlifetime = lifetime;
 
     foreach(player in get_players()) {
       num = player getentitynumber();
       morigin = origin;
 
-      if(isdefined(moving_parent))
+      if(isDefined(moving_parent))
         morigin = origin + (moving_parent.origin - moving_parent_start);
 
       should_be_slick = distance2dsquared(player.origin, morigin) < radius2 && abs(player.origin[2] - morigin[2]) < height;
-      is_slick = isdefined(slicked_players[num]);
+      is_slick = isDefined(slicked_players[num]);
 
       if(should_be_slick != is_slick) {
-        if(!isdefined(player.slick_count))
+        if(!isDefined(player.slick_count))
           player.slick_count = 0;
 
         if(should_be_slick) {
@@ -482,6 +487,7 @@ add_slippery_spot(origin, duration, startpos) {
           assert(player.slick_count >= 0);
           slicked_players[num] = undefined;
         }
+
         player forceslick(player.slick_count);
       }
 
@@ -490,13 +496,13 @@ add_slippery_spot(origin, duration, startpos) {
 
     zombies = get_round_enemy_array();
 
-    if(isdefined(zombies)) {
+    if(isDefined(zombies)) {
       foreach(zombie in zombies) {
-        if(isdefined(zombie)) {
+        if(isDefined(zombie)) {
           num = zombie getentitynumber();
           morigin = origin;
 
-          if(isdefined(moving_parent))
+          if(isDefined(moving_parent))
             morigin = origin + (moving_parent.origin - moving_parent_start);
 
           should_be_slick = distance2dsquared(zombie.origin, morigin) < radius2 && abs(zombie.origin[2] - morigin[2]) < height;
@@ -504,10 +510,10 @@ add_slippery_spot(origin, duration, startpos) {
           if(should_be_slick && !zombie zombie_can_slip())
             should_be_slick = 0;
 
-          is_slick = isdefined(slicked_zombies[num]);
+          is_slick = isDefined(slicked_zombies[num]);
 
           if(should_be_slick != is_slick) {
-            if(!isdefined(zombie.slick_count))
+            if(!isDefined(zombie.slick_count))
               zombie.slick_count = 0;
 
             if(should_be_slick) {
@@ -541,7 +547,7 @@ add_slippery_spot(origin, duration, startpos) {
   }
 
   foreach(zombie in slicked_zombies) {
-    if(isdefined(zombie)) {
+    if(isDefined(zombie)) {
       if(zombie.slick_count > 0)
         zombie.slick_count--;
 
@@ -561,14 +567,14 @@ pool_of_goo(origin, duration) {
     duration = effect_life;
   }
 
-  if(isdefined(level._effect["slipgun_splatter"]))
+  if(isDefined(level._effect["slipgun_splatter"]))
     playfx(level._effect["slipgun_splatter"], origin);
 
   wait(duration);
 }
 
 explode_into_goo(player, chain_depth) {
-  if(isdefined(self.marked_for_insta_upgraded_death)) {
+  if(isDefined(self.marked_for_insta_upgraded_death)) {
     return;
   }
   tag = "J_SpineLower";
@@ -579,7 +585,7 @@ explode_into_goo(player, chain_depth) {
   self.guts_explosion = 1;
   self playsound("wpn_slipgun_zombie_explode");
 
-  if(isdefined(level._effect["slipgun_explode"]))
+  if(isDefined(level._effect["slipgun_explode"]))
     playfx(level._effect["slipgun_explode"], self gettagorigin(tag));
 
   if(!is_true(self.isdog))
@@ -587,7 +593,7 @@ explode_into_goo(player, chain_depth) {
 
   self ghost();
 
-  if(!isdefined(self.goo_chain_depth))
+  if(!isDefined(self.goo_chain_depth))
     self.goo_chain_depth = chain_depth;
 
   chain_radius = level.zombie_vars["slipgun_chain_radius"];
@@ -606,14 +612,14 @@ explode_to_near_zombies(player, origin, radius, chain_depth) {
   tag = "J_Head";
   marked_zombies = [];
 
-  if(isdefined(enemies) && enemies.size) {
+  if(isDefined(enemies) && enemies.size) {
     index = 0;
 
-    for (enemy = enemies[index]; distancesquared(enemy.origin, origin) < rsquared; enemy = enemies[index]) {
-      if(isalive(enemy) && !is_true(enemy.guts_explosion) && !is_true(enemy.nuked) && !isdefined(enemy.slipgun_sizzle)) {
+    for(enemy = enemies[index]; distancesquared(enemy.origin, origin) < rsquared; enemy = enemies[index]) {
+      if(isalive(enemy) && !is_true(enemy.guts_explosion) && !is_true(enemy.nuked) && !isDefined(enemy.slipgun_sizzle)) {
         trace = bullettrace(origin + vectorscale((0, 0, 1), 50.0), enemy.origin + vectorscale((0, 0, 1), 50.0), 0, undefined, 1);
 
-        if(isdefined(trace["fraction"]) && trace["fraction"] == 1) {
+        if(isDefined(trace["fraction"]) && trace["fraction"] == 1) {
           enemy.slipgun_sizzle = playfxontag(level._effect["slipgun_simmer"], enemy, tag);
           marked_zombies[marked_zombies.size] = enemy;
         }
@@ -627,13 +633,13 @@ explode_to_near_zombies(player, origin, radius, chain_depth) {
     }
   }
 
-  if(isdefined(marked_zombies) && marked_zombies.size) {
+  if(isDefined(marked_zombies) && marked_zombies.size) {
     foreach(enemy in marked_zombies) {
       if(isalive(enemy) && !is_true(enemy.guts_explosion) && !is_true(enemy.nuked)) {
         wait(randomfloatrange(minchainwait, maxchainwait));
 
         if(isalive(enemy) && !is_true(enemy.guts_explosion) && !is_true(enemy.nuked)) {
-          if(!isdefined(enemy.goo_chain_depth))
+          if(!isDefined(enemy.goo_chain_depth))
             enemy.goo_chain_depth = chain_depth;
 
           if(enemy.health > 0) {
@@ -644,7 +650,7 @@ explode_to_near_zombies(player, origin, radius, chain_depth) {
           }
 
           if(level.slippery_spot_count < level.zombie_vars["slipgun_reslip_max_spots"]) {
-            if((!isdefined(enemy.slick_count) || enemy.slick_count == 0) && enemy.health <= 0) {
+            if((!isDefined(enemy.slick_count) || enemy.slick_count == 0) && enemy.health <= 0) {
               if(level.zombie_vars["slipgun_reslip_rate"] > 0 && randomint(level.zombie_vars["slipgun_reslip_rate"]) == 0) {
                 startpos = origin;
                 duration = 24;
@@ -666,7 +672,7 @@ slipgun_zombie_1st_hit_response(upgraded, player) {
   self.gibbed = 1;
 
   if(isalive(self)) {
-    if(!isdefined(self.goo_chain_depth))
+    if(!isDefined(self.goo_chain_depth))
       self.goo_chain_depth = 0;
 
     if(self.health > 0) {
@@ -686,7 +692,7 @@ slipgun_zombie_hit_response_internal(mod, damageweapon, player) {
   upgraded = damageweapon == "slipgun_upgraded_zm";
   self thread slipgun_zombie_1st_hit_response(upgraded, player);
 
-  if(isdefined(player) && isplayer(player))
+  if(isDefined(player) && isplayer(player))
     player thread slipgun_play_zombie_hit_vox();
 
   return true;
@@ -706,11 +712,11 @@ slipgun_zombie_death_response() {
 }
 
 is_slipgun_explosive_damage(mod, weapon) {
-  return isdefined(weapon) && (weapon == "slip_goo_zm" || weapon == "slip_bolt_zm" || weapon == "slip_bolt_upgraded_zm");
+  return isDefined(weapon) && (weapon == "slip_goo_zm" || weapon == "slip_bolt_zm" || weapon == "slip_bolt_upgraded_zm");
 }
 
 is_slipgun_damage(mod, weapon) {
-  return isdefined(weapon) && (weapon == "slipgun_zm" || weapon == "slipgun_upgraded_zm");
+  return isDefined(weapon) && (weapon == "slipgun_zm" || weapon == "slipgun_upgraded_zm");
 }
 
 slipgun_play_zombie_hit_vox() {

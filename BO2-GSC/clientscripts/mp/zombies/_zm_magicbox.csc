@@ -32,17 +32,17 @@ magicbox_leave_sounds_callback(localclientnum, oldval, newval, bnewent, binitial
 }
 
 magicbox_glow_callback(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump) {
-  if(!isdefined(self.glow_obj_array))
+  if(!isDefined(self.glow_obj_array))
     self.glow_obj_array = [];
 
-  if(newval && !isdefined(self.glow_obj_array[localclientnum])) {
+  if(newval && !isDefined(self.glow_obj_array[localclientnum])) {
     fx_obj = spawn(localclientnum, self.origin, "script_model");
     fx_obj setmodel("tag_origin");
     fx_obj.angles = vectortoangles(anglestoup(self.angles)) + vectorscale((1, 0, 0), 180.0);
     playfxontag(localclientnum, level._effect["chest_light"], fx_obj, "tag_origin");
     self.glow_obj_array[localclientnum] = fx_obj;
     self glow_obj_demo_jump_listener(localclientnum);
-  } else if(!newval && isdefined(self.glow_obj_array[localclientnum]))
+  } else if(!newval && isDefined(self.glow_obj_array[localclientnum]))
     self glow_obj_cleanup(localclientnum);
 }
 

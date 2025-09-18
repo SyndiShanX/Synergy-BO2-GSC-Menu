@@ -306,11 +306,9 @@ init_fog_vol_to_visionset() {
 }
 
 init_clientflag_variables() {
-
 }
 
 register_clientflag_callbacks() {
-
 }
 
 include_weapons() {
@@ -411,8 +409,9 @@ include_powerups() {
 }
 
 entityspawned_tomb(localclientnum) {
-  if(!isdefined(self.type)) {
+  if(!isDefined(self.type)) {
     println("Entity type undefined!");
+
     return;
   }
 
@@ -431,7 +430,7 @@ player_staff_charge_rumble(localclientnum, str_rumble) {
   delta_time = 0.1;
   n_max_time = 10.0;
 
-  while (true) {
+  while(true) {
     self playrumbleonentity(localclientnum, str_rumble);
     wait 0.1;
   }
@@ -455,12 +454,12 @@ player_staff_charge_level(localclientnum, oldval, newval, bnewent, binitialsnap,
       break;
   }
 
-  if(isdefined(str_rumble))
+  if(isDefined(str_rumble))
     self thread player_staff_charge_rumble(localclientnum, str_rumble);
 }
 
 staff_charger_init(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump) {
-  if(!isdefined(level.charger_origins))
+  if(!isDefined(level.charger_origins))
     level.charger_origins = [];
 
   if(newval != 0)
@@ -469,7 +468,7 @@ staff_charger_init(localclientnum, oldval, newval, bnewent, binitialsnap, fieldn
     keys = getarraykeys(level.charger_origins);
 
     foreach(i in keys) {
-      if(!isdefined(level.charger_origins[i])) {
+      if(!isDefined(level.charger_origins[i])) {
         continue;
       }
       if(distancesquared(level.charger_origins[i], self.origin) < 100)
@@ -483,13 +482,13 @@ zombie_soul_fx(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname,
   v_dest = undefined;
   closest_dist_sq = -1.0;
 
-  if(!isdefined(level.charger_origins))
+  if(!isDefined(level.charger_origins))
     level.charger_origins = [];
 
   foreach(v_charger in level.charger_origins) {
     dist_sq = distancesquared(self.origin, v_charger);
 
-    if(!isdefined(v_dest)) {
+    if(!isDefined(v_dest)) {
       closest_dist_sq = dist_sq;
       v_dest = v_charger;
       continue;
@@ -501,12 +500,12 @@ zombie_soul_fx(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname,
     }
   }
 
-  if(!isdefined(v_dest) || !isdefined(v_origin)) {
+  if(!isDefined(v_dest) || !isDefined(v_origin)) {
     return;
   }
   serverwait(localclientnum, 1.0);
 
-  if(isdefined(self))
+  if(isDefined(self))
     v_origin = self gettagorigin("J_SpineUpper");
 
   e_fx = spawn(localclientnum, v_origin, "script_model");
@@ -524,8 +523,8 @@ zombie_soul_fx(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname,
 magicbox_shader_cb(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump) {
   n_pieces = self zbarriergetnumpieces();
 
-  if(!isdefined(self.mapped_const)) {
-    for (i = 0; i < n_pieces; i++) {
+  if(!isDefined(self.mapped_const)) {
+    for(i = 0; i < n_pieces; i++) {
       e_piece = self zbarriergetpiece(i);
       e_piece mapshaderconstant(localclientnum, 1, "ScriptVector0");
     }
@@ -534,12 +533,12 @@ magicbox_shader_cb(localclientnum, oldval, newval, bnewent, binitialsnap, fieldn
   }
 
   if(newval) {
-    for (i = 0; i < n_pieces; i++) {
+    for(i = 0; i < n_pieces; i++) {
       e_piece = self zbarriergetpiece(i);
       e_piece setshaderconstant(localclientnum, 1, 0, 1, 0, 0);
     }
   } else {
-    for (i = 0; i < n_pieces; i++) {
+    for(i = 0; i < n_pieces; i++) {
       e_piece = self zbarriergetpiece(i);
       e_piece setshaderconstant(localclientnum, 1, 0, 0, 0, 0);
     }
@@ -559,8 +558,8 @@ angle_dif(oldangle, newangle) {
 }
 
 get_disc_color() {
-  for (i = 0; i < 5; i++) {
-    if(!isdefined(level.element_rotations[i])) {
+  for(i = 0; i < 5; i++) {
+    if(!isDefined(level.element_rotations[i])) {
       continue;
     }
     n_rotation = int(level.element_rotations[i]);
@@ -575,7 +574,7 @@ get_disc_color() {
 }
 
 central_crypt_disc_update_color(localclientnum, light_on) {
-  if(!isdefined(level.element_rotations)) {
+  if(!isDefined(level.element_rotations)) {
     level.element_rotations = [];
     level.element_rotations[2] = 270.0;
     level.element_rotations[1] = 180.0;
@@ -583,7 +582,7 @@ central_crypt_disc_update_color(localclientnum, light_on) {
     level.element_rotations[4] = 0.0;
   }
 
-  if(!isdefined(level.element_colors)) {
+  if(!isDefined(level.element_colors)) {
     level.element_colors = [];
     level.element_colors[0] = vectorscale((1, 1, 1), 0.1);
     level.element_colors[2] = (0.5, 0.5, 0.1);
@@ -595,9 +594,9 @@ central_crypt_disc_update_color(localclientnum, light_on) {
   n_color = self get_disc_color();
   v_color = level.element_colors[n_color];
 
-  if(isdefined(level.light_on_color) && light_on)
+  if(isDefined(level.light_on_color) && light_on)
     v_color = level.light_on_color;
-  else if(isdefined(level.light_off_color) && !light_on)
+  else if(isDefined(level.light_off_color) && !light_on)
     v_color = level.light_off_color;
   else if(light_on)
     v_color = v_color * 10;
@@ -616,7 +615,7 @@ init_central_crypt_disc(localclientnum, oldval, newval, bnewent, binitialsnap, f
 }
 
 switch_spark_fx(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump) {
-  if(isdefined(self.spark_fx)) {
+  if(isDefined(self.spark_fx)) {
     stopfx(localclientnum, self.spark_fx);
     self.spark_fx = undefined;
   }
@@ -635,14 +634,14 @@ switch_cooldown_fx(localclientnum, oldval, newval, bnewent, binitialsnap, fieldn
   else if(newval == 3)
     cooldown_struct = getstruct("cooldown_steam_3", "targetname");
 
-  if(isdefined(cooldown_struct))
+  if(isDefined(cooldown_struct))
     cooldown_struct thread loop_cooldown_fx(localclientnum);
 }
 
 loop_cooldown_fx(localclientnum) {
   level endon("stop_cooldown_fx");
 
-  while (true) {
+  while(true) {
     playfx(localclientnum, level._effect["perk_machine_steam"], self.origin);
     wait 0.1;
   }
@@ -695,7 +694,7 @@ stone_frozen_shader(localclientnum, oldval, newval, bnewent, binitialsnap, field
   if(newval) {
     self mapshaderconstant(localclientnum, 0, "ScriptVector3");
 
-    for (f = 0.0; f <= 1.0; f = f + 0.01) {
+    for(f = 0.0; f <= 1.0; f = f + 0.01) {
       self setshaderconstant(localclientnum, 0, f, f, f, f);
       serverwait(localclientnum, 0.0166);
     }
@@ -718,7 +717,7 @@ sky_pillar_fade(localclientnum, fade_in, fade_time) {
   num_steps = int(fade_time / frame_time);
   step_size = 1.0 / num_steps;
 
-  for (i = 0; i < num_steps; i++) {
+  for(i = 0; i < num_steps; i++) {
     pct = step_size * i;
 
     if(pct < 0.0)
@@ -738,12 +737,16 @@ sky_pillar_fx(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, 
     self thread sky_pillar_fade(localclientnum, 1, 1.0);
     playsound(0, "zmb_squest_crystal_sky_pillar_start", (3, 0, 218));
     soundlineemitter("zmb_squest_light_beam", (1, -14, -685), (-8, 5, 530));
+
     println("Sky Pillar Fading In");
+
   } else {
     self thread sky_pillar_fade(localclientnum, 0, 4.0);
     playsound(0, "zmb_squest_crystal_sky_pillar_stop", (3, 0, 218));
     soundstoplineemitter("zmb_squest_light_beam", (1, -14, -685), (-8, 5, 530));
+
     println("Sky Pillar Fading Out");
+
   }
 }
 
@@ -773,15 +776,15 @@ player_rumble_and_shake(localclientnum, oldval, newval, bnewent, binitialsnap, f
 }
 
 player_continuous_rumble(localclientnum, rumble_level, shake_camera) {
-  if(!isdefined(shake_camera))
+  if(!isDefined(shake_camera))
     shake_camera = 1;
 
   self notify("stop_rumble_and_shake");
   self endon("disconnect");
   self endon("stop_rumble_and_shake");
 
-  while (true) {
-    if(isdefined(self) && self islocalplayer() && isdefined(self)) {
+  while(true) {
+    if(isDefined(self) && self islocalplayer() && isDefined(self)) {
       if(rumble_level == 1) {
         if(shake_camera)
           self earthquake(0.2, 1.0, self.origin, 100);
@@ -826,10 +829,10 @@ lantern_fx_enable(localclientnumber) {
 }
 
 lantern_fx_disable(localclientnumber) {
-  if(!isdefined(self.a_fx))
+  if(!isDefined(self.a_fx))
     self.a_fx = [];
 
-  if(isdefined(self.a_fx[localclientnumber]))
+  if(isDefined(self.a_fx[localclientnumber]))
     deletefx(localclientnumber, self.a_fx[localclientnumber], 1);
 }
 
@@ -842,7 +845,7 @@ set_level_snow(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname,
 }
 
 set_player_snow(localclientnum) {
-  if(!isdefined(level.sndweather))
+  if(!isDefined(level.sndweather))
     level thread clientscripts\mp\zm_tomb_amb::sndweathersetup();
 
   if(level.weather_snow == 0) {
@@ -857,10 +860,10 @@ set_player_snow(localclientnum) {
 }
 
 set_player_rain(localclientnum) {
-  if(!isdefined(level.sndweather))
+  if(!isDefined(level.sndweather))
     level thread clientscripts\mp\zm_tomb_amb::sndweathersetup();
 
-  if(!isdefined(self.b_lightning))
+  if(!isDefined(self.b_lightning))
     self.b_lightning = 0;
 
   if(level.weather_rain == 0) {
@@ -884,7 +887,7 @@ set_player_weather_visionset(localclientnum, oldval, newval, bnewent, binitialsn
   if(bnewent || binitialsnap || bwasdemojump)
     n_suncolor_lerp_time = 0.0;
 
-  if(isdefined(self)) {
+  if(isDefined(self)) {
     self set_player_rain(localclientnum);
     self set_player_snow(localclientnum);
   }
@@ -943,7 +946,7 @@ lerp_suncolor_dvar(localclientnum, src_suncolor, tgt_suncolor, n_lerp_time) {
       suncolor_b_curr_val = lerpfloat(a_src_suncolor[2], a_tgt_suncolor[2], n_time_delta / n_lerp_time);
       setsaveddvar("r_lightTweakSunColor", "" + suncolor_r_curr_val + " " + suncolor_g_curr_val + " " + suncolor_b_curr_val);
     }
-    while (n_time_delta < n_lerp_time);
+    while(n_time_delta < n_lerp_time);
   }
 
   setsaveddvar("r_lightTweakSunColor", "" + a_tgt_suncolor[0] + " " + a_tgt_suncolor[1] + " " + a_tgt_suncolor[2]);
@@ -961,7 +964,7 @@ sndupdateroomweather() {
   wait 0.1;
   name = level.activeambientpackage;
 
-  if(isdefined(level.sndambweathernames) && isinarray(level.sndambweathernames, name)) {
+  if(isDefined(level.sndambweathernames) && isinarray(level.sndambweathernames, name)) {
     playsound(0, "amb_thunder_flash_2d", (0, 0, 0));
     stoploopsound(0, level.ambientrooms[name].ent, level.ambientrooms[name].fadeout);
     wait 0.5;
@@ -981,8 +984,8 @@ _rain_thread(n_level, localclientnum) {
   if(n_wait < 0.15)
     n_wait = 0.15;
 
-  while (true) {
-    if(!isdefined(self)) {
+  while(true) {
+    if(!isDefined(self)) {
       return;
     }
     playfx(localclientnum, level._effect["player_rain"], self.origin);
@@ -1000,8 +1003,8 @@ _snow_thread(n_level, localclientnum) {
   n_wait = 0.5 / n_level;
   self.b_lightning = 0;
 
-  while (true) {
-    if(!isdefined(self)) {
+  while(true) {
+    if(!isDefined(self)) {
       return;
     }
     playfx(localclientnum, level._effect["player_snow"], self.origin);
@@ -1020,10 +1023,10 @@ _lightning_thread(localclientnum) {
   level notify("_lightning_thread" + localclientnum);
   level endon("_lightning_thread" + localclientnum);
 
-  if(isdefined(localclientnum)) {
+  if(isDefined(localclientnum)) {
     self waittill_dobj(localclientnum);
 
-    while (is_true(self.b_lightning)) {
+    while(is_true(self.b_lightning)) {
       v_p_angles = self.angles;
       v_forward = anglestoforward(self.angles) * 25000;
       v_end_pos = self.origin + (v_forward[0], v_forward[1], 0);
@@ -1035,7 +1038,7 @@ _lightning_thread(localclientnum) {
       self thread _lightning_disconnect_thread(localclientnum);
       n_strikes = randomintrange(3, 5);
 
-      for (i = 0; i < n_strikes; i++) {
+      for(i = 0; i < n_strikes; i++) {
         serverwait(localclientnum, 0.1);
         n_blend_time = randomfloatrange(0.1, 0.35);
         playsound(0, "amb_thunder_flash_zm", v_end_pos);
@@ -1071,7 +1074,7 @@ lerp_dvar(str_dvar, n_val, n_lerp_time, b_saved_dvar, localclientnum) {
 
     setdvar(str_dvar, n_curr_val);
   }
-  while (n_time_delta < n_lerp_time);
+  while(n_time_delta < n_lerp_time);
 
   if(is_true(b_saved_dvar))
     setsaveddvar(str_dvar, n_val);
@@ -1080,7 +1083,6 @@ lerp_dvar(str_dvar, n_val, n_lerp_time, b_saved_dvar, localclientnum) {
 }
 
 player_tablet_state(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump) {
-
 }
 
 foot_print_box_fx(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump) {
@@ -1102,24 +1104,24 @@ foot_print_box_glow(localclientnum, oldval, newval, bnewent, binitialsnap, field
   self waittill_dobj(localclientnum);
 
   if(newval == 1) {
-    if(!isdefined(self.fx_glow)) {
+    if(!isDefined(self.fx_glow)) {
       self.fx_glow = playfxontag(localclientnum, level._effect["foot_box_glow"], self, "tag_origin");
       self thread foot_print_box_glow_in(localclientnum);
     }
 
-    if(!isdefined(self.sndent)) {
+    if(!isDefined(self.sndent)) {
       self.sndent = spawn(0, self.origin, "script_origin");
       self.sndent playloopsound("zmb_footprintbox_glow_lp", 1);
       self.sndent thread snddemojumpmonitor();
     }
   } else {
-    if(isdefined(self.fx_glow)) {
+    if(isDefined(self.fx_glow)) {
       stopfx(localclientnum, self.fx_glow);
       self.fx_glow = undefined;
       self thread foot_print_box_glow_out(localclientnum);
     }
 
-    if(isdefined(self.sndent)) {
+    if(isDefined(self.sndent)) {
       self.sndent delete();
       self.sndent = undefined;
     }
@@ -1144,7 +1146,7 @@ foot_print_box_glow_in(localclientnum) {
     n_delta_val = lerpfloat(1, 0, n_current_time / n_phase_in);
     self setshaderconstant(localclientnum, 0, n_delta_val, 0, 0, 0);
   }
-  while (n_current_time < n_phase_in);
+  while(n_current_time < n_phase_in);
 }
 
 foot_print_box_glow_out(localclientnum) {
@@ -1159,11 +1161,11 @@ foot_print_box_glow_out(localclientnum) {
     n_delta_val = lerpfloat(0, 1, n_current_time / n_phase_in);
     self setshaderconstant(localclientnum, 0, n_delta_val, 0, 0, 0);
   }
-  while (n_current_time < n_phase_in);
+  while(n_current_time < n_phase_in);
 }
 
 timer_increment_loop(localclientnum) {
-  while (isdefined(self)) {
+  while(isDefined(self)) {
     serverwait(localclientnum, 0.016);
     self.n_time_current = self.n_time_current + 0.016;
   }
@@ -1190,7 +1192,7 @@ reset_timer() {
 
 zm_tomb_zombie_eyes_think(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump) {
   if(newval) {
-    if(isdefined(self) && isdefined(self._aitype) && self._aitype == "zm_tomb_basic_crusader") {
+    if(isDefined(self) && isDefined(self._aitype) && self._aitype == "zm_tomb_basic_crusader") {
       self._eyeglow_fx_override = level._effect["eye_glow_blue"];
       self deletezombieeyes(localclientnum);
       self createzombieeyes(localclientnum);

@@ -164,7 +164,6 @@ main_quest_init() {
 }
 
 onplayerconnect() {
-
 }
 
 player_disconnect_callback(player) {
@@ -188,7 +187,7 @@ chambers_init() {
 }
 
 monitor_chamber_death_trigs() {
-  while (true) {
+  while(true) {
     self waittill("trigger", ent);
 
     if(isplayer(ent))
@@ -254,15 +253,15 @@ run_gramophone_teleporter(str_vinyl_record) {
   str_craftablename = "gramophone";
   t_gramophone set_unitrigger_hint_string(&"ZM_TOMB_RU");
 
-  while (!self.has_vinyl)
+  while(!self.has_vinyl)
     wait 0.05;
 
   t_gramophone set_unitrigger_hint_string(&"ZM_TOMB_PLGR");
 
-  while (true) {
+  while(true) {
     t_gramophone waittill("trigger", player);
 
-    if(!isdefined(self.gramophone_model)) {
+    if(!isDefined(self.gramophone_model)) {
       if(!flag("gramophone_placed")) {
         self.gramophone_model = spawn("script_model", self.origin);
         self.gramophone_model.angles = self.angles;
@@ -280,7 +279,7 @@ run_gramophone_teleporter(str_vinyl_record) {
         t_gramophone trigger_on();
         t_gramophone set_unitrigger_hint_string(&"ZM_TOMB_PUGR");
 
-        if(isdefined(self.script_flag))
+        if(isDefined(self.script_flag))
           flag_set(self.script_flag);
       } else
         player door_gramophone_elsewhere_hint();
@@ -302,7 +301,7 @@ door_watch_open_sesame() {
   level.b_open_all_gramophone_doors = 1;
   wait 0.5;
 
-  if(isdefined(self.trigger))
+  if(isDefined(self.trigger))
     self.trigger notify("trigger", getplayers()[0]);
 }
 
@@ -320,17 +319,17 @@ run_gramophone_door(str_vinyl_record) {
   t_door set_unitrigger_hint_string(&"ZM_TOMB_RU");
   trig_position.trigger = t_door;
 
-  while (!trig_position.has_vinyl)
+  while(!trig_position.has_vinyl)
     wait 0.05;
 
   t_door set_unitrigger_hint_string(&"ZM_TOMB_PLGR");
 
-  while (true) {
+  while(true) {
     t_door waittill("trigger", player);
 
-    if(!isdefined(trig_position.gramophone_model)) {
-      if(!flag("gramophone_placed") || isdefined(level.b_open_all_gramophone_doors) && level.b_open_all_gramophone_doors) {
-        if(!(isdefined(level.b_open_all_gramophone_doors) && level.b_open_all_gramophone_doors)) {
+    if(!isDefined(trig_position.gramophone_model)) {
+      if(!flag("gramophone_placed") || isDefined(level.b_open_all_gramophone_doors) && level.b_open_all_gramophone_doors) {
+        if(!(isDefined(level.b_open_all_gramophone_doors) && level.b_open_all_gramophone_doors)) {
           trig_position.gramophone_model = spawn("script_model", trig_position.origin);
           trig_position.gramophone_model.angles = trig_position.angles;
           trig_position.gramophone_model setmodel("p6_zm_tm_gramophone");
@@ -346,7 +345,7 @@ run_gramophone_door(str_vinyl_record) {
         chamber_blocker();
         flag_set(self.targetname + "_opened");
 
-        if(isdefined(trig_position.script_flag))
+        if(isDefined(trig_position.script_flag))
           flag_set(trig_position.script_flag);
 
         level setclientfield("crypt_open_exploder", 1);
@@ -357,7 +356,7 @@ run_gramophone_door(str_vinyl_record) {
         t_door trigger_on();
         t_door set_unitrigger_hint_string(&"ZM_TOMB_PUGR");
 
-        if(isdefined(level.b_open_all_gramophone_doors) && level.b_open_all_gramophone_doors) {
+        if(isDefined(level.b_open_all_gramophone_doors) && level.b_open_all_gramophone_doors) {
           break;
         }
       } else
@@ -447,7 +446,7 @@ watch_for_player_pickup_staff() {
   self show();
   self.trigger trigger_on();
 
-  while (!staff_picked_up) {
+  while(!staff_picked_up) {
     self.trigger waittill("trigger", player);
     self notify("retrieved", player);
 
@@ -481,7 +480,7 @@ watch_for_player_pickup_staff() {
 watch_staff_ammo_reload() {
   self endon("disconnect");
 
-  while (true) {
+  while(true) {
     self waittill("zmb_max_ammo");
     a_weapons = self getweaponslistprimaries();
 
@@ -493,12 +492,12 @@ watch_staff_ammo_reload() {
 }
 
 rotate_forever(rotate_time) {
-  if(!isdefined(rotate_time))
+  if(!isDefined(rotate_time))
     rotate_time = 20.0;
 
   self endon("death");
 
-  while (true) {
+  while(true) {
     self rotateyaw(360, 20.0, 0.0, 0.0);
     self waittill("rotatedone");
   }
@@ -519,7 +518,7 @@ staff_crystal_wait_for_teleport(n_element_enum) {
   e_plinth.v_staff = (e_plinth.v_staff[0], e_plinth.v_staff[1], e_plinth.origin[2] + 15);
   e_plinth moveto(e_plinth.v_start, 0.05);
 
-  while (true) {
+  while(true) {
     level waittill("player_teleported", e_player, n_teleport_enum);
 
     if(n_teleport_enum == n_element_enum) {
@@ -533,10 +532,10 @@ staff_crystal_wait_for_teleport(n_element_enum) {
   dist_sq = 250000.0;
   lookat_time = 0.0;
 
-  while (lookat_time < 1.0 && isdefined(self.piecespawn.model)) {
+  while(lookat_time < 1.0 && isDefined(self.piecespawn.model)) {
     wait 0.1;
 
-    if(!isdefined(self.piecespawn.model)) {
+    if(!isDefined(self.piecespawn.model)) {
       break;
     }
 
@@ -546,7 +545,7 @@ staff_crystal_wait_for_teleport(n_element_enum) {
       lookat_time = 0.0;
   }
 
-  if(isdefined(self.piecespawn.model)) {
+  if(isDefined(self.piecespawn.model)) {
     self.piecespawn.model movez(985, 0.05);
     self.piecespawn.model waittill("movedone");
     self.piecespawn.model show();
@@ -557,7 +556,7 @@ staff_crystal_wait_for_teleport(n_element_enum) {
 
   flag_wait("charger_ready_" + n_element_enum);
 
-  while (!maps\mp\zm_tomb_chamber::is_chamber_occupied())
+  while(!maps\mp\zm_tomb_chamber::is_chamber_occupied())
     wait_network_frame();
 
   e_plinth moveto(e_plinth.v_staff, 3.0);
@@ -578,7 +577,7 @@ staff_mechz_drop_pieces(s_piece) {
   s_piece craftable_waittill_spawned();
   s_piece.piecespawn.model ghost();
 
-  for (i = 0; i < 1; i++)
+  for(i = 0; i < 1; i++)
     level waittill("mechz_killed", origin);
 
   s_piece.piecespawn.canmove = 1;
@@ -587,7 +586,7 @@ staff_mechz_drop_pieces(s_piece) {
   s_piece.piecespawn.model moveto(origin + vectorscale((0, 0, 1), 32.0), 0.05);
   s_piece.piecespawn.model waittill("movedone");
 
-  if(isdefined(s_piece.piecespawn.model)) {
+  if(isDefined(s_piece.piecespawn.model)) {
     s_piece.piecespawn.model show();
     s_piece.piecespawn.model notify("staff_piece_glow");
     s_piece.piecespawn.model thread mechz_staff_piece_failsafe();
@@ -599,7 +598,7 @@ mechz_staff_piece_failsafe() {
   self endon("death");
   wait 120.0;
 
-  while (true) {
+  while(true) {
     a_players = getplayers();
     b_anyone_near = 0;
 
@@ -626,10 +625,10 @@ biplane_clue() {
   self endon("death");
   level endon("biplane_down");
 
-  while (true) {
+  while(true) {
     cur_round = level.round_number;
 
-    while (level.round_number == cur_round)
+    while(level.round_number == cur_round)
       wait 1.0;
 
     wait(randomfloatrange(5.0, 15.0));
@@ -652,7 +651,7 @@ staff_biplane_drop_pieces(a_staff_pieces) {
   flag_wait("activate_zone_village_0");
   cur_round = level.round_number;
 
-  while (level.round_number == cur_round)
+  while(level.round_number == cur_round)
     wait 1.0;
 
   s_biplane_pos = getstruct("air_crystal_biplane_pos", "targetname");
@@ -705,10 +704,10 @@ aircrystalbiplanecallback_vehicledamage(e_inflictor, e_attacker, n_damage, n_dfl
 zone_capture_clue(str_zone) {
   level endon("staff_piece_capture_complete");
 
-  while (true) {
+  while(true) {
     wait 5.0;
 
-    while (!level.zones[str_zone].is_occupied)
+    while(!level.zones[str_zone].is_occupied)
       wait 1.0;
 
     a_players = getplayers();
@@ -723,15 +722,16 @@ staff_unlock_with_zone_capture(s_staff_piece) {
   s_staff_piece craftable_waittill_spawned();
   str_zone = maps\mp\zombies\_zm_zonemgr::get_zone_from_position(s_staff_piece.piecespawn.model.origin, 1);
 
-  if(!isdefined(str_zone)) {
+  if(!isDefined(str_zone)) {
     assertmsg("Zone capture staff piece is not in a zone.");
+
     return;
   }
 
   level thread zone_capture_clue(str_zone);
   s_staff_piece.piecespawn.model ghost();
 
-  while (true) {
+  while(true) {
     level waittill("zone_captured_by_player", str_captured_zone);
 
     if(str_captured_zone == str_zone) {
@@ -766,7 +766,7 @@ reward_staff_piece(player, s_stat) {
   a_players = getplayers();
   a_players = get_array_of_closest(self.m_box.origin, a_players);
 
-  if(isdefined(a_players[0]))
+  if(isDefined(a_players[0]))
     a_players[0] maps\mp\zombies\_zm_craftables::player_take_piece(self.s_staff_piece.piecespawn);
 
   m_piece delete();
@@ -778,7 +778,7 @@ dig_spot_get_staff_piece(e_player) {
   str_zone = self.str_zone;
 
   foreach(s_staff in level.ice_staff_pieces) {
-    if(!isdefined(s_staff.num_misses))
+    if(!isDefined(s_staff.num_misses))
       s_staff.num_misses = 0;
 
     if(issubstr(str_zone, s_staff.zone_substr)) {
@@ -886,7 +886,7 @@ place_staff_in_charger() {
   v_trigger_pos = self.charger.origin;
   v_trigger_pos = (v_trigger_pos[0], v_trigger_pos[1], v_trigger_pos[2] - 30.0);
 
-  if(isdefined(self.charge_trigger))
+  if(isDefined(self.charge_trigger))
     self.charge_trigger tomb_unitrigger_delete();
 
   self.charge_trigger = tomb_spawn_trigger_radius(v_trigger_pos, 120, 1, ::staff_charger_get_player_msg);
@@ -896,14 +896,14 @@ place_staff_in_charger() {
 }
 
 debug_staff_charge() {
-  if(!isdefined(self.charger.charges_received))
+  if(!isDefined(self.charger.charges_received))
     self.charger.charges_received = 0;
 
-  while (self.charger.is_inserted) {
+  while(self.charger.is_inserted) {
     if(self.charger.is_charged) {
       maxammo = weaponmaxammo(self.weapname);
 
-      if(!isdefined(self.prev_ammo_stock))
+      if(!isDefined(self.prev_ammo_stock))
         self.prev_ammo_stock = maxammo;
 
       print3d(self.origin, self.prev_ammo_stock + "/" + maxammo, vectorscale((1, 1, 1), 255.0), 1);
@@ -912,14 +912,15 @@ debug_staff_charge() {
 
     wait 0.05;
   }
+
 }
 
 waittill_staff_inserted() {
-  while (true) {
+  while(true) {
     self.charge_trigger waittill("trigger", player);
     weapon_available = 1;
 
-    if(isdefined(player)) {
+    if(isDefined(player)) {
       weapon_available = player hasweapon(self.weapname);
 
       if(weapon_available)
@@ -932,7 +933,7 @@ waittill_staff_inserted() {
       maps\mp\zm_tomb_craftables::clear_player_staff(self.weapname);
       self.charge_trigger trigger_off();
 
-      if(isdefined(self.charger.angles))
+      if(isDefined(self.charger.angles))
         self.angles = self.charger.angles;
 
       self moveto(self.charger.origin, 0.05);
@@ -969,11 +970,11 @@ zombie_killed_override(einflictor, attacker, idamage, smeansofdeath, sweapon, vd
     n_nearest_dist_sq = n_max_dist_sq;
 
     foreach(staff in level.a_elemental_staffs) {
-      if(isdefined(staff.charger.full) && staff.charger.full) {
+      if(isDefined(staff.charger.full) && staff.charger.full) {
         continue;
       }
       if(staff.charger.is_inserted || staff.upgrade.charger.is_inserted) {
-        if(!(isdefined(staff.charger.is_charged) && staff.charger.is_charged)) {
+        if(!(isDefined(staff.charger.is_charged) && staff.charger.is_charged)) {
           dist_sq = distance2dsquared(self.origin, staff.origin);
 
           if(dist_sq <= n_nearest_dist_sq) {
@@ -984,9 +985,8 @@ zombie_killed_override(einflictor, attacker, idamage, smeansofdeath, sweapon, vd
       }
     }
 
-    if(isdefined(s_nearest_staff)) {
+    if(isDefined(s_nearest_staff)) {
       if(s_nearest_staff.charger.is_charged) {
-
       } else {
         s_nearest_staff.charger.charges_received++;
         s_nearest_staff.charger thread zombie_soul_to_charger(self, s_nearest_staff.enum);
@@ -1007,7 +1007,7 @@ staff_charger_check() {
   self useweaponmodel(self.weapname);
   self showallparts();
 
-  while (true) {
+  while(true) {
     if(self.charger.charges_received >= 20 || getdvarint(#"_id_FA81816F") >= 2 && self.charger.is_inserted) {
       wait 0.5;
       self.charger.is_charged = 1;
@@ -1079,7 +1079,7 @@ spawn_upgraded_staff_triggers(n_index) {
   player = e_staff_standard_upgraded.owner;
   e_fx delete();
 
-  while (true) {
+  while(true) {
     if(e_staff_standard.charger.is_charged) {
       e_staff_standard_upgraded thread staff_upgraded_reload_monitor();
       break;
@@ -1093,7 +1093,7 @@ staff_upgraded_reload_monitor() {
   self.weaponname = self.weapname;
   self thread track_staff_weapon_respawn(self.owner);
 
-  while (true) {
+  while(true) {
     place_staff_in_charger();
     self thread staff_upgraded_reload();
     self watch_for_player_pickup_staff();
@@ -1102,7 +1102,7 @@ staff_upgraded_reload_monitor() {
     maxammo = weaponmaxammo(self.weapname);
     n_ammo = int(min(maxammo, self.prev_ammo_stock));
 
-    if(isdefined(self.owner)) {
+    if(isDefined(self.owner)) {
       self.owner setweaponammostock(self.weapname, n_ammo);
       self.owner setweaponammoclip(self.weapname, self.prev_ammo_clip);
       self thread track_staff_weapon_respawn(self.owner);
@@ -1116,7 +1116,7 @@ staff_upgraded_reload() {
   n_count = int(max_ammo / 20);
   b_reloaded = 0;
 
-  while (true) {
+  while(true) {
     self.charger waittill("soul_received");
     self.prev_ammo_stock = self.prev_ammo_stock + n_count;
 

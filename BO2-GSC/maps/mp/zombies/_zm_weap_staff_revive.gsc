@@ -21,7 +21,7 @@ onplayerconnect() {
 onplayerspawned() {
   self endon("disconnect");
 
-  while (true) {
+  while(true) {
     self waittill("spawned_player");
     self thread watch_staff_revive_fired();
   }
@@ -30,7 +30,7 @@ onplayerspawned() {
 watch_staff_revive_fired() {
   self endon("disconnect");
 
-  while (true) {
+  while(true) {
     self waittill("missile_fire", e_projectile, str_weapon);
 
     if(!(str_weapon == "staff_revive_zm")) {
@@ -58,7 +58,7 @@ staff_revive_impact(v_explode_point) {
       e_closest_player = e_player;
   }
 
-  if(isdefined(e_closest_player)) {
+  if(isDefined(e_closest_player)) {
     e_closest_player notify("remote_revive", self);
     e_closest_player playsoundtoplayer("wpn_revivestaff_revive_plr", e_player);
     self notify("revived_player_with_upgraded_staff");

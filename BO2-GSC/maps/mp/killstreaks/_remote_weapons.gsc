@@ -26,7 +26,7 @@ init() {
 }
 
 onplayerconnect() {
-  for (;;) {
+  for(;;) {
     level waittill("connected", player);
     player thread onplayerspawned();
   }
@@ -35,10 +35,10 @@ onplayerconnect() {
 onplayerspawned() {
   self endon("disconnect");
 
-  for (;;) {
+  for(;;) {
     self waittill("spawned_player");
 
-    if(isdefined(self.remotecontroltrigger)) {
+    if(isDefined(self.remotecontroltrigger)) {
       self.remotecontroltrigger.origin = self.origin;
       self.remotecontroltrigger linkto(self);
     }
@@ -50,7 +50,7 @@ initremoteweapon(weapon, weaponname) {
   weapon.remotename = weaponname;
   weapon thread watchfindremoteweapon(self);
 
-  if(isdefined(self.remoteweapon)) {
+  if(isDefined(self.remoteweapon)) {
     if(!isusingremote())
       self notify("remove_remote_weapon", 1);
   } else
@@ -58,12 +58,12 @@ initremoteweapon(weapon, weaponname) {
 }
 
 setactiveremotecontrolledweapon(weapon) {
-  assert(!isdefined(self.remoteweapon), "Trying to activate remote weapon without cleaning up the current one");
+  assert(!isDefined(self.remoteweapon), "Trying to activate remote weapon without cleaning up the current one");
 
-  if(isdefined(self.remoteweapon)) {
+  if(isDefined(self.remoteweapon)) {
     return;
   }
-  while (!isalive(self))
+  while(!isalive(self))
     wait 0.05;
 
   self notify("set_active_remote_weapon");
@@ -78,7 +78,7 @@ watchfindremoteweapon(player) {
   self endon("removed_on_death");
   self endon("death");
 
-  while (true) {
+  while(true) {
     player waittill("find_remote_weapon");
     player notify("remote_weapon_ping", self);
   }
@@ -92,10 +92,10 @@ watchremoteweaponpings() {
   self.remoteweaponqueue = [];
   self thread collectweaponpings();
 
-  while (true) {
+  while(true) {
     self waittill("remote_weapon_ping", weapon);
 
-    if(isdefined(weapon))
+    if(isDefined(weapon))
       self.remoteweaponqueue[self.remoteweaponqueue.size] = weapon;
   }
 }
@@ -107,31 +107,31 @@ collectweaponpings() {
   self waittill("remote_weapon_ping");
   wait 0.1;
 
-  while (!isalive(self))
+  while(!isalive(self))
     wait 0.05;
 
-  if(isdefined(self)) {
-    assert(isdefined(self.remoteweaponqueue));
+  if(isDefined(self)) {
+    assert(isDefined(self.remoteweaponqueue));
     best_weapon = undefined;
 
     foreach(weapon in self.remoteweaponqueue) {
-      if(isdefined(weapon) && isalive(weapon)) {
-        if(!isdefined(best_weapon) || best_weapon.inittime < weapon.inittime)
+      if(isDefined(weapon) && isalive(weapon)) {
+        if(!isDefined(best_weapon) || best_weapon.inittime < weapon.inittime)
           best_weapon = weapon;
       }
     }
 
-    if(isdefined(best_weapon))
+    if(isDefined(best_weapon))
       self thread setactiveremotecontrolledweapon(best_weapon);
   }
 }
 
 watchremotecontrolledweapondeath() {
   self endon("remove_remote_weapon");
-  assert(isdefined(self.remoteweapon));
+  assert(isDefined(self.remoteweapon));
   self.remoteweapon waittill("death");
 
-  if(isdefined(self))
+  if(isDefined(self))
     self notify("remove_remote_weapon", 1);
 }
 
@@ -140,7 +140,7 @@ watchremoveremotecontrolledweapon(weaponname) {
   self waittill("remove_remote_weapon", trytoreplace);
   self removeremotecontrolledweapon(weaponname);
 
-  while (isdefined(self.remoteweapon))
+  while(isDefined(self.remoteweapon))
     wait 0.05;
 
   if(trytoreplace == 1)
@@ -194,13 +194,13 @@ watchremotetriggeruse(weaponname) {
   if(self is_bot()) {
     return;
   }
-  while (true) {
+  while(true) {
     self.remotecontroltrigger waittill("trigger", player);
 
     if(self isusingoffhand()) {
       continue;
     }
-    if(isdefined(self.remoteweapon) && isdefined(self.remoteweapon.hackertrigger) && isdefined(self.remoteweapon.hackertrigger.progressbar)) {
+    if(isDefined(self.remoteweapon) && isDefined(self.remoteweapon.hackertrigger) && isDefined(self.remoteweapon.hackertrigger.progressbar)) {
       if(weaponname == "killstreak_remote_turret_mp")
         self iprintlnbold(&"KILLSTREAK_AUTO_TURRET_NOT_AVAILABLE");
 
@@ -217,7 +217,7 @@ useremotecontrolweapon(weaponname, allowexit) {
   self giveweapon(weaponname);
   self switchtoweapon(weaponname);
 
-  if(!isdefined(allowexit))
+  if(!isDefined(allowexit))
     allowexit = 1;
 
   self thread maps\mp\killstreaks\_killstreaks::watchforemoveremoteweapon();
@@ -243,7 +243,7 @@ useremotecontrolweapon(weaponname, allowexit) {
     self.remoteweapon.killcament = self;
     self.remoteweapon notify("remote_start");
 
-    if(!isdefined(allowexit) || allowexit)
+    if(!isDefined(allowexit) || allowexit)
       self thread watchremotecontroldeactivate(weaponname);
 
     self thread[[level.remoteweapons[weaponname].usecallback]](self.remoteweapon);
@@ -251,7 +251,7 @@ useremotecontrolweapon(weaponname, allowexit) {
 }
 
 createremotecontrolactionprompthud() {
-  if(!isdefined(self.hud_prompt_exit))
+  if(!isDefined(self.hud_prompt_exit))
     self.hud_prompt_exit = newclienthudelem(self);
 
   self.hud_prompt_exit.alignx = "left";
@@ -268,7 +268,7 @@ createremotecontrolactionprompthud() {
 }
 
 destroyremotecontrolactionprompthud() {
-  if(isdefined(self) && isdefined(self.hud_prompt_exit))
+  if(isDefined(self) && isDefined(self.hud_prompt_exit))
     self.hud_prompt_exit destroy();
 }
 
@@ -278,10 +278,10 @@ watchremotecontroldeactivate(weaponname) {
   self.remoteweapon endon("remote_start");
   wait 1;
 
-  while (true) {
+  while(true) {
     timeused = 0;
 
-    while (self usebuttonpressed()) {
+    while(self usebuttonpressed()) {
       timeused = timeused + 0.05;
 
       if(timeused > 0.25) {
@@ -297,7 +297,7 @@ watchremotecontroldeactivate(weaponname) {
 }
 
 endremotecontrolweaponuse(weaponname) {
-  if(isdefined(self.hud_prompt_exit))
+  if(isDefined(self.hud_prompt_exit))
     self.hud_prompt_exit settext("");
 
   self[[level.remoteweapons[weaponname].endusecallback]](self.remoteweapon);
@@ -316,8 +316,8 @@ fadeouttoblack(isdead) {
 }
 
 baseendremotecontrolweaponuse(weaponname, isdead) {
-  if(isdefined(self)) {
-    if(isdead && isdefined(self.remoteweapon) && !isdefined(self.remoteweapon.skipfutz)) {
+  if(isDefined(self)) {
+    if(isdead && isDefined(self.remoteweapon) && !isDefined(self.remoteweapon.skipfutz)) {
       self thread fadeouttoblack(1);
       wait 1;
     } else
@@ -327,7 +327,7 @@ baseendremotecontrolweaponuse(weaponname, isdead) {
     self takeweapon(weaponname);
   }
 
-  if(isdefined(self.remoteweapon)) {
+  if(isDefined(self.remoteweapon)) {
     if(isdead)
       self.remoteweapon.wascontrollednowdead = self.remoteweapon.controlled;
 
@@ -339,11 +339,11 @@ baseendremotecontrolweaponuse(weaponname, isdead) {
     self destroyremotehud();
     self clientnotify("nofutz");
 
-    if(isdefined(level.gameended) && level.gameended)
+    if(isDefined(level.gameended) && level.gameended)
       self freezecontrolswrapper(1);
   }
 
-  if(isdefined(self.hud_prompt_exit))
+  if(isDefined(self.hud_prompt_exit))
     self.hud_prompt_exit settext("");
 
   self notify("remove_remote_weapon", 1);
@@ -353,49 +353,49 @@ destroyremotehud() {
   self useservervisionset(0);
   self setinfraredvision(0);
 
-  if(isdefined(self.fullscreen_static))
+  if(isDefined(self.fullscreen_static))
     self.fullscreen_static destroy();
 
-  if(isdefined(self.remote_hud_reticle))
+  if(isDefined(self.remote_hud_reticle))
     self.remote_hud_reticle destroy();
 
-  if(isdefined(self.remote_hud_bracket_right))
+  if(isDefined(self.remote_hud_bracket_right))
     self.remote_hud_bracket_right destroy();
 
-  if(isdefined(self.remote_hud_bracket_left))
+  if(isDefined(self.remote_hud_bracket_left))
     self.remote_hud_bracket_left destroy();
 
-  if(isdefined(self.remote_hud_arrow_right))
+  if(isDefined(self.remote_hud_arrow_right))
     self.remote_hud_arrow_right destroy();
 
-  if(isdefined(self.remote_hud_arrow_left))
+  if(isDefined(self.remote_hud_arrow_left))
     self.remote_hud_arrow_left destroy();
 
-  if(isdefined(self.tank_rocket_1))
+  if(isDefined(self.tank_rocket_1))
     self.tank_rocket_1 destroy();
 
-  if(isdefined(self.tank_rocket_2))
+  if(isDefined(self.tank_rocket_2))
     self.tank_rocket_2 destroy();
 
-  if(isdefined(self.tank_rocket_3))
+  if(isDefined(self.tank_rocket_3))
     self.tank_rocket_3 destroy();
 
-  if(isdefined(self.tank_rocket_hint))
+  if(isDefined(self.tank_rocket_hint))
     self.tank_rocket_hint destroy();
 
-  if(isdefined(self.tank_mg_bar))
+  if(isDefined(self.tank_mg_bar))
     self.tank_mg_bar destroy();
 
-  if(isdefined(self.tank_mg_arrow))
+  if(isDefined(self.tank_mg_arrow))
     self.tank_mg_arrow destroy();
 
-  if(isdefined(self.tank_mg_hint))
+  if(isDefined(self.tank_mg_hint))
     self.tank_mg_hint destroy();
 
-  if(isdefined(self.tank_fullscreen_effect))
+  if(isDefined(self.tank_fullscreen_effect))
     self.tank_fullscreen_effect destroy();
 
-  if(isdefined(self.hud_prompt_exit))
+  if(isDefined(self.hud_prompt_exit))
     self.hud_prompt_exit destroy();
 }
 
@@ -405,7 +405,7 @@ stunstaticfx(duration) {
   wait(duration - 0.5);
   time = duration - 0.5;
 
-  while (time < duration) {
+  while(time < duration) {
     wait 0.05;
     time = time + 0.05;
     self.fullscreen_static.alpha = self.fullscreen_static.alpha - 0.05;

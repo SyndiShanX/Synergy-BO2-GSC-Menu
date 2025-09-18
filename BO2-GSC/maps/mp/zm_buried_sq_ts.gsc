@@ -27,20 +27,20 @@ init_stage() {
 
 stage_logic() {
   iprintlnbold("TS Started");
+
   level waittill("sq_sign_damaged");
   wait_network_frame();
   stage_completed("sq", level._cur_stage_name);
 }
 
 exit_stage(success) {
-
 }
 
 ts_sign_damage_watch() {
   level endon("sq_sign_damaged");
   self ts_sign_deactivate();
 
-  while (true) {
+  while(true) {
     self waittill("damage", n_damage, e_attacker, v_direction, v_point, str_type, str_tag, str_model, str_part, str_weapon);
 
     if(flag("sq_ts_quicktest")) {
@@ -63,7 +63,7 @@ ts_sign_damage_watch() {
 ts_sign_activate() {
   self.ts_sign_activated = 1;
 
-  if(!isdefined(self.fx_ent)) {
+  if(!isDefined(self.fx_ent)) {
     v_forward = anglestoforward(self.angles);
     v_offset = vectornormalize(v_forward) * 2;
     self.fx_ent = spawn("script_model", self.origin - vectorscale((0, 0, 1), 20.0) + v_offset);
@@ -72,7 +72,7 @@ ts_sign_activate() {
     self.fx_ent playsound("zmb_sq_wisp_spawn");
     self.fx_ent playloopsound("zmb_sq_wisp_wall_loop");
 
-    while (isdefined(self.fx_ent)) {
+    while(isDefined(self.fx_ent)) {
       playfxontag(level._effect["sq_ether_amp_trail"], self.fx_ent, "tag_origin");
       wait 0.3;
     }
@@ -82,7 +82,7 @@ ts_sign_activate() {
 ts_sign_deactivate() {
   self.ts_sign_activated = 0;
 
-  if(isdefined(self.fx_ent)) {
+  if(isDefined(self.fx_ent)) {
     self.fx_ent stoploopsound(2);
     self.fx_ent delete();
   }

@@ -11,20 +11,21 @@
 #include maps\mp\zombies\_zm_ai_basic;
 
 init() {
-  if(!isdefined(level.powered_items))
+  if(!isDefined(level.powered_items))
     level.powered_items = [];
 
-  if(!isdefined(level.local_power))
+  if(!isDefined(level.local_power))
     level.local_power = [];
 
   thread standard_powered_items();
+
   thread debug_powered_items();
 }
 
 debug_powered_items() {
-  while (true) {
+  while(true) {
     if(getdvarint(#"_id_EB512CB7")) {
-      if(isdefined(level.local_power)) {
+      if(isDefined(level.local_power)) {
         foreach(localpower in level.local_power)
         circle(localpower.origin, localpower.radius, (1, 0, 0), 0, 1, 1);
       }
@@ -32,10 +33,11 @@ debug_powered_items() {
 
     wait 0.05;
   }
+
 }
 
 watch_global_power() {
-  while (true) {
+  while(true) {
     flag_wait("power_on");
     level thread set_global_power(1);
     flag_waitopen("power_on");
@@ -65,15 +67,15 @@ standard_powered_items() {
   zombie_doors = getentarray("zombie_door", "targetname");
 
   foreach(door in zombie_doors) {
-    if(isdefined(door.script_noteworthy) && door.script_noteworthy == "electric_door") {
+    if(isDefined(door.script_noteworthy) && door.script_noteworthy == "electric_door") {
       add_powered_item(::door_power_on, ::door_power_off, ::door_range, ::cost_door, 0, 0, door);
       continue;
     }
 
-    if(isdefined(door.script_noteworthy) && door.script_noteworthy == "local_electric_door") {
+    if(isDefined(door.script_noteworthy) && door.script_noteworthy == "local_electric_door") {
       power_sources = 0;
 
-      if(!(isdefined(level.power_local_doors_globally) && level.power_local_doors_globally))
+      if(!(isDefined(level.power_local_doors_globally) && level.power_local_doors_globally))
         power_sources = 1;
 
       add_powered_item(::door_local_power_on, ::door_local_power_off, ::door_range, ::cost_door, power_sources, 0, door);
@@ -96,7 +98,7 @@ add_powered_item(power_on_func, power_off_func, range_func, cost_func, power_sou
   powered.powered_count = self_powered;
   powered.depowered_count = 0;
 
-  if(!isdefined(level.powered_items))
+  if(!isDefined(level.powered_items))
     level.powered_items = [];
 
   level.powered_items[level.powered_items.size] = powered;
@@ -110,12 +112,12 @@ remove_powered_item(powered) {
 add_temp_powered_item(power_on_func, power_off_func, range_func, cost_func, power_sources, self_powered, target) {
   powered = add_powered_item(power_on_func, power_off_func, range_func, cost_func, power_sources, self_powered, target);
 
-  if(isdefined(level.local_power)) {
+  if(isDefined(level.local_power)) {
     foreach(localpower in level.local_power) {
       if(powered[[powered.range_func]](1, localpower.origin, localpower.radius)) {
         powered change_power(1, localpower.origin, localpower.radius);
 
-        if(!isdefined(localpower.added_list))
+        if(!isDefined(localpower.added_list))
           localpower.added_list = [];
 
         localpower.added_list[localpower.added_list.size] = powered;
@@ -131,12 +133,12 @@ watch_temp_powered_item(powered) {
   powered.target waittill("death");
   remove_powered_item(powered);
 
-  if(isdefined(level.local_power)) {
+  if(isDefined(level.local_power)) {
     foreach(localpower in level.local_power) {
-      if(isdefined(localpower.added_list))
+      if(isDefined(localpower.added_list))
         arrayremovevalue(localpower.added_list, powered, 0);
 
-      if(isdefined(localpower.enabled_list))
+      if(isDefined(localpower.enabled_list))
         arrayremovevalue(localpower.enabled_list, powered, 0);
     }
   }
@@ -145,7 +147,7 @@ watch_temp_powered_item(powered) {
 change_power_in_radius(delta, origin, radius) {
   changed_list = [];
 
-  for (i = 0; i < level.powered_items.size; i++) {
+  for(i = 0; i < level.powered_items.size; i++) {
     powered = level.powered_items[i];
 
     if(powered.power_sources != 2) {
@@ -178,7 +180,7 @@ change_power(delta, origin, radius) {
 }
 
 revert_power_to_list(delta, origin, radius, powered_list) {
-  for (i = 0; i < powered_list.size; i++) {
+  for(i = 0; i < powered_list.size; i++) {
     powered = powered_list[i];
     powered revert_power(delta, origin, radius);
   }
@@ -206,12 +208,14 @@ revert_power(delta, origin, radius, powered_list) {
 
 add_local_power(origin, radius) {
   localpower = spawnstruct();
+
   println("ZM POWER: local power on at " + origin + " radius " + radius + "\\n");
+
   localpower.origin = origin;
   localpower.radius = radius;
   localpower.enabled_list = change_power_in_radius(1, origin, radius);
 
-  if(!isdefined(level.local_power))
+  if(!isDefined(level.local_power))
     level.local_power = [];
 
   level.local_power[level.local_power.size] = localpower;
@@ -221,7 +225,7 @@ add_local_power(origin, radius) {
 move_local_power(localpower, origin) {
   changed_list = [];
 
-  for (i = 0; i < level.powered_items.size; i++) {
+  for(i = 0; i < level.powered_items.size; i++) {
     powered = level.powered_items[i];
 
     if(powered.power_sources == 2) {
@@ -249,12 +253,12 @@ move_local_power(localpower, origin) {
 end_local_power(localpower) {
   println("ZM POWER: local power off at " + localpower.origin + " radius " + localpower.radius + "\\n");
 
-  if(isdefined(localpower.enabled_list))
+  if(isDefined(localpower.enabled_list))
     revert_power_to_list(-1, localpower.origin, localpower.radius, localpower.enabled_list);
 
   localpower.enabled_list = undefined;
 
-  if(isdefined(localpower.added_list))
+  if(isDefined(localpower.added_list))
     revert_power_to_list(-1, localpower.origin, localpower.radius, localpower.added_list);
 
   localpower.added_list = undefined;
@@ -262,7 +266,7 @@ end_local_power(localpower) {
 }
 
 has_local_power(origin) {
-  if(isdefined(level.local_power)) {
+  if(isDefined(level.local_power)) {
     foreach(localpower in level.local_power) {
       if(distancesquared(localpower.origin, origin) < localpower.radius * localpower.radius)
         return true;
@@ -273,10 +277,10 @@ has_local_power(origin) {
 }
 
 get_powered_item_cost() {
-  if(!(isdefined(self.power) && self.power))
+  if(!(isDefined(self.power) && self.power))
     return 0;
 
-  if(isdefined(level._power_global) && level._power_global && !(self.power_sources == 1))
+  if(isDefined(level._power_global) && level._power_global && !(self.power_sources == 1))
     return 0;
 
   cost = [[self.cost_func]]();
@@ -291,12 +295,12 @@ get_powered_item_cost() {
 get_local_power_cost(localpower) {
   cost = 0;
 
-  if(isdefined(localpower) && isdefined(localpower.enabled_list)) {
+  if(isDefined(localpower) && isDefined(localpower.enabled_list)) {
     foreach(powered in localpower.enabled_list)
     cost = cost + powered get_powered_item_cost();
   }
 
-  if(isdefined(localpower) && isdefined(localpower.added_list)) {
+  if(isDefined(localpower) && isDefined(localpower.added_list)) {
     foreach(powered in localpower.added_list)
     cost = cost + powered get_powered_item_cost();
   }
@@ -308,10 +312,10 @@ set_global_power(on_off) {
   maps\mp\_demo::bookmark("zm_power", gettime(), undefined, undefined, 1);
   level._power_global = on_off;
 
-  for (i = 0; i < level.powered_items.size; i++) {
+  for(i = 0; i < level.powered_items.size; i++) {
     powered = level.powered_items[i];
 
-    if(isdefined(powered.target) && powered.power_sources != 1) {
+    if(isDefined(powered.target) && powered.power_sources != 1) {
       powered global_power(on_off);
       wait_network_frame();
     }
@@ -330,6 +334,7 @@ global_power(on_off) {
     self.powered_count++;
   } else {
     println("ZM POWER: global power off\\n");
+
     self.powered_count--;
     assert(self.powered_count >= 0, "Repower underflow in power system");
 
@@ -341,15 +346,13 @@ global_power(on_off) {
 }
 
 never_power_on(origin, radius) {
-
 }
 
 never_power_off(origin, radius) {
-
 }
 
 cost_negligible() {
-  if(isdefined(self.one_time_cost)) {
+  if(isDefined(self.one_time_cost)) {
     cost = self.one_time_cost;
     self.one_time_cost = undefined;
     return cost;
@@ -359,23 +362,23 @@ cost_negligible() {
 }
 
 cost_low_if_local() {
-  if(isdefined(self.one_time_cost)) {
+  if(isDefined(self.one_time_cost)) {
     cost = self.one_time_cost;
     self.one_time_cost = undefined;
     return cost;
   }
 
-  if(isdefined(level._power_global) && level._power_global)
+  if(isDefined(level._power_global) && level._power_global)
     return 0;
 
-  if(isdefined(self.self_powered) && self.self_powered)
+  if(isDefined(self.self_powered) && self.self_powered)
     return 0;
 
   return 1;
 }
 
 cost_high() {
-  if(isdefined(self.one_time_cost)) {
+  if(isDefined(self.one_time_cost)) {
     cost = self.one_time_cost;
     self.one_time_cost = undefined;
     return cost;
@@ -396,38 +399,42 @@ door_range(delta, origin, radius) {
 
 door_power_on(origin, radius) {
   println("^1ZM POWER: door on\\n");
+
   self.target.power_on = 1;
   self.target notify("power_on");
 }
 
 door_power_off(origin, radius) {
   println("^1ZM POWER: door off\\n");
+
   self.target notify("power_off");
   self.target.power_on = 0;
 }
 
 door_local_power_on(origin, radius) {
   println("^1ZM POWER: door on (local)\\n");
+
   self.target.local_power_on = 1;
   self.target notify("local_power_on");
 }
 
 door_local_power_off(origin, radius) {
   println("^1ZM POWER: door off (local)\\n");
+
   self.target notify("local_power_off");
   self.target.local_power_on = 0;
 }
 
 cost_door() {
-  if(isdefined(self.target.power_cost)) {
-    if(!isdefined(self.one_time_cost))
+  if(isDefined(self.target.power_cost)) {
+    if(!isDefined(self.one_time_cost))
       self.one_time_cost = 0;
 
     self.one_time_cost = self.one_time_cost + self.target.power_cost;
     self.target.power_cost = 0;
   }
 
-  if(isdefined(self.one_time_cost)) {
+  if(isDefined(self.one_time_cost)) {
     cost = self.one_time_cost;
     self.one_time_cost = undefined;
     return cost;
@@ -442,7 +449,7 @@ zombie_range(delta, origin, radius) {
 
   self.zombies = get_array_of_closest(origin, get_round_enemy_array(), undefined, undefined, radius);
 
-  if(!isdefined(self.zombies))
+  if(!isDefined(self.zombies))
     return false;
 
   self.power = 1;
@@ -452,7 +459,7 @@ zombie_range(delta, origin, radius) {
 zombie_power_off(origin, radius) {
   println("^1ZM POWER: zombies off\\n");
 
-  for (i = 0; i < self.zombies.size; i++) {
+  for(i = 0; i < self.zombies.size; i++) {
     self.zombies[i] thread stun_zombie();
     wait 0.05;
   }
@@ -465,13 +472,14 @@ stun_zombie() {
 
   if(self.health <= 0) {
     iprintln("trying to stun a dead zombie");
+
     return;
   }
 
-  if(isdefined(self.ignore_inert) && self.ignore_inert) {
+  if(isDefined(self.ignore_inert) && self.ignore_inert) {
     return;
   }
-  if(isdefined(self.stun_zombie)) {
+  if(isDefined(self.stun_zombie)) {
     self thread[[self.stun_zombie]]();
     return;
   }
@@ -480,12 +488,12 @@ stun_zombie() {
 }
 
 perk_range(delta, origin, radius) {
-  if(isdefined(self.target)) {
+  if(isDefined(self.target)) {
     perkorigin = self.target.origin;
 
-    if(isdefined(self.target.trigger_off) && self.target.trigger_off)
+    if(isDefined(self.target.trigger_off) && self.target.trigger_off)
       perkorigin = self.target.realorigin;
-    else if(isdefined(self.target.disabled) && self.target.disabled)
+    else if(isDefined(self.target.disabled) && self.target.disabled)
       perkorigin = perkorigin + vectorscale((0, 0, 1), 10000.0);
 
     if(distancesquared(perkorigin, origin) < radius * radius)
@@ -497,6 +505,7 @@ perk_range(delta, origin, radius) {
 
 perk_power_on(origin, radius) {
   println("^1ZM POWER: perk " + self.target maps\mp\zombies\_zm_perks::getvendingmachinenotify() + " on\\n");
+
   level notify(self.target maps\mp\zombies\_zm_perks::getvendingmachinenotify() + "_on");
   maps\mp\zombies\_zm_perks::perk_unpause(self.target.script_noteworthy);
 }
@@ -504,16 +513,17 @@ perk_power_on(origin, radius) {
 perk_power_off(origin, radius) {
   notify_name = self.target maps\mp\zombies\_zm_perks::getvendingmachinenotify();
 
-  if(isdefined(notify_name) && notify_name == "revive") {
+  if(isDefined(notify_name) && notify_name == "revive") {
     if(level flag_exists("solo_game") && flag("solo_game"))
       return;
   }
 
   println("^1ZM POWER: perk " + self.target.script_noteworthy + " off\\n");
+
   self.target notify("death");
   self.target thread maps\mp\zombies\_zm_perks::vending_trigger_think();
 
-  if(isdefined(self.target.perk_hum))
+  if(isDefined(self.target.perk_hum))
     self.target.perk_hum delete();
 
   maps\mp\zombies\_zm_perks::perk_pause(self.target.script_noteworthy);
@@ -521,12 +531,12 @@ perk_power_off(origin, radius) {
 }
 
 pap_range(delta, origin, radius) {
-  if(isdefined(self.target)) {
+  if(isDefined(self.target)) {
     paporigin = self.target.origin;
 
-    if(isdefined(self.target.trigger_off) && self.target.trigger_off)
+    if(isDefined(self.target.trigger_off) && self.target.trigger_off)
       paporigin = self.target.realorigin;
-    else if(isdefined(self.target.disabled) && self.target.disabled)
+    else if(isDefined(self.target.disabled) && self.target.disabled)
       paporigin = paporigin + vectorscale((0, 0, 1), 10000.0);
 
     if(distancesquared(paporigin, origin) < radius * radius)
@@ -538,18 +548,20 @@ pap_range(delta, origin, radius) {
 
 pap_power_on(origin, radius) {
   println("^1ZM POWER: PaP on\\n");
+
   level notify("Pack_A_Punch_on");
 }
 
 pap_power_off(origin, radius) {
   println("^1ZM POWER: PaP off\\n");
+
   level notify("Pack_A_Punch_off");
   self.target notify("death");
   self.target thread maps\mp\zombies\_zm_perks::vending_weapon_upgrade();
 }
 
 pap_is_on() {
-  if(isdefined(self.powered))
+  if(isDefined(self.powered))
     return self.powered.power;
 
   return 0;

@@ -35,13 +35,14 @@ main() {
   debug_anim_print("dog_move::main()");
   self setaimanimweights(0, 0);
   do_movement = 1;
+
   if(!debug_allow_movement())
     do_movement = 0;
 
-  if(isdefined(level.hostmigrationtimer))
+  if(isDefined(level.hostmigrationtimer))
     do_movement = 0;
 
-  if(!isdefined(self.traversecomplete) && !isdefined(self.skipstartmove) && self.a.movement == "run" && do_movement) {
+  if(!isDefined(self.traversecomplete) && !isDefined(self.skipstartmove) && self.a.movement == "run" && do_movement) {
     self startmove();
     blendtime = 0;
   } else
@@ -65,7 +66,7 @@ main() {
 
   self thread maps\mp\animscripts\dog_stop::lookattarget("normal");
 
-  while (true) {
+  while(true) {
     self moveloop();
 
     if(self.a.movement == "run") {
@@ -81,12 +82,13 @@ moveloop() {
   self endon("killanimscript");
   self endon("stop_soon");
 
-  while (true) {
+  while(true) {
     do_movement = 1;
+
     if(!debug_allow_movement())
       do_movement = 0;
 
-    if(isdefined(level.hostmigrationtimer))
+    if(isDefined(level.hostmigrationtimer))
       do_movement = 0;
 
     if(!do_movement) {
@@ -125,7 +127,7 @@ moveloop() {
 startmovetracklookahead() {
   self endon("killanimscript");
 
-  for (i = 0; i < 2; i++) {
+  for(i = 0; i < 2; i++) {
     lookaheadangle = vectortoangles(self.lookaheaddir);
     self set_orient_mode("face angle", lookaheadangle);
   }
@@ -150,7 +152,7 @@ stopmove() {
 }
 
 getenemydistancesqr() {
-  if(isdefined(self.enemy))
+  if(isDefined(self.enemy))
     return distancesquared(self.origin, self.enemy.origin);
 
   return 100000000;
@@ -159,7 +161,7 @@ getenemydistancesqr() {
 getsoundkey(distancesqr) {
   keys = getarraykeys(level.dog_sounds);
 
-  for (i = 0; i < keys.size; i++) {
+  for(i = 0; i < keys.size; i++) {
     sound_set = level.dog_sounds[keys[i]];
 
     if(sound_set.minrangesqr > distancesqr) {
@@ -192,7 +194,7 @@ need_to_run() {
   if(self.health < self.maxhealth)
     return true;
 
-  if(!isdefined(self.enemy) || !isalive(self.enemy))
+  if(!isDefined(self.enemy) || !isalive(self.enemy))
     return false;
 
   if(!self cansee(self.enemy))

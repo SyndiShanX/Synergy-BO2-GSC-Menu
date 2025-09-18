@@ -11,10 +11,10 @@ init(localclientnum) {
   level._effect["acousticsensor_enemy_light"] = loadfx("misc/fx_equip_light_red");
   level._effect["acousticsensor_friendly_light"] = loadfx("misc/fx_equip_light_green");
 
-  if(!isdefined(level.acousticsensors))
+  if(!isDefined(level.acousticsensors))
     level.acousticsensors = [];
 
-  if(!isdefined(level.acousticsensorhandle))
+  if(!isDefined(level.acousticsensorhandle))
     level.acousticsensorhandle = 0;
 
   setlocalradarenabled(localclientnum, 0);
@@ -33,7 +33,7 @@ addacousticsensor(handle, sensorent, owner) {
 }
 
 removeacousticsensor(acousticsensorhandle) {
-  for (i = 0; i < level.acousticsensors.size; i++) {
+  for(i = 0; i < level.acousticsensors.size; i++) {
     last = level.acousticsensors.size - 1;
 
     if(level.acousticsensors[i].handle == acousticsensorhandle) {
@@ -71,18 +71,18 @@ updateacousticsensors() {
   previousacousticsensorcount = -1;
   waitforclient(0);
 
-  while (true) {
+  while(true) {
     localplayers = level.localplayers;
 
     if(previousacousticsensorcount != 0 || level.acousticsensors.size != 0) {
-      for (i = 0; i < localplayers.size; i++)
+      for(i = 0; i < localplayers.size; i++)
         localradarenabled[i] = 0;
 
-      for (i = 0; i < level.acousticsensors.size; i++) {
-        if(isdefined(level.acousticsensors[i].sensorent.stunned) && level.acousticsensors[i].sensorent.stunned) {
+      for(i = 0; i < level.acousticsensors.size; i++) {
+        if(isDefined(level.acousticsensors[i].sensorent.stunned) && level.acousticsensors[i].sensorent.stunned) {
           continue;
         }
-        for (j = 0; j < localplayers.size; j++) {
+        for(j = 0; j < localplayers.size; j++) {
           if(localplayers[j] == level.acousticsensors[i].sensorent getowner(j)) {
             localradarenabled[j] = 1;
             setlocalradarposition(j, level.acousticsensors[i].sensorent.origin);
@@ -90,7 +90,7 @@ updateacousticsensors() {
         }
       }
 
-      for (i = 0; i < localplayers.size; i++)
+      for(i = 0; i < localplayers.size; i++)
         setlocalradarenabled(i, localradarenabled[i]);
     }
 

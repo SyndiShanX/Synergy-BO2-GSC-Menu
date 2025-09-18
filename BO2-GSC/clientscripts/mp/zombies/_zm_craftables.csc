@@ -1,7 +1,7 @@
-/*******************************************************
+/*********************************************************
  * Decompiled and Edited by SyndiShanX
  * Script: clientscripts\mp\zombies\_zm_craftables.csc
-*******************************************************/
+*********************************************************/
 
 #include clientscripts\mp\_utility;
 #include clientscripts\mp\zombies\_zm_utility;
@@ -9,20 +9,20 @@
 init() {
   level.craftable_piece_count = 0;
 
-  if(isdefined(level.init_craftables))
+  if(isDefined(level.init_craftables))
     [[level.init_craftables]]();
 }
 
 add_zombie_craftable(craftable_name) {
-  if(!isdefined(level.zombie_include_craftables))
+  if(!isDefined(level.zombie_include_craftables))
     level.zombie_include_craftables = [];
 
-  if(isdefined(level.zombie_include_craftables) && !isdefined(level.zombie_include_craftables[craftable_name])) {
+  if(isDefined(level.zombie_include_craftables) && !isDefined(level.zombie_include_craftables[craftable_name])) {
     return;
   }
   craftable_name = level.zombie_include_craftables[craftable_name];
 
-  if(!isdefined(level.zombie_craftables))
+  if(!isDefined(level.zombie_craftables))
     level.zombie_craftables = [];
 
   level.zombie_craftables[craftable_name] = craftable_name;
@@ -45,7 +45,7 @@ set_clientfield_craftables_code_callbacks() {
 }
 
 include_zombie_craftable(craftable_name) {
-  if(!isdefined(level.zombie_include_craftables))
+  if(!isDefined(level.zombie_include_craftables))
     level.zombie_include_craftables = [];
 
   level.zombie_include_craftables[craftable_name] = craftable_name;

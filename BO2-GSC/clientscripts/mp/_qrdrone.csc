@@ -34,7 +34,7 @@ qrdronefx(localclientnum, blinkstage) {
   waittillsnapprocessed(localclientnum);
   fx_handle = self restartfx(localclientnum, blinkstage);
 
-  if(isdefined(fx_handle)) {
+  if(isDefined(fx_handle)) {
     self notify("teamBased_fx_reinitialized");
     level thread watchforplayerrespawnforteambasedfx(localclientnum, self, ::qrdronefx, fx_handle, blinkstage);
   }
@@ -42,7 +42,9 @@ qrdronefx(localclientnum, blinkstage) {
 
 restartfx(localclientnum, blinkstage) {
   self notify("restart_fx");
+
   println("Restart QRDrone FX: stage " + blinkstage);
+
   fx_handle = undefined;
 
   switch (blinkstage) {
@@ -94,10 +96,10 @@ blink_fx_and_sound(localclientnum, soundalias) {
   self endon("restart_fx");
   self endon("fx_death");
 
-  if(!isdefined(self.interval))
+  if(!isDefined(self.interval))
     self.interval = 1.0;
 
-  while (true) {
+  while(true) {
     self playsound(localclientnum, soundalias);
     self spawn_solid_fx(localclientnum);
     serverwait(localclientnum, self.interval / 2);
@@ -135,10 +137,10 @@ loop_local_sound(localclientnum, alias, interval, fx) {
   level endon("demo_jump");
   level endon("player_switch");
 
-  if(!isdefined(self.interval))
+  if(!isDefined(self.interval))
     self.interval = interval;
 
-  while (true) {
+  while(true) {
     self playsound(localclientnum, alias);
     self spawn_solid_fx(localclientnum);
     serverwait(localclientnum, self.interval / 2);
@@ -158,7 +160,7 @@ check_for_player_switch_or_time_jump(localclientnum) {
   waittillframeend;
   self thread blink_light(localclientnum);
 
-  if(isdefined(self.blinkstarttime) && self.blinkstarttime <= level.servertime) {
+  if(isDefined(self.blinkstarttime) && self.blinkstarttime <= level.servertime) {
     self.interval = 1;
     self thread start_blink(localclientnum, 1);
   } else
@@ -174,7 +176,7 @@ blink_light(localclientnum) {
   level endon("killcam_begin");
   self waittill("blink");
 
-  if(!isdefined(self.blinkstarttime))
+  if(!isDefined(self.blinkstarttime))
     self.blinkstarttime = level.servertime;
 
   if(self islocalclientdriver(localclientnum))
@@ -188,14 +190,14 @@ blink_light(localclientnum) {
 collisionhandler(localclientnum) {
   self endon("entityshutdown");
 
-  while (true) {
+  while(true) {
     self waittill("veh_collision", hip, hitn, hit_intensity);
     driver_local_client = self getlocalclientdriver();
 
-    if(isdefined(driver_local_client)) {
+    if(isDefined(driver_local_client)) {
       player = getlocalplayer(driver_local_client);
 
-      if(isdefined(player)) {
+      if(isDefined(player)) {
         if(hit_intensity > 15)
           player playrumbleonentity(driver_local_client, "damage_heavy");
         else
@@ -208,36 +210,37 @@ collisionhandler(localclientnum) {
 enginestutterhandler(localclientnum) {
   self endon("entityshutdown");
 
-  while (true) {
+  while(true) {
     self waittill("veh_engine_stutter");
 
     if(self islocalclientdriver(localclientnum)) {
       player = getlocalplayer(localclientnum);
 
-      if(isdefined(player))
+      if(isDefined(player))
         player playrumbleonentity(localclientnum, "rcbomb_engine_stutter");
     }
   }
 }
 
 getminimumflyheight() {
-  if(!isdefined(level.airsupportheightscale))
+  if(!isDefined(level.airsupportheightscale))
     level.airsupportheightscale = 1;
 
   airsupport_height = getstruct("air_support_height", "targetname");
 
-  if(isdefined(airsupport_height))
+  if(isDefined(airsupport_height))
     planeflyheight = airsupport_height.origin[2];
   else {
     println("WARNING:Missing air_support_height entity in the map.Using default height.");
+
     planeflyheight = 850;
 
-    if(isdefined(level.airsupportheightscale)) {
+    if(isDefined(level.airsupportheightscale)) {
       level.airsupportheightscale = getdvarintdefault("scr_airsupportHeightScale", level.airsupportheightscale);
       planeflyheight = planeflyheight * getdvarintdefault("scr_airsupportHeightScale", level.airsupportheightscale);
     }
 
-    if(isdefined(level.forceairsupportmapheight))
+    if(isDefined(level.forceairsupportmapheight))
       planeflyheight = planeflyheight + level.forceairsupportmapheight;
   }
 
@@ -248,7 +251,7 @@ qrdrone_watch_distance() {
   self endon("entityshutdown");
   qrdrone_height = getstruct("qrdrone_height", "targetname");
 
-  if(isdefined(qrdrone_height))
+  if(isDefined(qrdrone_height))
     self.maxheight = qrdrone_height.origin[2];
   else
     self.maxheight = int(getminimumflyheight());
@@ -261,12 +264,12 @@ qrdrone_watch_distance() {
   soundent linkto(self);
   self thread qrdrone_staticstopondeath(soundent);
 
-  while (true) {
+  while(true) {
     if(!self qrdrone_in_range()) {
       staticalpha = 0;
 
-      while (!self qrdrone_in_range()) {
-        if(isdefined(self.heliinproximity)) {
+      while(!self qrdrone_in_range()) {
+        if(isDefined(self.heliinproximity)) {
           dist = distance(self.origin, self.heliinproximity.origin);
           staticalpha = 1 - (dist - 150) / 150;
         } else {
@@ -299,7 +302,7 @@ qrdrone_in_range() {
 qrdrone_staticfade(staticalpha, sndent, sid) {
   self endon("entityshutdown");
 
-  while (self qrdrone_in_range()) {
+  while(self qrdrone_in_range()) {
     staticalpha = staticalpha - 0.05;
 
     if(staticalpha <= 0) {

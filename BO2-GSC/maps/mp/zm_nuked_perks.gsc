@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\zm_nuked_perks.gsc
-***************************************/
+**************************************/
 
 #include common_scripts\utility;
 #include maps\mp\_utility;
@@ -17,7 +17,7 @@ init_nuked_perks() {
   flag_init("perk_vehicle_bringing_in_perk");
   structs = getstructarray("zm_perk_machine", "targetname");
 
-  for (i = 0; i < structs.size; i++)
+  for(i = 0; i < structs.size; i++)
     structs[i] structdelete();
 
   level.nuked_perks = [];
@@ -47,7 +47,7 @@ init_nuked_perks() {
     level.override_perk_targetname = "zm_perk_machine_override";
     revive_perk_structs = getstructarray("solo_revive", "targetname");
 
-    for (i = 0; i < revive_perk_structs.size; i++) {
+    for(i = 0; i < revive_perk_structs.size; i++) {
       random_revive_structs[i] = getstruct(revive_perk_structs[i].target, "targetname");
       random_revive_structs[i].script_int = revive_perk_structs[i].script_int;
     }
@@ -59,71 +59,76 @@ init_nuked_perks() {
     level.random_revive_structs[0].script_noteworthy = level.nuked_perks[0].script_noteworthy;
     level.random_revive_structs[0].turn_on_notify = level.nuked_perks[0].turn_on_notify;
 
-    if(!isdefined(level.struct_class_names["targetname"]["zm_perk_machine_override"]))
+    if(!isDefined(level.struct_class_names["targetname"]["zm_perk_machine_override"]))
       level.struct_class_names["targetname"]["zm_perk_machine_override"] = [];
 
     level.struct_class_names["targetname"]["zm_perk_machine_override"][level.struct_class_names["targetname"]["zm_perk_machine_override"].size] = level.random_revive_structs[0];
+
     level.random_revive_structs[0] thread draw_debug_location();
+
     random_perk_structs = [];
     perk_structs = getstructarray("zm_random_machine", "script_noteworthy");
     perk_structs = array_exclude(perk_structs, revive_perk_structs);
 
-    for (i = 0; i < perk_structs.size; i++) {
+    for(i = 0; i < perk_structs.size; i++) {
       random_perk_structs[i] = getstruct(perk_structs[i].target, "targetname");
       random_perk_structs[i].script_int = perk_structs[i].script_int;
     }
 
     level.random_perk_structs = array_randomize(random_perk_structs);
 
-    for (i = 1; i < 5; i++) {
+    for(i = 1; i < 5; i++) {
       level.random_perk_structs[i].targetname = "zm_perk_machine_override";
       level.random_perk_structs[i].model = level.nuked_perks[i].model;
       level.random_perk_structs[i].blocker_model = getent(level.random_perk_structs[i].target, "targetname");
       level.random_perk_structs[i].script_noteworthy = level.nuked_perks[i].script_noteworthy;
       level.random_perk_structs[i].turn_on_notify = level.nuked_perks[i].turn_on_notify;
 
-      if(!isdefined(level.struct_class_names["targetname"]["zm_perk_machine_override"]))
+      if(!isDefined(level.struct_class_names["targetname"]["zm_perk_machine_override"]))
         level.struct_class_names["targetname"]["zm_perk_machine_override"] = [];
 
       level.struct_class_names["targetname"]["zm_perk_machine_override"][level.struct_class_names["targetname"]["zm_perk_machine_override"].size] = level.random_perk_structs[i];
+
       level.random_perk_structs[i] thread draw_debug_location();
+
     }
   } else {
     level.override_perk_targetname = "zm_perk_machine_override";
     random_perk_structs = [];
     perk_structs = getstructarray("zm_random_machine", "script_noteworthy");
 
-    for (i = 0; i < perk_structs.size; i++) {
+    for(i = 0; i < perk_structs.size; i++) {
       random_perk_structs[i] = getstruct(perk_structs[i].target, "targetname");
       random_perk_structs[i].script_int = perk_structs[i].script_int;
     }
 
     level.random_perk_structs = array_randomize(random_perk_structs);
 
-    for (i = 0; i < 5; i++) {
+    for(i = 0; i < 5; i++) {
       level.random_perk_structs[i].targetname = "zm_perk_machine_override";
       level.random_perk_structs[i].model = level.nuked_perks[i].model;
       level.random_perk_structs[i].blocker_model = getent(level.random_perk_structs[i].target, "targetname");
       level.random_perk_structs[i].script_noteworthy = level.nuked_perks[i].script_noteworthy;
       level.random_perk_structs[i].turn_on_notify = level.nuked_perks[i].turn_on_notify;
 
-      if(!isdefined(level.struct_class_names["targetname"]["zm_perk_machine_override"]))
+      if(!isDefined(level.struct_class_names["targetname"]["zm_perk_machine_override"]))
         level.struct_class_names["targetname"]["zm_perk_machine_override"] = [];
 
       level.struct_class_names["targetname"]["zm_perk_machine_override"][level.struct_class_names["targetname"]["zm_perk_machine_override"].size] = level.random_perk_structs[i];
+
       level.random_perk_structs[i] thread draw_debug_location();
+
     }
   }
 }
 
 draw_debug_location() {
-
 }
 
 wait_for_round_range(start_round, end_round) {
   round_to_spawn = randomintrange(start_round, end_round);
 
-  while (level.round_number < round_to_spawn)
+  while(level.round_number < round_to_spawn)
     wait 1;
 }
 
@@ -157,7 +162,9 @@ bring_perk(machine, trigger) {
   machine.fx linkto(machine);
   machine linkto(level.perk_arrival_vehicle, "tag_origin", (0, 0, 0), (0, 0, 0));
   start_node = getvehiclenode("perk_arrival_path_" + machine.script_int, "targetname");
+
   level.perk_arrival_vehicle thread draw_debug_location();
+
   level.perk_arrival_vehicle perk_follow_path(start_node);
   machine unlink();
   offset = (0, 0, 0);
@@ -231,7 +238,7 @@ bring_perk_landing_damage() {
   exploder(511);
   players = get_players();
 
-  for (i = 0; i < players.size; i++) {
+  for(i = 0; i < players.size; i++) {
     if(distancesquared(players[i].origin, self.origin) <= player_prone_damage_radius * player_prone_damage_radius) {
       players[i] setstance("prone");
       players[i] shellshock("default", 1.5);
@@ -241,10 +248,10 @@ bring_perk_landing_damage() {
 
   zombies = getaiarray(level.zombie_team);
 
-  for (i = 0; i < zombies.size; i++) {
+  for(i = 0; i < zombies.size; i++) {
     zombie = zombies[i];
 
-    if(!isdefined(zombie) || !isalive(zombie)) {
+    if(!isDefined(zombie) || !isalive(zombie)) {
       continue;
     }
     if(distancesquared(zombie.origin, self.origin) > 250000) {
@@ -266,13 +273,13 @@ perk_follow_path(node) {
   flag_set("perk_vehicle_bringing_in_perk");
   self notify("newpath");
 
-  if(isdefined(node))
+  if(isDefined(node))
     self.attachedpath = node;
 
   pathstart = self.attachedpath;
   self.currentnode = self.attachedpath;
 
-  if(!isdefined(pathstart)) {
+  if(!isDefined(pathstart)) {
     return;
   }
   self attachpath(pathstart);
@@ -293,7 +300,7 @@ perks_from_the_sky() {
   machine_triggers = [];
   machines[0] = getent("vending_revive", "targetname");
 
-  if(!isdefined(machines[0])) {
+  if(!isDefined(machines[0])) {
     return;
   }
   machine_triggers[0] = getent("vending_revive", "target");

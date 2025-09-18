@@ -12,28 +12,34 @@ init_transit_gump() {
   waitforclient(0);
   waitforallclients();
   wait 0.05;
+
   println("CSCGUMP : initing zm_transit gump system...");
+
   players = getlocalplayers();
+
   println("CSCGUMP : player size for gump = " + players.size);
+
   startcolor = (0, 0, 0);
 
-  for (i = 0; i < players.size; i++)
+  for(i = 0; i < players.size; i++)
     sethidegumpalpha(i, startcolor);
 
   if(getdvar(#"ui_gametype") == "zclassic" || getdvar(#"ui_gametype") == "zsurvival") {
     slots = players.size;
+
     if(slots < 2)
       slots = 2;
+
     slots = slots - 1;
     thread clientscripts\mp\zombies\_zm_gump::load_gump_for_player(slots, "zm_transit_gump_prealloc_0");
     level waittill("gump_loaded");
 
-    for (i = 0; i < slots; i++)
+    for(i = 0; i < slots; i++)
       transit_gump_preallocate(i);
 
     gump_trigs = getentarray(0, "gump_triggers", "targetname");
 
-    if(isdefined(gump_trigs))
+    if(isDefined(gump_trigs))
       array_thread(gump_trigs, clientscripts\mp\zombies\_zm_gump::gump_watch_trigger, 0);
 
     thread clientscripts\mp\zombies\_zm_gump::watch_spectation(gump_trigs);
@@ -47,7 +53,9 @@ init_transit_gump() {
       start_location = "powerstation";
 
     single_gump_name = "zm_transit_gump_" + start_location;
+
     println("CSCGUMP: Encounter mode gump loading " + single_gump_name + "\\n");
+
     clientscripts\mp\zombies\_zm_gump::load_gump_for_player(0, single_gump_name);
     return;
   }

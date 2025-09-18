@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\zm_nuked_ffotd.gsc
-***************************************/
+**************************************/
 
 #include maps\mp\_utility;
 #include common_scripts\utility;
@@ -13,7 +13,7 @@ main_start() {
   precachemodel("collision_player_256x256x10");
   precachemodel("collision_wall_64x64x10_standard");
 
-  if(isdefined(level.use_swipe_protection))
+  if(isDefined(level.use_swipe_protection))
     onplayerconnect_callback(::claymore_watch_swipes);
 }
 
@@ -71,7 +71,7 @@ claymore_watch_swipes() {
   self notify("claymore_watch_swipes");
   self endon("claymore_watch_swipes");
 
-  while (true) {
+  while(true) {
     self waittill("weapon_change", weapon);
 
     if(is_placeable_mine(weapon)) {
@@ -86,7 +86,7 @@ watch_melee_swipes(weapname) {
   self endon("death");
   self endon("disconnect");
 
-  while (true) {
+  while(true) {
     self waittill("melee_swipe", zombie);
     self.mine_damage++;
 
@@ -101,7 +101,7 @@ watch_melee_swipes(weapname) {
           self setweaponammoclip(weapname, ammo - 1);
           primaryweapons = self getweaponslistprimaries();
 
-          if(isdefined(primaryweapons[0]))
+          if(isDefined(primaryweapons[0]))
             self switchtoweapon(primaryweapons[0]);
         }
       } else

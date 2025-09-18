@@ -131,7 +131,7 @@ include_buildables() {
   busladder.triggerthink = ::busladderbuildable;
   include_buildable(busladder);
 
-  if(!isdefined(level.gamedifficulty) || level.gamedifficulty != 0) {
+  if(!isDefined(level.gamedifficulty) || level.gamedifficulty != 0) {
     sq_common_electricbox = generate_zombie_buildable_piece("sq_common", "p6_zm_buildable_sq_electric_box", 32, 64, 0, "zm_hud_icon_sq_powerbox", ::onpickup_common, ::ondrop_common, undefined, "tag_part_02", undefined, 24);
     sq_common_meteor = generate_zombie_buildable_piece("sq_common", "p6_zm_buildable_sq_meteor", 76, 64, 0, "zm_hud_icon_sq_meteor", ::onpickup_common, ::ondrop_common, undefined, "tag_part_04", undefined, 25);
     sq_common_scaffolding = generate_zombie_buildable_piece("sq_common", "p6_zm_buildable_sq_scaffolding", 64, 96, 0, "zm_hud_icon_sq_scafold", ::onpickup_common, ::ondrop_common, undefined, "tag_part_01", undefined, 26);
@@ -159,11 +159,11 @@ busladderbuildable() {
 }
 
 busisonormovingbuildableupdateprompt(player, sethintstringnow, buildabletrigger) {
-  if(isdefined(player.isonbus) && player.isonbus || level.the_bus getspeedmph() > 0.0) {
-    if(isdefined(self)) {
+  if(isDefined(player.isonbus) && player.isonbus || level.the_bus getspeedmph() > 0.0) {
+    if(isDefined(self)) {
       self.hint_string = "";
 
-      if(isdefined(sethintstringnow) && sethintstringnow && isdefined(buildabletrigger))
+      if(isDefined(sethintstringnow) && sethintstringnow && isDefined(buildabletrigger))
         buildabletrigger sethintstring(self.hint_string);
     }
 
@@ -219,17 +219,19 @@ jetgunbuildable() {
 
 ondrop_common(player) {
   println("ZM >> Common part callback onDrop()");
+
   self droponbus(player);
   self.piece_owner = undefined;
 }
 
 onpickup_common(player) {
   println("ZM >> Common part callback onPickup()");
+
   player playsound("zmb_buildable_pickup");
   self pickupfrombus();
   self.piece_owner = player;
 
-  if(isdefined(self.buildablename)) {
+  if(isDefined(self.buildablename)) {
     if(self.buildablename == "turbine")
       check_for_buildable_turbine_vox(level.turbine_buildable, 0);
     else if(self.buildablename == "jetgun_zm")
@@ -238,17 +240,17 @@ onpickup_common(player) {
 }
 
 onbuyweapon_riotshield(player) {
-  if(isdefined(player.player_shield_reset_health))
+  if(isDefined(player.player_shield_reset_health))
     player[[player.player_shield_reset_health]]();
 
-  if(isdefined(player.player_shield_reset_location))
+  if(isDefined(player.player_shield_reset_location))
     player[[player.player_shield_reset_location]]();
 }
 
 onuseplantobject_powerswitch(player) {
   println("ZM >> PowerSwitch Buildable CallBack onUsePlantObject()");
 
-  if(!isdefined(player player_get_buildable_piece())) {
+  if(!isDefined(player player_get_buildable_piece())) {
     return;
   }
   switch (player player_get_buildable_piece().modelname) {
@@ -267,13 +269,14 @@ onuseplantobject_powerswitch(player) {
 
 onuseplantobject_turbine(player) {
   println("ZM >> Turbine Buildable CallBack onUsePlantObject()");
+
   buildable = self.buildablezone;
   first_part = "tag_part_03";
   second_part = "tag_part_02";
 
-  for (i = 0; i < buildable.pieces.size; i++) {
+  for(i = 0; i < buildable.pieces.size; i++) {
     if(buildable.pieces[i].part_name == first_part) {
-      if(isdefined(buildable.pieces[i].built) && buildable.pieces[i].built || player player_get_buildable_piece().part_name == first_part) {
+      if(isDefined(buildable.pieces[i].built) && buildable.pieces[i].built || player player_get_buildable_piece().part_name == first_part) {
         buildable.stub.model showpart(second_part);
         continue;
       }
@@ -286,18 +289,18 @@ onuseplantobject_turbine(player) {
 }
 
 check_for_buildable_turbine_vox(stub, start_build_counter) {
-  if(isdefined(level.maxis_turbine_vox_played) && level.maxis_turbine_vox_played) {
+  if(isDefined(level.maxis_turbine_vox_played) && level.maxis_turbine_vox_played) {
     return;
   }
   buildable = stub.buildablezone;
   piece_counter = 0;
   build_counter = start_build_counter;
 
-  for (i = 0; i < buildable.pieces.size; i++) {
-    if(isdefined(buildable.pieces[i].built) && buildable.pieces[i].built || isdefined(buildable.pieces[i].piece_owner))
+  for(i = 0; i < buildable.pieces.size; i++) {
+    if(isDefined(buildable.pieces[i].built) && buildable.pieces[i].built || isDefined(buildable.pieces[i].piece_owner))
       piece_counter++;
 
-    if(isdefined(buildable.pieces[i].built) && buildable.pieces[i].built)
+    if(isDefined(buildable.pieces[i].built) && buildable.pieces[i].built)
       build_counter++;
   }
 
@@ -314,18 +317,18 @@ onbuyweapon_jetgun(player) {
 }
 
 check_for_buildable_jetgun_vox(stub, start_build_counter) {
-  if(isdefined(level.rich_jetgun_vox_played) && level.rich_jetgun_vox_played || !flag("power_on")) {
+  if(isDefined(level.rich_jetgun_vox_played) && level.rich_jetgun_vox_played || !flag("power_on")) {
     return;
   }
   buildable = stub.buildablezone;
   piece_counter = 0;
   build_counter = start_build_counter;
 
-  for (i = 0; i < buildable.pieces.size; i++) {
-    if(isdefined(buildable.pieces[i].built) && buildable.pieces[i].built || isdefined(buildable.pieces[i].piece_owner))
+  for(i = 0; i < buildable.pieces.size; i++) {
+    if(isDefined(buildable.pieces[i].built) && buildable.pieces[i].built || isDefined(buildable.pieces[i].piece_owner))
       piece_counter++;
 
-    if(isdefined(buildable.pieces[i].built) && buildable.pieces[i].built)
+    if(isDefined(buildable.pieces[i].built) && buildable.pieces[i].built)
       build_counter++;
   }
 
@@ -336,8 +339,8 @@ check_for_buildable_jetgun_vox(stub, start_build_counter) {
 }
 
 onenduse_sidequestcommon(team, player, result) {
-  if(isdefined(result) && result) {
-    if(isdefined(level.sq_clip)) {
+  if(isDefined(result) && result) {
+    if(isDefined(level.sq_clip)) {
       level.sq_clip trigger_on();
       level.sq_clip connectpaths();
     }
@@ -345,7 +348,7 @@ onenduse_sidequestcommon(team, player, result) {
 }
 
 droponbus(player) {
-  if(isdefined(player) && (isdefined(player.isonbus) && player.isonbus)) {
+  if(isDefined(player) && (isDefined(player.isonbus) && player.isonbus)) {
     self.model linkto(level.the_bus);
     self.linked_to_bus = 1;
     self.unitrigger.link_parent = level.the_bus;
@@ -354,13 +357,13 @@ droponbus(player) {
 }
 
 pickupfrombus() {
-  if(isdefined(self.linked_to_bus) && self.linked_to_bus) {
-    if(isdefined(self.model))
+  if(isDefined(self.linked_to_bus) && self.linked_to_bus) {
+    if(isDefined(self.model))
       self.model unlink();
 
     self.linked_to_bus = undefined;
   }
 
-  if(isdefined(self.unitrigger))
+  if(isDefined(self.unitrigger))
     self.unitrigger.link_parent = undefined;
 }

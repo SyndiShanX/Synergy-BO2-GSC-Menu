@@ -50,13 +50,13 @@ fan_trap_think() {
   zapper_light_green(light_name);
   self hint_string(&"ZM_PRISON_FAN_TRAP", self.cost);
 
-  while (true) {
+  while(true) {
     self waittill("trigger", who);
 
     if(who in_revive_trigger()) {
       continue;
     }
-    if(!isdefined(self.is_available)) {
+    if(!isDefined(self.is_available)) {
       continue;
     }
     if(is_player_valid(who)) {
@@ -131,7 +131,7 @@ activate_fan_trap() {
 fan_trap_timeout() {
   self.zombie_dmg_trig endon("trap_finished_" + self.script_string);
 
-  for (n_duration = 0; n_duration < 25; n_duration = n_duration + 0.05)
+  for(n_duration = 0; n_duration < 25; n_duration = n_duration + 0.05)
     wait 0.05;
 
   self.zombie_dmg_trig notify("trap_finished_" + self.script_string);
@@ -140,7 +140,7 @@ fan_trap_timeout() {
 fan_trap_rumble_think() {
   self.zombie_dmg_trig endon("trap_finished_" + self.script_string);
 
-  while (true) {
+  while(true) {
     self.rumble_trig waittill("trigger", ent);
 
     if(isplayer(ent)) {
@@ -155,7 +155,7 @@ fan_trap_rumble(player) {
   player endon("disconnect");
   self.zombie_dmg_trig endon("trap_finished_" + self.script_string);
 
-  while (true) {
+  while(true) {
     if(player istouching(self.rumble_trig)) {
       player setclientfieldtoplayer("rumble_fan_trap", 1);
       player.fan_trap_rumble = 1;
@@ -169,14 +169,14 @@ fan_trap_rumble(player) {
 }
 
 fan_trap_damage(parent) {
-  if(isdefined(level.custom_fan_trap_damage_func)) {
+  if(isDefined(level.custom_fan_trap_damage_func)) {
     self thread[[level.custom_fan_trap_damage_func]](parent);
     return;
   }
 
   self endon("fan_trap_finished");
 
-  while (true) {
+  while(true) {
     self waittill("trigger", ent);
 
     if(isplayer(ent))
@@ -187,7 +187,7 @@ fan_trap_damage(parent) {
         return;
       }
 
-      if(!isdefined(ent.marked_for_death)) {
+      if(!isDefined(ent.marked_for_death)) {
         ent.marked_for_death = 1;
         ent thread zombie_fan_trap_death();
       }
@@ -222,7 +222,7 @@ player_fan_trap_damage() {
 zombie_fan_trap_death() {
   self endon("death");
 
-  if(!isdefined(self.is_brutus)) {
+  if(!isDefined(self.is_brutus)) {
     self.a.gib_ref = random(array("guts", "right_arm", "left_arm", "head"));
     self thread maps\mp\animscripts\zm_death::do_gib();
   }
@@ -258,13 +258,13 @@ acid_trap_think() {
   zapper_light_green(light_name);
   self hint_string(&"ZM_PRISON_ACID_TRAP", self.cost);
 
-  while (true) {
+  while(true) {
     self waittill("trigger", who);
 
     if(who in_revive_trigger()) {
       continue;
     }
-    if(!isdefined(self.is_available)) {
+    if(!isDefined(self.is_available)) {
       continue;
     }
     if(is_player_valid(who)) {
@@ -291,13 +291,13 @@ acid_trap_think() {
           self.zombie_dmg_trig waittill("acid_trap_fx_done");
           clientnotify(self.script_string + "off");
 
-          if(isdefined(self.fx_org))
+          if(isDefined(self.fx_org))
             self.fx_org delete();
 
-          if(isdefined(self.zapper_fx_org))
+          if(isDefined(self.zapper_fx_org))
             self.zapper_fx_org delete();
 
-          if(isdefined(self.zapper_fx_switch_org))
+          if(isDefined(self.zapper_fx_switch_org))
             self.zapper_fx_switch_org delete();
 
           self.zombie_dmg_trig notify("acid_trap_finished");
@@ -332,7 +332,7 @@ activate_acid_trap() {
   clientnotify(self.target);
   fire_points = getstructarray(self.target, "targetname");
 
-  for (i = 0; i < fire_points.size; i++) {
+  for(i = 0; i < fire_points.size; i++) {
     wait_network_frame();
     fire_points[i] thread acid_trap_fx(self);
   }
@@ -341,14 +341,14 @@ activate_acid_trap() {
 }
 
 acid_trap_damage() {
-  if(isdefined(level.custom_acid_trap_damage_func)) {
+  if(isDefined(level.custom_acid_trap_damage_func)) {
     self thread[[level.custom_acid_trap_damage_func]]();
     return;
   }
 
   self endon("acid_trap_finished");
 
-  while (true) {
+  while(true) {
     self waittill("trigger", ent);
 
     if(isplayer(ent))
@@ -359,7 +359,7 @@ acid_trap_damage() {
         return;
       }
 
-      if(!isdefined(ent.marked_for_death)) {
+      if(!isDefined(ent.marked_for_death)) {
         ent.marked_for_death = 1;
         ent thread zombie_acid_damage();
       }
@@ -372,7 +372,7 @@ zombie_acid_damage() {
   self setclientfield("acid_trap_death_fx", 1);
   wait(randomfloatrange(0.25, 2.0));
 
-  if(!isdefined(self.is_brutus)) {
+  if(!isDefined(self.is_brutus)) {
     self.a.gib_ref = random(array("right_arm", "left_arm", "head", "right_leg", "left_leg", "no_legs"));
     self thread maps\mp\animscripts\zm_death::do_gib();
   }
@@ -390,11 +390,11 @@ player_acid_damage(t_damage) {
   self endon("disconnect");
   t_damage endon("acid_trap_finished");
 
-  if(!isdefined(self.is_in_acid) && !self player_is_in_laststand()) {
+  if(!isDefined(self.is_in_acid) && !self player_is_in_laststand()) {
     self.is_in_acid = 1;
     self thread player_acid_damage_cooldown();
 
-    while (self istouching(t_damage) && !self player_is_in_laststand() && !self.afterlife) {
+    while(self istouching(t_damage) && !self player_is_in_laststand() && !self.afterlife) {
       self dodamage(self.maxhealth / 2, self.origin);
       wait 1;
     }
@@ -405,7 +405,7 @@ player_acid_damage_cooldown() {
   self endon("disconnect");
   wait 1;
 
-  if(isdefined(self))
+  if(isDefined(self))
     self.is_in_acid = undefined;
 }
 
@@ -419,12 +419,12 @@ acid_trap_host_migration_listener() {
   level notify("acid_trap_hostmigration");
   level endon("acid_trap_hostmigration");
 
-  while (true) {
+  while(true) {
     level waittill("host_migration_end");
     trap_trigs = getentarray("acid_trap_trigger", "targetname");
 
     foreach(trigger in trap_trigs) {
-      if(isdefined(trigger.zombie_dmg_trig) && isdefined(trigger.zombie_dmg_trig.active)) {
+      if(isDefined(trigger.zombie_dmg_trig) && isDefined(trigger.zombie_dmg_trig.active)) {
         if(trigger.zombie_dmg_trig.active == 1) {
           clientnotify(trigger.target);
           break;
@@ -452,14 +452,14 @@ tower_trap_trigger_think() {
   self.has_been_used = 0;
   self.sndtowerent = spawn("script_origin", (-21, 5584, 356));
 
-  while (true) {
+  while(true) {
     self hint_string(&"ZM_PRISON_TOWER_TRAP", self.cost);
     self waittill("trigger", who);
 
     if(who in_revive_trigger()) {
       continue;
     }
-    if(!isdefined(self.is_available)) {
+    if(!isDefined(self.is_available)) {
       continue;
     }
     if(is_player_valid(who)) {
@@ -514,7 +514,7 @@ tower_upgrade_trigger_think() {
   self.upgrade_trigger.in_use = 0;
   self.upgrade_trigger.is_available = 1;
 
-  while (true) {
+  while(true) {
     level waittill(self.upgrade_trigger.script_string);
     level.trapped_track["tower_upgrade"] = 1;
     level notify("tower_trap_upgraded");
@@ -553,7 +553,7 @@ tower_trap_move_switch(parent) {
   self waittill("available");
   tswitch rotatepitch(180, 0.5);
 
-  if(isdefined(parent.script_noteworthy))
+  if(isDefined(parent.script_noteworthy))
     zapper_light_green(light_name);
 }
 
@@ -563,7 +563,7 @@ activate_tower_trap() {
   self.tag_to_target = "J_Head";
   self.trap_reload_time = 0.75;
 
-  while (true) {
+  while(true) {
     zombies = getaiarray(level.zombie_team);
     zombies_sorted = [];
 
@@ -590,7 +590,9 @@ upgrade_tower_trap_weapon() {
 
 tower_trap_timer() {
   self endon("tower_trap_reset_timer");
+
   self thread debug_tower_trap_timer();
+
   wait 25;
   self notify("tower_trap_off");
 }
@@ -598,14 +600,15 @@ tower_trap_timer() {
 debug_tower_trap_timer() {
   self endon("tower_trap_reset_timer");
 
-  for (i = 1; i <= 25; i++) {
+  for(i = 1; i <= 25; i++) {
     iprintln("Tower Trap Timer = " + i);
+
     wait 1.0;
   }
 }
 
 tower_trap_fires(a_zombies) {
-  if(isdefined(level.custom_tower_trap_fires_func)) {
+  if(isDefined(level.custom_tower_trap_fires_func)) {
     self thread[[level.custom_tower_trap_fires_func]](a_zombies);
     return;
   }
@@ -614,7 +617,7 @@ tower_trap_fires(a_zombies) {
   e_org = getstruct(self.range_trigger.target, "targetname");
   n_index = randomintrange(0, a_zombies.size);
 
-  while (isalive(a_zombies[n_index])) {
+  while(isalive(a_zombies[n_index])) {
     e_target = a_zombies[n_index];
     v_zombietarget = e_target gettagorigin(self.tag_to_target);
 
@@ -635,7 +638,7 @@ tower_trap_fires(a_zombies) {
 }
 
 hint_string(string, cost) {
-  if(isdefined(cost))
+  if(isDefined(cost))
     self sethintstring(string, cost);
   else
     self sethintstring(string);
@@ -646,14 +649,14 @@ hint_string(string, cost) {
 zapper_light_red(lightname) {
   zapper_lights = getentarray(lightname, "targetname");
 
-  for (i = 0; i < zapper_lights.size; i++)
+  for(i = 0; i < zapper_lights.size; i++)
     zapper_lights[i] setmodel("p6_zm_al_wall_trap_control_red");
 }
 
 zapper_light_green(lightname) {
   zapper_lights = getentarray(lightname, "targetname");
 
-  for (i = 0; i < zapper_lights.size; i++)
+  for(i = 0; i < zapper_lights.size; i++)
     zapper_lights[i] setmodel("p6_zm_al_wall_trap_control");
 }
 

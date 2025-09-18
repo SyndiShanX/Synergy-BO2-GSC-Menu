@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\_visionset_mgr.gsc
-***************************************/
+**************************************/
 
 #include common_scripts\utility;
 #include maps\mp\_utility;
@@ -51,12 +51,12 @@ vsmgr_activate(type, name, player, opt_param_1, opt_param_2) {
       return;
   }
 
-  if(isdefined(state.lerp_thread))
+  if(isDefined(state.lerp_thread))
     state thread lerp_thread_wrapper(state.lerp_thread, opt_param_1, opt_param_2);
   else {
     players = getplayers();
 
-    for (player_index = 0; player_index < players.size; player_index++)
+    for(player_index = 0; player_index < players.size; player_index++)
       state vsmgr_set_state_active(players[player_index], 1);
   }
 }
@@ -79,14 +79,14 @@ vsmgr_deactivate(type, name, player) {
   state notify("deactivate");
   players = getplayers();
 
-  for (player_index = 0; player_index < players.size; player_index++)
+  for(player_index = 0; player_index < players.size; player_index++)
     state vsmgr_set_state_inactive(players[player_index]);
 }
 
 vsmgr_set_state_active(player, lerp) {
   player_entnum = player getentitynumber();
 
-  if(!isdefined(self.players[player_entnum])) {
+  if(!isDefined(self.players[player_entnum])) {
     return;
   }
   self.players[player_entnum].active = 1;
@@ -96,7 +96,7 @@ vsmgr_set_state_active(player, lerp) {
 vsmgr_set_state_inactive(player) {
   player_entnum = player getentitynumber();
 
-  if(!isdefined(self.players[player_entnum])) {
+  if(!isDefined(self.players[player_entnum])) {
     return;
   }
   self.players[player_entnum].active = 0;
@@ -106,7 +106,7 @@ vsmgr_set_state_inactive(player) {
 vsmgr_timeout_lerp_thread(timeout, opt_param_2) {
   players = getplayers();
 
-  for (player_index = 0; player_index < players.size; player_index++)
+  for(player_index = 0; player_index < players.size; player_index++)
     self vsmgr_set_state_active(players[player_index], 1);
 
   wait(timeout);
@@ -123,10 +123,10 @@ vsmgr_duration_lerp_thread(duration, max_duration) {
   start_time = gettime();
   end_time = start_time + int(duration * 1000);
 
-  if(isdefined(max_duration))
+  if(isDefined(max_duration))
     start_time = end_time - int(max_duration * 1000);
 
-  while (true) {
+  while(true) {
     lerp = calc_remaining_duration_lerp(start_time, end_time);
 
     if(0 >= lerp) {
@@ -135,7 +135,7 @@ vsmgr_duration_lerp_thread(duration, max_duration) {
 
     players = getplayers();
 
-    for (player_index = 0; player_index < players.size; player_index++)
+    for(player_index = 0; player_index < players.size; player_index++)
       self vsmgr_set_state_active(players[player_index], lerp);
 
     wait 0.05;
@@ -148,10 +148,10 @@ vsmgr_duration_lerp_thread_per_player(player, duration, max_duration) {
   start_time = gettime();
   end_time = start_time + int(duration * 1000);
 
-  if(isdefined(max_duration))
+  if(isDefined(max_duration))
     start_time = end_time - int(max_duration * 1000);
 
-  while (true) {
+  while(true) {
     lerp = calc_remaining_duration_lerp(start_time, end_time);
 
     if(0 >= lerp) {
@@ -181,7 +181,7 @@ register_type(type) {
 finalize_clientfields() {
   typekeys = getarraykeys(level.vsmgr);
 
-  for (type_index = 0; type_index < typekeys.size; type_index++)
+  for(type_index = 0; type_index < typekeys.size; type_index++)
     level.vsmgr[typekeys[type_index]] thread finalize_type_clientfields();
 
   level.vsmgr_initializing = 0;
@@ -195,7 +195,7 @@ finalize_type_clientfields() {
   self.cf_slot_bit_count = getminbitcountfornum(self.info.size - 1);
   self.cf_lerp_bit_count = self.info[self.sorted_name_keys[0]].lerp_bit_count;
 
-  for (i = 0; i < self.sorted_name_keys.size; i++) {
+  for(i = 0; i < self.sorted_name_keys.size; i++) {
     self.info[self.sorted_name_keys[i]].slot_index = i;
 
     if(self.info[self.sorted_name_keys[i]].lerp_bit_count > self.cf_lerp_bit_count)
@@ -211,7 +211,7 @@ finalize_type_clientfields() {
 validate_info(type, name, priority) {
   keys = getarraykeys(level.vsmgr);
 
-  for (i = 0; i < keys.size; i++) {
+  for(i = 0; i < keys.size; i++) {
     if(type == keys[i]) {
       break;
     }
@@ -220,14 +220,14 @@ validate_info(type, name, priority) {
   assert(i < keys.size, "In visionset_mgr, type '" + type + "'is unknown");
   keys = getarraykeys(level.vsmgr[type].info);
 
-  for (i = 0; i < keys.size; i++) {
+  for(i = 0; i < keys.size; i++) {
     assert(level.vsmgr[type].info[keys[i]].name != name, "In visionset_mgr of type '" + type + "': name '" + name + "' has previously been registered");
     assert(level.vsmgr[type].info[keys[i]].priority != priority, "In visionset_mgr of type '" + type + "': priority '" + priority + "' requested for name '" + name + "' has previously been registered under name '" + level.vsmgr[type].info[keys[i]].name + "'");
   }
 }
 
 add_sorted_name_key(type, name) {
-  for (i = 0; i < level.vsmgr[type].sorted_name_keys.size; i++) {
+  for(i = 0; i < level.vsmgr[type].sorted_name_keys.size; i++) {
     if(name < level.vsmgr[type].sorted_name_keys[i]) {
       break;
     }
@@ -237,7 +237,7 @@ add_sorted_name_key(type, name) {
 }
 
 add_sorted_priority_key(type, name, priority) {
-  for (i = 0; i < level.vsmgr[type].sorted_prio_keys.size; i++) {
+  for(i = 0; i < level.vsmgr[type].sorted_prio_keys.size; i++) {
     if(priority > level.vsmgr[type].info[level.vsmgr[type].sorted_prio_keys[i]].priority) {
       break;
     }
@@ -254,7 +254,7 @@ add_info(type, name, version, priority, lerp_step_count, activate_per_player, le
   self.lerp_step_count = lerp_step_count;
   self.lerp_bit_count = getminbitcountfornum(lerp_step_count);
 
-  if(!isdefined(ref_count_lerp_thread))
+  if(!isDefined(ref_count_lerp_thread))
     ref_count_lerp_thread = 0;
 
   self.state = spawnstruct();
@@ -270,7 +270,7 @@ add_info(type, name, version, priority, lerp_step_count, activate_per_player, le
 }
 
 onplayerconnect() {
-  for (;;) {
+  for(;;) {
     level waittill("connected", player);
     player thread on_player_connect();
   }
@@ -280,13 +280,13 @@ on_player_connect() {
   self._player_entnum = self getentitynumber();
   typekeys = getarraykeys(level.vsmgr);
 
-  for (type_index = 0; type_index < typekeys.size; type_index++) {
+  for(type_index = 0; type_index < typekeys.size; type_index++) {
     type = typekeys[type_index];
 
     if(!level.vsmgr[type].in_use) {
       continue;
     }
-    for (name_index = 0; name_index < level.vsmgr[type].sorted_name_keys.size; name_index++) {
+    for(name_index = 0; name_index < level.vsmgr[type].sorted_name_keys.size; name_index++) {
       name_key = level.vsmgr[type].sorted_name_keys[name_index];
       level.vsmgr[type].info[name_key].state.players[self._player_entnum] = spawnstruct();
       level.vsmgr[type].info[name_key].state.players[self._player_entnum].active = 0;
@@ -301,25 +301,26 @@ on_player_connect() {
 }
 
 monitor() {
-  while (level.vsmgr_initializing)
+  while(level.vsmgr_initializing)
     wait 0.05;
 
   typekeys = getarraykeys(level.vsmgr);
 
-  while (true) {
+  while(true) {
     wait 0.05;
     waittillframeend;
     players = get_players();
 
-    for (type_index = 0; type_index < typekeys.size; type_index++) {
+    for(type_index = 0; type_index < typekeys.size; type_index++) {
       type = typekeys[type_index];
 
       if(!level.vsmgr[type].in_use) {
         continue;
       }
-      for (player_index = 0; player_index < players.size; player_index++) {
-        if(is_true(players[player_index].pers["isBot"]))
+      for(player_index = 0; player_index < players.size; player_index++) {
+        if(is_true(players[player_index].pers["isBot"])) {
           continue;
+        }
         update_clientfields(players[player_index], level.vsmgr[type]);
       }
     }
@@ -329,7 +330,7 @@ monitor() {
 get_first_active_name(type_struct) {
   size = type_struct.sorted_prio_keys.size;
 
-  for (prio_index = 0; prio_index < size; prio_index++) {
+  for(prio_index = 0; prio_index < size; prio_index++) {
     prio_key = type_struct.sorted_prio_keys[prio_index];
 
     if(type_struct.info[prio_key].state.players[self._player_entnum].active)
@@ -374,7 +375,7 @@ activate_per_player(type, name, player, opt_param_1, opt_param_2) {
       return;
   }
 
-  if(isdefined(state.lerp_thread))
+  if(isDefined(state.lerp_thread))
     state thread lerp_thread_per_player_wrapper(state.lerp_thread, player, opt_param_1, opt_param_2);
   else
     state vsmgr_set_state_active(player, 1);

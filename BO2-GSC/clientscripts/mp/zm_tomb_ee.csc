@@ -44,7 +44,7 @@ wagon_fire_fx_loop(localclientnum, fieldname) {
   self endon("stop_" + fieldname);
   s_pos = getstruct(fieldname, "targetname");
 
-  while (true) {
+  while(true) {
     playfx(localclientnum, level._effect["wagon_fire"], s_pos.origin, anglestoforward(s_pos.angles), anglestoup(s_pos.angles));
     wait 0.5;
   }
@@ -62,20 +62,20 @@ sndwagonfire(ison, fieldname) {
 
 toggle_fist_fx(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump) {
   if(newval == 1) {
-    if(!isdefined(self.has_soul)) {
+    if(!isDefined(self.has_soul)) {
       self.has_soul = 1;
       self.fist_fx_r = playfxontag(localclientnum, level._effect["fist_glow"], self, "J_Wrist_RI");
       self.fist_fx_l = playfxontag(localclientnum, level._effect["fist_glow"], self, "J_Wrist_LE");
     }
 
-    if(!isdefined(self.sndfist)) {
+    if(!isDefined(self.sndfist)) {
       self.sndfist = spawn(0, self.origin, "script_origin");
       self.sndfist linkto(self);
       self.sndfist playloopsound("zmb_squest_punchtime_fist_loop", 1);
       self thread snddeletesndent(self.sndfist);
     }
   } else {
-    if(isdefined(self.has_soul)) {
+    if(isDefined(self.has_soul)) {
       self.has_soul = undefined;
       stopfx(localclientnum, self.fist_fx_r);
       stopfx(localclientnum, self.fist_fx_l);
@@ -107,7 +107,7 @@ zombie_soul_portal_fx(localclientnum, oldval, newval, bnewent, binitialsnap, fie
 set_ee_portal_fx(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump) {
   e_fx = getent(localclientnum, "ee_sam_portal", "targetname");
 
-  if(isdefined(e_fx.fx_id)) {
+  if(isDefined(e_fx.fx_id)) {
     e_fx stoploopsound(5);
     stopfx(localclientnum, e_fx.fx_id);
   }
@@ -126,13 +126,13 @@ run_plane_fx(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, b
   self endon("entityshutdown");
   self waittill_dobj(localclientnum);
 
-  while (true) {
+  while(true) {
     e_player = getlocalplayer(localclientnum);
 
-    if(isdefined(e_player) && is_true(e_player.zombie_blood_fx) && !isdefined(self.plane_fx))
+    if(isDefined(e_player) && is_true(e_player.zombie_blood_fx) && !isDefined(self.plane_fx))
       self.plane_fx = playfxontag(localclientnum, level._effect["fire_glow"], self, "tag_origin");
 
-    if(isdefined(e_player) && !is_true(e_player.zombie_blood_fx) && isdefined(self.plane_fx)) {
+    if(isDefined(e_player) && !is_true(e_player.zombie_blood_fx) && isDefined(self.plane_fx)) {
       stopfx(localclientnum, self.plane_fx);
       self.plane_fx = undefined;
     }
@@ -158,14 +158,14 @@ tablet_fx(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bwas
 
 toggle_beacon_portal(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump) {
   if(newval == 1) {
-    if(!isdefined(self.beacon_portal)) {
+    if(!isDefined(self.beacon_portal)) {
       self.beacon_portal = 1;
       self thread create_beacon_portal(localclientnum);
       self.m_reward = spawn(localclientnum, (-141, 4464, -322) + (8, 35, 20), "script_model");
       self.m_reward setmodel(getweaponmodel("beacon_zm"));
       self.m_reward thread rotate_beacon(localclientnum);
     }
-  } else if(isdefined(self.beacon_portal)) {
+  } else if(isDefined(self.beacon_portal)) {
     self.beacon_portal = 0;
     self notify("stop_beacon_portal");
     self.m_reward delete();
@@ -182,7 +182,7 @@ rotate_beacon(localclientnum) {
   self movey(-50, 2, 0, 1);
   self waittill("movedone");
 
-  while (true) {
+  while(true) {
     self rotateyaw(360, 4);
     self waittill("rotatedone");
   }
@@ -192,7 +192,7 @@ create_beacon_portal(localclientnum) {
   self endon("disconnect");
   self endon("stop_beacon_portal");
 
-  while (true) {
+  while(true) {
     playfx(localclientnum, level._effect["bottle_glow"], (-141, 4464, -322) + (60, 10, 25));
     wait 0.1;
   }

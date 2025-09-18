@@ -11,24 +11,24 @@
 zombie_tracking_init() {
   level.zombie_respawned_health = [];
 
-  if(!isdefined(level.zombie_tracking_dist))
+  if(!isDefined(level.zombie_tracking_dist))
     level.zombie_tracking_dist = 1500;
 
-  if(!isdefined(level.zombie_tracking_high))
+  if(!isDefined(level.zombie_tracking_high))
     level.zombie_tracking_high = 600;
 
-  if(!isdefined(level.zombie_tracking_wait))
+  if(!isDefined(level.zombie_tracking_wait))
     level.zombie_tracking_wait = 10;
 
-  while (true) {
+  while(true) {
     zombies = get_round_enemy_array();
 
-    if(!isdefined(zombies) || isdefined(level.ignore_distance_tracking) && level.ignore_distance_tracking) {
+    if(!isDefined(zombies) || isDefined(level.ignore_distance_tracking) && level.ignore_distance_tracking) {
       wait(level.zombie_tracking_wait);
       continue;
     } else {
-      for (i = 0; i < zombies.size; i++) {
-        if(isdefined(zombies[i]) && !(isdefined(zombies[i].ignore_distance_tracking) && zombies[i].ignore_distance_tracking))
+      for(i = 0; i < zombies.size; i++) {
+        if(isDefined(zombies[i]) && !(isDefined(zombies[i].ignore_distance_tracking) && zombies[i].ignore_distance_tracking))
           zombies[i] thread delete_zombie_noone_looking(level.zombie_tracking_dist, level.zombie_tracking_high);
       }
     }
@@ -40,28 +40,28 @@ zombie_tracking_init() {
 delete_zombie_noone_looking(how_close, how_high) {
   self endon("death");
 
-  if(!isdefined(how_close))
+  if(!isDefined(how_close))
     how_close = 1500;
 
-  if(!isdefined(how_high))
+  if(!isDefined(how_high))
     how_close = 600;
 
   distance_squared_check = how_close * how_close;
   too_far_dist = distance_squared_check * 3;
 
-  if(isdefined(level.zombie_tracking_too_far_dist))
+  if(isDefined(level.zombie_tracking_too_far_dist))
     too_far_dist = level.zombie_tracking_too_far_dist * level.zombie_tracking_too_far_dist;
 
   self.inview = 0;
   self.player_close = 0;
   players = get_players();
 
-  for (i = 0; i < players.size; i++) {
+  for(i = 0; i < players.size; i++) {
     if(players[i].sessionstate == "spectator") {
       continue;
     }
-    if(isdefined(level.only_track_targeted_players)) {
-      if(!isdefined(self.favoriteenemy) || self.favoriteenemy != players[i])
+    if(isDefined(level.only_track_targeted_players)) {
+      if(!isDefined(self.favoriteenemy) || self.favoriteenemy != players[i])
         continue;
     }
 
@@ -77,24 +77,24 @@ delete_zombie_noone_looking(how_close, how_high) {
   wait 0.1;
 
   if(self.inview == 0 && self.player_close == 0) {
-    if(!isdefined(self.animname) || isdefined(self.animname) && self.animname != "zombie") {
+    if(!isDefined(self.animname) || isDefined(self.animname) && self.animname != "zombie") {
       return;
     }
-    if(isdefined(self.electrified) && self.electrified == 1) {
+    if(isDefined(self.electrified) && self.electrified == 1) {
       return;
     }
-    if(isdefined(self.in_the_ground) && self.in_the_ground == 1) {
+    if(isDefined(self.in_the_ground) && self.in_the_ground == 1) {
       return;
     }
     zombies = getaiarray("axis");
 
-    if((!isdefined(self.damagemod) || self.damagemod == "MOD_UNKNOWN") && self.health < self.maxhealth) {
-      if(!(isdefined(self.exclude_distance_cleanup_adding_to_total) && self.exclude_distance_cleanup_adding_to_total) && !(isdefined(self.isscreecher) && self.isscreecher)) {
+    if((!isDefined(self.damagemod) || self.damagemod == "MOD_UNKNOWN") && self.health < self.maxhealth) {
+      if(!(isDefined(self.exclude_distance_cleanup_adding_to_total) && self.exclude_distance_cleanup_adding_to_total) && !(isDefined(self.isscreecher) && self.isscreecher)) {
         level.zombie_total++;
         level.zombie_respawned_health[level.zombie_respawned_health.size] = self.health;
       }
     } else if(zombies.size + level.zombie_total > 24 || zombies.size + level.zombie_total <= 24 && self.health >= self.maxhealth) {
-      if(!(isdefined(self.exclude_distance_cleanup_adding_to_total) && self.exclude_distance_cleanup_adding_to_total) && !(isdefined(self.isscreecher) && self.isscreecher)) {
+      if(!(isDefined(self.exclude_distance_cleanup_adding_to_total) && self.exclude_distance_cleanup_adding_to_total) && !(isDefined(self.isscreecher) && self.isscreecher)) {
         level.zombie_total++;
 
         if(self.health < level.zombie_health)

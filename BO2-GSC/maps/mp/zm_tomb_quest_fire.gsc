@@ -47,7 +47,6 @@ init_animtree() {
 }
 
 fire_puzzle_1_init() {
-
 }
 
 fire_puzzle_1_run() {
@@ -57,7 +56,7 @@ fire_puzzle_1_run() {
   array_thread(level.sacrifice_volumes, ::init_sacrifice_volume);
   b_any_volumes_unfinished = 1;
 
-  while (b_any_volumes_unfinished) {
+  while(b_any_volumes_unfinished) {
     level waittill("fire_sacrifice_completed");
     b_any_volumes_unfinished = 0;
 
@@ -68,6 +67,7 @@ fire_puzzle_1_run() {
   }
 
   iprintlnbold("Fire Chamber Puzzle Completed");
+
   e_player = get_closest_player(level.sacrifice_volumes[0].origin);
   e_player thread maps\mp\zm_tomb_vo::say_puzzle_completion_line(1);
   flag_set("fire_puzzle_1_complete");
@@ -83,7 +83,7 @@ fire_puzzle_1_cleanup() {
 clone_cleanup_watch_player_presence() {
   level endon("fire_puzzle_1_complete");
 
-  while (true) {
+  while(true) {
     wait 1.0;
 
     if(level.clone_list.size > 0) {
@@ -104,10 +104,10 @@ init_sacrifice_volume() {
 }
 
 run_sacrifice_plinth(e_volume) {
-  while (true) {
+  while(true) {
     if(flag("fire_puzzle_1_complete")) {
       break;
-    } else if(isdefined(e_volume)) {
+    } else if(isDefined(e_volume)) {
       if(e_volume.pct_sacrifices_received > self.script_float || e_volume.b_gods_pleased) {
         break;
       }
@@ -130,12 +130,12 @@ run_sacrifice_ignition(e_volume) {
   array_thread(a_torch_pos, ::run_sacrifice_plinth, e_volume);
   sndorigin = a_torch_pos[0].origin;
 
-  if(!isdefined(self.angles))
+  if(!isDefined(self.angles))
     self.angles = (0, 0, 0);
 
   max_hit_distance_sq = 10000;
 
-  while (!e_volume.b_gods_pleased) {
+  while(!e_volume.b_gods_pleased) {
     e_volume ent_flag_clear("flame_on");
     level waittill("fire_staff_explosion", v_point, e_projectile);
 
@@ -176,13 +176,13 @@ is_church_occupied() {
 }
 
 sacrifice_puzzle_zombie_killed(einflictor, attacker, idamage, smeansofdeath, sweapon, vdir, shitloc, psoffsettime) {
-  if(!(isdefined(level.craftables_crafted["elemental_staff_fire"]) && level.craftables_crafted["elemental_staff_fire"]) && getdvarint(#"_id_FA81816F") <= 0) {
+  if(!(isDefined(level.craftables_crafted["elemental_staff_fire"]) && level.craftables_crafted["elemental_staff_fire"]) && getdvarint(#"_id_FA81816F") <= 0) {
     return;
   }
-  if(isdefined(self.is_mechz) && self.is_mechz) {
+  if(isDefined(self.is_mechz) && self.is_mechz) {
     return;
   }
-  if(!isdefined(level.sacrifice_volumes)) {
+  if(!isDefined(level.sacrifice_volumes)) {
     return;
   }
   if(!maps\mp\zm_tomb_chamber::is_chamber_occupied()) {
@@ -250,7 +250,7 @@ spawn_zombie_clone() {
   clone.angles = self.angles;
   clone setmodel(self.model);
 
-  if(isdefined(self.headmodel)) {
+  if(isDefined(self.headmodel)) {
     clone.headmodel = self.headmodel;
     clone attach(clone.headmodel, "", 1);
   }
@@ -260,7 +260,7 @@ spawn_zombie_clone() {
 }
 
 fire_puzzle_2_init() {
-  for (i = 1; i <= 4; i++) {
+  for(i = 1; i <= 4; i++) {
     a_ternary = getentarray("fire_torch_ternary_group_0" + i, "targetname");
 
     if(a_ternary.size > 1) {
@@ -294,7 +294,7 @@ fire_puzzle_2_cleanup() {
   a_torches = getstructarray("church_torch_target", "script_noteworthy");
 
   foreach(s_torch in a_torches) {
-    if(!isdefined(s_torch.e_fx)) {
+    if(!isDefined(s_torch.e_fx)) {
       s_torch thread fire_puzzle_2_torch_flame();
       wait 0.25;
     }
@@ -303,7 +303,7 @@ fire_puzzle_2_cleanup() {
   wait 30.0;
 
   foreach(s_torch in a_torches) {
-    if(isdefined(s_torch.e_fx)) {
+    if(isDefined(s_torch.e_fx)) {
       s_torch.e_fx delete();
       wait 0.25;
     }
@@ -316,17 +316,17 @@ fire_puzzle_2_is_complete() {
   unlit_torch = 0;
 
   foreach(e_torch in a_torches) {
-    if(isdefined(e_torch.e_fx) && !e_torch.b_correct_torch)
+    if(isDefined(e_torch.e_fx) && !e_torch.b_correct_torch)
       wrong_torch = 1;
 
-    if(!isdefined(e_torch.e_fx) && e_torch.b_correct_torch)
+    if(!isDefined(e_torch.e_fx) && e_torch.b_correct_torch)
       unlit_torch = 1;
   }
 
-  if(!isdefined(level.n_torches_lit))
+  if(!isDefined(level.n_torches_lit))
     level.n_torches_lit = 0;
 
-  if(!isdefined(level.n_wrong_torches))
+  if(!isDefined(level.n_wrong_torches))
     level.n_wrong_torches = 0;
 
   level.n_torches_lit++;
@@ -359,7 +359,7 @@ fire_puzzle_2_is_complete() {
 fire_puzzle_watch_staff() {
   self endon("disconnect");
 
-  while (true) {
+  while(true) {
     self waittill("projectile_impact", str_weap_name, v_explode_point, n_radius, e_projectile, n_impact);
 
     if(str_weap_name == "staff_fire_zm")
@@ -368,7 +368,7 @@ fire_puzzle_watch_staff() {
 }
 
 fire_puzzle_2_torch_flame() {
-  if(isdefined(self.e_fx))
+  if(isDefined(self.e_fx))
     self.e_fx delete();
 
   self.e_fx = spawn("script_model", self.origin);
@@ -399,7 +399,7 @@ fire_puzzle_torch_run() {
   self.b_correct_torch = 0;
   max_hit_distance_sq = 4096;
 
-  while (true) {
+  while(true) {
     level waittill("fire_staff_explosion", v_point);
 
     if(!is_church_occupied()) {

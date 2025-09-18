@@ -11,7 +11,7 @@ main() {
   self endon("killanimscript");
   self setaimanimweights(0, 0);
 
-  if(isdefined(self.enemy) && isdefined(self.enemy.syncedmeleetarget) && self.enemy.syncedmeleetarget == self) {
+  if(isDefined(self.enemy) && isDefined(self.enemy.syncedmeleetarget) && self.enemy.syncedmeleetarget == self) {
     self unlink();
     self.enemy.syncedmeleetarget = undefined;
   }

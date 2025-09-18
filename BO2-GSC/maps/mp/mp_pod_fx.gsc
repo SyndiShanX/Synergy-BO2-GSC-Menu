@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\mp_pod_fx.gsc
-***************************************/
+**************************************/
 
 #include maps\mp\_utility;
 #include maps\mp\createfx\mp_pod_fx;
@@ -15,7 +15,6 @@ main() {
 }
 
 precache_scripted_fx() {
-
 }
 
 precache_createfx_fx() {

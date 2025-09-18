@@ -96,7 +96,7 @@ precache_fxanim_props_dlc3() {
 }
 
 fxanim_init(localclientnum) {
-  for (;;) {
+  for(;;) {
     level waittill("snap_processed", snapshotlocalclientnum);
 
     if(snapshotlocalclientnum == localclientnum) {
@@ -107,10 +107,10 @@ fxanim_init(localclientnum) {
   level thread clientscripts\mp\_fxanim_dlc3::fxanim_init_dlc(localclientnum);
   crabs = [];
 
-  for (i = 0; i < 3; i++) {
+  for(i = 0; i < 3; i++) {
     crabs[i] = getent(localclientnum, "fxanim_dlc3_crab_0" + (i + 1), "targetname");
 
-    if(isdefined(crabs[i]))
+    if(isDefined(crabs[i]))
       crabs[i] thread fxanim_crab_think(localclientnum, i);
   }
 }
@@ -127,7 +127,7 @@ fxanim_crab_think(localclientnum, crab_index) {
   crab_end_anim_length = getanimlength(crab_end_anim);
   anim_move_switch = 1;
 
-  for (;;) {
+  for(;;) {
     crab_think_wait = randomfloatrange(15.0, 45.0);
 
     if(anim_move_switch) {
@@ -154,6 +154,6 @@ main() {
   precache_fxanim_props_dlc3();
   disablefx = getdvarint(#"_id_C9B177D6");
 
-  if(!isdefined(disablefx) || disablefx <= 0)
+  if(!isDefined(disablefx) || disablefx <= 0)
     precache_scripted_fx();
 }

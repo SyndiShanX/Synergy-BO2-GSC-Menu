@@ -10,10 +10,6 @@
 #include maps\mp\zombies\_zm_game_module;
 #include maps\mp\zombies\_zm_magicbox;
 
-precache() {
-
-}
-
 main() {
   maps\mp\gametypes_zm\_zm_gametype::setup_standard_objects("nuked");
   maps\mp\zombies\_zm_game_module::set_current_game_module(level.game_module_standard_index);
@@ -27,7 +23,7 @@ enemy_location_override(zombie, enemy) {
   location = enemy.origin;
 
   if(is_true(self.reroute)) {
-    if(isdefined(self.reroute_origin))
+    if(isDefined(self.reroute_origin))
       location = self.reroute_origin;
   }
 

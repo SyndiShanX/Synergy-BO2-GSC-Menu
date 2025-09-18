@@ -21,11 +21,10 @@
 #include maps\mp\zombies\_zm;
 
 onplayerconnect_sq_final() {
-
 }
 
 stage_one() {
-  if(isdefined(level.gamedifficulty) && level.gamedifficulty == 0) {
+  if(isDefined(level.gamedifficulty) && level.gamedifficulty == 0) {
     sq_final_easy_cleanup();
     return;
   }
@@ -34,6 +33,7 @@ stage_one() {
   flag_wait("quest_completed_thrice");
   flag_wait("spoon_obtained");
   flag_wait("warden_blundergat_obtained");
+
   players = getplayers();
 
   foreach(player in players) {
@@ -48,7 +48,7 @@ stage_one() {
     player.fq_client_hint settext(386 + " - " + 481 + " - " + 101 + " - " + 872);
   }
 
-  for (i = 1; i < 4; i++) {
+  for(i = 1; i < 4; i++) {
     m_nixie_tube = getent("nixie_tube_" + i, "targetname");
     m_nixie_tube thread nixie_tube_scramble_protected_effects(i);
   }
@@ -60,10 +60,12 @@ stage_one() {
   level thread nixie_final_codes(872);
   level waittill_multiple("nixie_final_" + 386, "nixie_final_" + 481, "nixie_final_" + 101, "nixie_final_" + 872);
   nixie_tube_off();
+
   players = getplayers();
 
   foreach(player in players)
   player.fq_client_hint destroy();
+
   m_nixie_tube = getent("nixie_tube_1", "targetname");
   m_nixie_tube playsoundwithnotify("vox_brutus_nixie_right_0", "scary_voice");
   m_nixie_tube waittill("scary_voice");
@@ -80,10 +82,10 @@ nixie_tube_off() {
   level notify("kill_nixie_input");
   wait 1;
 
-  for (i = 1; i < 4; i++) {
+  for(i = 1; i < 4; i++) {
     m_nixie_tube = getent("nixie_tube_" + i, "targetname");
 
-    for (j = 0; j < 10; j++)
+    for(j = 0; j < 10; j++)
       m_nixie_tube hidepart("J_" + j);
 
     wait 0.3;
@@ -116,7 +118,7 @@ nixie_tube_scramble_protected_effects(n_tube_index) {
   unrestricted_scramble_num[3] = array(0, 3, 4, 7, 8, 9);
   n_number_to_display = random(unrestricted_scramble_num[n_tube_index]);
 
-  while (true) {
+  while(true) {
     self hidepart("J_" + n_number_to_display);
     n_number_to_display = random(unrestricted_scramble_num[n_tube_index]);
     self showpart("J_" + n_number_to_display);
@@ -132,13 +134,13 @@ nixie_final_audio_cue_code() {
 }
 
 nixie_tube_win_effects_all_tubes_final(goal_num_1, goal_num_2, goal_num_3) {
-  if(!isdefined(goal_num_1))
+  if(!isDefined(goal_num_1))
     goal_num_1 = 0;
 
-  if(!isdefined(goal_num_2))
+  if(!isDefined(goal_num_2))
     goal_num_2 = 0;
 
-  if(!isdefined(goal_num_3))
+  if(!isDefined(goal_num_3))
     goal_num_3 = 0;
 
   a_nixie_tube = [];
@@ -147,8 +149,8 @@ nixie_tube_win_effects_all_tubes_final(goal_num_1, goal_num_2, goal_num_3) {
   a_nixie_tube[3] = getent("nixie_tube_3", "targetname");
   n_off_tube = 1;
 
-  for (start_time = 0; start_time < 2; start_time = start_time + 0.15) {
-    for (i = 1; i < 3 + 1; i++) {
+  for(start_time = 0; start_time < 2; start_time = start_time + 0.15) {
+    for(i = 1; i < 3 + 1; i++) {
       if(i == n_off_tube) {
         a_nixie_tube[i] hidepart("J_" + level.a_nixie_tube_code[i]);
         continue;
@@ -172,7 +174,7 @@ nixie_tube_win_effects_all_tubes_final(goal_num_1, goal_num_2, goal_num_3) {
   a_nixie_tube[2] showpart("J_" + level.a_nixie_tube_code[2]);
   a_nixie_tube[3] showpart("J_" + level.a_nixie_tube_code[3]);
 
-  while (level.a_nixie_tube_code[1] != goal_num_1 || level.a_nixie_tube_code[2] != goal_num_2 || level.a_nixie_tube_code[3] != goal_num_3) {
+  while(level.a_nixie_tube_code[1] != goal_num_1 || level.a_nixie_tube_code[2] != goal_num_2 || level.a_nixie_tube_code[3] != goal_num_3) {
     n_current_tube = 1;
     n_goal = goal_num_1;
 
@@ -189,7 +191,7 @@ nixie_tube_win_effects_all_tubes_final(goal_num_1, goal_num_2, goal_num_3) {
     wait_network_frame();
     j = 0;
 
-    while (level.a_nixie_tube_code[n_current_tube] != n_goal) {
+    while(level.a_nixie_tube_code[n_current_tube] != n_goal) {
       a_nixie_tube[n_current_tube] hidepart("J_" + level.a_nixie_tube_code[n_current_tube]);
       level.a_nixie_tube_code[n_current_tube]--;
 
@@ -230,7 +232,7 @@ stage_two() {
   audio_logs[6][1] = "vox_guar_tour_vo_10_0";
   play_sq_audio_log(0, audio_logs[0], 0);
 
-  for (i = 2; i <= 6; i++)
+  for(i = 2; i <= 6; i++)
     play_sq_audio_log(i, audio_logs[i], 1);
 
   level.m_headphones delete();
@@ -238,14 +240,14 @@ stage_two() {
   t_plane_fly_afterlife playsound("zmb_easteregg_laugh");
   trigger_is_on = 0;
 
-  while (true) {
+  while(true) {
     players = getplayers();
 
     if(players.size > 1) {
       arlington_is_present = 0;
 
       foreach(player in players) {
-        if(isdefined(player) && player.character_name == "Arlington")
+        if(isDefined(player) && player.character_name == "Arlington")
           arlington_is_present = 1;
       }
 
@@ -268,7 +270,7 @@ stage_two() {
 headphones_rotate() {
   self endon("death");
 
-  while (true) {
+  while(true) {
     self rotateyaw(360, 3);
     self waittill("rotatedone");
   }
@@ -277,7 +279,7 @@ headphones_rotate() {
 play_sq_audio_log(num, a_vo, b_use_trig) {
   v_pos = getstruct("sq_at_" + num, "targetname").origin;
 
-  if(!isdefined(level.m_headphones)) {
+  if(!isDefined(level.m_headphones)) {
     level.m_headphones = spawn("script_model", v_pos);
     level.m_headphones ghostindemo();
     level.m_headphones setmodel("p6_zm_al_audio_headset_icon");
@@ -303,7 +305,7 @@ play_sq_audio_log(num, a_vo, b_use_trig) {
   foreach(player in players)
   maps\mp\_visionset_mgr::vsmgr_activate("visionset", "zm_audio_log", player);
 
-  for (i = 0; i < a_vo.size; i++) {
+  for(i = 0; i < a_vo.size; i++) {
     level.m_headphones playsoundwithnotify(a_vo[i], "at_done");
     level.m_headphones waittill("at_done");
     wait 0.5;
@@ -327,11 +329,11 @@ final_flight_trigger() {
   self setcursorhint("HINT_NOICON");
   self sethintstring("");
 
-  while (isdefined(self)) {
+  while(isDefined(self)) {
     self waittill("trigger", e_triggerer);
 
     if(isplayer(e_triggerer)) {
-      if(isdefined(level.custom_plane_validation)) {
+      if(isDefined(level.custom_plane_validation)) {
         valid = self[[level.custom_plane_validation]](e_triggerer);
 
         if(!valid)
@@ -346,7 +348,7 @@ final_flight_trigger() {
       b_everyone_is_ready = 1;
 
       foreach(player in players) {
-        if(!isdefined(player) || player.sessionstate == "spectator" || player maps\mp\zombies\_zm_laststand::player_is_in_laststand())
+        if(!isDefined(player) || player.sessionstate == "spectator" || player maps\mp\zombies\_zm_laststand::player_is_in_laststand())
           b_everyone_is_ready = 0;
       }
 
@@ -360,8 +362,9 @@ final_flight_trigger() {
       t_plane_fly trigger_off();
 
       foreach(player in players) {
-        if(isdefined(player)) {
+        if(isDefined(player)) {
           iprintlnbold("LINK PLAYER TO PLANE, START COUNTDOWN IF NOT YET STARTED");
+
           player thread final_flight_player_thread();
         }
       }
@@ -376,9 +379,10 @@ final_flight_player_thread() {
   self.on_a_plane = 1;
   self.dontspeak = 1;
   self setclientfieldtoplayer("isspeaking", 1);
+
   iprintlnbold("plane boarding thread started");
 
-  if(!(isdefined(self.afterlife) && self.afterlife)) {
+  if(!(isDefined(self.afterlife) && self.afterlife)) {
     self.keep_perks = 1;
     self afterlife_remove();
     self.afterlife = 1;
@@ -391,7 +395,7 @@ final_flight_player_thread() {
   level.final_flight_players[level.final_flight_players.size] = self;
   a_nml_teleport_targets = [];
 
-  for (i = 1; i < 6; i++)
+  for(i = 1; i < 6; i++)
     a_nml_teleport_targets[i - 1] = getstruct("nml_telepoint_" + i, "targetname");
 
   self.n_passenger_index = level.final_flight_players.size;
@@ -458,12 +462,12 @@ stage_final() {
   level endon("stage_final");
   b_everyone_alive = 0;
 
-  while (isdefined(b_everyone_alive) && !b_everyone_alive) {
+  while(isDefined(b_everyone_alive) && !b_everyone_alive) {
     b_everyone_alive = 1;
     a_players = getplayers();
 
     foreach(player in a_players) {
-      if(isdefined(player.afterlife) && player.afterlife) {
+      if(isDefined(player.afterlife) && player.afterlife) {
         b_everyone_alive = 0;
         wait 0.05;
         break;
@@ -490,7 +494,7 @@ stage_final() {
     a_player_team[a_player_team.size] = player;
   }
 
-  if(isdefined(p_weasel) && a_player_team.size > 0) {
+  if(isDefined(p_weasel) && a_player_team.size > 0) {
     level.longregentime = 1000000;
     level.playerhealth_regularregendelay = 1000000;
     p_weasel.team = level.zombie_team;
@@ -506,17 +510,17 @@ stage_final() {
 
     s_start_point = getstruct("final_fight_starting_point_weasel", "targetname");
 
-    if(isdefined(p_weasel) && isdefined(s_start_point)) {
+    if(isDefined(p_weasel) && isDefined(s_start_point)) {
       playfx(level._effect["afterlife_teleport"], p_weasel.origin);
       p_weasel setorigin(s_start_point.origin);
       p_weasel setplayerangles(s_start_point.angles);
       playfx(level._effect["afterlife_teleport"], p_weasel.origin);
     }
 
-    for (i = 0; i < a_player_team.size; i++) {
+    for(i = 0; i < a_player_team.size; i++) {
       s_start_point = getstruct("final_fight_starting_point_hero_" + (i + 1), "targetname");
 
-      if(isdefined(a_player_team[i]) && isdefined(s_start_point)) {
+      if(isDefined(a_player_team[i]) && isDefined(s_start_point)) {
         playfx(level._effect["afterlife_teleport"], a_player_team[i].origin);
         a_player_team[i] setorigin(s_start_point.origin);
         a_player_team[i] setplayerangles(s_start_point.angles);
@@ -528,13 +532,13 @@ stage_final() {
     level thread final_showdown_track_team(a_player_team);
     n_spawns_needed = 2;
 
-    for (i = n_spawns_needed; i > 0; i--)
+    for(i = n_spawns_needed; i > 0; i--)
       maps\mp\zombies\_zm_ai_brutus::brutus_spawn_in_zone("zone_golden_gate_bridge", 1);
 
     level thread final_battle_vo(p_weasel, a_player_team);
     level notify("pop_goes_the_weasel_achieved");
     level waittill("showdown_over");
-  } else if(isdefined(p_weasel))
+  } else if(isDefined(p_weasel))
     level.winner = "weasel";
   else
     level.winner = "team";
@@ -578,19 +582,19 @@ stage_final() {
   a_players = getplayers();
 
   foreach(player in a_players) {
-    if(isdefined(player.client_hint))
+    if(isDefined(player.client_hint))
       player thread destroy_tutorial_message();
 
-    if(isdefined(player.revivetrigger)) {
+    if(isDefined(player.revivetrigger)) {
       player thread revive_success(player, 0);
       player cleanup_suicide_hud();
     }
 
-    if(isdefined(player))
+    if(isDefined(player))
       player ghost();
   }
 
-  if(isdefined(p_weasel)) {
+  if(isDefined(p_weasel)) {
     p_weasel.team = "allies";
     p_weasel.pers["team"] = "allies";
     p_weasel.sessionteam = "allies";
@@ -603,8 +607,8 @@ stage_final() {
 final_showdown_track_weasel(p_weasel) {
   level endon("showdown_over");
 
-  while (true) {
-    if(!isdefined(p_weasel) || p_weasel maps\mp\zombies\_zm_laststand::player_is_in_laststand()) {
+  while(true) {
+    if(!isDefined(p_weasel) || p_weasel maps\mp\zombies\_zm_laststand::player_is_in_laststand()) {
       level.winner = "team";
       level notify("showdown_over");
     }
@@ -616,7 +620,7 @@ final_showdown_track_weasel(p_weasel) {
 final_showdown_track_team(a_player_team) {
   level endon("showdown_over");
 
-  while (true) {
+  while(true) {
     weasel_won = 1;
 
     foreach(player in a_player_team) {
@@ -624,7 +628,7 @@ final_showdown_track_team(a_player_team) {
         weasel_won = 0;
     }
 
-    if(isdefined(weasel_won) && weasel_won) {
+    if(isDefined(weasel_won) && weasel_won) {
       level.winner = "weasel";
       level notify("showdown_over");
     }
@@ -666,7 +670,7 @@ final_showdown_update_icon(enemy) {
   enemy endon("disconnect");
   height_offset = 60;
 
-  while (isdefined(enemy)) {
+  while(isDefined(enemy)) {
     self.x = enemy.origin[0];
     self.y = enemy.origin[1];
     self.z = enemy.origin[2] + height_offset;
@@ -691,12 +695,12 @@ final_battle_vo(p_weasel, a_player_team) {
   if(a_players.size > 0)
     player_2 = a_players[randomintrange(0, a_players.size)];
 
-  if(isdefined(player))
+  if(isDefined(player))
     player final_battle_reveal();
 
   wait 3;
 
-  if(isdefined(p_weasel))
+  if(isDefined(p_weasel))
     p_weasel playsoundontag("vox_plr_3_end_scenario_0", "J_Head");
 
   wait 1;
@@ -708,14 +712,14 @@ final_battle_vo(p_weasel, a_player_team) {
 
   wait 10;
 
-  if(isdefined(player_2))
+  if(isDefined(player_2))
     player_2 playsoundontag("vox_plr_" + player_2.characterindex + "_end_scenario_1", "J_Head");
-  else if(isdefined(player))
+  else if(isDefined(player))
     player playsoundontag("vox_plr_" + player.characterindex + "_end_scenario_1", "J_Head");
 
   wait 4;
 
-  if(isdefined(p_weasel)) {
+  if(isDefined(p_weasel)) {
     p_weasel playsoundontag("vox_plr_3_end_scenario_1", "J_Head");
     p_weasel.dontspeak = 0;
     p_weasel setclientfieldtoplayer("isspeaking", 0);
@@ -749,11 +753,12 @@ player_intermission_bridge() {
   self.friendlydamage = undefined;
   points = getstructarray("final_cam", "targetname");
 
-  if(!isdefined(points) || points.size == 0) {
+  if(!isDefined(points) || points.size == 0) {
     points = getentarray("info_intermission", "classname");
 
     if(points.size < 1) {
       println("NO info_intermission POINTS IN MAP");
+
       return;
     }
   }
@@ -765,17 +770,17 @@ player_intermission_bridge() {
   self.game_over_bg.alpha = 1;
   org = undefined;
 
-  while (true) {
+  while(true) {
     points = array_randomize(points);
 
-    for (i = 0; i < points.size; i++) {
+    for(i = 0; i < points.size; i++) {
       point = points[i];
 
-      if(!isdefined(org))
+      if(!isDefined(org))
         self spawn(point.origin, point.angles);
 
-      if(isdefined(points[i].target)) {
-        if(!isdefined(org)) {
+      if(isDefined(points[i].target)) {
+        if(!isDefined(org)) {
           org = spawn("script_model", self.origin + vectorscale((0, 0, -1), 60.0));
           org setmodel("tag_origin");
         }
@@ -783,7 +788,7 @@ player_intermission_bridge() {
         org.origin = points[i].origin;
         org.angles = points[i].angles;
 
-        for (j = 0; j < get_players().size; j++) {
+        for(j = 0; j < get_players().size; j++) {
           player = get_players()[j];
           player camerasetposition(org);
           player camerasetlookat();
@@ -792,7 +797,7 @@ player_intermission_bridge() {
 
         speed = 20;
 
-        if(isdefined(points[i].speed))
+        if(isDefined(points[i].speed))
           speed = points[i].speed;
 
         target_point = getstruct(points[i].target, "targetname");
@@ -823,7 +828,7 @@ player_intermission_bridge() {
 }
 
 create_ending_message(str_msg) {
-  if(!isdefined(self.client_hint)) {
+  if(!isDefined(self.client_hint)) {
     self.client_hint = newclienthudelem(self);
     self.client_hint.alignx = "center";
     self.client_hint.aligny = "middle";
@@ -860,7 +865,7 @@ custom_game_over_hud_elem(player) {
   game_over.color = (1, 1, 1);
   game_over.hidewheninmenu = 1;
 
-  if(isdefined(level.winner))
+  if(isDefined(level.winner))
     game_over settext(&"ZM_PRISON_LIFE_OVER");
   else
     game_over settext(&"ZOMBIE_GAME_OVER");
@@ -877,10 +882,10 @@ custom_game_over_hud_elem(player) {
 }
 
 clean_up_final_brutuses() {
-  while (true) {
+  while(true) {
     zombies = getaispeciesarray("axis", "all");
 
-    for (i = 0; i < zombies.size; i++)
+    for(i = 0; i < zombies.size; i++)
       zombies[i] dodamage(10000, zombies[i].origin);
 
     wait 1;

@@ -44,7 +44,7 @@ missile_drone_active_cb(localclientnum, oldval, newval, bnewent, binitialsnap, f
 targetlost(localclientnum) {
   self notify("targetLost");
 
-  if(isdefined(self.missile_drone_fx))
+  if(isDefined(self.missile_drone_fx))
     stopfx(localclientnum, self.missile_drone_fx);
 }
 
@@ -57,7 +57,7 @@ targetacquired(localclientnum) {
   soundplayed = 0;
   waitrealtime(0.05);
 
-  for (;;) {
+  for(;;) {
     currentweapon = getcurrentweapon(localclientnum);
 
     if(currentweapon != "missile_drone_mp" && currentweapon != "inventory_missile_drone_mp") {
@@ -92,7 +92,7 @@ targetscan(localclientnum) {
   self notify("targetScanning");
   soundplayed = 0;
 
-  for (;;) {
+  for(;;) {
     currentweapon = getcurrentweapon(localclientnum);
 
     if(currentweapon != "missile_drone_mp" && currentweapon != "inventory_missile_drone_mp") {

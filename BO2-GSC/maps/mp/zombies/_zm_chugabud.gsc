@@ -24,12 +24,9 @@ init() {
   add_custom_limited_weapon_check(::is_weapon_available_in_chugabud_corpse);
 }
 
-chugabug_precache() {
-
-}
+chugabug_
 
 chugabud_player_init() {
-
 }
 
 chugabud_laststand() {
@@ -43,13 +40,13 @@ chugabud_laststand() {
   self maps\mp\zombies\_zm_chugabud::chugabud_fake_death();
   wait 3;
 
-  if(isdefined(self.insta_killed) && self.insta_killed || isdefined(self.disable_chugabud_corpse))
+  if(isDefined(self.insta_killed) && self.insta_killed || isDefined(self.disable_chugabud_corpse))
     create_corpse = 0;
   else
     create_corpse = 1;
 
   if(create_corpse == 1) {
-    if(isdefined(level._chugabug_reject_corpse_override_func)) {
+    if(isDefined(level._chugabug_reject_corpse_override_func)) {
       reject_corpse = self[[level._chugabug_reject_corpse_override_func]](self.origin);
 
       if(reject_corpse)
@@ -64,7 +61,7 @@ chugabud_laststand() {
     self.e_chugabud_corpse = corpse;
     corpse thread chugabud_corpse_cleanup_on_spectator(self);
 
-    if(isdefined(level.whos_who_client_setup))
+    if(isDefined(level.whos_who_client_setup))
       corpse setclientfield("clientfield_whos_who_clone_glow_shader", 1);
   }
 
@@ -83,7 +80,7 @@ chugabud_laststand() {
   self thread chugabud_handle_multiple_instances(corpse);
   corpse waittill("player_revived", e_reviver);
 
-  if(isdefined(e_reviver) && e_reviver == self)
+  if(isDefined(e_reviver) && e_reviver == self)
     self notify("whos_who_self_revive");
 
   self perk_abort_drinking(0.1);
@@ -103,7 +100,7 @@ chugabud_laststand() {
 }
 
 chugabud_laststand_cleanup(corpse, str_notify) {
-  if(isdefined(str_notify))
+  if(isDefined(str_notify))
     self waittill(str_notify);
 
   self chugabud_give_loadout();
@@ -116,13 +113,13 @@ chugabud_bleed_timeout(delay, corpse) {
   corpse endon("death");
   wait(delay);
 
-  if(isdefined(corpse.revivetrigger)) {
-    while (corpse.revivetrigger.beingrevived)
+  if(isDefined(corpse.revivetrigger)) {
+    while(corpse.revivetrigger.beingrevived)
       wait 0.01;
   }
 
-  if(isdefined(self.loadout.perks) && flag("solo_game")) {
-    for (i = 0; i < self.loadout.perks.size; i++) {
+  if(isDefined(self.loadout.perks) && flag("solo_game")) {
+    for(i = 0; i < self.loadout.perks.size; i++) {
       perk = self.loadout.perks[i];
 
       if(perk == "specialty_quickrevive") {
@@ -148,13 +145,13 @@ chugabud_corpse_cleanup(corpse, was_revived) {
     self notify("chugabud_bleedout");
   }
 
-  if(isdefined(corpse.revivetrigger)) {
+  if(isDefined(corpse.revivetrigger)) {
     corpse notify("stop_revive_trigger");
     corpse.revivetrigger delete();
     corpse.revivetrigger = undefined;
   }
 
-  if(isdefined(corpse.revive_hud_elem)) {
+  if(isDefined(corpse.revive_hud_elem)) {
     corpse.revive_hud_elem destroy();
     corpse.revive_hud_elem = undefined;
   }
@@ -215,7 +212,7 @@ chugabud_save_loadout() {
 
   self.loadout.equipment = self get_player_equipment();
 
-  if(isdefined(self.loadout.equipment))
+  if(isDefined(self.loadout.equipment))
     self equipment_take(self.loadout.equipment);
 
   self.loadout save_weapons_for_chugabud(self);
@@ -257,8 +254,8 @@ chugabud_give_loadout() {
     self takeweapon(weapon);
   }
 
-  for (i = 0; i < loadout.weapons.size; i++) {
-    if(!isdefined(loadout.weapons[i])) {
+  for(i = 0; i < loadout.weapons.size; i++) {
+    if(!isDefined(loadout.weapons[i])) {
       continue;
     }
     if(loadout.weapons[i]["name"] == "none") {
@@ -267,7 +264,7 @@ chugabud_give_loadout() {
     self maps\mp\zombies\_zm_weapons::weapondata_give(loadout.weapons[i]);
   }
 
-  if(loadout.current_weapon >= 0 && isdefined(loadout.weapons[loadout.current_weapon]["name"]))
+  if(loadout.current_weapon >= 0 && isDefined(loadout.weapons[loadout.current_weapon]["name"]))
     self switchtoweapon(loadout.weapons[loadout.current_weapon]["name"]);
 
   self giveweapon("knife_zm");
@@ -278,15 +275,15 @@ chugabud_give_loadout() {
   self.pers["score"] = loadout.score;
   perk_array = maps\mp\zombies\_zm_perks::get_perk_array(1);
 
-  for (i = 0; i < perk_array.size; i++) {
+  for(i = 0; i < perk_array.size; i++) {
     perk = perk_array[i];
     self unsetperk(perk);
     self.num_perks--;
     self set_perk_clientfield(perk, 0);
   }
 
-  if(isdefined(loadout.perks) && loadout.perks.size > 0) {
-    for (i = 0; i < loadout.perks.size; i++) {
+  if(isDefined(loadout.perks) && loadout.perks.size > 0) {
+    for(i = 0; i < loadout.perks.size; i++) {
       if(self hasperk(loadout.perks[i])) {
         continue;
       }
@@ -311,19 +308,19 @@ chugabud_give_loadout() {
 }
 
 chugabud_restore_grenades() {
-  if(isdefined(self.loadout.hasemp) && self.loadout.hasemp) {
+  if(isDefined(self.loadout.hasemp) && self.loadout.hasemp) {
     self giveweapon("emp_grenade_zm");
     self setweaponammoclip("emp_grenade_zm", self.loadout.empclip);
   }
 
-  if(isdefined(self.loadout.lethal_grenade)) {
+  if(isDefined(self.loadout.lethal_grenade)) {
     self giveweapon(self.loadout.lethal_grenade);
     self setweaponammoclip(self.loadout.lethal_grenade, self.loadout.lethal_grenade_count);
   }
 }
 
 chugabud_restore_claymore() {
-  if(isdefined(self.loadout.hasclaymore) && self.loadout.hasclaymore && !self hasweapon("claymore_zm")) {
+  if(isDefined(self.loadout.hasclaymore) && self.loadout.hasclaymore && !self hasweapon("claymore_zm")) {
     self giveweapon("claymore_zm");
     self set_player_placeable_mine("claymore_zm");
     self setactionslot(4, "weapon", "claymore_zm");
@@ -352,17 +349,17 @@ chugabud_fake_revive() {
   playfx(level._effect["chugabud_revive_fx"], self.origin);
   spawnpoint = chugabud_get_spawnpoint();
 
-  if(isdefined(level._chugabud_post_respawn_override_func))
+  if(isDefined(level._chugabud_post_respawn_override_func))
     self[[level._chugabud_post_respawn_override_func]](spawnpoint.origin);
 
-  if(isdefined(level.chugabud_force_corpse_position)) {
-    if(isdefined(self.e_chugabud_corpse))
+  if(isDefined(level.chugabud_force_corpse_position)) {
+    if(isDefined(self.e_chugabud_corpse))
       self.e_chugabud_corpse forceteleport(level.chugabud_force_corpse_position);
 
     level.chugabud_force_corpse_position = undefined;
   }
 
-  if(isdefined(level.chugabud_force_player_position)) {
+  if(isDefined(level.chugabud_force_player_position)) {
     spawnpoint.origin = level.chugabud_force_player_position;
     level.chugabud_force_player_position = undefined;
   }
@@ -394,33 +391,33 @@ chugabud_get_spawnpoint() {
   if(get_chugabug_spawn_point_from_nodes(self.origin, 500, 700, 64, 1))
     spawnpoint = level.chugabud_spawn_struct;
 
-  if(!isdefined(spawnpoint)) {
+  if(!isDefined(spawnpoint)) {
     if(get_chugabug_spawn_point_from_nodes(self.origin, 100, 400, 64, 1))
       spawnpoint = level.chugabud_spawn_struct;
   }
 
-  if(!isdefined(spawnpoint)) {
+  if(!isDefined(spawnpoint)) {
     if(get_chugabug_spawn_point_from_nodes(self.origin, 50, 400, 256, 0))
       spawnpoint = level.chugabud_spawn_struct;
   }
 
-  if(!isdefined(spawnpoint))
+  if(!isDefined(spawnpoint))
     spawnpoint = maps\mp\zombies\_zm::check_for_valid_spawn_near_team(self, 1);
 
-  if(!isdefined(spawnpoint)) {
+  if(!isDefined(spawnpoint)) {
     match_string = "";
     location = level.scr_zm_map_start_location;
 
-    if((location == "default" || location == "") && isdefined(level.default_start_location))
+    if((location == "default" || location == "") && isDefined(level.default_start_location))
       location = level.default_start_location;
 
     match_string = level.scr_zm_ui_gametype + "_" + location;
     spawnpoints = [];
     structs = getstructarray("initial_spawn", "script_noteworthy");
 
-    if(isdefined(structs)) {
+    if(isDefined(structs)) {
       foreach(struct in structs) {
-        if(isdefined(struct.script_string)) {
+        if(isDefined(struct.script_string)) {
           tokens = strtok(struct.script_string, " ");
 
           foreach(token in tokens) {
@@ -431,10 +428,10 @@ chugabud_get_spawnpoint() {
       }
     }
 
-    if(!isdefined(spawnpoints) || spawnpoints.size == 0)
+    if(!isDefined(spawnpoints) || spawnpoints.size == 0)
       spawnpoints = getstructarray("initial_spawn_points", "targetname");
 
-    assert(isdefined(spawnpoints), "Could not find initial spawn points!");
+    assert(isDefined(spawnpoints), "Could not find initial spawn points!");
     spawnpoint = maps\mp\zombies\_zm::getfreespawnpoint(spawnpoints, self);
   }
 
@@ -442,21 +439,21 @@ chugabud_get_spawnpoint() {
 }
 
 get_chugabug_spawn_point_from_nodes(v_origin, min_radius, max_radius, max_height, ignore_targetted_nodes) {
-  if(!isdefined(level.chugabud_spawn_struct))
+  if(!isDefined(level.chugabud_spawn_struct))
     level.chugabud_spawn_struct = spawnstruct();
 
   found_node = undefined;
   a_nodes = getnodesinradiussorted(v_origin, max_radius, min_radius, max_height, "pathnodes");
 
-  if(isdefined(a_nodes) && a_nodes.size > 0) {
+  if(isDefined(a_nodes) && a_nodes.size > 0) {
     a_player_volumes = getentarray("player_volume", "script_noteworthy");
     index = a_nodes.size - 1;
 
-    for (i = index; i >= 0; i--) {
+    for(i = index; i >= 0; i--) {
       n_node = a_nodes[i];
 
       if(ignore_targetted_nodes == 1) {
-        if(isdefined(n_node.target))
+        if(isDefined(n_node.target))
           continue;
       }
 
@@ -469,7 +466,7 @@ get_chugabug_spawn_point_from_nodes(v_origin, min_radius, max_radius, max_height
           if(trace["fraction"] < 1) {
             override_abort = 0;
 
-            if(isdefined(level._chugabud_reject_node_override_func))
+            if(isDefined(level._chugabud_reject_node_override_func))
               override_abort = [
                 [level._chugabud_reject_node_override_func]
               ](v_origin, n_node);
@@ -484,7 +481,7 @@ get_chugabug_spawn_point_from_nodes(v_origin, min_radius, max_radius, max_height
     }
   }
 
-  if(isdefined(found_node)) {
+  if(isDefined(found_node)) {
     level.chugabud_spawn_struct.origin = found_node.origin;
     v_dir = vectornormalize(v_origin - level.chugabud_spawn_struct.origin);
     level.chugabud_spawn_struct.angles = vectortoangles(v_dir);
@@ -505,7 +502,7 @@ force_player_respawn_position(forced_player_position) {
 save_weapons_for_chugabud(player) {
   self.chugabud_melee_weapons = [];
 
-  for (i = 0; i < level._melee_weapons.size; i++)
+  for(i = 0; i < level._melee_weapons.size; i++)
     self save_weapon_for_chugabud(player, level._melee_weapons[i].weapon_name);
 }
 
@@ -515,17 +512,17 @@ save_weapon_for_chugabud(player, weapon_name) {
 }
 
 restore_weapons_for_chugabud(player) {
-  for (i = 0; i < level._melee_weapons.size; i++)
+  for(i = 0; i < level._melee_weapons.size; i++)
     self restore_weapon_for_chugabud(player, level._melee_weapons[i].weapon_name);
 
   self.chugabud_melee_weapons = undefined;
 }
 
 restore_weapon_for_chugabud(player, weapon_name) {
-  if(!isdefined(weapon_name) || !isdefined(self.chugabud_melee_weapons) || !isdefined(self.chugabud_melee_weapons[weapon_name])) {
+  if(!isDefined(weapon_name) || !isDefined(self.chugabud_melee_weapons) || !isDefined(self.chugabud_melee_weapons[weapon_name])) {
     return;
   }
-  if(isdefined(self.chugabud_melee_weapons[weapon_name]) && self.chugabud_melee_weapons[weapon_name]) {
+  if(isDefined(self.chugabud_melee_weapons[weapon_name]) && self.chugabud_melee_weapons[weapon_name]) {
     player giveweapon(weapon_name);
     player set_player_melee_weapon(weapon_name);
     self.chugabud_melee_weapons[weapon_name] = 0;
@@ -547,7 +544,7 @@ playchugabudtimeraudio() {
   player = self.player;
   self thread playchugabudtimerout(player);
 
-  while (true) {
+  while(true) {
     player playsoundtoplayer("zmb_chugabud_timer_count", player);
     wait 1;
   }
@@ -564,7 +561,7 @@ chugabud_hostmigration() {
   level notify("chugabud_hostmigration");
   level endon("chugabud_hostmigration");
 
-  while (true) {
+  while(true) {
     level waittill("host_migration_end");
     chugabuds = getentarray("player_chugabud_model", "script_noteworthy");
 
@@ -574,11 +571,10 @@ chugabud_hostmigration() {
 }
 
 player_revived_cleanup_chugabud_corpse() {
-
 }
 
 player_has_chugabud_corpse() {
-  if(isdefined(self.e_chugabud_corpse))
+  if(isDefined(self.e_chugabud_corpse))
     return true;
 
   return false;
@@ -588,24 +584,24 @@ is_weapon_available_in_chugabud_corpse(weapon, player_to_check) {
   count = 0;
   upgradedweapon = weapon;
 
-  if(isdefined(level.zombie_weapons[weapon]) && isdefined(level.zombie_weapons[weapon].upgrade_name))
+  if(isDefined(level.zombie_weapons[weapon]) && isDefined(level.zombie_weapons[weapon].upgrade_name))
     upgradedweapon = level.zombie_weapons[weapon].upgrade_name;
 
   players = getplayers();
 
-  if(isdefined(players)) {
-    for (player_index = 0; player_index < players.size; player_index++) {
+  if(isDefined(players)) {
+    for(player_index = 0; player_index < players.size; player_index++) {
       player = players[player_index];
 
-      if(isdefined(player_to_check) && player != player_to_check) {
+      if(isDefined(player_to_check) && player != player_to_check) {
         continue;
       }
       if(player player_has_chugabud_corpse()) {
-        if(isdefined(player.loadout) && isdefined(player.loadout.weapons)) {
-          for (i = 0; i < player.loadout.weapons.size; i++) {
+        if(isDefined(player.loadout) && isDefined(player.loadout.weapons)) {
+          for(i = 0; i < player.loadout.weapons.size; i++) {
             chugabud_weapon = player.loadout.weapons[i];
 
-            if(isdefined(chugabud_weapon) && (chugabud_weapon["name"] == weapon || chugabud_weapon["name"] == upgradedweapon))
+            if(isDefined(chugabud_weapon) && (chugabud_weapon["name"] == weapon || chugabud_weapon["name"] == upgradedweapon))
               count++;
           }
         }
@@ -620,7 +616,7 @@ chugabud_corpse_cleanup_on_spectator(player) {
   self endon("death");
   player endon("disconnect");
 
-  while (true) {
+  while(true) {
     if(player.sessionstate == "spectator") {
       break;
     }
@@ -647,8 +643,8 @@ chugabud_corpse_revive_icon(player) {
   hud_elem.hidewheninmenu = 1;
   hud_elem.immunetodemogamehudsettings = 1;
 
-  while (true) {
-    if(!isdefined(self.revive_hud_elem)) {
+  while(true) {
+    if(!isDefined(self.revive_hud_elem)) {
       break;
     }
 
@@ -660,12 +656,12 @@ chugabud_corpse_revive_icon(player) {
 }
 
 activate_chugabud_effects_and_audio() {
-  if(isdefined(level.whos_who_client_setup)) {
-    if(!isdefined(self.whos_who_effects_active)) {
-      if(isdefined(level.chugabud_shellshock))
+  if(isDefined(level.whos_who_client_setup)) {
+    if(!isDefined(self.whos_who_effects_active)) {
+      if(isDefined(level.chugabud_shellshock))
         self shellshock("whoswho", 60);
 
-      if(isdefined(level.vsmgr_prio_visionset_zm_whos_who))
+      if(isDefined(level.vsmgr_prio_visionset_zm_whos_who))
         maps\mp\_visionset_mgr::vsmgr_activate("visionset", "zm_whos_who", self);
 
       self setclientfieldtoplayer("clientfield_whos_who_audio", 1);
@@ -679,12 +675,12 @@ activate_chugabud_effects_and_audio() {
 deactivate_chugabud_effects_and_audio() {
   self waittill_any("death", "chugabud_effects_cleanup");
 
-  if(isdefined(level.whos_who_client_setup)) {
-    if(isdefined(self.whos_who_effects_active) && self.whos_who_effects_active == 1) {
-      if(isdefined(level.chugabud_shellshock))
+  if(isDefined(level.whos_who_client_setup)) {
+    if(isDefined(self.whos_who_effects_active) && self.whos_who_effects_active == 1) {
+      if(isDefined(level.chugabud_shellshock))
         self stopshellshock();
 
-      if(isdefined(level.vsmgr_prio_visionset_zm_whos_who))
+      if(isDefined(level.vsmgr_prio_visionset_zm_whos_who))
         maps\mp\_visionset_mgr::vsmgr_deactivate("visionset", "zm_whos_who", self);
 
       self setclientfieldtoplayer("clientfield_whos_who_audio", 0);

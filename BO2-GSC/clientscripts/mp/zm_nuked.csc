@@ -68,11 +68,9 @@ zombie_eye_clientfield(localclientnum, oldval, newval, bnewent, binitialsnap, fi
 }
 
 register_clientflags() {
-
 }
 
 register_clientflag_callbacks() {
-
 }
 
 include_weapons() {
@@ -167,6 +165,6 @@ intermission_settings() {
   level waittill("znfg");
   players = getlocalplayers();
 
-  for (i = 0; i < players.size; i++)
+  for(i = 0; i < players.size; i++)
     setworldfogactivebank(i, 2);
 }

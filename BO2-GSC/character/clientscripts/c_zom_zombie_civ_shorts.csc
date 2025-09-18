@@ -1,7 +1,7 @@
-/***************************************************************
+/*************************************************************************
  * Decompiled and Edited by SyndiShanX
  * Script: character\clientscripts\c_zom_zombie_civ_shorts.csc
-***************************************************************/
+*************************************************************************/
 
 main() {
   self._gib_def = level._gibbing_actor_models["c_zom_zombie_civ_shorts_body"];
@@ -12,7 +12,7 @@ precache() {
 }
 
 register_gibs() {
-  if(!isdefined(level._gibbing_actor_models))
+  if(!isDefined(level._gibbing_actor_models))
     level._gibbing_actor_models = [];
 
   gib_spawn = spawnstruct();

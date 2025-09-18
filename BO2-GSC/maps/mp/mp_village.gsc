@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\mp_village.gsc
-***************************************/
+**************************************/
 
 #include maps\mp\_utility;
 #include maps\mp\mp_village_fx;
@@ -127,7 +127,7 @@ spawnkilltrigger() {
   trigger = spawn("trigger_radius", (-108.857, 1221.1, 132.467), 0, 200, 5);
   trigger = spawn("trigger_radius", (-213.452, 1405.1, 137), 0, 75, 5);
 
-  while (true) {
+  while(true) {
     trigger waittill("trigger", player);
     player dodamage(player.health * 2, trigger.origin, trigger, trigger, "none", "MOD_SUICIDE", 0, "lava_mp");
   }

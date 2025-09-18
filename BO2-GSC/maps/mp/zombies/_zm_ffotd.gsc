@@ -34,12 +34,12 @@ main_end() {
 }
 
 force_navcomputer_trigger_think() {
-  if(!isdefined(level.zombie_include_buildables) || !level.zombie_include_buildables.size) {
+  if(!isDefined(level.zombie_include_buildables) || !level.zombie_include_buildables.size) {
     return;
   }
   foreach(buildable in level.zombie_include_buildables) {
     if("sq_common" == buildable.name) {
-      if(isdefined(buildable.triggerthink)) {
+      if(isDefined(buildable.triggerthink)) {
         level[[buildable.triggerthink]]();
         trigger_think_func = buildable.triggerthink;
         buildable.triggerthink = undefined;
@@ -63,8 +63,8 @@ transit_navcomputer_remove_card_on_success() {
       nav_trig = trig;
   }
 
-  if(isdefined(nav_trig)) {
-    while (true) {
+  if(isDefined(nav_trig)) {
+    while(true) {
       nav_trig waittill("trigger", who);
 
       if(isplayer(who) && is_player_valid(who) && does_player_have_correct_navcard(who)) {
@@ -82,7 +82,7 @@ transit_navcomputer_remove_card_on_success() {
 }
 
 sq_refresh_player_navcard_hud() {
-  if(!isdefined(level.navcards)) {
+  if(!isDefined(level.navcards)) {
     return;
   }
   players = get_players();
@@ -90,10 +90,10 @@ sq_refresh_player_navcard_hud() {
   foreach(player in players) {
     navcard_bits = 0;
 
-    for (i = 0; i < level.navcards.size; i++) {
+    for(i = 0; i < level.navcards.size; i++) {
       hasit = player maps\mp\zombies\_zm_stats::get_global_stat(level.navcards[i]);
 
-      if(isdefined(player.navcard_grabbed) && player.navcard_grabbed == level.navcards[i])
+      if(isDefined(player.navcard_grabbed) && player.navcard_grabbed == level.navcards[i])
         hasit = 1;
 
       if(hasit)
@@ -113,6 +113,7 @@ sq_refresh_player_navcard_hud() {
 player_in_exploit_area(player_trigger_origin, player_trigger_radius) {
   if(distancesquared(player_trigger_origin, self.origin) < player_trigger_radius * player_trigger_radius) {
     iprintlnbold("player exploit detectect");
+
     return true;
   }
 
@@ -123,9 +124,10 @@ path_exploit_fix(zombie_trigger_origin, zombie_trigger_radius, zombie_trigger_he
   spawnflags = 9;
   zombie_trigger = spawn("trigger_radius", zombie_trigger_origin, spawnflags, zombie_trigger_radius, zombie_trigger_height);
   zombie_trigger setteamfortrigger(level.zombie_team);
+
   thread debug_exploit(zombie_trigger_origin, zombie_trigger_radius, player_trigger_origin, player_trigger_radius, zombie_goto_point);
 
-  while (true) {
+  while(true) {
     zombie_trigger waittill("trigger", who);
 
     if(!is_true(who.reroute))
@@ -137,11 +139,11 @@ exploit_reroute(zombie_trigger, player_trigger_origin, player_trigger_radius, zo
   self endon("death");
   self.reroute = 1;
 
-  while (true) {
+  while(true) {
     if(self istouching(zombie_trigger)) {
       player = self.favoriteenemy;
 
-      if(isdefined(player) && player player_in_exploit_area(player_trigger_origin, player_trigger_radius))
+      if(isDefined(player) && player player_in_exploit_area(player_trigger_origin, player_trigger_radius))
         self.reroute_origin = zombie_goto_point;
       else
         break;
@@ -155,17 +157,18 @@ exploit_reroute(zombie_trigger, player_trigger_origin, player_trigger_radius, zo
 }
 
 debug_exploit(player_origin, player_radius, enemy_origin, enemy_radius, zombie_goto_point) {
-  while (isdefined(self)) {
+  while(isDefined(self)) {
     circle(player_origin, player_radius, (0, 0, 1), 0, 1, 1);
     circle(enemy_origin, enemy_radius, (1, 0, 0), 0, 1, 1);
     line(player_origin, enemy_origin, (1, 0, 0), 1);
     line(enemy_origin, zombie_goto_point, (1, 1, 0), 1);
     wait 0.05;
   }
+
 }
 
 ffotd_melee_miss_func() {
-  if(isdefined(self.enemy)) {
+  if(isDefined(self.enemy)) {
     if(isplayer(self.enemy) && self.enemy getcurrentweapon() == "claymore_zm") {
       dist_sq = distancesquared(self.enemy.origin, self.origin);
       melee_dist_sq = self.meleeattackdist * self.meleeattackdist;
@@ -177,6 +180,6 @@ ffotd_melee_miss_func() {
     }
   }
 
-  if(isdefined(level.original_melee_miss_func))
+  if(isDefined(level.original_melee_miss_func))
     self[[level.original_melee_miss_func]]();
 }

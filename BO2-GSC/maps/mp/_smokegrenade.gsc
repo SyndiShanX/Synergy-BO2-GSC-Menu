@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\_smokegrenade.gsc
-***************************************/
+**************************************/
 
 #include maps\mp\_utility;
 #include common_scripts\utility;
@@ -23,8 +23,8 @@ watchsmokegrenadedetonation(owner) {
   owner addweaponstat("willy_pete_mp", "used", 1);
   self waittill("explode", position, surface);
 
-  if(!isdefined(level.water_duds) || level.water_duds == 1) {
-    if(isdefined(surface) && surface == "water")
+  if(!isDefined(level.water_duds) || level.water_duds == 1) {
+    if(isDefined(surface) && surface == "water")
       return;
   }
 
@@ -33,7 +33,7 @@ watchsmokegrenadedetonation(owner) {
   ent = spawntimedfx(level.fx_smokegrenade_single, position, (0, 0, 1), 12);
   ent thread blocksight();
 
-  if(isdefined(owner)) {
+  if(isDefined(owner)) {
     owner.smokegrenadetime = gettime();
     owner.smokegrenadeposition = position;
   }
@@ -53,7 +53,7 @@ blocksight() {
   radius = 64;
   fxblocksight(self, radius);
 
-  for (;;) {
+  for(;;) {
     wait 0.75;
     radius = clamp(radius * 1.5, 10, 150);
     fxblocksight(self, radius);

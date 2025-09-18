@@ -73,14 +73,14 @@ teleporter_samantha_chamber_line() {
   level.sam_chamber_line_played = 0;
   flag_wait("samantha_intro_done");
 
-  while (!level.sam_chamber_line_played) {
+  while(!level.sam_chamber_line_played) {
     a_players = getplayers();
 
     foreach(e_player in a_players) {
       dist_sq = distance2dsquared(self.origin, e_player.origin);
       height_diff = abs(self.origin[2] - e_player.origin[2]);
 
-      if(dist_sq < max_dist_sq && height_diff < 150 && !(isdefined(e_player.isspeaking) && e_player.isspeaking)) {
+      if(dist_sq < max_dist_sq && height_diff < 150 && !(isDefined(e_player.isspeaking) && e_player.isspeaking)) {
         level thread play_teleporter_samantha_chamber_line(e_player);
         return;
       }
@@ -122,7 +122,7 @@ run_chamber_exit(n_enum) {
   open_time = getanimlength( % fxanim_zom_tomb_portal_open_anim);
   flag_wait("start_zombie_round_logic");
 
-  while (true) {
+  while(true) {
     s_activate_pos.trigger_stub waittill("trigger", e_player);
 
     if(!is_player_valid(e_player)) {
@@ -182,7 +182,7 @@ run_chamber_entrance_teleporter() {
   e_model setanim( % fxanim_zom_tomb_portal_collapse_anim, 1.0, 0.1, 1);
   wait(collapse_time);
 
-  while (true) {
+  while(true) {
     flag_wait("enable_teleporter_" + self.script_int);
     flag_set(str_building_flag);
     e_model thread whirlwind_rumble_nearby_players(str_building_flag);
@@ -198,7 +198,7 @@ run_chamber_entrance_teleporter() {
     rumble_nearby_players(e_fx.origin, 1000, 2);
     e_model playloopsound("zmb_teleporter_loop_post", 1);
 
-    if(!(isdefined(self.exit_enabled) && self.exit_enabled)) {
+    if(!(isDefined(self.exit_enabled) && self.exit_enabled)) {
       self.exit_enabled = 1;
       level thread run_chamber_exit(self.script_int);
     }
@@ -217,19 +217,19 @@ run_chamber_entrance_teleporter() {
 }
 
 teleporter_radius_think(radius) {
-  if(!isdefined(radius))
+  if(!isDefined(radius))
     radius = 120.0;
 
   self endon("teleporter_radius_stop");
   radius_sq = radius * radius;
 
-  while (true) {
+  while(true) {
     a_players = getplayers();
 
     foreach(e_player in a_players) {
       dist_sq = distancesquared(e_player.origin, self.origin);
 
-      if(dist_sq < radius_sq && e_player getstance() != "prone" && !(isdefined(e_player.teleporting) && e_player.teleporting)) {
+      if(dist_sq < radius_sq && e_player getstance() != "prone" && !(isDefined(e_player.teleporting) && e_player.teleporting)) {
         playfx(level._effect["teleport_3p"], self.origin, (1, 0, 0), (0, 0, 1));
         playsoundatposition("zmb_teleporter_tele_3d", self.origin);
         level thread stargate_teleport_player(self.target, e_player);
@@ -245,10 +245,10 @@ stargate_teleport_think() {
   level endon("disable_teleporter_" + self.script_int);
   e_potal = level.a_teleport_models[self.script_int];
 
-  while (true) {
+  while(true) {
     self.trigger_stub waittill("trigger", e_player);
 
-    if(e_player getstance() != "prone" && !(isdefined(e_player.teleporting) && e_player.teleporting)) {
+    if(e_player getstance() != "prone" && !(isDefined(e_player.teleporting) && e_player.teleporting)) {
       playfx(level._effect["teleport_3p"], self.origin, (1, 0, 0), (0, 0, 1));
       playsoundatposition("zmb_teleporter_tele_3d", self.origin);
       level notify("player_teleported", e_player, self.script_int);
@@ -283,10 +283,10 @@ spawn_stargate_fx_origins() {
 }
 
 stargate_teleport_player(str_teleport_to, player, n_teleport_time_sec, show_fx) {
-  if(!isdefined(n_teleport_time_sec))
+  if(!isDefined(n_teleport_time_sec))
     n_teleport_time_sec = 2.0;
 
-  if(!isdefined(show_fx))
+  if(!isDefined(show_fx))
     show_fx = 1;
 
   player.teleporting = 1;
@@ -341,7 +341,7 @@ stargate_teleport_player(str_teleport_to, player, n_teleport_time_sec, show_fx) 
   s_pos = get_free_teleport_pos(player, a_pos);
   player unlink();
 
-  if(isdefined(player.teleport_origin)) {
+  if(isDefined(player.teleport_origin)) {
     player.teleport_origin delete();
     player.teleport_origin = undefined;
   }
@@ -369,7 +369,7 @@ is_teleport_landing_valid(s_pos, n_radius) {
 get_free_teleport_pos(player, a_structs) {
   n_player_radius = 64;
 
-  while (true) {
+  while(true) {
     a_players = getplayers();
 
     foreach(s_pos in a_structs) {

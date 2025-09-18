@@ -185,7 +185,7 @@ setnormalrain() {
 }
 
 bus_interior_loop_start() {
-  while (true) {
+  while(true) {
     level waittill("buslps");
     ent = spawn(0, (0, 0, 0), "script_origin");
     ent playloopsound("zmb_bus_interior_loop", 4);
@@ -209,7 +209,7 @@ poweron_audio() {
 air_raid_alarm() {
   level endon("pwr");
 
-  while (true) {
+  while(true) {
     playsound(0, "amb_alarm_airraid", self.origin);
     wait 11;
   }
@@ -252,10 +252,10 @@ screechersound() {
 }
 
 screecherstart() {
-  while (true) {
+  while(true) {
     level waittill("scrStrt");
 
-    if(!isdefined(level.screecherent))
+    if(!isDefined(level.screecherent))
       level.screecherent = spawn(0, (0, 0, 0), "script_origin");
 
     level.screecherent playloopsound("zmb_screecher_arm_loop", 1);
@@ -263,10 +263,10 @@ screecherstart() {
 }
 
 screecherend() {
-  while (true) {
+  while(true) {
     level waittill("scrEnd");
 
-    if(isdefined(level.screecherent)) {
+    if(isDefined(level.screecherent)) {
       level.screecherent delete();
       level.screecherent = undefined;
     }
@@ -282,7 +282,7 @@ lanterns() {
 }
 
 safetylights() {
-  while (true) {
+  while(true) {
     level waittill("SafeLightOn");
     level notify("sndSafeLights");
     level waittill("SafeLightOff");

@@ -1,7 +1,7 @@
-/************************************************************
+/*******************************************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\animscripts\traverse\through_hole_42.gsc
-************************************************************/
+*******************************************************************/
 
 #include maps\mp\animscripts\traverse\shared;
 #include maps\mp\animscripts\utility;
@@ -12,10 +12,10 @@ main() {
   self traversemode("nogravity");
   self traversemode("noclip");
   startnode = self getnegotiationstartnode();
-  assert(isdefined(startnode));
+  assert(isDefined(startnode));
   self orientmode("face angle", startnode.angles[1]);
 
-  if(isdefined(startnode.traverse_height)) {
+  if(isDefined(startnode.traverse_height)) {
     realheight = startnode.traverse_height - startnode.origin[2];
     self thread teleportthread(realheight);
   }

@@ -11,7 +11,7 @@
 #include maps\mp\zombies\_zm;
 
 onplayerconnect_sq_fc() {
-  if(!isdefined(level.sq_fc_still_valid))
+  if(!isDefined(level.sq_fc_still_valid))
     level.sq_fc_still_valid = 1;
 
   if(flag("afterlife_start_over") || !level.sq_fc_still_valid) {
@@ -30,7 +30,7 @@ watch_for_touching_controls() {
   v_forward_point = self.origin + anglestoforward(self.angles) * 10;
   v_original_forward_vec = vectornormalize(v_forward_point - self.origin);
 
-  while (!flag("afterlife_start_over") && level.sq_fc_still_valid) {
+  while(!flag("afterlife_start_over") && level.sq_fc_still_valid) {
     v_new_forward_point = self.origin + anglestoforward(self.angles) * 10;
     v_new_forward_vec = vectornormalize(v_new_forward_point - self.origin);
     move_length = length((self.origin[0], self.origin[1], 0) - v_original_origin);
@@ -74,11 +74,12 @@ player_intermission_prison() {
   self.friendlydamage = undefined;
   points = getstructarray("dblock_cam", "targetname");
 
-  if(!isdefined(points) || points.size == 0) {
+  if(!isDefined(points) || points.size == 0) {
     points = getentarray("info_intermission", "classname");
 
     if(points.size < 1) {
       println("NO info_intermission POINTS IN MAP");
+
       return;
     }
   }
@@ -91,17 +92,17 @@ player_intermission_prison() {
   visionsetnaked("cheat_bw", 0.05);
   org = undefined;
 
-  while (true) {
+  while(true) {
     points = array_randomize(points);
 
-    for (i = 0; i < points.size; i++) {
+    for(i = 0; i < points.size; i++) {
       point = points[i];
 
-      if(!isdefined(org))
+      if(!isDefined(org))
         self spawn(point.origin, point.angles);
 
-      if(isdefined(points[i].target)) {
-        if(!isdefined(org)) {
+      if(isDefined(points[i].target)) {
+        if(!isDefined(org)) {
           org = spawn("script_model", self.origin + vectorscale((0, 0, -1), 60.0));
           org setmodel("tag_origin");
         }
@@ -109,7 +110,7 @@ player_intermission_prison() {
         org.origin = points[i].origin;
         org.angles = points[i].angles;
 
-        for (j = 0; j < get_players().size; j++) {
+        for(j = 0; j < get_players().size; j++) {
           player = get_players()[j];
           player camerasetposition(org);
           player camerasetlookat();
@@ -118,7 +119,7 @@ player_intermission_prison() {
 
         speed = 20;
 
-        if(isdefined(points[i].speed))
+        if(isDefined(points[i].speed))
           speed = points[i].speed;
 
         target_point = getstruct(points[i].target, "targetname");

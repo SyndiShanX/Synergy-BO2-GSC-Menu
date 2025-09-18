@@ -1,7 +1,7 @@
-/*********************************************************
+/*************************************************************
  * Decompiled and Edited by SyndiShanX
  * Script: clientscripts\mp\zombies\_zm_weap_slipgun.csc
-*********************************************************/
+*************************************************************/
 
 #include clientscripts\mp\_utility;
 #include clientscripts\mp\_fx;
@@ -24,7 +24,7 @@ init() {
 slipgun_notetrack_think() {
   level.slipgun_sound_ent = spawn(0, (0, 0, 0), "script_origin");
 
-  for (;;) {
+  for(;;) {
     level waittill("notetrack", localclientnum, note);
     currentweapon = getcurrentweapon(localclientnum);
 

@@ -60,7 +60,7 @@ callback_playerconnect() {
   self.statusicon = "hud_status_connecting";
   self waittill("begin");
 
-  if(isdefined(level.reset_clientdvars))
+  if(isDefined(level.reset_clientdvars))
     self[[level.reset_clientdvars]]();
 
   waittillframeend;
@@ -73,10 +73,10 @@ callback_playerconnect() {
   if(self ishost())
     self thread maps\mp\gametypes\_globallogic::listenforgameend();
 
-  if(!level.splitscreen && !isdefined(self.pers["score"]))
+  if(!level.splitscreen && !isDefined(self.pers["score"]))
     iprintln(&"MP_CONNECTED", self);
 
-  if(!isdefined(self.pers["score"])) {
+  if(!isDefined(self.pers["score"])) {
     self thread maps\mp\gametypes\_persistence::adjustrecentstats();
     self maps\mp\gametypes\_persistence::setafteractionreportstat("valid", 0);
 
@@ -86,11 +86,11 @@ callback_playerconnect() {
       self maps\mp\gametypes\_persistence::setafteractionreportstat("wagerMatchFailed", 0);
   }
 
-  if((level.rankedmatch || level.wagermatch || level.leaguematch) && !isdefined(self.pers["matchesPlayedStatsTracked"])) {
+  if((level.rankedmatch || level.wagermatch || level.leaguematch) && !isDefined(self.pers["matchesPlayedStatsTracked"])) {
     gamemode = maps\mp\gametypes\_globallogic::getcurrentgamemode();
     self maps\mp\gametypes\_globallogic::incrementmatchcompletionstat(gamemode, "played", "started");
 
-    if(!isdefined(self.pers["matchesHostedStatsTracked"]) && self islocaltohost()) {
+    if(!isDefined(self.pers["matchesHostedStatsTracked"]) && self islocaltohost()) {
       self maps\mp\gametypes\_globallogic::incrementmatchcompletionstat(gamemode, "hosted", "started");
       self.pers["matchesHostedStatsTracked"] = 1;
     }
@@ -209,7 +209,7 @@ callback_playerconnect() {
 
   self.killedplayerscurrent = [];
 
-  if(!isdefined(self.pers["best_kill_streak"])) {
+  if(!isDefined(self.pers["best_kill_streak"])) {
     self.pers["killed_players"] = [];
     self.pers["killed_by"] = [];
     self.pers["nemesis_tracking"] = [];
@@ -223,7 +223,7 @@ callback_playerconnect() {
     self.pers["best_kill_streak"] = 0;
   }
 
-  if(!isdefined(self.pers["music"])) {
+  if(!isDefined(self.pers["music"])) {
     self.pers["music"] = spawnstruct();
     self.pers["music"].spawn = 0;
     self.pers["music"].inque = 0;
@@ -240,30 +240,30 @@ callback_playerconnect() {
   self.currentleaderdialog = "";
   self.currentleaderdialogtime = 0;
 
-  if(!isdefined(self.pers["cur_kill_streak"]))
+  if(!isDefined(self.pers["cur_kill_streak"]))
     self.pers["cur_kill_streak"] = 0;
 
-  if(!isdefined(self.pers["cur_total_kill_streak"])) {
+  if(!isDefined(self.pers["cur_total_kill_streak"])) {
     self.pers["cur_total_kill_streak"] = 0;
     self setplayercurrentstreak(0);
   }
 
-  if(!isdefined(self.pers["totalKillstreakCount"]))
+  if(!isDefined(self.pers["totalKillstreakCount"]))
     self.pers["totalKillstreakCount"] = 0;
 
-  if(!isdefined(self.pers["killstreaksEarnedThisKillstreak"]))
+  if(!isDefined(self.pers["killstreaksEarnedThisKillstreak"]))
     self.pers["killstreaksEarnedThisKillstreak"] = 0;
 
-  if(isdefined(level.usingscorestreaks) && level.usingscorestreaks && !isdefined(self.pers["killstreak_quantity"]))
+  if(isDefined(level.usingscorestreaks) && level.usingscorestreaks && !isDefined(self.pers["killstreak_quantity"]))
     self.pers["killstreak_quantity"] = [];
 
-  if(isdefined(level.usingscorestreaks) && level.usingscorestreaks && !isdefined(self.pers["held_killstreak_ammo_count"]))
+  if(isDefined(level.usingscorestreaks) && level.usingscorestreaks && !isDefined(self.pers["held_killstreak_ammo_count"]))
     self.pers["held_killstreak_ammo_count"] = [];
 
-  if(isdefined(level.usingscorestreaks) && level.usingscorestreaks && !isdefined(self.pers["held_killstreak_clip_count"]))
+  if(isDefined(level.usingscorestreaks) && level.usingscorestreaks && !isDefined(self.pers["held_killstreak_clip_count"]))
     self.pers["held_killstreak_clip_count"] = [];
 
-  if(!isdefined(self.pers["changed_class"]))
+  if(!isDefined(self.pers["changed_class"]))
     self.pers["changed_class"] = 0;
 
   self.lastkilltime = 0;
@@ -284,7 +284,7 @@ callback_playerconnect() {
   self.lastgrenadesuicidetime = -1;
   self.teamkillsthisround = 0;
 
-  if(!isdefined(level.livesdonotreset) || !level.livesdonotreset || !isdefined(self.pers["lives"]))
+  if(!isDefined(level.livesdonotreset) || !level.livesdonotreset || !isDefined(self.pers["lives"]))
     self.pers["lives"] = level.numlives;
 
   if(!level.teambased)
@@ -313,7 +313,7 @@ callback_playerconnect() {
     return;
   }
 
-  if((level.rankedmatch || level.wagermatch || level.leaguematch) && !isdefined(self.pers["lossAlreadyReported"])) {
+  if((level.rankedmatch || level.wagermatch || level.leaguematch) && !isDefined(self.pers["lossAlreadyReported"])) {
     if(level.leaguematch)
       self recordleaguepreloser();
 
@@ -321,7 +321,7 @@ callback_playerconnect() {
     self.pers["lossAlreadyReported"] = 1;
   }
 
-  if(!isdefined(self.pers["winstreakAlreadyCleared"])) {
+  if(!isDefined(self.pers["winstreakAlreadyCleared"])) {
     self maps\mp\gametypes\_globallogic_score::backupandclearwinstreaks();
     self.pers["winstreakAlreadyCleared"] = 1;
   }
@@ -334,7 +334,7 @@ callback_playerconnect() {
 
   level endon("game_ended");
 
-  if(isdefined(level.hostmigrationtimer))
+  if(isDefined(level.hostmigrationtimer))
     self thread maps\mp\gametypes\_hostmigration::hostmigrationtimerthink();
 
   if(level.oldschool) {
@@ -342,13 +342,13 @@ callback_playerconnect() {
     self.class = self.pers["class"];
   }
 
-  if(isdefined(self.pers["team"]))
+  if(isDefined(self.pers["team"]))
     self.team = self.pers["team"];
 
-  if(isdefined(self.pers["class"]))
+  if(isDefined(self.pers["class"]))
     self.class = self.pers["class"];
 
-  if(!isdefined(self.pers["team"]) || isdefined(self.pers["needteam"])) {
+  if(!isDefined(self.pers["team"]) || isDefined(self.pers["needteam"])) {
     self.pers["needteam"] = undefined;
     self.pers["team"] = "spectator";
     self.team = "spectator";
@@ -418,14 +418,14 @@ callback_playerconnect() {
 
   profilelog_endtiming(4, "gs=" + game["state"] + " zom=" + sessionmodeiszombiesgame());
 
-  if(isdefined(self.pers["isBot"]))
+  if(isDefined(self.pers["isBot"]))
     return;
 }
 
 spectate_player_watcher() {
   self endon("disconnect");
 
-  if(!level.splitscreen && !level.hardcoremode && getdvarint(#"scr_showperksonspawn") == 1 && game["state"] != "postgame" && !isdefined(self.perkhudelem)) {
+  if(!level.splitscreen && !level.hardcoremode && getdvarint(#"scr_showperksonspawn") == 1 && game["state"] != "postgame" && !isDefined(self.perkhudelem)) {
     if(level.perksenabled == 1)
       self maps\mp\gametypes\_hud_util::showperks();
 
@@ -435,7 +435,7 @@ spectate_player_watcher() {
   self.watchingactiveclient = 1;
   self.waitingforplayerstext = undefined;
 
-  while (true) {
+  while(true) {
     if(self.pers["team"] != "spectator" || level.gameended) {
       self maps\mp\gametypes\_hud_message::clearshoutcasterwaitingmessage();
       self freezecontrols(0);
@@ -444,7 +444,7 @@ spectate_player_watcher() {
     } else {
       count = 0;
 
-      for (i = 0; i < level.players.size; i++) {
+      for(i = 0; i < level.players.size; i++) {
         if(level.players[i].team != "spectator") {
           count++;
           break;
@@ -478,13 +478,14 @@ spectate_player_watcher() {
 callback_playermigrated() {
   println("Player " + self.name + " finished migrating at time " + gettime());
 
-  if(isdefined(self.connected) && self.connected)
+  if(isDefined(self.connected) && self.connected)
     self maps\mp\gametypes\_globallogic_ui::updateobjectivetext();
 
   level.hostmigrationreturnedplayercount++;
 
   if(level.hostmigrationreturnedplayercount >= level.players.size * 2 / 3) {
     println("2/3 of players have finished migrating");
+
     level notify("hostmigration_enoughplayers");
   }
 }
@@ -508,7 +509,7 @@ callback_playerdisconnect() {
     setdvar("splitscreen_playerNum", players.size);
   }
 
-  if(isdefined(self.score) && isdefined(self.pers["team"])) {
+  if(isDefined(self.score) && isDefined(self.pers["team"])) {
     self logstring("team: score " + self.pers["team"] + ":" + self.score);
     level.dropteam = level.dropteam + 1;
   }
@@ -519,9 +520,9 @@ callback_playerdisconnect() {
   logprint("Q;" + lpguid + ";" + lpselfnum + ";" + self.name + "\\n");
   self maps\mp\_gamerep::gamerepplayerdisconnected();
 
-  for (entry = 0; entry < level.players.size; entry++) {
+  for(entry = 0; entry < level.players.size; entry++) {
     if(level.players[entry] == self) {
-      while (entry < level.players.size - 1) {
+      while(entry < level.players.size - 1) {
         level.players[entry] = level.players[entry + 1];
         entry++;
       }
@@ -531,17 +532,17 @@ callback_playerdisconnect() {
     }
   }
 
-  for (entry = 0; entry < level.players.size; entry++) {
-    if(isdefined(level.players[entry].pers["killed_players"][self.name]))
+  for(entry = 0; entry < level.players.size; entry++) {
+    if(isDefined(level.players[entry].pers["killed_players"][self.name]))
       level.players[entry].pers["killed_players"][self.name] = undefined;
 
-    if(isdefined(level.players[entry].killedplayerscurrent[self.name]))
+    if(isDefined(level.players[entry].killedplayerscurrent[self.name]))
       level.players[entry].killedplayerscurrent[self.name] = undefined;
 
-    if(isdefined(level.players[entry].pers["killed_by"][self.name]))
+    if(isDefined(level.players[entry].pers["killed_by"][self.name]))
       level.players[entry].pers["killed_by"][self.name] = undefined;
 
-    if(isdefined(level.players[entry].pers["nemesis_tracking"][self.name]))
+    if(isDefined(level.players[entry].pers["nemesis_tracking"][self.name]))
       level.players[entry].pers["nemesis_tracking"][self.name] = undefined;
 
     if(level.players[entry].pers["nemesis_name"] == self.name)
@@ -573,7 +574,7 @@ choosenextbestnemesis() {
   nemesisname = "";
 
   if(nemesisarraykeys.size > 0) {
-    for (i = 0; i < nemesisarraykeys.size; i++) {
+    for(i = 0; i < nemesisarraykeys.size; i++) {
       nemesisarraykey = nemesisarraykeys[i];
 
       if(nemesisarray[nemesisarraykey] > nemesisamount) {
@@ -586,7 +587,7 @@ choosenextbestnemesis() {
   self.pers["nemesis_name"] = nemesisname;
 
   if(nemesisname != "") {
-    for (playerindex = 0; playerindex < level.players.size; playerindex++) {
+    for(playerindex = 0; playerindex < level.players.size; playerindex++) {
       if(level.players[playerindex].name == nemesisname) {
         nemesisplayer = level.players[playerindex];
         self.pers["nemesis_rank"] = nemesisplayer.pers["rank"];
@@ -601,9 +602,9 @@ choosenextbestnemesis() {
 }
 
 removeplayerondisconnect() {
-  for (entry = 0; entry < level.players.size; entry++) {
+  for(entry = 0; entry < level.players.size; entry++) {
     if(level.players[entry] == self) {
-      while (entry < level.players.size - 1) {
+      while(entry < level.players.size - 1) {
         level.players[entry] = level.players[entry + 1];
         entry++;
       }
@@ -618,7 +619,7 @@ custom_gamemodes_modified_damage(victim, eattacker, idamage, smeansofdeath, swea
   if(level.onlinegame && !sessionmodeisprivate())
     return idamage;
 
-  if(isdefined(eattacker) && isdefined(eattacker.damagemodifier))
+  if(isDefined(eattacker) && isDefined(eattacker.damagemodifier))
     idamage = idamage * eattacker.damagemodifier;
 
   if(smeansofdeath == "MOD_PISTOL_BULLET" || smeansofdeath == "MOD_RIFLE_BULLET")
@@ -628,20 +629,20 @@ custom_gamemodes_modified_damage(victim, eattacker, idamage, smeansofdeath, swea
 }
 
 figureoutattacker(eattacker) {
-  if(isdefined(eattacker)) {
-    if(isai(eattacker) && isdefined(eattacker.script_owner)) {
+  if(isDefined(eattacker)) {
+    if(isai(eattacker) && isDefined(eattacker.script_owner)) {
       team = self.team;
 
-      if(isai(self) && isdefined(self.aiteam))
+      if(isai(self) && isDefined(self.aiteam))
         team = self.aiteam;
 
       if(eattacker.script_owner.team != team)
         eattacker = eattacker.script_owner;
     }
 
-    if(eattacker.classname == "script_vehicle" && isdefined(eattacker.owner))
+    if(eattacker.classname == "script_vehicle" && isDefined(eattacker.owner))
       eattacker = eattacker.owner;
-    else if(eattacker.classname == "auto_turret" && isdefined(eattacker.owner))
+    else if(eattacker.classname == "auto_turret" && isDefined(eattacker.owner))
       eattacker = eattacker.owner;
   }
 
@@ -649,10 +650,10 @@ figureoutattacker(eattacker) {
 }
 
 figureoutweapon(sweapon, einflictor) {
-  if(sweapon == "none" && isdefined(einflictor)) {
-    if(isdefined(einflictor.targetname) && einflictor.targetname == "explodable_barrel")
+  if(sweapon == "none" && isDefined(einflictor)) {
+    if(isDefined(einflictor.targetname) && einflictor.targetname == "explodable_barrel")
       sweapon = "explodable_barrel_mp";
-    else if(isdefined(einflictor.destructible_type) && issubstr(einflictor.destructible_type, "vehicle_"))
+    else if(isDefined(einflictor.destructible_type) && issubstr(einflictor.destructible_type, "vehicle_"))
       sweapon = "destructible_car_mp";
   }
 
@@ -663,7 +664,7 @@ isplayerimmunetokillstreak(eattacker, sweapon) {
   if(level.hardcoremode)
     return false;
 
-  if(!isdefined(eattacker))
+  if(!isDefined(eattacker))
     return false;
 
   if(self != eattacker)
@@ -684,22 +685,22 @@ callback_playerdamage(einflictor, eattacker, idamage, idflags, smeansofdeath, sw
   if(self.sessionteam == "spectator") {
     return;
   }
-  if(isdefined(self.candocombat) && !self.candocombat) {
+  if(isDefined(self.candocombat) && !self.candocombat) {
     return;
   }
-  if(isdefined(eattacker) && isplayer(eattacker) && isdefined(eattacker.candocombat) && !eattacker.candocombat) {
+  if(isDefined(eattacker) && isplayer(eattacker) && isDefined(eattacker.candocombat) && !eattacker.candocombat) {
     return;
   }
-  if(isdefined(level.hostmigrationtimer)) {
+  if(isDefined(level.hostmigrationtimer)) {
     return;
   }
   if((sweapon == "ai_tank_drone_gun_mp" || sweapon == "ai_tank_drone_rocket_mp") && !level.hardcoremode) {
-    if(isdefined(eattacker) && eattacker == self) {
-      if(isdefined(einflictor) && isdefined(einflictor.from_ai))
+    if(isDefined(eattacker) && eattacker == self) {
+      if(isDefined(einflictor) && isDefined(einflictor.from_ai))
         return;
     }
 
-    if(isdefined(eattacker) && isdefined(eattacker.owner) && eattacker.owner == self)
+    if(isDefined(eattacker) && isDefined(eattacker.owner) && eattacker.owner == self)
       return;
   }
 
@@ -710,7 +711,7 @@ callback_playerdamage(einflictor, eattacker, idamage, idflags, smeansofdeath, sw
     self notify("emp_grenaded", eattacker);
   }
 
-  if(isdefined(eattacker))
+  if(isDefined(eattacker))
     idamage = maps\mp\gametypes\_class::cac_modified_damage(self, eattacker, idamage, smeansofdeath, sweapon, einflictor, shitloc);
 
   idamage = custom_gamemodes_modified_damage(self, eattacker, idamage, smeansofdeath, sweapon, einflictor, shitloc);
@@ -720,7 +721,7 @@ callback_playerdamage(einflictor, eattacker, idamage, idflags, smeansofdeath, sw
   eattacker = figureoutattacker(eattacker);
   pixbeginevent("PlayerDamage flags/tweaks");
 
-  if(!isdefined(vdir))
+  if(!isDefined(vdir))
     idflags = idflags | level.idflags_no_knockback;
 
   friendly = 0;
@@ -728,11 +729,11 @@ callback_playerdamage(einflictor, eattacker, idamage, idflags, smeansofdeath, sw
   if(self.health != self.maxhealth)
     self notify("snd_pain_player");
 
-  if(isdefined(einflictor) && isdefined(einflictor.script_noteworthy)) {
+  if(isDefined(einflictor) && isDefined(einflictor.script_noteworthy)) {
     if(einflictor.script_noteworthy == "ragdoll_now")
       smeansofdeath = "MOD_FALLING";
 
-    if(isdefined(level.overrideweaponfunc))
+    if(isDefined(level.overrideweaponfunc))
       sweapon = [
         [level.overrideweaponfunc]
       ](sweapon, einflictor.script_noteworthy);
@@ -746,7 +747,7 @@ callback_playerdamage(einflictor, eattacker, idamage, idflags, smeansofdeath, sw
       [level.onplayerdamage]
     ](einflictor, eattacker, idamage, idflags, smeansofdeath, sweapon, vpoint, vdir, shitloc, psoffsettime);
 
-    if(isdefined(modifieddamage)) {
+    if(isDefined(modifieddamage)) {
       if(modifieddamage <= 0) {
         return;
       }
@@ -764,7 +765,7 @@ callback_playerdamage(einflictor, eattacker, idamage, idflags, smeansofdeath, sw
   if(self maps\mp\_vehicles::player_is_occupant_invulnerable(smeansofdeath)) {
     return;
   }
-  if(isdefined(eattacker) && isplayer(eattacker) && self.team != eattacker.team)
+  if(isDefined(eattacker) && isplayer(eattacker) && self.team != eattacker.team)
     self.lastattackweapon = sweapon;
 
   sweapon = figureoutweapon(sweapon, einflictor);
@@ -795,7 +796,7 @@ callback_playerdamage(einflictor, eattacker, idamage, idflags, smeansofdeath, sw
           if(self.shielddamageblocked > 2000)
             score_event = "shield_blocked_damage_reduced";
 
-          if(isdefined(level.scoreinfo[score_event]["value"]))
+          if(isDefined(level.scoreinfo[score_event]["value"]))
             self addweaponstat("riotshield_mp", "score_from_blocked_damage", level.scoreinfo[score_event]["value"]);
 
           thread maps\mp\_scoreevents::processscoreevent(score_event, self);
@@ -809,7 +810,7 @@ callback_playerdamage(einflictor, eattacker, idamage, idflags, smeansofdeath, sw
       if(!(idflags & level.idflags_shield_explosive_impact_huge))
         idamage = idamage * 0.0;
     } else if(idflags & level.idflags_shield_explosive_splash) {
-      if(isdefined(einflictor) && isdefined(einflictor.stucktoplayer) && einflictor.stucktoplayer == self)
+      if(isDefined(einflictor) && isDefined(einflictor.stucktoplayer) && einflictor.stucktoplayer == self)
         idamage = 101;
 
       shitloc = "none";
@@ -818,7 +819,7 @@ callback_playerdamage(einflictor, eattacker, idamage, idflags, smeansofdeath, sw
   }
 
   if(!(idflags & level.idflags_no_protection)) {
-    if(isdefined(einflictor) && (smeansofdeath == "MOD_GAS" || maps\mp\gametypes\_class::isexplosivedamage(undefined, smeansofdeath))) {
+    if(isDefined(einflictor) && (smeansofdeath == "MOD_GAS" || maps\mp\gametypes\_class::isexplosivedamage(undefined, smeansofdeath))) {
       if((einflictor.classname == "grenade" || sweapon == "tabun_gas_mp") && self.lastspawntime + 3500 > gettime() && distancesquared(einflictor.origin, self.lastspawnpoint.origin) < 62500) {
         return;
       }
@@ -838,17 +839,17 @@ callback_playerdamage(einflictor, eattacker, idamage, idflags, smeansofdeath, sw
       self.explosiveinfo["originalowner"] = einflictor.originalowner;
       isfrag = sweapon == "frag_grenade_mp";
 
-      if(isdefined(eattacker) && eattacker != self) {
-        if(isdefined(eattacker) && isdefined(einflictor.owner) && (sweapon == "satchel_charge_mp" || sweapon == "claymore_mp" || sweapon == "bouncingbetty_mp")) {
+      if(isDefined(eattacker) && eattacker != self) {
+        if(isDefined(eattacker) && isDefined(einflictor.owner) && (sweapon == "satchel_charge_mp" || sweapon == "claymore_mp" || sweapon == "bouncingbetty_mp")) {
           self.explosiveinfo["originalOwnerKill"] = einflictor.owner == self;
-          self.explosiveinfo["damageExplosiveKill"] = isdefined(einflictor.wasdamaged);
-          self.explosiveinfo["chainKill"] = isdefined(einflictor.waschained);
-          self.explosiveinfo["wasJustPlanted"] = isdefined(einflictor.wasjustplanted);
-          self.explosiveinfo["bulletPenetrationKill"] = isdefined(einflictor.wasdamagedfrombulletpenetration);
+          self.explosiveinfo["damageExplosiveKill"] = isDefined(einflictor.wasdamaged);
+          self.explosiveinfo["chainKill"] = isDefined(einflictor.waschained);
+          self.explosiveinfo["wasJustPlanted"] = isDefined(einflictor.wasjustplanted);
+          self.explosiveinfo["bulletPenetrationKill"] = isDefined(einflictor.wasdamagedfrombulletpenetration);
           self.explosiveinfo["cookedKill"] = 0;
         }
 
-        if((sweapon == "sticky_grenade_mp" || sweapon == "explosive_bolt_mp") && isdefined(einflictor) && isdefined(einflictor.stucktoplayer))
+        if((sweapon == "sticky_grenade_mp" || sweapon == "explosive_bolt_mp") && isDefined(einflictor) && isDefined(einflictor.stucktoplayer))
           self.explosiveinfo["stuckToPlayer"] = einflictor.stucktoplayer;
 
         if(sweapon == "proximity_grenade_mp" || sweapon == "proximity_grenade_aoe_mp") {
@@ -856,27 +857,27 @@ callback_playerdamage(einflictor, eattacker, idamage, idflags, smeansofdeath, sw
           self.laststunnedtime = self.idflagstime;
         }
 
-        if(isdefined(eattacker.lastgrenadesuicidetime) && eattacker.lastgrenadesuicidetime >= gettime() - 50 && isfrag)
+        if(isDefined(eattacker.lastgrenadesuicidetime) && eattacker.lastgrenadesuicidetime >= gettime() - 50 && isfrag)
           self.explosiveinfo["suicideGrenadeKill"] = 1;
         else
           self.explosiveinfo["suicideGrenadeKill"] = 0;
       }
 
       if(isfrag) {
-        self.explosiveinfo["cookedKill"] = isdefined(einflictor.iscooked);
-        self.explosiveinfo["throwbackKill"] = isdefined(einflictor.threwback);
+        self.explosiveinfo["cookedKill"] = isDefined(einflictor.iscooked);
+        self.explosiveinfo["throwbackKill"] = isDefined(einflictor.threwback);
       }
 
-      if(isdefined(eattacker) && isplayer(eattacker) && eattacker != self)
+      if(isDefined(eattacker) && isplayer(eattacker) && eattacker != self)
         self maps\mp\gametypes\_globallogic_score::setinflictorstat(einflictor, eattacker, sweapon);
     }
 
-    if(smeansofdeath == "MOD_IMPACT" && isdefined(eattacker) && isplayer(eattacker) && eattacker != self) {
+    if(smeansofdeath == "MOD_IMPACT" && isDefined(eattacker) && isplayer(eattacker) && eattacker != self) {
       if(sweapon != "knife_ballistic_mp")
         self maps\mp\gametypes\_globallogic_score::setinflictorstat(einflictor, eattacker, sweapon);
 
-      if(sweapon == "hatchet_mp" && isdefined(einflictor))
-        self.explosiveinfo["projectile_bounced"] = isdefined(einflictor.bounced);
+      if(sweapon == "hatchet_mp" && isDefined(einflictor))
+        self.explosiveinfo["projectile_bounced"] = isDefined(einflictor.bounced);
     }
 
     if(isplayer(eattacker))
@@ -935,27 +936,27 @@ callback_playerdamage(einflictor, eattacker, idamage, idflags, smeansofdeath, sw
       if(idamage < 1)
         idamage = 1;
 
-      if(isdefined(eattacker) && isplayer(eattacker) && allowedassistweapon(sweapon))
+      if(isDefined(eattacker) && isplayer(eattacker) && allowedassistweapon(sweapon))
         self trackattackerdamage(eattacker, idamage, smeansofdeath, sweapon);
 
       giveinflictorownerassist(eattacker, einflictor, idamage, smeansofdeath, sweapon);
 
-      if(isdefined(eattacker))
+      if(isDefined(eattacker))
         level.lastlegitimateattacker = eattacker;
 
-      if(isdefined(eattacker) && isplayer(eattacker) && isdefined(sweapon) && !issubstr(smeansofdeath, "MOD_MELEE"))
+      if(isDefined(eattacker) && isplayer(eattacker) && isDefined(sweapon) && !issubstr(smeansofdeath, "MOD_MELEE"))
         eattacker thread maps\mp\gametypes\_weapons::checkhit(sweapon);
 
-      if((smeansofdeath == "MOD_GRENADE" || smeansofdeath == "MOD_GRENADE_SPLASH") && isdefined(einflictor.iscooked))
+      if((smeansofdeath == "MOD_GRENADE" || smeansofdeath == "MOD_GRENADE_SPLASH") && isDefined(einflictor.iscooked))
         self.wascooked = gettime();
       else
         self.wascooked = undefined;
 
-      self.lastdamagewasfromenemy = isdefined(eattacker) && eattacker != self;
+      self.lastdamagewasfromenemy = isDefined(eattacker) && eattacker != self;
 
       if(self.lastdamagewasfromenemy) {
         if(isplayer(eattacker)) {
-          if(isdefined(eattacker.damagedplayers[self.clientid]) == 0)
+          if(isDefined(eattacker.damagedplayers[self.clientid]) == 0)
             eattacker.damagedplayers[self.clientid] = spawnstruct();
 
           eattacker.damagedplayers[self.clientid].time = gettime();
@@ -966,7 +967,7 @@ callback_playerdamage(einflictor, eattacker, idamage, idflags, smeansofdeath, sw
       self finishplayerdamagewrapper(einflictor, eattacker, idamage, idflags, smeansofdeath, sweapon, vpoint, vdir, shitloc, psoffsettime, boneindex);
     }
 
-    if(isdefined(eattacker) && isplayer(eattacker) && eattacker != self) {
+    if(isDefined(eattacker) && isplayer(eattacker) && eattacker != self) {
       if(dodamagefeedback(sweapon, einflictor, idamage, smeansofdeath)) {
         if(idamage > 0) {
           if(self.health > 0)
@@ -980,10 +981,11 @@ callback_playerdamage(einflictor, eattacker, idamage, idflags, smeansofdeath, sw
     self.hasdonecombat = 1;
   }
 
-  if(isdefined(eattacker) && eattacker != self && !friendly)
+  if(isDefined(eattacker) && eattacker != self && !friendly)
     level.usestartspawns = 0;
 
   pixbeginevent("PlayerDamage log");
+
   if(getdvarint(#"g_debugDamage"))
     println("client:" + self getentitynumber() + " health:" + self.health + " attacker:" + eattacker.clientid + " inflictor is player:" + isplayer(einflictor) + " damage:" + idamage + " hitLoc:" + shitloc);
 
@@ -1025,14 +1027,14 @@ resetattackerlist() {
 }
 
 dodamagefeedback(sweapon, einflictor, idamage, smeansofdeath) {
-  if(!isdefined(sweapon))
+  if(!isDefined(sweapon))
     return false;
 
   if(level.allowhitmarkers == 0)
     return false;
 
   if(level.allowhitmarkers == 1) {
-    if(isdefined(smeansofdeath) && isdefined(idamage)) {
+    if(isDefined(smeansofdeath) && isDefined(idamage)) {
       if(istacticalhitmarker(sweapon, smeansofdeath, idamage))
         return false;
     }
@@ -1071,7 +1073,7 @@ doperkfeedback(player, sweapon, smeansofdeath, einflictor) {
 isaikillstreakdamage(sweapon, einflictor) {
   switch (sweapon) {
     case "ai_tank_drone_rocket_mp":
-      return isdefined(einflictor.firedbyai);
+      return isDefined(einflictor.firedbyai);
     case "missile_swarm_projectile_mp":
       return 1;
     case "planemortar_mp":
@@ -1094,6 +1096,7 @@ finishplayerdamagewrapper(einflictor, eattacker, idamage, idflags, smeansofdeath
 
   if(!level.console && idflags & level.idflags_penetration && isplayer(eattacker)) {
     println("penetrated:" + self getentitynumber() + " health:" + self.health + " attacker:" + eattacker.clientid + " inflictor is player:" + isplayer(einflictor) + " damage:" + idamage + " hitLoc:" + shitloc);
+
     eattacker addplayerstat("penetration_shots", 1);
   }
 
@@ -1117,7 +1120,7 @@ allowedassistweapon(weapon) {
 }
 
 playerkilled_killstreaks(attacker, sweapon) {
-  if(!isdefined(self.switching_teams)) {
+  if(!isDefined(self.switching_teams)) {
     if(isplayer(attacker) && level.teambased && attacker != self && self.team == attacker.team) {
       self.pers["cur_kill_streak"] = 0;
       self.pers["cur_total_kill_streak"] = 0;
@@ -1163,16 +1166,16 @@ playerkilled_weaponstats(attacker, sweapon, smeansofdeath, wasinlaststand, lastw
   if(isplayer(attacker) && attacker != self && (!level.teambased || level.teambased && self.team != attacker.team)) {
     self addweaponstat(sweapon, "deaths", 1);
 
-    if(wasinlaststand && isdefined(lastweaponbeforedroppingintolaststand))
+    if(wasinlaststand && isDefined(lastweaponbeforedroppingintolaststand))
       weaponname = lastweaponbeforedroppingintolaststand;
     else
       weaponname = self.lastdroppableweapon;
 
-    if(isdefined(weaponname))
+    if(isDefined(weaponname))
       self addweaponstat(weaponname, "deathsDuringUse", 1);
 
     if(smeansofdeath != "MOD_FALLING") {
-      if(sweapon == "explosive_bolt_mp" && isdefined(inflictor) && isdefined(inflictor.ownerweaponatlaunch) && inflictor.owneradsatlaunch)
+      if(sweapon == "explosive_bolt_mp" && isDefined(inflictor) && isDefined(inflictor.ownerweaponatlaunch) && inflictor.owneradsatlaunch)
         attacker addweaponstat(inflictor.ownerweaponatlaunch, "kills", 1, attacker.class_num, 1);
       else
         attacker addweaponstat(sweapon, "kills", 1, attacker.class_num);
@@ -1187,12 +1190,12 @@ playerkilled_weaponstats(attacker, sweapon, smeansofdeath, wasinlaststand, lastw
 }
 
 playerkilled_obituary(attacker, einflictor, sweapon, smeansofdeath) {
-  if(!isplayer(attacker) || self isenemyplayer(attacker) == 0 || isdefined(sweapon) && maps\mp\killstreaks\_killstreaks::iskillstreakweapon(sweapon)) {
+  if(!isplayer(attacker) || self isenemyplayer(attacker) == 0 || isDefined(sweapon) && maps\mp\killstreaks\_killstreaks::iskillstreakweapon(sweapon)) {
     level notify("reset_obituary_count");
     level.lastobituaryplayercount = 0;
     level.lastobituaryplayer = undefined;
   } else {
-    if(isdefined(level.lastobituaryplayer) && level.lastobituaryplayer == attacker)
+    if(isDefined(level.lastobituaryplayer) && level.lastobituaryplayer == attacker)
       level.lastobituaryplayercount++;
     else {
       level notify("reset_obituary_count");
@@ -1212,7 +1215,7 @@ playerkilled_obituary(attacker, einflictor, sweapon, smeansofdeath) {
 
   overrideentitycamera = maps\mp\killstreaks\_killstreaks::shouldoverrideentitycameraindemo(attacker, sweapon);
 
-  if(level.teambased && isdefined(attacker.pers) && self.team == attacker.team && smeansofdeath == "MOD_GRENADE" && level.friendlyfire == 0) {
+  if(level.teambased && isDefined(attacker.pers) && self.team == attacker.team && smeansofdeath == "MOD_GRENADE" && level.friendlyfire == 0) {
     obituary(self, self, sweapon, smeansofdeath);
     maps\mp\_demo::bookmark("kill", gettime(), self, self, 0, einflictor, overrideentitycamera);
   } else {
@@ -1224,8 +1227,8 @@ playerkilled_obituary(attacker, einflictor, sweapon, smeansofdeath) {
 playerkilled_suicide(einflictor, attacker, smeansofdeath, sweapon, shitloc) {
   awardassists = 0;
 
-  if(isdefined(self.switching_teams)) {
-    if(!level.teambased && (isdefined(level.teams[self.leaving_team]) && isdefined(level.teams[self.joining_team]) && level.teams[self.leaving_team] != level.teams[self.joining_team])) {
+  if(isDefined(self.switching_teams)) {
+    if(!level.teambased && (isDefined(level.teams[self.leaving_team]) && isDefined(level.teams[self.joining_team]) && level.teams[self.leaving_team] != level.teams[self.joining_team])) {
       playercounts = self maps\mp\teams\_teams::countplayers();
       playercounts[self.leaving_team]--;
       playercounts[self.joining_team]++;
@@ -1255,7 +1258,7 @@ playerkilled_suicide(einflictor, attacker, smeansofdeath, sweapon, shitloc) {
     self.suicide = 1;
   }
 
-  if(isdefined(self.friendlydamage)) {
+  if(isDefined(self.friendlydamage)) {
     self iprintln(&"MP_FRIENDLY_FIRE_WILL_NOT");
 
     if(level.teamkillpointloss) {
@@ -1326,11 +1329,11 @@ wait_and_suicide() {
 playerkilled_awardassists(einflictor, attacker, sweapon, lpattackteam) {
   pixbeginevent("PlayerKilled assists");
 
-  if(isdefined(self.attackers)) {
-    for (j = 0; j < self.attackers.size; j++) {
+  if(isDefined(self.attackers)) {
+    for(j = 0; j < self.attackers.size; j++) {
       player = self.attackers[j];
 
-      if(!isdefined(player)) {
+      if(!isDefined(player)) {
         continue;
       }
       if(player == attacker) {
@@ -1347,7 +1350,7 @@ playerkilled_awardassists(einflictor, attacker, sweapon, lpattackteam) {
   if(level.teambased)
     self maps\mp\gametypes\_globallogic_score::processkillstreakassists(attacker, einflictor, sweapon);
 
-  if(isdefined(self.lastattackedshieldplayer) && isdefined(self.lastattackedshieldtime) && self.lastattackedshieldplayer != attacker) {
+  if(isDefined(self.lastattackedshieldplayer) && isDefined(self.lastattackedshieldtime) && self.lastattackedshieldplayer != attacker) {
     if(gettime() - self.lastattackedshieldtime < 4000)
       self.lastattackedshieldplayer thread maps\mp\gametypes\_globallogic_score::processshieldassist(self);
   }
@@ -1362,7 +1365,7 @@ playerkilled_kill(einflictor, attacker, smeansofdeath, sweapon, shitloc) {
   if(isalive(attacker)) {
     pixbeginevent("killstreak");
 
-    if(!isdefined(einflictor) || !isdefined(einflictor.requireddeathcount) || attacker.deathcount == einflictor.requireddeathcount) {
+    if(!isDefined(einflictor) || !isDefined(einflictor.requireddeathcount) || attacker.deathcount == einflictor.requireddeathcount) {
       shouldgivekillstreak = maps\mp\killstreaks\_killstreaks::shouldgivekillstreak(sweapon);
 
       if(shouldgivekillstreak)
@@ -1371,7 +1374,7 @@ playerkilled_kill(einflictor, attacker, smeansofdeath, sweapon, shitloc) {
       attacker.pers["cur_total_kill_streak"]++;
       attacker setplayercurrentstreak(attacker.pers["cur_total_kill_streak"]);
 
-      if(isdefined(level.killstreaks) && shouldgivekillstreak) {
+      if(isDefined(level.killstreaks) && shouldgivekillstreak) {
         attacker.pers["cur_kill_streak"]++;
 
         if(attacker.pers["cur_kill_streak"] >= 2) {
@@ -1384,7 +1387,7 @@ playerkilled_kill(einflictor, attacker, smeansofdeath, sweapon, shitloc) {
             maps\mp\_scoreevents::processscoreevent("killstreak_more_than_30", attacker, self, sweapon);
         }
 
-        if(!isdefined(level.usingmomentum) || !level.usingmomentum)
+        if(!isDefined(level.usingmomentum) || !level.usingmomentum)
           attacker thread maps\mp\killstreaks\_killstreaks::givekillstreakforstreak();
       }
     }
@@ -1409,7 +1412,7 @@ playerkilled_kill(einflictor, attacker, smeansofdeath, sweapon, shitloc) {
 
   killstreak = maps\mp\killstreaks\_killstreaks::getkillstreakforweapon(sweapon);
 
-  if(isdefined(killstreak)) {
+  if(isDefined(killstreak)) {
     if(maps\mp\_scoreevents::isregisteredevent(killstreak))
       maps\mp\_scoreevents::processscoreevent(killstreak, attacker, self, sweapon);
 
@@ -1417,7 +1420,6 @@ playerkilled_kill(einflictor, attacker, smeansofdeath, sweapon, shitloc) {
       attacker maps\mp\killstreaks\_straferun::addstraferunkill();
   } else {
     if(smeansofdeath == "MOD_MELEE" && level.gametype == "gun") {
-
     } else
       maps\mp\_scoreevents::processscoreevent("kill", attacker, self, sweapon);
 
@@ -1427,7 +1429,7 @@ playerkilled_kill(einflictor, attacker, smeansofdeath, sweapon, shitloc) {
       if(sweapon == "riotshield_mp") {
         maps\mp\_scoreevents::processscoreevent("melee_kill_with_riot_shield", attacker, self, sweapon);
 
-        if(isdefined(attacker.class_num)) {
+        if(isDefined(attacker.class_num)) {
           primaryweaponnum = attacker getloadoutitem(attacker.class_num, "primary");
           secondaryweaponnum = attacker getloadoutitem(attacker.class_num, "secondary");
 
@@ -1473,13 +1475,13 @@ callback_playerkilled(einflictor, attacker, idamage, smeansofdeath, sweapon, vdi
   }
   self needsrevive(0);
 
-  if(isdefined(self.burning) && self.burning == 1)
+  if(isDefined(self.burning) && self.burning == 1)
     self setburn(0);
 
   self.suicide = 0;
   self.teamkilled = 0;
 
-  if(isdefined(level.takelivesondeath) && level.takelivesondeath == 1) {
+  if(isDefined(level.takelivesondeath) && level.takelivesondeath == 1) {
     if(self.pers["lives"]) {
       self.pers["lives"]--;
 
@@ -1500,11 +1502,11 @@ callback_playerkilled(einflictor, attacker, idamage, smeansofdeath, sweapon, vdi
   self.laststandthislife = undefined;
   self.vattackerorigin = undefined;
 
-  if(isdefined(self.uselaststandparams)) {
+  if(isDefined(self.uselaststandparams)) {
     self.uselaststandparams = undefined;
-    assert(isdefined(self.laststandparams));
+    assert(isDefined(self.laststandparams));
 
-    if(!level.teambased || (!isdefined(attacker) || !isplayer(attacker) || attacker.team != self.team || attacker == self)) {
+    if(!level.teambased || (!isDefined(attacker) || !isplayer(attacker) || attacker.team != self.team || attacker == self)) {
       einflictor = self.laststandparams.einflictor;
       attacker = self.laststandparams.attacker;
       attackerstance = self.laststandparams.attackerstance;
@@ -1517,7 +1519,7 @@ callback_playerkilled(einflictor, attacker, idamage, smeansofdeath, sweapon, vdi
       deathtimeoffset = (gettime() - self.laststandparams.laststandstarttime) / 1000;
       self thread maps\mp\gametypes\_battlechatter_mp::perkspecificbattlechatter("secondchance");
 
-      if(isdefined(self.previousprimary)) {
+      if(isDefined(self.previousprimary)) {
         wasinlaststand = 1;
         lastweaponbeforedroppingintolaststand = self.previousprimary;
       }
@@ -1533,15 +1535,15 @@ callback_playerkilled(einflictor, attacker, idamage, smeansofdeath, sweapon, vdi
   obituaryweapon = sweapon;
   assistedsuicide = 0;
 
-  if((!isdefined(attacker) || attacker.classname == "trigger_hurt" || attacker.classname == "worldspawn" || isdefined(attacker.ismagicbullet) && attacker.ismagicbullet == 1 || attacker == self) && isdefined(self.attackers)) {
-    if(!isdefined(bestplayer)) {
-      for (i = 0; i < self.attackers.size; i++) {
+  if((!isDefined(attacker) || attacker.classname == "trigger_hurt" || attacker.classname == "worldspawn" || isDefined(attacker.ismagicbullet) && attacker.ismagicbullet == 1 || attacker == self) && isDefined(self.attackers)) {
+    if(!isDefined(bestplayer)) {
+      for(i = 0; i < self.attackers.size; i++) {
         player = self.attackers[i];
 
-        if(!isdefined(player)) {
+        if(!isDefined(player)) {
           continue;
         }
-        if(!isdefined(self.attackerdamage[player.clientid]) || !isdefined(self.attackerdamage[player.clientid].damage)) {
+        if(!isDefined(self.attackerdamage[player.clientid]) || !isDefined(self.attackerdamage[player.clientid].damage)) {
           continue;
         }
         if(player == self || level.teambased && player.team == self.team) {
@@ -1553,14 +1555,14 @@ callback_playerkilled(einflictor, attacker, idamage, smeansofdeath, sweapon, vdi
         if(!allowedassistweapon(self.attackerdamage[player.clientid].weapon)) {
           continue;
         }
-        if(self.attackerdamage[player.clientid].damage > 1 && !isdefined(bestplayer)) {
+        if(self.attackerdamage[player.clientid].damage > 1 && !isDefined(bestplayer)) {
           bestplayer = player;
           bestplayermeansofdeath = self.attackerdamage[player.clientid].meansofdeath;
           bestplayerweapon = self.attackerdamage[player.clientid].weapon;
           continue;
         }
 
-        if(isdefined(bestplayer) && self.attackerdamage[player.clientid].damage > self.attackerdamage[bestplayer.clientid].damage) {
+        if(isDefined(bestplayer) && self.attackerdamage[player.clientid].damage > self.attackerdamage[bestplayer.clientid].damage) {
           bestplayer = player;
           bestplayermeansofdeath = self.attackerdamage[player.clientid].meansofdeath;
           bestplayerweapon = self.attackerdamage[player.clientid].weapon;
@@ -1568,19 +1570,19 @@ callback_playerkilled(einflictor, attacker, idamage, smeansofdeath, sweapon, vdi
       }
     }
 
-    if(isdefined(bestplayer)) {
+    if(isDefined(bestplayer)) {
       maps\mp\_scoreevents::processscoreevent("assisted_suicide", bestplayer, self, sweapon);
       self recordkillmodifier("assistedsuicide");
       assistedsuicide = 1;
     }
   }
 
-  if(isdefined(bestplayer)) {
+  if(isDefined(bestplayer)) {
     attacker = bestplayer;
     obituarymeansofdeath = bestplayermeansofdeath;
     obituaryweapon = bestplayerweapon;
 
-    if(isdefined(bestplayerweapon))
+    if(isDefined(bestplayerweapon))
       sweapon = bestplayerweapon;
   }
 
@@ -1592,10 +1594,10 @@ callback_playerkilled(einflictor, attacker, idamage, smeansofdeath, sweapon, vdi
   einflictor = updateinflictor(einflictor);
   smeansofdeath = self playerkilled_updatemeansofdeath(attacker, einflictor, sweapon, smeansofdeath, shitloc);
 
-  if(!isdefined(obituarymeansofdeath))
+  if(!isDefined(obituarymeansofdeath))
     obituarymeansofdeath = smeansofdeath;
 
-  if(isdefined(self.hasriotshieldequipped) && self.hasriotshieldequipped == 1) {
+  if(isDefined(self.hasriotshieldequipped) && self.hasriotshieldequipped == 1) {
     self detachshieldmodel(level.carriedshieldmodel, "tag_weapon_left");
     self.hasriotshield = 0;
     self.hasriotshieldequipped = 0;
@@ -1610,7 +1612,9 @@ callback_playerkilled(einflictor, attacker, idamage, smeansofdeath, sweapon, vdi
   self.pers["weapon"] = undefined;
   self.killedplayerscurrent = [];
   self.deathcount++;
+
   println("players(" + self.clientid + ") death count ++: " + self.deathcount);
+
   self playerkilled_killstreaks(attacker, sweapon);
   lpselfnum = self getentitynumber();
   lpselfname = self.name;
@@ -1644,7 +1648,6 @@ callback_playerkilled(einflictor, attacker, idamage, smeansofdeath, sweapon, vdi
       dokillcam = 1;
 
       if(level.teambased && self.team == attacker.team && smeansofdeath == "MOD_GRENADE" && level.friendlyfire == 0) {
-
       } else if(level.teambased && self.team == attacker.team) {
         wasteamkill = 1;
         self playerkilled_teamkill(einflictor, attacker, smeansofdeath, sweapon, shitloc);
@@ -1657,7 +1660,7 @@ callback_playerkilled(einflictor, attacker, idamage, smeansofdeath, sweapon, vdi
 
       pixendevent();
     }
-  } else if(isdefined(attacker) && (attacker.classname == "trigger_hurt" || attacker.classname == "worldspawn")) {
+  } else if(isDefined(attacker) && (attacker.classname == "trigger_hurt" || attacker.classname == "worldspawn")) {
     dokillcam = 0;
     lpattacknum = -1;
     lpattackguid = "";
@@ -1682,13 +1685,13 @@ callback_playerkilled(einflictor, attacker, idamage, smeansofdeath, sweapon, vdi
     lpattackteam = "world";
     wassuicide = 1;
 
-    if(isdefined(einflictor) && isdefined(einflictor.killcament)) {
+    if(isDefined(einflictor) && isDefined(einflictor.killcament)) {
       dokillcam = 1;
       lpattacknum = self getentitynumber();
       wassuicide = 0;
     }
 
-    if(isdefined(attacker) && isdefined(attacker.team) && isdefined(level.teams[attacker.team])) {
+    if(isDefined(attacker) && isDefined(attacker.team) && isDefined(level.teams[attacker.team])) {
       if(attacker.team != self.team) {
         if(level.teambased)
           maps\mp\gametypes\_globallogic_score::giveteamscore("kill", attacker.team, attacker, self);
@@ -1720,12 +1723,12 @@ callback_playerkilled(einflictor, attacker, idamage, smeansofdeath, sweapon, vdi
   self.lastattacker = attacker;
   self.lastdeathpos = self.origin;
 
-  if(isdefined(attacker) && isplayer(attacker) && attacker != self && (!level.teambased || attacker.team != self.team))
+  if(isDefined(attacker) && isplayer(attacker) && attacker != self && (!level.teambased || attacker.team != self.team))
     self thread maps\mp\_challenges::playerkilled(einflictor, attacker, idamage, smeansofdeath, sweapon, shitloc, attackerstance);
   else
     self notify("playerKilledChallengesProcessed");
 
-  if(isdefined(self.attackers))
+  if(isDefined(self.attackers))
     self.attackers = [];
 
   if(isplayer(attacker)) {
@@ -1749,30 +1752,30 @@ callback_playerkilled(einflictor, attacker, idamage, smeansofdeath, sweapon, vdi
   killcamentityindex = -1;
   killcamentitystarttime = 0;
 
-  if(isdefined(killcamentity)) {
+  if(isDefined(killcamentity)) {
     killcamentityindex = killcamentity getentitynumber();
 
-    if(isdefined(killcamentity.starttime))
+    if(isDefined(killcamentity.starttime))
       killcamentitystarttime = killcamentity.starttime;
     else
       killcamentitystarttime = killcamentity.birthtime;
 
-    if(!isdefined(killcamentitystarttime))
+    if(!isDefined(killcamentitystarttime))
       killcamentitystarttime = 0;
   }
 
-  if(isdefined(self.killstreak_waitamount) && self.killstreak_waitamount > 0)
+  if(isDefined(self.killstreak_waitamount) && self.killstreak_waitamount > 0)
     dokillcam = 0;
 
   self maps\mp\gametypes\_weapons::detachcarryobjectmodel();
   died_in_vehicle = 0;
 
-  if(isdefined(self.diedonvehicle))
+  if(isDefined(self.diedonvehicle))
     died_in_vehicle = self.diedonvehicle;
 
   hit_by_train = 0;
 
-  if(isdefined(attacker) && isdefined(attacker.targetname) && attacker.targetname == "train")
+  if(isDefined(attacker) && isDefined(attacker.targetname) && attacker.targetname == "train")
     hit_by_train = 1;
 
   pixendevent();
@@ -1781,17 +1784,17 @@ callback_playerkilled(einflictor, attacker, idamage, smeansofdeath, sweapon, vdi
   if(!died_in_vehicle && !hit_by_train) {
     vattackerorigin = undefined;
 
-    if(isdefined(attacker))
+    if(isDefined(attacker))
       vattackerorigin = attacker.origin;
 
     ragdoll_now = 0;
 
-    if(isdefined(self.usingvehicle) && self.usingvehicle && isdefined(self.vehicleposition) && self.vehicleposition == 1)
+    if(isDefined(self.usingvehicle) && self.usingvehicle && isDefined(self.vehicleposition) && self.vehicleposition == 1)
       ragdoll_now = 1;
 
     body = self cloneplayer(deathanimduration);
 
-    if(isdefined(body))
+    if(isDefined(body))
       self createdeadbody(idamage, smeansofdeath, sweapon, shitloc, vdir, vattackerorigin, deathanimduration, einflictor, ragdoll_now, body);
   }
 
@@ -1802,19 +1805,19 @@ callback_playerkilled(einflictor, attacker, idamage, smeansofdeath, sweapon, vdi
   self.leaving_team = undefined;
   self thread[[level.onplayerkilled]](einflictor, attacker, idamage, smeansofdeath, sweapon, vdir, shitloc, psoffsettime, deathanimduration);
 
-  for (icb = 0; icb < level.onplayerkilledextraunthreadedcbs.size; icb++)
+  for(icb = 0; icb < level.onplayerkilledextraunthreadedcbs.size; icb++)
     self[[level.onplayerkilledextraunthreadedcbs[icb]]](einflictor, attacker, idamage, smeansofdeath, sweapon, vdir, shitloc, psoffsettime, deathanimduration);
 
   self.wantsafespawn = 0;
   perks = [];
   killstreaks = maps\mp\gametypes\_globallogic::getkillstreaks(attacker);
 
-  if(!isdefined(self.killstreak_waitamount))
+  if(!isDefined(self.killstreak_waitamount))
     self thread[[level.spawnplayerprediction]]();
 
   profilelog_endtiming(7, "gs=" + game["state"] + " zom=" + sessionmodeiszombiesgame());
 
-  if(wasteamkill == 0 && assistedsuicide == 0 && hit_by_train == 0 && smeansofdeath != "MOD_SUICIDE" && !(!isdefined(attacker) || attacker.classname == "trigger_hurt" || attacker.classname == "worldspawn" || attacker == self || isdefined(attacker.disablefinalkillcam)))
+  if(wasteamkill == 0 && assistedsuicide == 0 && hit_by_train == 0 && smeansofdeath != "MOD_SUICIDE" && !(!isDefined(attacker) || attacker.classname == "trigger_hurt" || attacker.classname == "worldspawn" || attacker == self || isDefined(attacker.disablefinalkillcam)))
     level thread maps\mp\gametypes\_killcam::recordkillcamsettings(lpattacknum, self getentitynumber(), sweapon, self.deathtime, deathtimeoffset, psoffsettime, killcamentityindex, killcamentitystarttime, perks, killstreaks, attacker);
 
   wait 0.25;
@@ -1829,13 +1832,14 @@ callback_playerkilled(einflictor, attacker, idamage, smeansofdeath, sweapon, vdi
   self thread maps\mp\gametypes\_killcam::cancelkillcamonuse();
   defaultplayerdeathwatchtime = 1.75;
 
-  if(isdefined(level.overrideplayerdeathwatchtimer))
+  if(isDefined(level.overrideplayerdeathwatchtimer))
     defaultplayerdeathwatchtime = [
       [level.overrideplayerdeathwatchtimer]
     ](defaultplayerdeathwatchtime);
 
   maps\mp\gametypes\_globallogic_utils::waitfortimeornotifies(defaultplayerdeathwatchtime);
   self notify("death_delay_finished");
+
   if(getdvarint(#"_id_C1849218") != 0) {
     dokillcam = 1;
 
@@ -1873,7 +1877,7 @@ callback_playerkilled(einflictor, attacker, idamage, smeansofdeath, sweapon, vdi
   waittillkillstreakdone();
   userespawntime = 1;
 
-  if(isdefined(level.hostmigrationtimer))
+  if(isDefined(level.hostmigrationtimer))
     userespawntime = 0;
 
   maps\mp\gametypes\_hostmigration::waittillhostmigrationcountdown();
@@ -1881,7 +1885,7 @@ callback_playerkilled(einflictor, attacker, idamage, smeansofdeath, sweapon, vdi
   if(maps\mp\gametypes\_globallogic_utils::isvalidclass(self.class)) {
     timepassed = undefined;
 
-    if(isdefined(self.respawntimerstarttime) && userespawntime)
+    if(isDefined(self.respawntimerstarttime) && userespawntime)
       timepassed = (gettime() - self.respawntimerstarttime) / 1000;
 
     self thread[[level.spawnclient]](timepassed);
@@ -1890,16 +1894,16 @@ callback_playerkilled(einflictor, attacker, idamage, smeansofdeath, sweapon, vdi
 }
 
 updateglobalbotkilledcounter() {
-  if(isdefined(self.pers["isBot"]))
+  if(isDefined(self.pers["isBot"]))
     level.globallarryskilled++;
 }
 
 waittillkillstreakdone() {
-  if(isdefined(self.killstreak_waitamount)) {
+  if(isDefined(self.killstreak_waitamount)) {
     starttime = gettime();
     waittime = self.killstreak_waitamount * 1000;
 
-    while (gettime() < starttime + waittime && isdefined(self.killstreak_waitamount))
+    while(gettime() < starttime + waittime && isDefined(self.killstreak_waitamount))
       wait 0.1;
 
     wait 2.0;
@@ -1964,7 +1968,7 @@ reduceteamkillsovertime() {
   timeperoneteamkillreduction = 20.0;
   reductionpersecond = 1.0 / timeperoneteamkillreduction;
 
-  while (true) {
+  while(true) {
     if(isalive(self)) {
       self.pers["teamkills_nostats"] = self.pers["teamkills_nostats"] - reductionpersecond;
 
@@ -1995,7 +1999,6 @@ ignoreteamkills(sweapon, smeansofdeath) {
 }
 
 callback_playerlaststand(einflictor, attacker, idamage, smeansofdeath, sweapon, vdir, shitloc, psoffsettime, deathanimduration) {
-
 }
 
 damageshellshockandrumble(eattacker, einflictor, sweapon, smeansofdeath, idamage) {
@@ -2007,13 +2010,13 @@ createdeadbody(idamage, smeansofdeath, sweapon, shitloc, vdir, vattackerorigin, 
   if(smeansofdeath == "MOD_HIT_BY_OBJECT" && self getstance() == "prone") {
     self.body = body;
 
-    if(!isdefined(self.switching_teams))
+    if(!isDefined(self.switching_teams))
       thread maps\mp\gametypes\_deathicons::adddeathicon(body, self, self.team, 5.0);
 
     return;
   }
 
-  if(isdefined(level.ragdoll_override) && self[[level.ragdoll_override]](idamage, smeansofdeath, sweapon, shitloc, vdir, vattackerorigin, deathanimduration, einflictor, ragdoll_jib, body)) {
+  if(isDefined(level.ragdoll_override) && self[[level.ragdoll_override]](idamage, smeansofdeath, sweapon, shitloc, vdir, vattackerorigin, deathanimduration, einflictor, ragdoll_jib, body)) {
     return;
   }
   if(ragdoll_jib || self isonladder() || self ismantling() || smeansofdeath == "MOD_CRUSH" || smeansofdeath == "MOD_HIT_BY_OBJECT")
@@ -2029,7 +2032,7 @@ createdeadbody(idamage, smeansofdeath, sweapon, shitloc, vdir, vattackerorigin, 
 
   thread delaystartragdoll(body, shitloc, vdir, sweapon, einflictor, smeansofdeath);
 
-  if(smeansofdeath == "MOD_BURNED" || isdefined(self.burning))
+  if(smeansofdeath == "MOD_BURNED" || isDefined(self.burning))
     body maps\mp\_burnplayer::burnedtodeath();
 
   if(smeansofdeath == "MOD_CRUSH")
@@ -2037,19 +2040,19 @@ createdeadbody(idamage, smeansofdeath, sweapon, shitloc, vdir, vattackerorigin, 
 
   self.body = body;
 
-  if(!isdefined(self.switching_teams))
+  if(!isDefined(self.switching_teams))
     thread maps\mp\gametypes\_deathicons::adddeathicon(body, self, self.team, 5.0);
 }
 
 is_explosive_ragdoll(weapon, inflictor) {
-  if(!isdefined(weapon))
+  if(!isDefined(weapon))
     return false;
 
   if(weapon == "destructible_car_mp" || weapon == "explodable_barrel_mp")
     return true;
 
   if(weapon == "sticky_grenade_mp" || weapon == "explosive_bolt_mp") {
-    if(isdefined(inflictor) && isdefined(inflictor.stucktoplayer)) {
+    if(isDefined(inflictor) && isDefined(inflictor.stucktoplayer)) {
       if(inflictor.stucktoplayer == self)
         return true;
     }
@@ -2059,15 +2062,15 @@ is_explosive_ragdoll(weapon, inflictor) {
 }
 
 start_explosive_ragdoll(dir, weapon) {
-  if(!isdefined(self)) {
+  if(!isDefined(self)) {
     return;
   }
   x = randomintrange(50, 100);
   y = randomintrange(50, 100);
   z = randomintrange(10, 20);
 
-  if(isdefined(weapon) && (weapon == "sticky_grenade_mp" || weapon == "explosive_bolt_mp")) {
-    if(isdefined(dir) && lengthsquared(dir) > 0) {
+  if(isDefined(weapon) && (weapon == "sticky_grenade_mp" || weapon == "explosive_bolt_mp")) {
+    if(isDefined(dir) && lengthsquared(dir) > 0) {
       x = dir[0] * x;
       y = dir[1] * y;
     }
@@ -2086,12 +2089,12 @@ start_explosive_ragdoll(dir, weapon) {
 notifyconnecting() {
   waittillframeend;
 
-  if(isdefined(self))
+  if(isDefined(self))
     level notify("connecting", self);
 }
 
 delaystartragdoll(ent, shitloc, vdir, sweapon, einflictor, smeansofdeath) {
-  if(isdefined(ent)) {
+  if(isDefined(ent)) {
     deathanim = ent getcorpseanim();
 
     if(animhasnotetrack(deathanim, "ignore_ragdoll"))
@@ -2099,7 +2102,7 @@ delaystartragdoll(ent, shitloc, vdir, sweapon, einflictor, smeansofdeath) {
   }
 
   if(level.oldschool) {
-    if(!isdefined(vdir))
+    if(!isDefined(vdir))
       vdir = (0, 0, 0);
 
     explosionpos = ent.origin + (0, 0, maps\mp\gametypes\_globallogic_utils::gethitlocheight(shitloc));
@@ -2113,7 +2116,7 @@ delaystartragdoll(ent, shitloc, vdir, sweapon, einflictor, smeansofdeath) {
     ent startragdoll(1);
     wait 0.05;
 
-    if(!isdefined(ent)) {
+    if(!isDefined(ent)) {
       return;
     }
     physicsexplosionsphere(explosionpos, explosionradius, explosionradius / 2, explosionforce);
@@ -2122,7 +2125,7 @@ delaystartragdoll(ent, shitloc, vdir, sweapon, einflictor, smeansofdeath) {
 
   wait 0.2;
 
-  if(!isdefined(ent)) {
+  if(!isDefined(ent)) {
     return;
   }
   if(ent isragdoll()) {
@@ -2134,14 +2137,14 @@ delaystartragdoll(ent, shitloc, vdir, sweapon, einflictor, smeansofdeath) {
   if(animhasnotetrack(deathanim, "start_ragdoll")) {
     times = getnotetracktimes(deathanim, "start_ragdoll");
 
-    if(isdefined(times))
+    if(isDefined(times))
       startfrac = times[0];
   }
 
   waittime = startfrac * getanimlength(deathanim);
   wait(waittime);
 
-  if(isdefined(ent))
+  if(isDefined(ent))
     ent startragdoll(1);
 }
 
@@ -2151,7 +2154,7 @@ trackattackerdamage(eattacker, idamage, smeansofdeath, sweapon) {
   if(self.attackerdata.size == 0)
     self.firsttimedamaged = gettime();
 
-  if(!isdefined(self.attackerdata[eattacker.clientid])) {
+  if(!isDefined(self.attackerdata[eattacker.clientid])) {
     self.attackerdamage[eattacker.clientid] = spawnstruct();
     self.attackerdamage[eattacker.clientid].damage = idamage;
     self.attackerdamage[eattacker.clientid].meansofdeath = smeansofdeath;
@@ -2164,7 +2167,7 @@ trackattackerdamage(eattacker, idamage, smeansofdeath, sweapon) {
     self.attackerdamage[eattacker.clientid].meansofdeath = smeansofdeath;
     self.attackerdamage[eattacker.clientid].weapon = sweapon;
 
-    if(!isdefined(self.attackerdamage[eattacker.clientid].time))
+    if(!isDefined(self.attackerdamage[eattacker.clientid].time))
       self.attackerdamage[eattacker.clientid].time = gettime();
   }
 
@@ -2175,13 +2178,13 @@ trackattackerdamage(eattacker, idamage, smeansofdeath, sweapon) {
 }
 
 giveinflictorownerassist(eattacker, einflictor, idamage, smeansofdeath, sweapon) {
-  if(!isdefined(einflictor)) {
+  if(!isDefined(einflictor)) {
     return;
   }
-  if(!isdefined(einflictor.owner)) {
+  if(!isDefined(einflictor.owner)) {
     return;
   }
-  if(!isdefined(einflictor.ownergetsassist)) {
+  if(!isDefined(einflictor.ownergetsassist)) {
     return;
   }
   if(!einflictor.ownergetsassist) {
@@ -2217,12 +2220,12 @@ playerkilled_updatemeansofdeath(attacker, einflictor, sweapon, smeansofdeath, sh
 }
 
 updateattacker(attacker, weapon) {
-  if(isai(attacker) && isdefined(attacker.script_owner)) {
+  if(isai(attacker) && isDefined(attacker.script_owner)) {
     if(!level.teambased || attacker.script_owner.team != self.team)
       attacker = attacker.script_owner;
   }
 
-  if(attacker.classname == "script_vehicle" && isdefined(attacker.owner)) {
+  if(attacker.classname == "script_vehicle" && isDefined(attacker.owner)) {
     attacker notify("killed", self);
     attacker = attacker.owner;
   }
@@ -2230,18 +2233,18 @@ updateattacker(attacker, weapon) {
   if(isai(attacker))
     attacker notify("killed", self);
 
-  if(isdefined(self.capturinglastflag) && self.capturinglastflag == 1)
+  if(isDefined(self.capturinglastflag) && self.capturinglastflag == 1)
     attacker.lastcapkiller = 1;
 
-  if(isdefined(attacker) && isdefined(weapon) && weapon == "planemortar_mp") {
-    if(!isdefined(attacker.planemortarbda))
+  if(isDefined(attacker) && isDefined(weapon) && weapon == "planemortar_mp") {
+    if(!isDefined(attacker.planemortarbda))
       attacker.planemortarbda = 0;
 
     attacker.planemortarbda++;
   }
 
-  if(isdefined(attacker) && isdefined(weapon) && (weapon == "straferun_rockets_mp" || weapon == "straferun_gun_mp")) {
-    if(isdefined(attacker.straferunbda))
+  if(isDefined(attacker) && isDefined(weapon) && (weapon == "straferun_rockets_mp" || weapon == "straferun_gun_mp")) {
+    if(isDefined(attacker.straferunbda))
       attacker.straferunbda++;
   }
 
@@ -2249,10 +2252,10 @@ updateattacker(attacker, weapon) {
 }
 
 updateinflictor(einflictor) {
-  if(isdefined(einflictor) && einflictor.classname == "script_vehicle") {
+  if(isDefined(einflictor) && einflictor.classname == "script_vehicle") {
     einflictor notify("killed", self);
 
-    if(isdefined(einflictor.bda))
+    if(isDefined(einflictor.bda))
       einflictor.bda++;
   }
 
@@ -2260,10 +2263,10 @@ updateinflictor(einflictor) {
 }
 
 updateweapon(einflictor, sweapon) {
-  if(sweapon == "none" && isdefined(einflictor)) {
-    if(isdefined(einflictor.targetname) && einflictor.targetname == "explodable_barrel")
+  if(sweapon == "none" && isDefined(einflictor)) {
+    if(isDefined(einflictor.targetname) && einflictor.targetname == "explodable_barrel")
       sweapon = "explodable_barrel_mp";
-    else if(isdefined(einflictor.destructible_type) && issubstr(einflictor.destructible_type, "vehicle_"))
+    else if(isDefined(einflictor.destructible_type) && issubstr(einflictor.destructible_type, "vehicle_"))
       sweapon = "destructible_car_mp";
   }
 
@@ -2271,7 +2274,7 @@ updateweapon(einflictor, sweapon) {
 }
 
 getclosestkillcamentity(attacker, killcamentities, depth) {
-  if(!isdefined(depth))
+  if(!isDefined(depth))
     depth = 0;
 
   closestkillcament = undefined;
@@ -2285,24 +2288,24 @@ getclosestkillcamentity(attacker, killcamentities, depth) {
     }
     origin = killcament.origin;
 
-    if(isdefined(killcament.offsetpoint))
+    if(isDefined(killcament.offsetpoint))
       origin = origin + killcament.offsetpoint;
 
     dist = distancesquared(self.origin, origin);
 
-    if(!isdefined(closestkillcament) || dist < closestkillcamentdist) {
+    if(!isDefined(closestkillcament) || dist < closestkillcamentdist) {
       closestkillcament = killcament;
       closestkillcamentdist = dist;
       closestkillcamentindex = killcamentindex;
     }
   }
 
-  if(depth < 3 && isdefined(closestkillcament)) {
+  if(depth < 3 && isDefined(closestkillcament)) {
     if(!bullettracepassed(closestkillcament.origin, self.origin, 0, self)) {
       killcamentities[closestkillcamentindex] = undefined;
       betterkillcament = getclosestkillcamentity(attacker, killcamentities, depth + 1);
 
-      if(isdefined(betterkillcament))
+      if(isDefined(betterkillcament))
         closestkillcament = betterkillcament;
     }
   }
@@ -2311,34 +2314,34 @@ getclosestkillcamentity(attacker, killcamentities, depth) {
 }
 
 getkillcamentity(attacker, einflictor, sweapon) {
-  if(!isdefined(einflictor))
+  if(!isDefined(einflictor))
     return undefined;
 
   if(einflictor == attacker) {
-    if(!isdefined(einflictor.ismagicbullet))
+    if(!isDefined(einflictor.ismagicbullet))
       return undefined;
 
-    if(isdefined(einflictor.ismagicbullet) && !einflictor.ismagicbullet)
+    if(isDefined(einflictor.ismagicbullet) && !einflictor.ismagicbullet)
       return undefined;
-  } else if(isdefined(level.levelspecifickillcam)) {
+  } else if(isDefined(level.levelspecifickillcam)) {
     levelspecifickillcament = self[[level.levelspecifickillcam]]();
 
-    if(isdefined(levelspecifickillcament))
+    if(isDefined(levelspecifickillcament))
       return levelspecifickillcament;
   }
 
   if(sweapon == "m220_tow_mp")
     return undefined;
 
-  if(isdefined(einflictor.killcament)) {
+  if(isDefined(einflictor.killcament)) {
     if(einflictor.killcament == attacker)
       return undefined;
 
     return einflictor.killcament;
-  } else if(isdefined(einflictor.killcamentities))
+  } else if(isDefined(einflictor.killcamentities))
     return getclosestkillcamentity(attacker, einflictor.killcamentities);
 
-  if(isdefined(einflictor.script_gameobjectname) && einflictor.script_gameobjectname == "bombzone")
+  if(isDefined(einflictor.script_gameobjectname) && einflictor.script_gameobjectname == "bombzone")
     return einflictor.killcament;
 
   return einflictor;

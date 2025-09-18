@@ -22,6 +22,7 @@ init_stage() {
 
 stage_logic() {
   iprintln(level._cur_stage_name + " of little girl lost started");
+
   level thread watch_for_triple_attack();
   flag_wait("ee_mech_zombie_hole_opened");
   wait_network_frame();
@@ -71,10 +72,10 @@ ready_to_activate(unitrigger_stub) {
 watch_for_triple_attack() {
   t_hole = getent("fire_link_damage", "targetname");
 
-  while (!flag("ee_mech_zombie_hole_opened")) {
+  while(!flag("ee_mech_zombie_hole_opened")) {
     t_hole waittill("damage", damage, attacker, direction, point, type, tagname, modelname, partname, weaponname);
 
-    if(isdefined(weaponname) && weaponname == "beacon_zm" && flag("fire_link_enabled")) {
+    if(isDefined(weaponname) && weaponname == "beacon_zm" && flag("fire_link_enabled")) {
       playsoundatposition("zmb_squest_robot_floor_collapse", t_hole.origin);
       wait 3;
       m_floor = getent("easter_mechzombie_spawn", "targetname");
@@ -98,7 +99,7 @@ mech_zombie_hole_valid(valid) {
 activate_fire_link() {
   self endon("kill_trigger");
 
-  while (true) {
+  while(true) {
     self waittill("trigger", player);
     self playsound("zmb_squest_robot_button");
 
@@ -122,12 +123,12 @@ fire_link_cooldown(t_button) {
   level endon("fire_link_cooldown");
   flag_set("fire_link_enabled");
 
-  if(isdefined(t_button))
+  if(isDefined(t_button))
     t_button playsound("vox_maxi_robot_activated_0");
 
   wait 25;
 
-  if(isdefined(t_button))
+  if(isDefined(t_button))
     t_button playsound("vox_maxi_robot_deactivated_0");
 
   flag_clear("fire_link_enabled");

@@ -22,6 +22,7 @@ init_stage() {
 
 stage_logic() {
   iprintln(level._cur_stage_name + " of little girl lost started");
+
   level thread monitor_puzzle_portal();
   level setclientfield("sndChamberMusic", 2);
   flag_wait("ee_souls_absorbed");
@@ -31,11 +32,10 @@ stage_logic() {
 }
 
 exit_stage(success) {
-
 }
 
 ee_zombie_killed_override(einflictor, attacker, idamage, smeansofdeath, sweapon, vdir, shitloc, psoffsettime) {
-  if(isdefined(attacker) && isplayer(attacker) && maps\mp\zm_tomb_chamber::is_point_in_chamber(self.origin)) {
+  if(isDefined(attacker) && isplayer(attacker) && maps\mp\zm_tomb_chamber::is_point_in_chamber(self.origin)) {
     level.n_ee_portal_souls++;
 
     if(level.n_ee_portal_souls == 1)
@@ -60,7 +60,7 @@ monitor_puzzle_portal() {
     return;
   }
 
-  while (!flag("ee_souls_absorbed")) {
+  while(!flag("ee_souls_absorbed")) {
     if(all_staffs_inserted_in_puzzle_room() && !flag("ee_sam_portal_active")) {
       flag_set("ee_sam_portal_active");
       level setclientfield("ee_sam_portal", 1);

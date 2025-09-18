@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\_scrambler.gsc
-***************************************/
+**************************************/
 
 #include maps\mp\_utility;
 #include common_scripts\utility;
@@ -65,7 +65,7 @@ watchshutdown(player) {
   self waittill_any("death", "hacked");
   level notify("scrambler_death");
 
-  if(isdefined(player))
+  if(isDefined(player))
     player.scrambler = undefined;
 }
 
@@ -82,18 +82,18 @@ watchscramblerdamage(watcher) {
   if(!self maps\mp\_utility::ishacked())
     self.damagetaken = 0;
 
-  while (true) {
+  while(true) {
     self.maxhealth = 100000;
     self.health = self.maxhealth;
     self waittill("damage", damage, attacker, direction, point, type, tagname, modelname, partname, weaponname, idflags);
 
-    if(!isdefined(attacker) || !isplayer(attacker)) {
+    if(!isDefined(attacker) || !isplayer(attacker)) {
       continue;
     }
     if(level.teambased && attacker.team == self.owner.team && attacker != self.owner) {
       continue;
     }
-    if(isdefined(weaponname)) {
+    if(isDefined(weaponname)) {
       switch (weaponname) {
         case "concussion_grenade_mp":
         case "flash_grenade_mp":
@@ -120,7 +120,7 @@ watchscramblerdamage(watcher) {
     } else
       weaponname = "";
 
-    if(isplayer(attacker) && level.teambased && isdefined(attacker.team) && self.owner.team == attacker.team && attacker != self.owner) {
+    if(isplayer(attacker) && level.teambased && isDefined(attacker.team) && self.owner.team == attacker.team && attacker != self.owner) {
       continue;
     }
     if(type == "MOD_MELEE")
@@ -137,10 +137,10 @@ ownersameteam(owner1, owner2) {
   if(!level.teambased)
     return false;
 
-  if(!isdefined(owner1) || !isdefined(owner2))
+  if(!isDefined(owner1) || !isDefined(owner2))
     return false;
 
-  if(!isdefined(owner1.team) || !isdefined(owner2.team))
+  if(!isDefined(owner1.team) || !isDefined(owner2.team))
     return false;
 
   return owner1.team == owner2.team;
@@ -149,16 +149,16 @@ ownersameteam(owner1, owner2) {
 checkscramblerstun() {
   scramblers = getentarray("grenade", "classname");
 
-  if(isdefined(self.name) && self.name == "scrambler_mp")
+  if(isDefined(self.name) && self.name == "scrambler_mp")
     return false;
 
-  for (i = 0; i < scramblers.size; i++) {
+  for(i = 0; i < scramblers.size; i++) {
     scrambler = scramblers[i];
 
     if(!isalive(scrambler)) {
       continue;
     }
-    if(!isdefined(scrambler.name)) {
+    if(!isDefined(scrambler.name)) {
       continue;
     }
     if(scrambler.name != "scrambler_mp") {

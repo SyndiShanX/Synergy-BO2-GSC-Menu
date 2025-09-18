@@ -1,16 +1,16 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\teams\_teamset.gsc
-***************************************/
+**************************************/
 
 init() {
-  if(!isdefined(game["flagmodels"]))
+  if(!isDefined(game["flagmodels"]))
     game["flagmodels"] = [];
 
-  if(!isdefined(game["carry_flagmodels"]))
+  if(!isDefined(game["carry_flagmodels"]))
     game["carry_flagmodels"] = [];
 
-  if(!isdefined(game["carry_icon"]))
+  if(!isDefined(game["carry_icon"]))
     game["carry_icon"] = [];
 
   game["flagmodels"]["neutral"] = "mp_flag_neutral";

@@ -17,14 +17,14 @@ jump_pad_init() {
   level._jump_pad_override = [];
   jump_pad_triggers = getentarray("trig_jump_pad", "targetname");
 
-  if(!isdefined(jump_pad_triggers)) {
+  if(!isDefined(jump_pad_triggers)) {
     return;
   }
-  for (i = 0; i < jump_pad_triggers.size; i++) {
+  for(i = 0; i < jump_pad_triggers.size; i++) {
     jump_pad_triggers[i].start = getstruct(jump_pad_triggers[i].target, "targetname");
     jump_pad_triggers[i].destination = getstructarray(jump_pad_triggers[i].start.target, "targetname");
 
-    if(isdefined(jump_pad_triggers[i].script_string))
+    if(isDefined(jump_pad_triggers[i].script_string))
       jump_pad_triggers[i].overrides = strtok(jump_pad_triggers[i].script_string, ",");
 
     jump_pad_triggers[i] thread jump_pad_think();
@@ -51,14 +51,14 @@ jump_pad_think() {
   top_velocity_sq = 810000;
   forward_scaling = 1.0;
 
-  if(isdefined(self.script_flag_wait)) {
-    if(!isdefined(level.flag[self.script_flag_wait]))
+  if(isDefined(self.script_flag_wait)) {
+    if(!isDefined(level.flag[self.script_flag_wait]))
       flag_init(self.script_flag_wait);
 
     flag_wait(self.script_flag_wait);
   }
 
-  while (isdefined(self)) {
+  while(isDefined(self)) {
     self waittill("trigger", who);
 
     if(isplayer(who))
@@ -83,16 +83,16 @@ jump_pad_start(ent_player, endon_condition) {
   forward_scaling = 1.0;
   start_point = self.start;
 
-  if(isdefined(self.name)) {
+  if(isDefined(self.name)) {
     self._action_overrides = strtok(self.name, ",");
 
-    if(isdefined(self._action_overrides)) {
-      for (i = 0; i < self._action_overrides.size; i++)
+    if(isDefined(self._action_overrides)) {
+      for(i = 0; i < self._action_overrides.size; i++)
         ent_player jump_pad_player_overrides(self._action_overrides[i]);
     }
   }
 
-  if(isdefined(self.script_wait)) {
+  if(isDefined(self.script_wait)) {
     if(self.script_wait < 1)
       self playsound("evt_jump_pad_charge_short");
     else
@@ -104,13 +104,13 @@ jump_pad_start(ent_player, endon_condition) {
     wait 1.0;
   }
 
-  if(isdefined(self.script_parameters) && isdefined(level._jump_pad_override[self.script_parameters]))
+  if(isDefined(self.script_parameters) && isDefined(level._jump_pad_override[self.script_parameters]))
     end_point = self[[level._jump_pad_override[self.script_parameters]]](ent_player);
 
-  if(!isdefined(end_point))
+  if(!isDefined(end_point))
     end_point = self.destination[randomint(self.destination.size)];
 
-  if(isdefined(self.script_string) && isdefined(level._jump_pad_override[self.script_string])) {
+  if(isDefined(self.script_string) && isDefined(level._jump_pad_override[self.script_string])) {
     info_array = self[[level._jump_pad_override[self.script_string]]](start_point, end_point);
     fling_this_way = info_array[0];
     jump_time = info_array[1];
@@ -131,6 +131,7 @@ jump_pad_start(ent_player, endon_condition) {
     if(z_dist > 40 && z_dist < 135) {
       z_dist = z_dist * 2.5;
       forward_scaling = 1.1;
+
       if(getdvarint(#"_id_D5FD01C3")) {
         if(getdvar(#"_id_E2494021") != "")
           z_dist = z_dist * getdvarfloat(#"_id_E2494021");
@@ -138,9 +139,11 @@ jump_pad_start(ent_player, endon_condition) {
         if(getdvar(#"_id_4E3BC729") != "")
           forward_scaling = getdvarfloat(#"_id_4E3BC729");
       }
+
     } else if(z_dist >= 135) {
       z_dist = z_dist * 2.7;
       forward_scaling = 1.3;
+
       if(getdvarint(#"_id_D5FD01C3")) {
         if(getdvar(#"_id_E2494021") != "")
           z_dist = z_dist * getdvarfloat(#"_id_E2494021");
@@ -148,9 +151,11 @@ jump_pad_start(ent_player, endon_condition) {
         if(getdvar(#"_id_4E3BC729") != "")
           forward_scaling = getdvarfloat(#"_id_4E3BC729");
       }
+
     } else if(z_dist < 0) {
       z_dist = z_dist * 2.4;
       forward_scaling = 1.0;
+
       if(getdvarint(#"_id_D5FD01C3")) {
         if(getdvar(#"_id_E2494021") != "")
           z_dist = z_dist * getdvarfloat(#"_id_E2494021");
@@ -158,6 +163,7 @@ jump_pad_start(ent_player, endon_condition) {
         if(getdvar(#"_id_4E3BC729") != "")
           forward_scaling = getdvarfloat(#"_id_4E3BC729");
       }
+
     }
 
     z_velocity = 2 * z_dist * world_gravity;
@@ -181,23 +187,23 @@ jump_pad_start(ent_player, endon_condition) {
     fling_this_way = (x, y, z);
   }
 
-  if(isdefined(end_point.target))
+  if(isDefined(end_point.target))
     poi_spot = getstruct(end_point.target, "targetname");
   else
     poi_spot = end_point;
 
-  if(!isdefined(self.script_index))
+  if(!isDefined(self.script_index))
     ent_player.script_index = undefined;
   else
     ent_player.script_index = self.script_index;
 
-  if(isdefined(self.script_start) && self.script_start == 1) {
+  if(isDefined(self.script_start) && self.script_start == 1) {
     if(!is_true(ent_player._padded)) {
       self playsound("evt_jump_pad_launch");
       playfx(level._effect["jump_pad_jump"], self.origin);
       ent_player thread jump_pad_move(fling_this_way, jump_time, poi_spot, self);
 
-      if(isdefined(self.script_label))
+      if(isDefined(self.script_label))
         level notify(self.script_label);
 
       return;
@@ -207,7 +213,7 @@ jump_pad_start(ent_player, endon_condition) {
     playfx(level._effect["jump_pad_jump"], self.origin);
     ent_player thread jump_pad_move(fling_this_way, jump_time, poi_spot, self);
 
-    if(isdefined(self.script_label))
+    if(isDefined(self.script_label))
       level notify(self.script_label);
 
     return;
@@ -222,15 +228,14 @@ jump_pad_start(ent_player, endon_condition) {
 jump_pad_cancel(ent_player) {
   ent_player notify("left_jump_pad");
 
-  if(isdefined(ent_player.poi_spot) && !is_true(ent_player._padded)) {
-
+  if(isDefined(ent_player.poi_spot) && !is_true(ent_player._padded)) {
   }
 
-  if(isdefined(self.name)) {
+  if(isDefined(self.name)) {
     self._action_overrides = strtok(self.name, ",");
 
-    if(isdefined(self._action_overrides)) {
-      for (i = 0; i < self._action_overrides.size; i++)
+    if(isDefined(self._action_overrides)) {
+      for(i = 0; i < self._action_overrides.size; i++)
         ent_player jump_pad_player_overrides(self._action_overrides[i]);
     }
   }
@@ -247,7 +252,7 @@ jump_pad_move(vec_direction, flt_time, struct_poi, trigger) {
   start_turned_on = 1;
   poi_start_func = undefined;
 
-  while (is_true(self.divetoprone) || is_true(self._padded))
+  while(is_true(self.divetoprone) || is_true(self._padded))
     wait 0.05;
 
   self._padded = 1;
@@ -255,11 +260,11 @@ jump_pad_move(vec_direction, flt_time, struct_poi, trigger) {
   self setstance("stand");
   wait 0.1;
 
-  if(isdefined(trigger.script_label)) {
+  if(isDefined(trigger.script_label)) {
     if(issubstr(trigger.script_label, "low")) {
       self.jump_pad_current = undefined;
       self.jump_pad_previous = undefined;
-    } else if(!isdefined(self.jump_pad_current))
+    } else if(!isDefined(self.jump_pad_current))
       self.jump_pad_current = trigger;
     else {
       self.jump_pad_previous = self.jump_pad_current;
@@ -267,24 +272,24 @@ jump_pad_move(vec_direction, flt_time, struct_poi, trigger) {
     }
   }
 
-  if(isdefined(self.poi_spot)) {
+  if(isDefined(self.poi_spot)) {
     level jump_pad_ignore_poi_cleanup(self.poi_spot);
     self.poi_spot deactivate_zombie_point_of_interest();
     self.poi_spot delete();
   }
 
-  if(isdefined(struct_poi)) {
+  if(isDefined(struct_poi)) {
     self.poi_spot = spawn("script_origin", struct_poi.origin);
 
-    if(isdefined(level._pad_poi_ignore))
+    if(isDefined(level._pad_poi_ignore))
       level[[level._pad_poi_ignore]](self.poi_spot);
 
     self thread jump_pad_enemy_follow_or_ignore(self.poi_spot);
 
-    if(isdefined(level._jump_pad_poi_start_override) && !is_true(self.script_index))
+    if(isDefined(level._jump_pad_poi_start_override) && !is_true(self.script_index))
       poi_start_func = level._jump_pad_poi_start_override;
 
-    if(isdefined(level._jump_pad_poi_end_override))
+    if(isDefined(level._jump_pad_poi_end_override))
       poi_end_func = level._jump_pad_poi_end_override;
 
     self.poi_spot create_zombie_point_of_interest(attract_dist, num_attractors, added_poi_value, start_turned_on, poi_start_func);
@@ -296,26 +301,26 @@ jump_pad_move(vec_direction, flt_time, struct_poi, trigger) {
   if(20 >= randomintrange(0, 101))
     self thread maps\mp\zombies\_zm_audio::create_and_play_dialog("general", "jumppad");
 
-  while (gettime() - start_time < jump_time) {
+  while(gettime() - start_time < jump_time) {
     self setvelocity(vec_direction);
     wait 0.05;
   }
 
-  while (!self isonground())
+  while(!self isonground())
     wait 0.05;
 
   self._padded = 0;
   self.lander = 0;
   jump_pad_triggers = getentarray("trig_jump_pad", "targetname");
 
-  for (i = 0; i < jump_pad_triggers.size; i++) {
+  for(i = 0; i < jump_pad_triggers.size; i++) {
     if(self istouching(jump_pad_triggers[i])) {
       level thread failsafe_pad_poi_clean(jump_pad_triggers[i], self.poi_spot);
       return;
     }
   }
 
-  if(isdefined(self.poi_spot)) {
+  if(isDefined(self.poi_spot)) {
     level jump_pad_ignore_poi_cleanup(self.poi_spot);
     self.poi_spot delete();
   }
@@ -327,7 +332,7 @@ disconnect_failsafe_pad_poi_clean() {
   self.poi_spot endon("death");
   self waittill("disconnect");
 
-  if(isdefined(self.poi_spot)) {
+  if(isDefined(self.poi_spot)) {
     level jump_pad_ignore_poi_cleanup(self.poi_spot);
     self.poi_spot deactivate_zombie_point_of_interest();
     self.poi_spot delete();
@@ -335,12 +340,12 @@ disconnect_failsafe_pad_poi_clean() {
 }
 
 failsafe_pad_poi_clean(ent_trig, ent_poi) {
-  if(isdefined(ent_trig.script_wait))
+  if(isDefined(ent_trig.script_wait))
     wait(ent_trig.script_wait);
   else
     wait 0.5;
 
-  if(isdefined(ent_poi)) {
+  if(isDefined(ent_poi)) {
     level jump_pad_ignore_poi_cleanup(ent_poi);
     ent_poi deactivate_zombie_point_of_interest();
     ent_poi delete();
@@ -354,22 +359,22 @@ jump_pad_enemy_follow_or_ignore(ent_poi) {
   players = getplayers();
   valid_players = 0;
 
-  for (p = 0; p < players.size; p++) {
+  for(p = 0; p < players.size; p++) {
     if(is_player_valid(players[p]))
       valid_players++;
   }
 
-  for (i = 0; i < zombies.size; i++) {
+  for(i = 0; i < zombies.size; i++) {
     ignore_poi = 0;
 
-    if(!isdefined(zombies[i])) {
+    if(!isDefined(zombies[i])) {
       continue;
     }
     enemy = zombies[i].favoriteenemy;
 
-    if(isdefined(enemy)) {
+    if(isDefined(enemy)) {
       if(players.size > 1 && valid_players > 1) {
-        if(enemy != self || isdefined(enemy.jump_pad_previous) && enemy.jump_pad_previous == enemy.jump_pad_current)
+        if(enemy != self || isDefined(enemy.jump_pad_previous) && enemy.jump_pad_previous == enemy.jump_pad_current)
           ignore_poi = 1;
       }
     }
@@ -388,15 +393,15 @@ jump_pad_enemy_follow_or_ignore(ent_poi) {
 jump_pad_ignore_poi_cleanup(ent_poi) {
   zombies = getaiarray(level.zombie_team);
 
-  for (i = 0; i < zombies.size; i++) {
-    if(isdefined(zombies[i])) {
+  for(i = 0; i < zombies.size; i++) {
+    if(isDefined(zombies[i])) {
       if(is_true(zombies[i]._pad_follow)) {
         zombies[i]._pad_follow = 0;
         zombies[i] notify("stop_chasing_the_sky");
         zombies[i].ignore_distance_tracking = 0;
       }
 
-      if(isdefined(ent_poi))
+      if(isDefined(ent_poi))
         zombies[i] thread remove_poi_from_ignore_list(ent_poi);
     }
   }
@@ -406,11 +411,11 @@ stop_chasing_the_sky(ent_poi) {
   self endon("death");
   self endon("stop_chasing_the_sky");
 
-  while (is_true(self._pad_follow)) {
-    if(isdefined(self.favoriteenemy)) {
+  while(is_true(self._pad_follow)) {
+    if(isDefined(self.favoriteenemy)) {
       players = getplayers();
 
-      for (i = 0; i < players.size; i++) {
+      for(i = 0; i < players.size; i++) {
         if(is_player_valid(players[i]) && players[i] != self.favoriteenemy) {
           if(distance2dsquared(players[i].origin, self.origin) < 10000) {
             self add_poi_to_ignore_list(ent_poi);
@@ -429,26 +434,23 @@ stop_chasing_the_sky(ent_poi) {
 }
 
 jump_pad_player_overrides(st_behavior, int_clean) {
-  if(!isdefined(st_behavior) || !isstring(st_behavior)) {
+  if(!isDefined(st_behavior) || !isstring(st_behavior)) {
     return;
   }
-  if(!isdefined(int_clean))
+  if(!isDefined(int_clean))
     int_clean = 0;
 
   switch (st_behavior) {
     case "no_sprint":
       if(!int_clean) {
-
       } else {
-
       }
 
       break;
     default:
-      if(isdefined(level._jump_pad_level_behavior))
+      if(isDefined(level._jump_pad_level_behavior))
         self[[level._jump_pad_level_behavior]](st_behavior, int_clean);
       else {
-
       }
 
       break;

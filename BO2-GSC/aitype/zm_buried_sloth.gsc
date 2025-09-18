@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: aitype\zm_buried_sloth.gsc
-***************************************/
+**************************************/
 
 #include character\c_zom_buried_sloth;
 #using_animtree("zm_buried_sloth");

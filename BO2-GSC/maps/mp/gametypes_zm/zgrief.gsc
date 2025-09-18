@@ -66,7 +66,7 @@ setspectatepermissionsgrief() {
 custom_end_screen() {
   players = get_players();
 
-  for (i = 0; i < players.size; i++) {
+  for(i = 0; i < players.size; i++) {
     players[i].game_over_hud = newclienthudelem(players[i]);
     players[i].game_over_hud.alignx = "center";
     players[i].game_over_hud.aligny = "middle";
@@ -112,9 +112,9 @@ custom_end_screen() {
       loser_text = & "ZOMBIE_GRIEF_LOSE_SINGLE";
     }
 
-    if(isdefined(level.host_ended_game) && level.host_ended_game)
+    if(isDefined(level.host_ended_game) && level.host_ended_game)
       players[i].survived_hud settext(&"MP_HOST_ENDED_GAME");
-    else if(isdefined(level.gamemodulewinningteam) && players[i]._encounters_team == level.gamemodulewinningteam)
+    else if(isDefined(level.gamemodulewinningteam) && players[i]._encounters_team == level.gamemodulewinningteam)
       players[i].survived_hud settext(winner_text, level.round_number);
     else
       players[i].survived_hud settext(loser_text, level.round_number);
@@ -158,12 +158,12 @@ func_should_drop_meat() {
 minigun_no_drop() {
   players = get_players();
 
-  for (i = 0; i < players.size; i++) {
+  for(i = 0; i < players.size; i++) {
     if(players[i].ignoreme == 1)
       return true;
   }
 
-  if(isdefined(level.meat_on_ground) && level.meat_on_ground)
+  if(isDefined(level.meat_on_ground) && level.meat_on_ground)
     return true;
 
   return false;
@@ -174,7 +174,7 @@ grief_game_end_check_func() {
 }
 
 player_prevent_damage(einflictor, eattacker, idamage, idflags, smeansofdeath, sweapon, vpoint, vdir, shitloc, psoffsettime) {
-  if(isdefined(eattacker) && isplayer(eattacker) && self != eattacker && !eattacker hasperk("specialty_noname") && !(isdefined(self.is_zombie) && self.is_zombie))
+  if(isDefined(eattacker) && isplayer(eattacker) && self != eattacker && !eattacker hasperk("specialty_noname") && !(isDefined(self.is_zombie) && self.is_zombie))
     return true;
 
   return false;
@@ -183,7 +183,7 @@ player_prevent_damage(einflictor, eattacker, idamage, idflags, smeansofdeath, sw
 game_module_player_damage_grief_callback(einflictor, eattacker, idamage, idflags, smeansofdeath, sweapon, vpoint, vdir, shitloc, psoffsettime) {
   penalty = 10;
 
-  if(isdefined(eattacker) && isplayer(eattacker) && eattacker != self && eattacker.team != self.team && smeansofdeath == "MOD_MELEE")
+  if(isDefined(eattacker) && isplayer(eattacker) && eattacker != self && eattacker.team != self.team && smeansofdeath == "MOD_MELEE")
     self applyknockback(idamage, vdir);
 }
 
@@ -286,11 +286,11 @@ meat_stink_on_ground(position_to_play) {
 }
 
 meat_bounce_override(pos, normal, ent) {
-  if(isdefined(ent) && isplayer(ent)) {
+  if(isDefined(ent) && isplayer(ent)) {
     if(!ent maps\mp\zombies\_zm_laststand::player_is_in_laststand()) {
       level thread meat_stink_player(ent);
 
-      if(isdefined(self.owner)) {
+      if(isDefined(self.owner)) {
         maps\mp\_demo::bookmark("zm_player_meat_stink", gettime(), ent, self.owner, 0, self);
         self.owner maps\mp\zombies\_zm_stats::increment_client_stat("contaminations_given");
       }
@@ -300,7 +300,7 @@ meat_bounce_override(pos, normal, ent) {
     closest_player = undefined;
     closest_player_dist = 10000.0;
 
-    for (player_index = 0; player_index < players.size; player_index++) {
+    for(player_index = 0; player_index < players.size; player_index++) {
       player_to_check = players[player_index];
 
       if(self.owner == player_to_check) {
@@ -317,10 +317,10 @@ meat_bounce_override(pos, normal, ent) {
       }
     }
 
-    if(isdefined(closest_player)) {
+    if(isDefined(closest_player)) {
       level thread meat_stink_player(closest_player);
 
-      if(isdefined(self.owner)) {
+      if(isDefined(self.owner)) {
         maps\mp\_demo::bookmark("zm_player_meat_stink", gettime(), closest_player, self.owner, 0, self);
         self.owner maps\mp\zombies\_zm_stats::increment_client_stat("contaminations_given");
       }
@@ -376,7 +376,7 @@ meat_stink_player_create() {
 }
 
 meat_stink_player_cleanup() {
-  if(isdefined(self.meat_stink_3p)) {
+  if(isDefined(self.meat_stink_3p)) {
     self.meat_stink_3p unlink();
     self.meat_stink_3p delete();
   }
@@ -387,12 +387,12 @@ meat_stink_player_cleanup() {
 door_close_zombie_think() {
   self endon("death");
 
-  while (isalive(self)) {
-    if(isdefined(self.enemy) && isplayer(self.enemy)) {
+  while(isalive(self)) {
+    if(isDefined(self.enemy) && isplayer(self.enemy)) {
       insamezone = 0;
       keys = getarraykeys(level.zones);
 
-      for (i = 0; i < keys.size; i++) {
+      for(i = 0; i < keys.size; i++) {
         if(self maps\mp\zombies\_zm_zonemgr::entity_in_zone(keys[i]) && self.enemy maps\mp\zombies\_zm_zonemgr::entity_in_zone(keys[i]))
           insamezone = 1;
       }
@@ -405,7 +405,7 @@ door_close_zombie_think() {
       nearestzombienode = getnearestnode(self.origin);
       nearestplayernode = getnearestnode(self.enemy.origin);
 
-      if(isdefined(nearestzombienode) && isdefined(nearestplayernode)) {
+      if(isDefined(nearestzombienode) && isDefined(nearestplayernode)) {
         if(!nodesvisible(nearestzombienode, nearestplayernode) && !nodescanpath(nearestzombienode, nearestplayernode))
           self silentlyremovezombie();
       }
@@ -428,7 +428,7 @@ zgrief_player_bled_out_msg() {
   level endon("end_game");
   self endon("disconnect");
 
-  while (true) {
+  while(true) {
     self waittill("bled_out");
     level thread update_players_on_bleedout_or_disconnect(self);
   }
@@ -437,7 +437,7 @@ zgrief_player_bled_out_msg() {
 show_grief_hud_msg(msg, msg_parm, offset, cleanup_end_game) {
   self endon("disconnect");
 
-  while (isdefined(level.hostmigrationtimer))
+  while(isDefined(level.hostmigrationtimer))
     wait 0.05;
 
   zgrief_hudmsg = newclienthudelem(self);
@@ -450,7 +450,7 @@ show_grief_hud_msg(msg, msg_parm, offset, cleanup_end_game) {
   if(self issplitscreen())
     zgrief_hudmsg.y = zgrief_hudmsg.y + 70;
 
-  if(isdefined(offset))
+  if(isDefined(offset))
     zgrief_hudmsg.y = zgrief_hudmsg.y + offset;
 
   zgrief_hudmsg.foreground = 1;
@@ -460,12 +460,12 @@ show_grief_hud_msg(msg, msg_parm, offset, cleanup_end_game) {
   zgrief_hudmsg.hidewheninmenu = 1;
   zgrief_hudmsg.font = "default";
 
-  if(isdefined(cleanup_end_game) && cleanup_end_game) {
+  if(isDefined(cleanup_end_game) && cleanup_end_game) {
     level endon("end_game");
     zgrief_hudmsg thread show_grief_hud_msg_cleanup();
   }
 
-  if(isdefined(msg_parm))
+  if(isDefined(msg_parm))
     zgrief_hudmsg settext(msg, msg_parm);
   else
     zgrief_hudmsg settext(msg);
@@ -482,7 +482,7 @@ show_grief_hud_msg(msg, msg_parm, offset, cleanup_end_game) {
   wait 1;
   zgrief_hudmsg notify("death");
 
-  if(isdefined(zgrief_hudmsg))
+  if(isDefined(zgrief_hudmsg))
     zgrief_hudmsg destroy();
 }
 
@@ -490,7 +490,7 @@ show_grief_hud_msg_cleanup() {
   self endon("death");
   level waittill("end_game");
 
-  if(isdefined(self))
+  if(isDefined(self))
     self destroy();
 }
 
@@ -498,8 +498,8 @@ grief_reset_message() {
   msg = & "ZOMBIE_GRIEF_RESET";
   players = get_players();
 
-  if(isdefined(level.hostmigrationtimer)) {
-    while (isdefined(level.hostmigrationtimer))
+  if(isDefined(level.hostmigrationtimer)) {
+    while(isDefined(level.hostmigrationtimer))
       wait 0.05;
 
     wait 4;
@@ -518,20 +518,20 @@ grief_laststand_weapon_save(einflictor, attacker, idamage, smeansofdeath, sweapo
   self.grief_savedweapon_currentweapon = self getcurrentweapon();
   self.grief_savedweapon_grenades = self get_player_lethal_grenade();
 
-  if(isdefined(self.grief_savedweapon_grenades))
+  if(isDefined(self.grief_savedweapon_grenades))
     self.grief_savedweapon_grenades_clip = self getweaponammoclip(self.grief_savedweapon_grenades);
 
   self.grief_savedweapon_tactical = self get_player_tactical_grenade();
 
-  if(isdefined(self.grief_savedweapon_tactical))
+  if(isDefined(self.grief_savedweapon_tactical))
     self.grief_savedweapon_tactical_clip = self getweaponammoclip(self.grief_savedweapon_tactical);
 
-  for (i = 0; i < self.grief_savedweapon_weapons.size; i++) {
+  for(i = 0; i < self.grief_savedweapon_weapons.size; i++) {
     self.grief_savedweapon_weaponsammo_clip[i] = self getweaponammoclip(self.grief_savedweapon_weapons[i]);
     self.grief_savedweapon_weaponsammo_stock[i] = self getweaponammostock(self.grief_savedweapon_weapons[i]);
   }
 
-  if(isdefined(self.hasriotshield) && self.hasriotshield)
+  if(isDefined(self.hasriotshield) && self.hasriotshield)
     self.grief_hasriotshield = 1;
 
   if(self hasweapon("claymore_zm")) {
@@ -539,21 +539,21 @@ grief_laststand_weapon_save(einflictor, attacker, idamage, smeansofdeath, sweapo
     self.grief_savedweapon_claymore_clip = self getweaponammoclip("claymore_zm");
   }
 
-  if(isdefined(self.current_equipment))
+  if(isDefined(self.current_equipment))
     self.grief_savedweapon_equipment = self.current_equipment;
 }
 
 grief_laststand_weapons_return() {
-  if(!(isdefined(level.isresetting_grief) && level.isresetting_grief))
+  if(!(isDefined(level.isresetting_grief) && level.isresetting_grief))
     return false;
 
-  if(!isdefined(self.grief_savedweapon_weapons))
+  if(!isDefined(self.grief_savedweapon_weapons))
     return false;
 
   primary_weapons_returned = 0;
 
   foreach(index, weapon in self.grief_savedweapon_weapons) {
-    if(isdefined(self.grief_savedweapon_grenades) && weapon == self.grief_savedweapon_grenades || isdefined(self.grief_savedweapon_tactical) && weapon == self.grief_savedweapon_tactical) {
+    if(isDefined(self.grief_savedweapon_grenades) && weapon == self.grief_savedweapon_grenades || isDefined(self.grief_savedweapon_tactical) && weapon == self.grief_savedweapon_tactical) {
       continue;
     }
     if(isweaponprimary(weapon)) {
@@ -568,42 +568,42 @@ grief_laststand_weapons_return() {
     }
     self giveweapon(weapon, 0, self maps\mp\zombies\_zm_weapons::get_pack_a_punch_weapon_options(weapon));
 
-    if(isdefined(self.grief_savedweapon_weaponsammo_clip[index]))
+    if(isDefined(self.grief_savedweapon_weaponsammo_clip[index]))
       self setweaponammoclip(weapon, self.grief_savedweapon_weaponsammo_clip[index]);
 
-    if(isdefined(self.grief_savedweapon_weaponsammo_stock[index]))
+    if(isDefined(self.grief_savedweapon_weaponsammo_stock[index]))
       self setweaponammostock(weapon, self.grief_savedweapon_weaponsammo_stock[index]);
   }
 
-  if(isdefined(self.grief_savedweapon_grenades)) {
+  if(isDefined(self.grief_savedweapon_grenades)) {
     self giveweapon(self.grief_savedweapon_grenades);
 
-    if(isdefined(self.grief_savedweapon_grenades_clip))
+    if(isDefined(self.grief_savedweapon_grenades_clip))
       self setweaponammoclip(self.grief_savedweapon_grenades, self.grief_savedweapon_grenades_clip);
   }
 
-  if(isdefined(self.grief_savedweapon_tactical)) {
+  if(isDefined(self.grief_savedweapon_tactical)) {
     self giveweapon(self.grief_savedweapon_tactical);
 
-    if(isdefined(self.grief_savedweapon_tactical_clip))
+    if(isDefined(self.grief_savedweapon_tactical_clip))
       self setweaponammoclip(self.grief_savedweapon_tactical, self.grief_savedweapon_tactical_clip);
   }
 
-  if(isdefined(self.current_equipment))
+  if(isDefined(self.current_equipment))
     self maps\mp\zombies\_zm_equipment::equipment_take(self.current_equipment);
 
-  if(isdefined(self.grief_savedweapon_equipment)) {
+  if(isDefined(self.grief_savedweapon_equipment)) {
     self.do_not_display_equipment_pickup_hint = 1;
     self maps\mp\zombies\_zm_equipment::equipment_give(self.grief_savedweapon_equipment);
     self.do_not_display_equipment_pickup_hint = undefined;
   }
 
-  if(isdefined(self.grief_hasriotshield) && self.grief_hasriotshield) {
-    if(isdefined(self.player_shield_reset_health))
+  if(isDefined(self.grief_hasriotshield) && self.grief_hasriotshield) {
+    if(isDefined(self.player_shield_reset_health))
       self[[self.player_shield_reset_health]]();
   }
 
-  if(isdefined(self.grief_savedweapon_claymore) && self.grief_savedweapon_claymore) {
+  if(isDefined(self.grief_savedweapon_claymore) && self.grief_savedweapon_claymore) {
     self giveweapon("claymore_zm");
     self set_player_placeable_mine("claymore_zm");
     self setactionslot(4, "weapon", "claymore_zm");
@@ -613,7 +613,7 @@ grief_laststand_weapons_return() {
   primaries = self getweaponslistprimaries();
 
   foreach(weapon in primaries) {
-    if(isdefined(self.grief_savedweapon_currentweapon) && self.grief_savedweapon_currentweapon == weapon) {
+    if(isDefined(self.grief_savedweapon_currentweapon) && self.grief_savedweapon_currentweapon == weapon) {
       self switchtoweapon(weapon);
       return true;
     }
@@ -636,17 +636,17 @@ grief_store_player_scores() {
 }
 
 grief_restore_player_score() {
-  if(!isdefined(self._pre_round_score))
+  if(!isDefined(self._pre_round_score))
     self._pre_round_score = self.score;
 
-  if(isdefined(self._pre_round_score)) {
+  if(isDefined(self._pre_round_score)) {
     self.score = self._pre_round_score;
     self.pers["score"] = self._pre_round_score;
   }
 }
 
 game_mode_spawn_player_logic() {
-  if(flag("start_zombie_round_logic") && !isdefined(self.is_hotjoin)) {
+  if(flag("start_zombie_round_logic") && !isDefined(self.is_hotjoin)) {
     self.is_hotjoin = 1;
     return true;
   }
@@ -691,7 +691,7 @@ update_players_on_bleedout_or_disconnect(excluded_player) {
   if(players_remaining == 1)
     level thread maps\mp\zombies\_zm_audio_announcer::leaderdialog("last_player", excluded_player.team);
 
-  if(!isdefined(other_team)) {
+  if(!isDefined(other_team)) {
     return;
   }
   if(players_remaining < 1)
@@ -709,8 +709,8 @@ _delay_thread_watch_host_migrate_proc(func, timer, param1, param2, param3, param
   self endon("disconnect");
   wait(timer);
 
-  if(isdefined(level.hostmigrationtimer)) {
-    while (isdefined(level.hostmigrationtimer))
+  if(isDefined(level.hostmigrationtimer)) {
+    while(isDefined(level.hostmigrationtimer))
       wait 0.05;
 
     wait(timer);
@@ -722,6 +722,6 @@ _delay_thread_watch_host_migrate_proc(func, timer, param1, param2, param3, param
 grief_round_end_custom_logic() {
   waittillframeend;
 
-  if(isdefined(level.gamemodulewinningteam))
+  if(isDefined(level.gamemodulewinningteam))
     level notify("end_round_think");
 }

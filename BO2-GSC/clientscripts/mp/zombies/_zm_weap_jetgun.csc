@@ -1,7 +1,7 @@
-/********************************************************
+/***********************************************************
  * Decompiled and Edited by SyndiShanX
  * Script: clientscripts\mp\zombies\_zm_weap_jetgun.csc
-********************************************************/
+***********************************************************/
 
 #include clientscripts\mp\_utility;
 #include clientscripts\mp\_fx;
@@ -21,7 +21,7 @@ player_init() {
   level.jetgun_play_fx_power_cell = [];
   players = getlocalplayers();
 
-  for (i = 0; i < players.size; i++) {
+  for(i = 0; i < players.size; i++) {
     level.jetgun_play_fx_power_cell[i] = 1;
     players[i] thread jetgun_fx_power_cell(i);
   }
@@ -33,10 +33,10 @@ jetgun_fx_power_cell(localclientnum) {
   oldcount = -1;
   self thread jetgun_fx_listener(localclientnum);
 
-  for (;;) {
+  for(;;) {
     waitrealtime(0.1);
 
-    while (!clienthassnapshot(0))
+    while(!clienthassnapshot(0))
       wait 0.05;
 
     weaponname = undefined;
@@ -71,8 +71,8 @@ jetgun_fx_power_cell(localclientnum) {
 jetgun_play_power_cell_fx(localclientnum, count) {
   level notify("kill_power_cell_fx");
 
-  for (i = 0; i < level.jetgun_power_cell_fx_handles.size; i++) {
-    if(isdefined(level.jetgun_power_cell_fx_handles[i]) && level.jetgun_power_cell_fx_handles[i] != -1) {
+  for(i = 0; i < level.jetgun_power_cell_fx_handles.size; i++) {
+    if(isDefined(level.jetgun_power_cell_fx_handles[i]) && level.jetgun_power_cell_fx_handles[i] != -1) {
       deletefx(localclientnum, level.jetgun_power_cell_fx_handles[i]);
       level.jetgun_power_cell_fx_handles[i] = -1;
     }
@@ -83,7 +83,7 @@ jetgun_play_power_cell_fx(localclientnum, count) {
   }
   level endon("kill_power_cell_fx");
 
-  for (;;) {
+  for(;;) {
     currentweapon = getcurrentweapon(localclientnum);
 
     if(currentweapon != "jetgun_zm" && currentweapon != "jetgun_upgraded_zm") {
@@ -91,7 +91,7 @@ jetgun_play_power_cell_fx(localclientnum, count) {
       continue;
     }
 
-    for (i = count; i > 0; i--) {
+    for(i = count; i > 0; i--) {
       fx = level._effect["jetgun_viewmodel_power_cell" + i];
 
       if(currentweapon == "jetgun_upgraded_zm")
@@ -111,14 +111,14 @@ jetgun_fx_fire(localclientnum) {
   if(currentweapon == "jetgun_upgraded_zm")
     fx = level._effect["jetgun_viewmodel_steam_upgraded"];
 
-  for (i = level.jetgun_steam_vents; i > 0; i--)
+  for(i = level.jetgun_steam_vents; i > 0; i--)
     playviewmodelfx(localclientnum, fx, "tag_steam" + i);
 
   playsound(localclientnum, "wpn_thunder_breath", (0, 0, 0));
 }
 
 jetgun_notetrack_think() {
-  for (;;) {
+  for(;;) {
     level waittill("notetrack", localclientnum, note);
 
     switch (note) {
@@ -136,7 +136,6 @@ jetgun_notetrack_think() {
 }
 
 jetgun_death_effects(localclientnum, weaponname, userdata) {
-
 }
 
 thread_zombie_vox() {
@@ -149,7 +148,7 @@ thread_zombie_vox() {
 jetgun_fx_listener(localclientnum) {
   self endon("disconnect");
 
-  while (true) {
+  while(true) {
     level waittill("tgfx0");
     level.jetgun_play_fx_power_cell[localclientnum] = 0;
     level waittill("tgfx1");

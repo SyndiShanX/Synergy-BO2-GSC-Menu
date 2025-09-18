@@ -51,7 +51,7 @@ init() {
 }
 
 onplayerconnect() {
-  for (;;) {
+  for(;;) {
     level waittill("connecting", player);
     player thread onmenuresponse();
   }
@@ -60,7 +60,7 @@ onplayerconnect() {
 onmenuresponse() {
   self endon("disconnect");
 
-  for (;;) {
+  for(;;) {
     self waittill("menuresponse", menu, response);
 
     if(response == "back") {
@@ -69,7 +69,7 @@ onmenuresponse() {
 
       if(level.console) {
         if(menu == game["menu_changeclass"] || menu == game["menu_changeclass_offline"] || menu == game["menu_team"] || menu == game["menu_controls"]) {
-          if(isdefined(level.teams[self.pers["team"]]))
+          if(isDefined(level.teams[self.pers["team"]]))
             self openmenu(game["menu_class"]);
         }
       }
@@ -150,7 +150,7 @@ onmenuresponse() {
     if(menu == "spectate") {
       player = getplayerfromclientnum(int(response));
 
-      if(isdefined(player))
+      if(isDefined(player))
         self setcurrentspectatorclient(player);
     }
   }

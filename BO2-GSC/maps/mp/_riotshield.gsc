@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\_riotshield.gsc
-***************************************/
+**************************************/
 
 #include maps\mp\_utility;
 #include common_scripts\utility;
@@ -11,10 +11,10 @@
 #using_animtree("mp_riotshield");
 
 init() {
-  if(!isdefined(level.riotshield_name)) {
+  if(!isDefined(level.riotshield_name)) {
     level.riotshield_name = "riotshield_mp";
 
-    if(isdefined(level.is_zombie_level) && level.is_zombie_level)
+    if(isDefined(level.is_zombie_level) && level.is_zombie_level)
       level.riotshield_name = "riotshield_zm";
   }
 
@@ -23,7 +23,7 @@ init() {
   level.carriedshieldmodel = "t6_wpn_shield_carry_world";
   level.detectshieldmodel = "t6_wpn_shield_carry_world_detect";
 
-  if(isdefined(level.is_zombie_level) && level.is_zombie_level) {
+  if(isDefined(level.is_zombie_level) && level.is_zombie_level) {
     level.deployedshieldmodel = "t6_wpn_zmb_shield_world";
     level.stowedshieldmodel = "t6_wpn_zmb_shield_stow";
     level.carriedshieldmodel = "t6_wpn_zmb_shield_world";
@@ -68,9 +68,13 @@ watchriotshieldpickup() {
   self endon("watch_riotshield_pickup");
   self waittill("pickup_riotshield");
   self endon("weapon_change");
+
   println("Picked up riotshield, expecting weapon_change notify...");
+
   wait 0.5;
+
   println("picked up shield but didn't change weapons, attach it!");
+
   self.hasriotshield = self hasweapon(level.riotshield_name);
   self.hasriotshieldequipped = self getcurrentweapon() == level.riotshield_name;
   self refreshshieldattachment();
@@ -88,7 +92,7 @@ trackriotshield() {
   self.hasriotshieldequipped = self getcurrentweapon() == level.riotshield_name;
   self.lastnonshieldweapon = "none";
 
-  while (true) {
+  while(true) {
     self thread watchriotshieldpickup();
     currentweapon = self getcurrentweapon();
     self.hasriotshield = self hasweapon(level.riotshield_name);
@@ -99,11 +103,11 @@ trackriotshield() {
     if(newweapon == level.riotshield_name) {
       refresh_attach = 1;
 
-      if(isdefined(self.riotshieldentity))
+      if(isDefined(self.riotshieldentity))
         self notify("destroy_riotshield");
 
       if(self.hasriotshield) {
-        if(isdefined(self.riotshieldtakeweapon)) {
+        if(isDefined(self.riotshieldtakeweapon)) {
           self takeweapon(self.riotshieldtakeweapon);
           self.riotshieldtakeweapon = undefined;
         }
@@ -143,16 +147,16 @@ startriotshielddeploy() {
 }
 
 resetreconmodelvisibility(owner) {
-  if(!isdefined(self)) {
+  if(!isDefined(self)) {
     return;
   }
   self setinvisibletoall();
   self setforcenocull();
 
-  if(!isdefined(owner)) {
+  if(!isDefined(owner)) {
     return;
   }
-  for (i = 0; i < level.players.size; i++) {
+  for(i = 0; i < level.players.size; i++) {
     if(level.players[i] hasperk("specialty_showenemyequipment")) {
       if(level.players[i].team == "spectator") {
         continue;
@@ -174,10 +178,10 @@ resetreconmodelvisibility(owner) {
 resetreconmodelonevent(eventname, owner) {
   self endon("death");
 
-  for (;;) {
+  for(;;) {
     level waittill(eventname, newowner);
 
-    if(isdefined(newowner))
+    if(isDefined(newowner))
       owner = newowner;
 
     self resetreconmodelvisibility(owner);
@@ -185,7 +189,7 @@ resetreconmodelonevent(eventname, owner) {
 }
 
 attachreconmodel(modelname, owner) {
-  if(!isdefined(self)) {
+  if(!isDefined(self)) {
     return;
   }
   reconmodel = spawn("script_model", self.origin);
@@ -234,12 +238,14 @@ watchriotshielddeploy() {
       shield_ent = self spawnriotshieldcover(placement["origin"] + (0, 0, zoffset), placement["angles"]);
       item_ent = deployriotshield(self, shield_ent);
       primaries = self getweaponslistprimaries();
-      assert(isdefined(item_ent));
-      assert(!isdefined(self.riotshieldretrievetrigger));
-      assert(!isdefined(self.riotshieldentity));
+
+      assert(isDefined(item_ent));
+      assert(!isDefined(self.riotshieldretrievetrigger));
+      assert(!isDefined(self.riotshieldentity));
 
       if(level.gametype != "shrp")
         assert(primaries.size > 0);
+
       shield_ent setclientfield("riotshield_state", 1);
       shield_ent.reconmodel setclientfield("riotshield_state", 1);
 
@@ -275,16 +281,17 @@ watchriotshielddeploy() {
 }
 
 riotshielddistancetest(origin) {
-  assert(isdefined(origin));
+  assert(isDefined(origin));
   min_dist_squared = getdvarfloat(#"riotshield_deploy_limit_radius");
   min_dist_squared = min_dist_squared * min_dist_squared;
 
-  for (i = 0; i < level.players.size; i++) {
-    if(isdefined(level.players[i].riotshieldentity)) {
+  for(i = 0; i < level.players.size; i++) {
+    if(isDefined(level.players[i].riotshieldentity)) {
       dist_squared = distancesquared(level.players[i].riotshieldentity.origin, origin);
 
       if(min_dist_squared > dist_squared) {
         println("Shield placement denied!Failed distance check to other riotshields.");
+
         return false;
       }
     }
@@ -294,15 +301,16 @@ riotshielddistancetest(origin) {
 }
 
 watchdeployedriotshieldents() {
-  assert(isdefined(self.riotshieldretrievetrigger));
-  assert(isdefined(self.riotshieldentity));
+  assert(isDefined(self.riotshieldretrievetrigger));
+  assert(isDefined(self.riotshieldentity));
+
   self waittill("destroy_riotshield");
 
-  if(isdefined(self.riotshieldretrievetrigger))
+  if(isDefined(self.riotshieldretrievetrigger))
     self.riotshieldretrievetrigger delete();
 
-  if(isdefined(self.riotshieldentity)) {
-    if(isdefined(self.riotshieldentity.reconmodel))
+  if(isDefined(self.riotshieldentity)) {
+    if(isDefined(self.riotshieldentity.reconmodel))
       self.riotshieldentity.reconmodel delete();
 
     self.riotshieldentity connectpaths();
@@ -315,15 +323,15 @@ watchdeployedriotshielddamage() {
   damagemax = getdvarint(#"riotshield_deployed_health");
   self.damagetaken = 0;
 
-  while (true) {
+  while(true) {
     self.maxhealth = 100000;
     self.health = self.maxhealth;
     self waittill("damage", damage, attacker, direction, point, type, tagname, modelname, partname, weaponname, idflags);
 
-    if(!isdefined(attacker)) {
+    if(!isDefined(attacker)) {
       continue;
     }
-    assert(isdefined(self.owner) && isdefined(self.owner.team));
+    assert(isDefined(self.owner) && isDefined(self.owner.team));
 
     if(isplayer(attacker)) {
       if(level.teambased && attacker.team == self.owner.team && attacker != self.owner)
@@ -354,10 +362,10 @@ damagethendestroyriotshield(attacker, weaponname) {
   self notify("damageThenDestroyRiotshield");
   self endon("death");
 
-  if(isdefined(self.owner.riotshieldretrievetrigger))
+  if(isDefined(self.owner.riotshieldretrievetrigger))
     self.owner.riotshieldretrievetrigger delete();
 
-  if(isdefined(self.reconmodel))
+  if(isDefined(self.reconmodel))
     self.reconmodel delete();
 
   self connectpaths();
@@ -365,7 +373,7 @@ damagethendestroyriotshield(attacker, weaponname) {
   self notsolid();
   self setclientfield("riotshield_state", 2);
 
-  if(isdefined(attacker) && isdefined(weaponname) && attacker != self.owner && isplayer(attacker))
+  if(isDefined(attacker) && isDefined(weaponname) && attacker != self.owner && isplayer(attacker))
     maps\mp\_scoreevents::processscoreevent("destroyed_shield", attacker, self.owner, weaponname);
 
   wait(getdvarfloat(#"riotshield_destroyed_cleanup_time"));

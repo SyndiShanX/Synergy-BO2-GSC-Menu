@@ -18,7 +18,7 @@ main() {
 }
 
 startflashbanged() {
-  if(isdefined(self.flashduration))
+  if(isDefined(self.flashduration))
     duration = self.flashduration;
   else
     duration = self getflashbangedstrength() * 1000;

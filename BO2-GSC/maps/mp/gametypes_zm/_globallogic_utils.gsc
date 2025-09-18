@@ -1,7 +1,7 @@
-/*******************************************************
+/*********************************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\gametypes_zm\_globallogic_utils.gsc
-*******************************************************/
+*********************************************************/
 
 #include maps\mp\_utility;
 #include maps\mp\gametypes_zm\_hud_message;
@@ -9,7 +9,7 @@
 #include maps\mp\gametypes_zm\_globallogic_score;
 
 waittillslowprocessallowed() {
-  while (level.lastslowprocessframe == gettime())
+  while(level.lastslowprocessframe == gettime())
     wait 0.05;
 
   level.lastslowprocessframe = gettime();
@@ -19,7 +19,7 @@ testmenu() {
   self endon("death");
   self endon("disconnect");
 
-  for (;;) {
+  for(;;) {
     wait 10.0;
     notifydata = spawnstruct();
     notifydata.titletext = & "MP_CHALLENGE_COMPLETED";
@@ -33,11 +33,11 @@ testshock() {
   self endon("death");
   self endon("disconnect");
 
-  for (;;) {
+  for(;;) {
     wait 3.0;
     numshots = randomint(6);
 
-    for (i = 0; i < numshots; i++) {
+    for(i = 0; i < numshots; i++) {
       iprintlnbold(numshots);
       self shellshock("frag_grenade_mp", 0.2);
       wait 0.1;
@@ -53,7 +53,7 @@ testhps() {
   hps[hps.size] = "artillery_mp";
   hps[hps.size] = "dogs_mp";
 
-  for (;;) {
+  for(;;) {
     hp = "radar_mp";
     wait 20.0;
   }
@@ -76,7 +76,7 @@ timeuntilroundend() {
   if(level.timelimit <= 0)
     return undefined;
 
-  if(!isdefined(level.starttime))
+  if(!isDefined(level.starttime))
     return undefined;
 
   timepassed = (gettimepassed() - level.starttime) / 1000;
@@ -89,17 +89,17 @@ gettimeremaining() {
 }
 
 registerpostroundevent(eventfunc) {
-  if(!isdefined(level.postroundevents))
+  if(!isDefined(level.postroundevents))
     level.postroundevents = [];
 
   level.postroundevents[level.postroundevents.size] = eventfunc;
 }
 
 executepostroundevents() {
-  if(!isdefined(level.postroundevents)) {
+  if(!isDefined(level.postroundevents)) {
     return;
   }
-  for (i = 0; i < level.postroundevents.size; i++)
+  for(i = 0; i < level.postroundevents.size; i++)
     [[level.postroundevents[i]]]();
 }
 
@@ -115,30 +115,32 @@ getvalueinrange(value, minvalue, maxvalue) {
 assertproperplacement() {
   numplayers = level.placement["all"].size;
 
-  for (i = 0; i < numplayers - 1; i++) {
-    if(isdefined(level.placement["all"][i]) && isdefined(level.placement["all"][i + 1])) {
+  for(i = 0; i < numplayers - 1; i++) {
+    if(isDefined(level.placement["all"][i]) && isDefined(level.placement["all"][i + 1])) {
       if(level.placement["all"][i].score < level.placement["all"][i + 1].score) {
         println("^1Placement array:");
 
-        for (i = 0; i < numplayers; i++) {
+        for(i = 0; i < numplayers; i++) {
           player = level.placement["all"][i];
           println("^1" + i + ". " + player.name + ": " + player.score);
         }
 
         assertmsg("Placement array was not properly sorted");
+
         break;
       }
     }
   }
+
 }
 
 isvalidclass(class) {
   if(level.oldschool || sessionmodeiszombiesgame()) {
-    assert(!isdefined(class));
+    assert(!isDefined(class));
     return true;
   }
 
-  return isdefined(class) && class != "";
+  return isDefined(class) && class != "";
 }
 
 playtickingsound(gametype_tick_sound) {
@@ -147,7 +149,7 @@ playtickingsound(gametype_tick_sound) {
   level endon("game_ended");
   time = level.bombtimer;
 
-  while (true) {
+  while(true) {
     self playsound(gametype_tick_sound);
 
     if(time > 10) {
@@ -178,14 +180,14 @@ gametimer() {
   level.starttime = gettime();
   level.discardtime = 0;
 
-  if(isdefined(game["roundMillisecondsAlreadyPassed"])) {
+  if(isDefined(game["roundMillisecondsAlreadyPassed"])) {
     level.starttime = level.starttime - game["roundMillisecondsAlreadyPassed"];
     game["roundMillisecondsAlreadyPassed"] = undefined;
   }
 
   prevtime = gettime();
 
-  while (game["state"] == "playing") {
+  while(game["state"] == "playing") {
     if(!level.timerstopped)
       game["timepassed"] = game["timepassed"] + (gettime() - prevtime);
 
@@ -195,7 +197,7 @@ gametimer() {
 }
 
 gettimepassed() {
-  if(!isdefined(level.starttime))
+  if(!isDefined(level.starttime))
     return 0;
 
   if(level.timerstopped)
@@ -221,7 +223,7 @@ resumetimer() {
 }
 
 getscoreremaining(team) {
-  assert(isplayer(self) || isdefined(team));
+  assert(isplayer(self) || isDefined(team));
   scorelimit = level.scorelimit;
 
   if(isplayer(self))
@@ -231,7 +233,7 @@ getscoreremaining(team) {
 }
 
 getscoreperminute(team) {
-  assert(isplayer(self) || isdefined(team));
+  assert(isplayer(self) || isDefined(team));
   scorelimit = level.scorelimit;
   timelimit = level.timelimit;
   minutespassed = gettimepassed() / 60000 + 0.0001;
@@ -243,7 +245,7 @@ getscoreperminute(team) {
 }
 
 getestimatedtimeuntilscorelimit(team) {
-  assert(isplayer(self) || isdefined(team));
+  assert(isplayer(self) || isDefined(team));
   scoreperminute = self getscoreperminute(team);
   scoreremaining = self getscoreremaining(team);
 
@@ -256,7 +258,7 @@ getestimatedtimeuntilscorelimit(team) {
 rumbler() {
   self endon("disconnect");
 
-  while (true) {
+  while(true) {
     wait 0.1;
     self playrumbleonentity("damage_heavy");
   }
@@ -271,7 +273,7 @@ waitfortimeornotifynoartillery(time, notifyname) {
   self endon(notifyname);
   wait(time);
 
-  while (isdefined(level.artilleryinprogress)) {
+  while(isDefined(level.artilleryinprogress)) {
     assert(level.artilleryinprogress);
     wait 0.25;
   }
@@ -325,14 +327,15 @@ gethitlocheight(shitloc) {
 }
 
 debugline(start, end) {
-  for (i = 0; i < 50; i++) {
+  for(i = 0; i < 50; i++) {
     line(start, end);
     wait 0.05;
   }
+
 }
 
 isexcluded(entity, entitylist) {
-  for (index = 0; index < entitylist.size; index++) {
+  for(index = 0; index < entitylist.size; index++) {
     if(entity == entitylist[index])
       return true;
   }
@@ -354,7 +357,7 @@ waitfortimeornotifies(desireddelay) {
 logteamwinstring(wintype, winner) {
   log_string = wintype;
 
-  if(isdefined(winner))
+  if(isDefined(winner))
     log_string = log_string + ", win: " + winner;
 
   foreach(team in level.teams)

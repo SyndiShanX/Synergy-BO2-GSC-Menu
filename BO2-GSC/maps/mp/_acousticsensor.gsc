@@ -49,7 +49,7 @@ acousticsensordetonate(attacker, weaponname) {
   if(!from_emp)
     playfx(level._equipment_explode_fx, self.origin);
 
-  if(isdefined(attacker)) {
+  if(isDefined(attacker)) {
     if(self.owner isenemyplayer(attacker)) {
       attacker maps\mp\_challenges::destroyedequipment(weaponname);
       maps\mp\_scoreevents::processscoreevent("destroyed_motion_sensor", attacker, self.owner, weaponname);
@@ -67,7 +67,7 @@ destroyent() {
 watchshutdown(player, origin) {
   self waittill_any("death", "hacked");
 
-  if(isdefined(player))
+  if(isDefined(player))
     player.acousticsensor = undefined;
 }
 
@@ -80,18 +80,18 @@ watchacousticsensordamage(watcher) {
   if(!self maps\mp\_utility::ishacked())
     self.damagetaken = 0;
 
-  while (true) {
+  while(true) {
     self.maxhealth = 100000;
     self.health = self.maxhealth;
     self waittill("damage", damage, attacker, direction, point, type, tagname, modelname, partname, weaponname, idflags);
 
-    if(!isdefined(attacker) || !isplayer(attacker)) {
+    if(!isDefined(attacker) || !isplayer(attacker)) {
       continue;
     }
     if(level.teambased && attacker.team == self.owner.team && attacker != self.owner) {
       continue;
     }
-    if(isdefined(weaponname)) {
+    if(isDefined(weaponname)) {
       switch (weaponname) {
         case "concussion_grenade_mp":
         case "flash_grenade_mp":
@@ -118,7 +118,7 @@ watchacousticsensordamage(watcher) {
     } else
       weaponname = "";
 
-    if(isplayer(attacker) && level.teambased && isdefined(attacker.team) && self.owner.team == attacker.team && attacker != self.owner) {
+    if(isplayer(attacker) && level.teambased && isDefined(attacker.team) && self.owner.team == attacker.team && attacker != self.owner) {
       continue;
     }
     if(type == "MOD_MELEE")

@@ -99,15 +99,15 @@ fontpulse(player) {
 }
 
 fadetoblackforxsec(startwait, blackscreenwait, fadeintime, fadeouttime, shadername, n_sort) {
-  if(!isdefined(n_sort))
+  if(!isDefined(n_sort))
     n_sort = 50;
 
   wait(startwait);
 
-  if(!isdefined(self)) {
+  if(!isDefined(self)) {
     return;
   }
-  if(!isdefined(self.blackscreen))
+  if(!isDefined(self.blackscreen))
     self.blackscreen = newclienthudelem(self);
 
   self.blackscreen.x = 0;
@@ -119,7 +119,7 @@ fadetoblackforxsec(startwait, blackscreenwait, fadeintime, fadeouttime, shaderna
   self.blackscreen.hidewheninmenu = 1;
   self.blackscreen.sort = n_sort;
 
-  if(isdefined(shadername))
+  if(isDefined(shadername))
     self.blackscreen setshader(shadername, 640, 480);
   else
     self.blackscreen setshader("black", 640, 480);
@@ -132,12 +132,12 @@ fadetoblackforxsec(startwait, blackscreenwait, fadeintime, fadeouttime, shaderna
   self.blackscreen.alpha = 1;
   wait(fadeintime);
 
-  if(!isdefined(self.blackscreen)) {
+  if(!isDefined(self.blackscreen)) {
     return;
   }
   wait(blackscreenwait);
 
-  if(!isdefined(self.blackscreen)) {
+  if(!isDefined(self.blackscreen)) {
     return;
   }
   if(fadeouttime > 0)
@@ -146,7 +146,7 @@ fadetoblackforxsec(startwait, blackscreenwait, fadeintime, fadeouttime, shaderna
   self.blackscreen.alpha = 0;
   wait(fadeouttime);
 
-  if(isdefined(self.blackscreen)) {
+  if(isDefined(self.blackscreen)) {
     self.blackscreen destroy();
     self.blackscreen = undefined;
   }

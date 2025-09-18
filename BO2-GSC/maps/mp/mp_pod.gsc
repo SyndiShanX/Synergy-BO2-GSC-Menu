@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\mp_pod.gsc
-***************************************/
+**************************************/
 
 #include maps\mp\_utility;
 #include maps\mp\mp_pod_fx;
@@ -69,7 +69,7 @@ levelspawndvars(reset_dvars) {
 }
 
 killstreak_init() {
-  while (!isdefined(level.missile_swarm_flyheight))
+  while(!isDefined(level.missile_swarm_flyheight))
     wait 1;
 
   level.missile_swarm_flyheight = 6000;

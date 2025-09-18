@@ -11,10 +11,10 @@
 hack_perks() {
   vending_triggers = getentarray("zombie_vending", "targetname");
 
-  for (i = 0; i < vending_triggers.size; i++) {
+  for(i = 0; i < vending_triggers.size; i++) {
     struct = spawnstruct();
 
-    if(isdefined(vending_triggers[i].machine))
+    if(isDefined(vending_triggers[i].machine))
       machine[0] = vending_triggers[i].machine;
     else
       machine = getentarray(vending_triggers[i].target, "targetname");
@@ -24,13 +24,13 @@ hack_perks() {
     struct.height = 64;
     struct.script_float = 5;
 
-    while (!isdefined(vending_triggers[i].cost))
+    while(!isDefined(vending_triggers[i].cost))
       wait 0.05;
 
     struct.script_int = int(vending_triggers[i].cost * -1);
     struct.perk = vending_triggers[i];
 
-    if(isdefined(level._hack_perks_override))
+    if(isDefined(level._hack_perks_override))
       struct = struct[[level._hack_perks_override]]();
 
     vending_triggers[i].hackable = struct;
@@ -41,17 +41,17 @@ hack_perks() {
 }
 
 solo_revive_expire_func() {
-  if(isdefined(self.hackable)) {
+  if(isDefined(self.hackable)) {
     maps\mp\zombies\_zm_equip_hacker::deregister_hackable_struct(self.hackable);
     self.hackable = undefined;
   }
 }
 
 perk_hack_qualifier(player) {
-  if(isdefined(player._retain_perks))
+  if(isDefined(player._retain_perks))
     return false;
 
-  if(isdefined(self.perk) && isdefined(self.perk.script_noteworthy)) {
+  if(isDefined(self.perk) && isDefined(self.perk.script_noteworthy)) {
     if(player hasperk(self.perk.script_noteworthy))
       return true;
   }
@@ -66,10 +66,10 @@ perk_hack(hacker) {
   hacker notify(self.perk.script_noteworthy + "_stop");
   hacker playsoundtoplayer("evt_perk_throwup", hacker);
 
-  if(isdefined(hacker.perk_hud)) {
+  if(isDefined(hacker.perk_hud)) {
     keys = getarraykeys(hacker.perk_hud);
 
-    for (i = 0; i < hacker.perk_hud.size; i++)
+    for(i = 0; i < hacker.perk_hud.size; i++)
       hacker.perk_hud[keys[i]].x = i * 30;
   }
 }

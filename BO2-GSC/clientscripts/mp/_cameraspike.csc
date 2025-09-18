@@ -12,13 +12,13 @@ init() {
   level._effect["cameraspike_friendly_light"] = loadfx("misc/fx_equip_light_green");
   level._client_flag_callbacks["scriptmover"][10] = ::spawned;
 
-  if(!isdefined(level.cameraspikes))
+  if(!isDefined(level.cameraspikes))
     level.cameraspikes = [];
 
-  if(!isdefined(level.cameraspikeactive))
+  if(!isDefined(level.cameraspikeactive))
     level.cameraspikeactive = [];
 
-  if(!isdefined(level.cameraspikehandle))
+  if(!isDefined(level.cameraspikehandle))
     level.cameraspikehandle = 0;
 
   level thread updatecameraspikes();
@@ -34,10 +34,10 @@ resetcameraspikestate(localclientnum) {
 playerspawned() {
   self endon("entityshutdown");
 
-  while (true) {
+  while(true) {
     localplayers = level.localplayers;
 
-    for (i = 0; i < localplayers.size; i++) {
+    for(i = 0; i < localplayers.size; i++) {
       if(localplayers[i] == self)
         self resetcameraspikestate(i);
     }
@@ -47,7 +47,7 @@ playerspawned() {
 }
 
 setcameraspikeactive(localclientnum, active) {
-  if(!isdefined(level.cameraspikeactive[localclientnum]))
+  if(!isDefined(level.cameraspikeactive[localclientnum]))
     level.cameraspikeactive[localclientnum] = 0;
 
   wasactive = level.cameraspikeactive[localclientnum];
@@ -87,7 +87,7 @@ addcameraspike(handle, cameraent) {
 }
 
 removecameraspike(cameraspikehandle) {
-  for (i = 0; i < level.cameraspikes.size; i++) {
+  for(i = 0; i < level.cameraspikes.size; i++) {
     last = level.cameraspikes.size - 1;
 
     if(level.cameraspikes[i].handle == cameraspikehandle) {
@@ -121,17 +121,17 @@ updatecameraspikes() {
   cameraspikecountprevious = -1;
   waitforclient(0);
 
-  while (true) {
+  while(true) {
     localplayers = level.localplayers;
 
     if(level.cameraspikes.size != 0 || cameraspikecountprevious != 0) {
-      for (i = 0; i < localplayers.size; i++) {
+      for(i = 0; i < localplayers.size; i++) {
         cameraspikeenabled[i] = 0;
         setextracamentity(i, undefined);
       }
 
-      for (i = 0; i < level.cameraspikes.size; i++) {
-        for (j = 0; j < localplayers.size; j++) {
+      for(i = 0; i < level.cameraspikes.size; i++) {
+        for(j = 0; j < localplayers.size; j++) {
           if(localplayers[j] == level.cameraspikes[i].cameraent getowner(j)) {
             setextracamentity(j, level.cameraspikes[i].cameraent);
 
@@ -140,14 +140,14 @@ updatecameraspikes() {
               setextracamorigin(j, level.cameraspikes[i].cameraent gettagorigin("tag_cam"));
               setextracamangles(j, level.cameraspikes[i].cameraent.angles);
 
-              if(isdefined(level.cameraspikes[i].cameraent.stunned) && level.cameraspikes[i].cameraent.stunned)
+              if(isDefined(level.cameraspikes[i].cameraent.stunned) && level.cameraspikes[i].cameraent.stunned)
                 activatecamerastatic(j, 0.25);
             }
           }
         }
       }
 
-      for (i = 0; i < localplayers.size; i++)
+      for(i = 0; i < localplayers.size; i++)
         setcameraspikeactive(i, cameraspikeenabled[i]);
     }
 

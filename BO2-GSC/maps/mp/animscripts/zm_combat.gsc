@@ -15,12 +15,12 @@ main() {
   maps\mp\animscripts\zm_utility::initialize("zombie_combat");
   self animmode("zonly_physics", 0);
 
-  if(isdefined(self.combat_animmode))
+  if(isDefined(self.combat_animmode))
     self[[self.combat_animmode]]();
 
   self orientmode("face angle", self.angles[1]);
 
-  for (;;) {
+  for(;;) {
     if(trymelee()) {
       return;
     }
@@ -29,10 +29,10 @@ main() {
 }
 
 exposedwait() {
-  if(!isdefined(self.can_always_see) && (!isdefined(self.enemy) || !self cansee(self.enemy))) {
+  if(!isDefined(self.can_always_see) && (!isDefined(self.enemy) || !self cansee(self.enemy))) {
     self endon("enemy");
     wait(0.2 + randomfloat(0.1));
-  } else if(!isdefined(self.enemy)) {
+  } else if(!isDefined(self.enemy)) {
     self endon("enemy");
     wait(0.2 + randomfloat(0.1));
   } else
@@ -40,10 +40,10 @@ exposedwait() {
 }
 
 trymelee() {
-  if(isdefined(self.cant_melee) && self.cant_melee)
+  if(isDefined(self.cant_melee) && self.cant_melee)
     return false;
 
-  if(!isdefined(self.enemy))
+  if(!isDefined(self.enemy))
     return false;
 
   if(distancesquared(self.origin, self.enemy.origin) > 262144)

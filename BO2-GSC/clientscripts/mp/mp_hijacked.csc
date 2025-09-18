@@ -21,6 +21,7 @@ main() {
   setsaveddvar("compassmaxrange", "2100");
   level.overridemapdefinedhardpointsfunc = ::overridemapdefinedhardpointsfunc;
   waitforclient(0);
+
   println("*** Client : mp_hijacked running...");
 }
 

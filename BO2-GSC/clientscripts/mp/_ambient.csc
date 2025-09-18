@@ -7,12 +7,12 @@
 #include clientscripts\mp\_utility_code;
 
 setup_point_fx(point, fx_id) {
-  if(isdefined(point.script_fxid))
+  if(isDefined(point.script_fxid))
     fx_id = point.script_fxid;
 
   point.fx_id = fx_id;
 
-  if(isdefined(point.angles)) {
+  if(isDefined(point.angles)) {
     point.forward = anglestoforward(point.angles);
     point.up = anglestoup(point.angles);
   } else {
@@ -40,8 +40,8 @@ ambient_flak_think(point) {
   level thread ambient_flak_rotate(point);
   level thread ambient_flak_flash(point, min_burst_time, max_burst_time);
 
-  for (;;) {
-    for (timer = randomfloatrange(min_burst_time, max_burst_time); timer > 0; timer = timer - 0.2) {
+  for(;;) {
+    for(timer = randomfloatrange(min_burst_time, max_burst_time); timer > 0; timer = timer - 0.2) {
       point.is_firing = 1;
       playfx(0, level._effect[point.fx_id], point.origin, point.forward, point.up);
       thread play_sound_in_space(0, "wpn_triple25_fire", point.origin);
@@ -57,12 +57,12 @@ ambient_flak_rotate(point) {
   min_pitch = 30;
   max_pitch = 80;
 
-  if(isdefined(point.angles))
+  if(isDefined(point.angles))
     pointangles = point.angles;
   else
     pointangles = (0, 0, 0);
 
-  for (;;) {
+  for(;;) {
     time = randomfloatrange(0.5, 2);
     steps = time * 10;
     random_angle = (randomintrange(min_pitch, max_pitch) * -1, randomint(360), 0);
@@ -71,7 +71,7 @@ ambient_flak_rotate(point) {
     diff_forward = (forward - point.forward) / steps;
     diff_up = (up - point.up) / steps;
 
-    for (i = 0; i < steps; i++) {
+    for(i = 0; i < steps; i++) {
       point.forward = point.forward + diff_forward;
       point.up = point.up + diff_up;
       wait 0.1;
@@ -86,17 +86,17 @@ ambient_flak_flash(point, min_burst_time, max_burst_time) {
   min_dist = 5000;
   max_dist = 6500;
 
-  if(isdefined(point.script_mindist))
+  if(isDefined(point.script_mindist))
     min_dist = point.script_mindist;
 
-  if(isdefined(point.script_maxdist))
+  if(isDefined(point.script_maxdist))
     max_dist = point.script_maxdist;
 
   min_burst_time = 0.25;
   max_burst_time = 1;
   fxpos = undefined;
 
-  while (true) {
+  while(true) {
     if(!point.is_firing) {
       wait 0.25;
       continue;
@@ -105,7 +105,7 @@ ambient_flak_flash(point, min_burst_time, max_burst_time) {
     fxpos = point.origin + vectorscale(point.forward, randomintrange(min_dist, max_dist));
     playfx(0, level._effect["flak_burst_single"], fxpos);
 
-    if(isdefined(level.timeofday) && (level.timeofday == "evening" || level.timeofday == "night"))
+    if(isDefined(level.timeofday) && (level.timeofday == "evening" || level.timeofday == "night"))
       playfx(0, level._effect["flak_cloudflash_night"], fxpos);
 
     wait(randomfloatrange(min_burst_time, max_burst_time));
@@ -123,12 +123,12 @@ ambient_fakefire_think(point) {
   reloadtimemax = undefined;
   soundchance = undefined;
 
-  if(!isdefined(point.weaponinfo))
+  if(!isDefined(point.weaponinfo))
     point.weaponinfo = "axis_turret";
 
   switch (point.weaponinfo) {
     case "allies_assault":
-      if(isdefined(level.allies_team) && level.allies_team == "marines")
+      if(isDefined(level.allies_team) && level.allies_team == "marines")
         firesound = "weap_bar_fire";
       else
         firesound = "weap_dp28_fire_plr";
@@ -143,7 +143,7 @@ ambient_fakefire_think(point) {
       weaptype = "assault";
       break;
     case "axis_assault":
-      if(isdefined(level.axis_team) && level.axis_team == "german")
+      if(isDefined(level.axis_team) && level.axis_team == "german")
         firesound = "weap_mp44_fire";
       else
         firesound = "weap_type99_fire";
@@ -158,7 +158,7 @@ ambient_fakefire_think(point) {
       weaptype = "assault";
       break;
     case "allies_rifle":
-      if(isdefined(level.allies_team) && level.allies_team == "marines")
+      if(isDefined(level.allies_team) && level.allies_team == "marines")
         firesound = "weap_m1garand_fire";
       else
         firesound = "weap_mosinnagant_fire";
@@ -173,7 +173,7 @@ ambient_fakefire_think(point) {
       weaptype = "rifle";
       break;
     case "axis_rifle":
-      if(isdefined(level.axis_team) && level.axis_team == "german")
+      if(isDefined(level.axis_team) && level.axis_team == "german")
         firesound = "weap_kar98k_fire";
       else
         firesound = "weap_arisaka_fire";
@@ -188,7 +188,7 @@ ambient_fakefire_think(point) {
       weaptype = "rifle";
       break;
     case "allies_smg":
-      if(isdefined(level.allies_team) && level.allies_team == "marines")
+      if(isDefined(level.allies_team) && level.allies_team == "marines")
         firesound = "weap_thompson_fire";
       else
         firesound = "weap_ppsh_fire";
@@ -203,7 +203,7 @@ ambient_fakefire_think(point) {
       weaptype = "smg";
       break;
     case "axis_smg":
-      if(isdefined(level.axis_team) && level.axis_team == "german")
+      if(isDefined(level.axis_team) && level.axis_team == "german")
         firesound = "weap_mp40_fire";
       else
         firesound = "weap_type100_fire";
@@ -218,7 +218,7 @@ ambient_fakefire_think(point) {
       weaptype = "smg";
       break;
     case "allies_turret":
-      if(isdefined(level.allies_team) && level.allies_team == "marines")
+      if(isDefined(level.allies_team) && level.allies_team == "marines")
         firesound = "weap_30cal_fire";
       else
         firesound = "weap_dp28_fire_plr";
@@ -233,7 +233,7 @@ ambient_fakefire_think(point) {
       weaptype = "turret";
       break;
     case "axis_turret":
-      if(isdefined(level.axis_team) && level.axis_team == "german")
+      if(isDefined(level.axis_team) && level.axis_team == "german")
         firesound = "weap_bar_fire";
       else
         firesound = "weap_type92_fire";
@@ -248,13 +248,15 @@ ambient_fakefire_think(point) {
       weaptype = "turret";
       break;
     default:
+
       assertmsg("Ambient Fakefire: Weapon Info '" + point.weaponinfo + "' is not recognized.");
+
   }
 
-  while (true) {
+  while(true) {
     burst = randomintrange(burstmin, burstmax);
 
-    for (i = 0; i < burst; i++) {
+    for(i = 0; i < burst; i++) {
       tracedist = 10000;
       target = point.origin + vectorscale(anglestoforward(point.angles + (-3 + randomint(6), -5 + randomint(10), 0)), tracedist);
 
@@ -272,8 +274,9 @@ ambient_fakefire_think(point) {
 ceiling_fans_init(clientnum) {
   fan_array = getentarray(clientnum, "ceiling_fan", "targetname");
 
-  if(isdefined(fan_array)) {
+  if(isDefined(fan_array)) {
     println("**********fan array is defined, size: " + fan_array.size);
+
     array_thread(fan_array, ::spin_fan);
   }
 }
@@ -281,7 +284,7 @@ ceiling_fans_init(clientnum) {
 spin_fan() {
   self endon("entityshutdown");
 
-  if(!isdefined(self.speed)) {
+  if(!isDefined(self.speed)) {
     self.speed = randomintrange(1, 100);
     self.speed = self.speed % 10 + 1;
   }
@@ -294,14 +297,14 @@ spin_fan() {
   do_wobble = 0;
   wobble = self.script_noteworthy;
 
-  if(isdefined(wobble)) {
+  if(isDefined(wobble)) {
     if(wobble == "wobble") {
       do_wobble = 1;
       self.wobble_speed = self.speed * 0.5;
     }
   }
 
-  while (true) {
+  while(true) {
     if(!do_wobble) {
       self rotateyaw(180, self.speed);
       self waittill("rotatedone");
@@ -345,22 +348,25 @@ clocks_init(clientnum) {
   second_values["rotate_bit"] = 6;
   hour_hand_array = getentarray(clientnum, "hour_hand", "targetname");
 
-  if(isdefined(hour_hand_array)) {
+  if(isDefined(hour_hand_array)) {
     println("**********hour_hand_array is defined, size: " + hour_hand_array.size);
+
     array_thread(hour_hand_array, ::clock_run, hour_values);
   }
 
   minute_hand_array = getentarray(clientnum, "minute_hand", "targetname");
 
-  if(isdefined(minute_hand_array)) {
+  if(isDefined(minute_hand_array)) {
     println("**********minute_hand_array is defined, size: " + minute_hand_array.size);
+
     array_thread(minute_hand_array, ::clock_run, minute_values);
   }
 
   second_hand_array = getentarray(clientnum, "second_hand", "targetname");
 
-  if(isdefined(second_hand_array)) {
+  if(isDefined(second_hand_array)) {
     println("**********second_hand_array is defined, size: " + second_hand_array.size);
+
     array_thread(second_hand_array, ::clock_run, second_values);
   }
 }
@@ -368,7 +374,7 @@ clocks_init(clientnum) {
 clock_run(time_values) {
   self endon("entityshutdown");
 
-  if(isdefined(self.script_noteworthy)) {
+  if(isDefined(self.script_noteworthy)) {
     hour = time_values["hand_time"];
     curr_time = getsystemtime(1);
 
@@ -429,14 +435,14 @@ clock_run(time_values) {
   self rotatepitch(time_values["hand_time"] * time_values["rotate"], 0.05);
   self waittill("rotatedone");
 
-  if(isdefined(time_values["first_rotate"])) {
+  if(isDefined(time_values["first_rotate"])) {
     self rotatepitch(time_values["first_rotate"], 0.05);
     self waittill("rotatedone");
   }
 
   prev_time = getsystemtime();
 
-  while (true) {
+  while(true) {
     curr_time = getsystemtime();
 
     if(prev_time != curr_time) {
@@ -452,13 +458,15 @@ spin_anemometers(clientnum) {
   spoon_spinners = getentarray(clientnum, "spinner1", "targetname");
   flat_spinners = getentarray(clientnum, "spinner2", "targetname");
 
-  if(isdefined(spoon_spinners)) {
+  if(isDefined(spoon_spinners)) {
     println("**********spoon_spinners is defined, size: " + spoon_spinners.size);
+
     array_thread(spoon_spinners, ::spoon_spin_func);
   }
 
-  if(isdefined(flat_spinners)) {
+  if(isDefined(flat_spinners)) {
     println("**********flat_spinners is defined, size: " + flat_spinners.size);
+
     array_thread(flat_spinners, ::arrow_spin_func);
   }
 }
@@ -466,12 +474,12 @@ spin_anemometers(clientnum) {
 spoon_spin_func() {
   self endon("entityshutdown");
 
-  if(isdefined(self.script_float))
+  if(isDefined(self.script_float))
     model_speed = self.script_float;
   else
     model_speed = 2;
 
-  while (true) {
+  while(true) {
     speed = randomfloatrange(model_speed * 0.6, model_speed);
     self rotateyaw(1200, speed);
     self waittill("rotatedone");
@@ -481,17 +489,17 @@ spoon_spin_func() {
 arrow_spin_func() {
   self endon("entityshutdown");
 
-  if(isdefined(self.script_int))
+  if(isDefined(self.script_int))
     model_direction_change = self.script_int;
   else
     model_direction_change = 25;
 
-  if(isdefined(self.script_float))
+  if(isDefined(self.script_float))
     model_speed = self.script_float;
   else
     model_speed = 0.8;
 
-  while (true) {
+  while(true) {
     direction_change = model_direction_change + randomintrange(-11, 11);
     speed_change = randomfloatrange(model_speed * 0.3, model_speed);
     self rotateyaw(direction_change, speed_change);

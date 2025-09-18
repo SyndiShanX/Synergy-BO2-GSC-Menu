@@ -7,16 +7,17 @@
 #include maps\mp\_utility;
 
 init() {
-  for (;;) {
+  for(;;) {
     updatedevsettingszm();
     wait 0.5;
   }
+
 }
 
 updatedevsettingszm() {
   if(level.players.size > 0) {
     if(getdvar(#"r_streamDumpDistance") == "3") {
-      if(!isdefined(level.streamdumpteamindex))
+      if(!isDefined(level.streamdumpteamindex))
         level.streamdumpteamindex = 0;
       else
         level.streamdumpteamindex++;
@@ -25,7 +26,7 @@ updatedevsettingszm() {
       spawnpoints = [];
       location = level.scr_zm_map_start_location;
 
-      if((location == "default" || location == "") && isdefined(level.default_start_location))
+      if((location == "default" || location == "") && isDefined(level.default_start_location))
         location = level.default_start_location;
 
       match_string = level.scr_zm_ui_gametype + "_" + location;
@@ -33,9 +34,9 @@ updatedevsettingszm() {
       if(level.streamdumpteamindex < level.teams.size) {
         structs = getstructarray("initial_spawn", "script_noteworthy");
 
-        if(isdefined(structs)) {
+        if(isDefined(structs)) {
           foreach(struct in structs) {
-            if(isdefined(struct.script_string)) {
+            if(isDefined(struct.script_string)) {
               tokens = strtok(struct.script_string, " ");
 
               foreach(token in tokens) {
@@ -46,10 +47,10 @@ updatedevsettingszm() {
           }
         }
 
-        if(!isdefined(spawnpoints) || spawnpoints.size == 0)
+        if(!isDefined(spawnpoints) || spawnpoints.size == 0)
           spawnpoints = getstructarray("initial_spawn_points", "targetname");
 
-        if(isdefined(spawnpoints))
+        if(isDefined(spawnpoints))
           numpoints = spawnpoints.size;
       }
 
@@ -72,4 +73,5 @@ updatedevsettingszm() {
       }
     }
   }
+
 }

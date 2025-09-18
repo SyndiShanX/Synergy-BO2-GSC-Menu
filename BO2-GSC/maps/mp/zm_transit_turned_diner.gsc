@@ -10,10 +10,6 @@
 #include maps\mp\zombies\_zm_game_module;
 #include maps\mp\gametypes_zm\zcleansed;
 
-precache() {
-
-}
-
 main() {
   getspawnpoints();
   maps\mp\gametypes_zm\_zm_gametype::setup_standard_objects("diner");
@@ -59,5 +55,4 @@ getspawnpoints() {
 }
 
 onendgame() {
-
 }

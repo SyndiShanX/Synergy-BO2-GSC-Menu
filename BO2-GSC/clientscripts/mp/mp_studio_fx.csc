@@ -13,7 +13,6 @@ precache_scripted_fx() {
 }
 
 precache_createfx_fx() {
-
 }
 
 main() {
@@ -24,7 +23,7 @@ main() {
   precache_fxanim_props_dlc();
   disablefx = getdvarint(#"_id_C9B177D6");
 
-  if(!isdefined(disablefx) || disablefx <= 0)
+  if(!isDefined(disablefx) || disablefx <= 0)
     precache_scripted_fx();
 
   level._effect["fx_mp_express_train_blow_dust"] = loadfx("maps/mp_maps/fx_mp_express_train_blow_dust");
@@ -116,7 +115,6 @@ precache_fxanim_props() {
 }
 
 precache_fxanim_props_dlc() {
-
 }
 
 fxanim_init(localclientnum) {
@@ -125,7 +123,7 @@ fxanim_init(localclientnum) {
   if(getgametypesetting("allowMapScripting") == 0) {
     return;
   }
-  for (;;) {
+  for(;;) {
     level waittill("snap_processed", snapshotlocalclientnum);
 
     if(localclientnum != snapshotlocalclientnum) {
@@ -182,7 +180,7 @@ t_rex_animate_fx(localclientnum, t_rex_head, t_rex_stand) {
   trexbaseanimssize = trexbaseanims.size;
   assert(trexbaseanimssize == trexanimssize);
 
-  for (;;) {
+  for(;;) {
     timer = randomfloatrange(mintime, maxtime);
     wait(timer);
 
@@ -191,15 +189,16 @@ t_rex_animate_fx(localclientnum, t_rex_head, t_rex_stand) {
       t_rex_stand clearanim(trexbaseanims[currentanim], 0.05);
     }
 
-    for (randomanim = randomint(trexanimssize); randomanim == currentanim; randomanim = randomint(trexanimssize)) {
-
+    for(randomanim = randomint(trexanimssize); randomanim == currentanim; randomanim = randomint(trexanimssize)) {
     }
 
     currentanim = randomanim;
     t_rex_head setanimrestart(trexanims[currentanim], 1.0, 0.0, 1.0);
     t_rex_stand setanimrestart(trexbaseanims[currentanim], 1.0, 0.0, 1.0);
+
     mintime = getdvarfloatdefault("mp_studio_trex_min_wait", mintime);
     maxtime = getdvarfloatdefault("mp_studio_trex_max_wait", maxtime);
+
   }
 }
 
@@ -210,7 +209,7 @@ brontosaurus_animate_fx(localclientnum) {
   maxtime = 20;
   self animscripted(level.scr_anim["fxanim_props"]["brontosaurus_chew_anim"], 1.0, 0.0, 1.0);
 
-  for (;;) {
+  for(;;) {
     timer = randomfloatrange(mintime, maxtime);
     wait(timer);
     self clearanim(level.scr_anim["fxanim_props"]["brontosaurus_chew_anim"], 0.5);
@@ -219,7 +218,9 @@ brontosaurus_animate_fx(localclientnum) {
     wait(anim_length);
     self clearanim(level.scr_anim["fxanim_props"]["brontosaurus_look_around"], 0.5);
     self animscripted(level.scr_anim["fxanim_props"]["brontosaurus_chew_anim"], 1.0, 0.5, 1.0);
+
     mintime = getdvarfloatdefault("mp_studio_trex_min_wait", mintime);
     maxtime = getdvarfloatdefault("mp_studio_trex_max_wait", maxtime);
+
   }
 }

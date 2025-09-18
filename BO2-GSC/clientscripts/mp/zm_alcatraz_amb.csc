@@ -199,7 +199,6 @@ snd_start_autofx_audio() {
 }
 
 sndnuclearbomb() {
-
 }
 
 afterlifeaudio(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump) {
@@ -224,7 +223,7 @@ deactivateafterlifeaudio() {
 }
 
 sndspectatorreset() {
-  while (true) {
+  while(true) {
     level waittill("sndSR");
     self notify("sndEndLeak");
     deactivateambientroom(0, "afterlife", 98);
@@ -286,14 +285,14 @@ sndendff(array, array2) {
 }
 
 sndplanesnapshot() {
-  while (true) {
+  while(true) {
     level waittill("sndPS");
     level waittill("sndPE");
   }
 }
 
 sndgondolaloops() {
-  while (true) {
+  while(true) {
     level waittill("sndGS");
     playloopat("zmb_gondola_generator_loop", (895, 8219, 1680));
     playloopat("zmb_gondola_wheels", (899, 5928, 435));
@@ -306,7 +305,7 @@ sndgondolaloops() {
 }
 
 sndplanealarmoneshots() {
-  while (true) {
+  while(true) {
     level waittill("sndPB");
     playsound(0, "zmb_plane_countdown_alarm", (756, 9664, 2153));
     wait 0.1;

@@ -21,13 +21,13 @@ main() {
   lit_discs = [];
 
   foreach(disc in chamber_discs) {
-    if(isdefined(disc.script_int))
+    if(isDefined(disc.script_int))
       lit_discs[disc.script_int - 1] = disc;
   }
 
   flag_wait_any("ee_all_staffs_upgraded", "show_morse_code");
 
-  while (true) {
+  while(true) {
     setclientfield("light_show", 1);
 
     if(randomint(100) < 10) {
@@ -108,7 +108,7 @@ phrase_convert_to_cipher(str_phrase, str_key) {
   alphabet_vals = [];
   num = 0;
 
-  for (i = 0; i < alphabet.size; i++) {
+  for(i = 0; i < alphabet.size; i++) {
     letter = alphabet[i];
     alphabet_vals[letter] = num;
     num++;
@@ -117,12 +117,12 @@ phrase_convert_to_cipher(str_phrase, str_key) {
   encrypted_phrase = [];
   j = 0;
 
-  for (i = 0; i < str_phrase.size; i++) {
+  for(i = 0; i < str_phrase.size; i++) {
     cipher_letter = str_key[j % str_key.size];
     original_letter = str_phrase[i];
     n_original_letter = alphabet_vals[original_letter];
 
-    if(!isdefined(n_original_letter)) {
+    if(!isDefined(n_original_letter)) {
       encrypted_phrase[encrypted_phrase.size] = original_letter;
       continue;
     }
@@ -137,12 +137,12 @@ phrase_convert_to_cipher(str_phrase, str_key) {
 }
 
 light_show_morse(a_discs, message) {
-  for (i = 0; i < message.size; i++) {
+  for(i = 0; i < message.size; i++) {
     letter = message[i];
     letter_code = level.morse_letters[letter];
 
-    if(isdefined(letter_code)) {
-      for (j = 0; j < letter_code.size; j++) {
+    if(isDefined(letter_code)) {
+      for(j = 0; j < letter_code.size; j++) {
         turn_all_lights_on(a_discs);
 
         if(letter_code[j] == ".")

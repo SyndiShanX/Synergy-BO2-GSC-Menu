@@ -36,7 +36,7 @@ heli_gunner_vtol_state(localclientnum) {
   prev_yaw = self.angles[1];
   delta_yaw = 0;
 
-  while (true) {
+  while(true) {
     speed = self getspeed();
     anim_time = 0.5;
 
@@ -109,32 +109,32 @@ warnmissilefired(localclientnum, set) {
 }
 
 heli_deletefx(localclientnum) {
-  if(isdefined(self.exhaustleftfxhandle)) {
+  if(isDefined(self.exhaustleftfxhandle)) {
     deletefx(localclientnum, self.exhaustleftfxhandle);
     self.exhaustleftfxhandle = undefined;
   }
 
-  if(isdefined(self.exhaustrightfxhandlee)) {
+  if(isDefined(self.exhaustrightfxhandlee)) {
     deletefx(localclientnum, self.exhaustrightfxhandle);
     self.exhaustrightfxhandle = undefined;
   }
 
-  if(isdefined(self.lightfxid)) {
+  if(isDefined(self.lightfxid)) {
     deletefx(localclientnum, self.lightfxid);
     self.lightfxid = undefined;
   }
 
-  if(isdefined(self.propfxid)) {
+  if(isDefined(self.propfxid)) {
     deletefx(localclientnum, self.propfxid);
     self.propfxid = undefined;
   }
 
-  if(isdefined(self.vtolleftfxid)) {
+  if(isDefined(self.vtolleftfxid)) {
     deletefx(localclientnum, self.vtolleftfxid);
     self.vtolleftfxid = undefined;
   }
 
-  if(isdefined(self.vtolrightfxid)) {
+  if(isDefined(self.vtolrightfxid)) {
     deletefx(localclientnum, self.vtolrightfxid);
     self.vtolrightfxid = undefined;
   }
@@ -143,7 +143,7 @@ heli_deletefx(localclientnum) {
 startfx(localclientnum) {
   self endon("entityshutdown");
 
-  if(isdefined(self.vehicletype)) {
+  if(isDefined(self.vehicletype)) {
     if(self.vehicletype == "remote_mortar_vehicle_mp") {
       return;
     }
@@ -151,19 +151,20 @@ startfx(localclientnum) {
       return;
   }
 
-  if(isdefined(self.exhaustfxname) && self.exhaustfxname != "")
+  if(isDefined(self.exhaustfxname) && self.exhaustfxname != "")
     self.exhaustfx = loadfx(self.exhaustfxname);
 
-  if(isdefined(self.exhaustfx)) {
+  if(isDefined(self.exhaustfx)) {
     self.exhaustleftfxhandle = playfxontag(localclientnum, self.exhaustfx, self, "tag_engine_left");
 
     if(!self.oneexhaust)
       self.exhaustrightfxhandle = playfxontag(localclientnum, self.exhaustfx, self, "tag_engine_right");
   } else {
     println("Client: _helicopter.csc - startfx() - exhaust rotor fx is not loaded");
+
   }
 
-  if(isdefined(self.vehicletype)) {
+  if(isDefined(self.vehicletype)) {
     light_fx = undefined;
     prop_fx = undefined;
 
@@ -185,14 +186,14 @@ startfx(localclientnum) {
         break;
     }
 
-    if(isdefined(light_fx)) {
+    if(isDefined(light_fx)) {
       if(self friendnotfoe(localclientnum))
         self.lightfxid = playfxontag(localclientnum, level._effect[light_fx]["friendly"], self, "tag_origin");
       else
         self.lightfxid = playfxontag(localclientnum, level._effect[light_fx]["enemy"], self, "tag_origin");
     }
 
-    if(isdefined(prop_fx) && !self islocalclientdriver(localclientnum))
+    if(isDefined(prop_fx) && !self islocalclientdriver(localclientnum))
       self.propfxid = playfxontag(localclientnum, level._effect[prop_fx], self, "tag_origin");
   }
 
@@ -209,7 +210,7 @@ startfx_loop(localclientnum) {
   servertime = getservertime(0);
   lastservertime = servertime;
 
-  while (isdefined(self)) {
+  while(isDefined(self)) {
     if(servertime < lastservertime) {
       heli_deletefx(localclientnum);
       startfx(localclientnum);
@@ -226,20 +227,20 @@ damage_fx_stages(localclientnum) {
   last_damage_state = self gethelidamagestate();
   fx = undefined;
 
-  for (;;) {
+  for(;;) {
     if(last_damage_state != self gethelidamagestate()) {
       if(self gethelidamagestate() == 2) {
-        if(isdefined(fx))
+        if(isDefined(fx))
           stopfx(localclientnum, fx);
 
         fx = trail_fx(localclientnum, level.chopper_fx["damage"]["light_smoke"], "tag_engine_left");
       } else if(self gethelidamagestate() == 1) {
-        if(isdefined(fx))
+        if(isDefined(fx))
           stopfx(localclientnum, fx);
 
         fx = trail_fx(localclientnum, level.chopper_fx["damage"]["heavy_smoke"], "tag_engine_left");
       } else {
-        if(isdefined(fx))
+        if(isDefined(fx))
           stopfx(localclientnum, fx);
 
         self notify("stop trail");

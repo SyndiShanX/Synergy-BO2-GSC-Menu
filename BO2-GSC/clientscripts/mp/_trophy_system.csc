@@ -56,7 +56,7 @@ checkforplayerswitch(localclientnum, fxhandle) {
   level waittill("player_switch");
   self notify("player_switch");
 
-  if(isdefined(fxhandle))
+  if(isDefined(fxhandle))
     stopfx(localclientnum, fxhandle);
 
   waittillframeend;
@@ -67,7 +67,7 @@ trophy_state_change(localclientnum, oldval, newval, bnewent, binitialsnap, field
   self endon("entityshutdown");
   self waittill_dobj(localclientnum);
 
-  if(!isdefined(self)) {
+  if(!isDefined(self)) {
     return;
   }
   switch (newval) {
@@ -83,7 +83,7 @@ trophy_state_change_recon(localclientnum, oldval, newval, bnewent, binitialsnap,
   self endon("entityshutdown");
   self waittill_dobj(localclientnum);
 
-  if(!isdefined(self)) {
+  if(!isDefined(self)) {
     return;
   }
   switch (newval) {

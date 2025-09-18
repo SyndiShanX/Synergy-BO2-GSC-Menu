@@ -24,12 +24,12 @@ init_stage() {
 
 stage_logic() {
   iprintlnbold("SLB Started");
+
   snipe_balls_wait();
   stage_completed("sq", level._cur_stage_name);
 }
 
 exit_stage_1(success) {
-
 }
 
 snipe_balls_wait() {
@@ -37,13 +37,13 @@ snipe_balls_wait() {
   array_thread(a_balls, ::snipe_balls_watch_ball);
   is_complete = 0;
 
-  while (!is_complete) {
+  while(!is_complete) {
     level waittill("zm_ball_shot");
     wait 1;
     is_complete = 1;
 
     foreach(m_ball in a_balls) {
-      if(isdefined(m_ball))
+      if(isDefined(m_ball))
         is_complete = 0;
     }
   }
@@ -56,7 +56,7 @@ snipe_balls_watch_ball() {
   a_snipers = array("dsr50_zm", "dsr50_upgraded_zm+vzoom", "barretm82_zm", "barretm82_upgraded_zm+vzoom", "svu_zm", "svu_upgraded_zm+vzoom");
   self setcandamage(1);
 
-  while (true) {
+  while(true) {
     self waittill("damage", amount, attacker, direction, point, mod, tagname, modelname, partname, weaponname);
 
     if(maps\mp\zm_highrise_sq::sq_is_weapon_sniper(weaponname)) {
@@ -88,14 +88,14 @@ snipe_balls_watch_ball() {
 lion_ball_enable_pickup() {
   self endon("sq_sliquified");
 
-  while (true) {
+  while(true) {
     self.can_pickup = 1;
     self.t_pickup = sq_slb_create_use_trigger(self.origin, 32, 70, & "ZM_HIGHRISE_SQ_PICKUP_BALL");
 
-    while (self.can_pickup) {
+    while(self.can_pickup) {
       self.t_pickup waittill("trigger", player);
 
-      if(!isdefined(player.zm_sq_has_ball)) {
+      if(!isDefined(player.zm_sq_has_ball)) {
         player.zm_sq_has_ball = 1;
         player.which_ball = self;
         self.can_pickup = 0;
@@ -116,7 +116,7 @@ lion_ball_enable_pickup() {
     self ball_pickup_waittill_change();
     play_spark = 0;
 
-    if(!isdefined(self.t_putdown)) {
+    if(!isDefined(self.t_putdown)) {
       self waittill("sq_pickup_reset");
       play_spark = 1;
     } else

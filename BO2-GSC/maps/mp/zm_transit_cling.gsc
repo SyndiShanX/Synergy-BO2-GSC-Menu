@@ -12,7 +12,7 @@ initializecling() {
 }
 
 setupclingtrigger() {
-  if(!isdefined(level.the_bus)) {
+  if(!isDefined(level.the_bus)) {
     return;
   }
   enablecling();
@@ -20,7 +20,7 @@ setupclingtrigger() {
   level.cling_triggers = [];
   triggers = getentarray("cling_trigger", "script_noteworthy");
 
-  for (i = 0; i < triggers.size; i++) {
+  for(i = 0; i < triggers.size; i++) {
     level.cling_triggers[i] = spawnstruct();
     level.cling_triggers[i].trigger = triggers[i];
     trigger = level.cling_triggers[i].trigger;
@@ -43,7 +43,7 @@ setupclingtrigger() {
 enablecling() {
   level.cling_enabled = 1;
 
-  if(isdefined(level.cling_triggers)) {
+  if(isDefined(level.cling_triggers)) {
     foreach(struct in level.cling_triggers) {
       struct.trigger sethintstring("Hold [{+activate}] To Cling To The Bus.");
       struct.trigger setteamfortrigger("allies");
@@ -55,7 +55,7 @@ disablecling() {
   level.cling_enabled = 0;
   detachallplayersfromclinging();
 
-  if(isdefined(level.cling_triggers)) {
+  if(isDefined(level.cling_triggers)) {
     foreach(struct in level.cling_triggers) {
       struct.trigger sethintstring("");
       struct.trigger setteamfortrigger("none");
@@ -66,12 +66,12 @@ disablecling() {
 makevisibletoall(trigger) {
   players = get_players();
 
-  for (playerindex = 0; playerindex < players.size; playerindex++)
+  for(playerindex = 0; playerindex < players.size; playerindex++)
     trigger setinvisibletoplayer(players[playerindex], 0);
 }
 
 clingtriggerusethink(positionindex) {
-  while (true) {
+  while(true) {
     self waittill("trigger", who);
 
     if(!level.cling_enabled) {
@@ -83,10 +83,10 @@ clingtriggerusethink(positionindex) {
     if(who in_revive_trigger()) {
       continue;
     }
-    if(isdefined(who.is_drinking) && who.is_drinking == 1) {
+    if(isDefined(who.is_drinking) && who.is_drinking == 1) {
       continue;
     }
-    if(isdefined(level.cling_triggers[positionindex].player)) {
+    if(isDefined(level.cling_triggers[positionindex].player)) {
       if(level.cling_triggers[positionindex].player == who)
         dettachplayerfrombus(who, positionindex);
 
@@ -99,12 +99,12 @@ clingtriggerusethink(positionindex) {
 }
 
 setclingtriggervisibility(positionindex) {
-  while (true) {
+  while(true) {
     players = get_players();
 
-    for (i = 0; i < players.size; i++) {
-      is_player_clinging = isdefined(level.cling_triggers[positionindex].player) && level.cling_triggers[positionindex].player == players[i];
-      no_player_clinging = !isdefined(level.cling_triggers[positionindex].player);
+    for(i = 0; i < players.size; i++) {
+      is_player_clinging = isDefined(level.cling_triggers[positionindex].player) && level.cling_triggers[positionindex].player == players[i];
+      no_player_clinging = !isDefined(level.cling_triggers[positionindex].player);
 
       if(is_player_clinging || no_player_clinging && level.cling_enabled) {
         self setinvisibletoplayer(players[i], 0);
@@ -119,13 +119,13 @@ setclingtriggervisibility(positionindex) {
 }
 
 detachallplayersfromclinging() {
-  for (positionindex = 0; positionindex < level.cling_triggers.size; positionindex++) {
-    if(!isdefined(level.cling_triggers[positionindex]) || !isdefined(level.cling_triggers[positionindex].player)) {
+  for(positionindex = 0; positionindex < level.cling_triggers.size; positionindex++) {
+    if(!isDefined(level.cling_triggers[positionindex]) || !isDefined(level.cling_triggers[positionindex].player)) {
       continue;
     }
     players = get_players();
 
-    for (i = 0; i < players.size; i++) {
+    for(i = 0; i < players.size; i++) {
       if(level.cling_triggers[positionindex].player == players[i]) {
         dettachplayerfrombus(players[i], positionindex);
         break;
@@ -167,13 +167,13 @@ positionisbr(positionindex) {
 }
 
 positionisupgraded(positionindex) {
-  return positionisbl(positionindex) && isdefined(level.the_bus.upgrades["PlatformL"]) && level.the_bus.upgrades["PlatformL"].installed || positionisbr(positionindex) && isdefined(level.the_bus.upgrades["PlatformR"]) && level.the_bus.upgrades["PlatformR"].installed;
+  return positionisbl(positionindex) && isDefined(level.the_bus.upgrades["PlatformL"]) && level.the_bus.upgrades["PlatformL"].installed || positionisbr(positionindex) && isDefined(level.the_bus.upgrades["PlatformR"]) && level.the_bus.upgrades["PlatformR"].installed;
 }
 
 dettachplayerfrombus(player, positionindex) {
   level.cling_triggers[positionindex].trigger sethintstring("Hold [{+activate}] To Cling To The Bus.");
 
-  if(!isdefined(level.cling_triggers[positionindex].player)) {
+  if(!isDefined(level.cling_triggers[positionindex].player)) {
     return;
   }
   player unlink();
@@ -195,16 +195,16 @@ disableplayerweapons(positionindex) {
   self.hadclingpistol = 0;
 
   if(!positionisupgraded(positionindex)) {
-    for (i = 0; i < weaponinventory.size; i++) {
+    for(i = 0; i < weaponinventory.size; i++) {
       weapon = weaponinventory[i];
 
-      if(weaponclass(weapon) == "pistol" && (!isdefined(self.clingpistol) || weapon == self.lastactiveweapon || self.clingpistol == "m1911_zm")) {
+      if(weaponclass(weapon) == "pistol" && (!isDefined(self.clingpistol) || weapon == self.lastactiveweapon || self.clingpistol == "m1911_zm")) {
         self.clingpistol = weapon;
         self.hadclingpistol = 1;
       }
     }
 
-    if(!isdefined(self.clingpistol)) {
+    if(!isDefined(self.clingpistol)) {
       self giveweapon("m1911_zm");
       self.clingpistol = "m1911_zm";
     }
@@ -238,18 +238,18 @@ enableplayerweapons(positionindex) {
     else {
       primaryweapons = self getweaponslistprimaries();
 
-      if(isdefined(primaryweapons) && primaryweapons.size > 0)
+      if(isDefined(primaryweapons) && primaryweapons.size > 0)
         self switchtoweapon(primaryweapons[0]);
     }
   }
 }
 
 playerisclingingtobus() {
-  if(!isdefined(level.cling_triggers))
+  if(!isDefined(level.cling_triggers))
     return false;
 
-  for (i = 0; i < level.cling_triggers.size; i++) {
-    if(!isdefined(level.cling_triggers[i]) || !isdefined(level.cling_triggers[i].player)) {
+  for(i = 0; i < level.cling_triggers.size; i++) {
+    if(!isDefined(level.cling_triggers[i]) || !isDefined(level.cling_triggers[i].player)) {
       continue;
     }
     if(level.cling_triggers[i].player == self)
@@ -262,8 +262,8 @@ playerisclingingtobus() {
 _getnumplayersclinging() {
   num_clinging = 0;
 
-  for (i = 0; i < level.cling_triggers.size; i++) {
-    if(isdefined(level.cling_triggers[i]) && isdefined(level.cling_triggers[i].player))
+  for(i = 0; i < level.cling_triggers.size; i++) {
+    if(isDefined(level.cling_triggers[i]) && isDefined(level.cling_triggers[i].player))
       num_clinging++;
   }
 

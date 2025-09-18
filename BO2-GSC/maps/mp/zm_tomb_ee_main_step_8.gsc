@@ -25,6 +25,7 @@ init_stage() {
 
 stage_logic() {
   iprintln(level._cur_stage_name + " of little girl lost started");
+
   level notify("tomb_sidequest_complete");
 
   foreach(player in get_players()) {
@@ -63,11 +64,10 @@ stage_logic() {
 }
 
 exit_stage(success) {
-
 }
 
 waittill_player_activates() {
-  while (true) {
+  while(true) {
     self waittill("trigger", player);
     flag_set("ee_samantha_released");
   }

@@ -12,15 +12,15 @@
 #include maps\mp\animscripts\zm_shared;
 
 mechz_debug() {
-  while (true) {
+  while(true) {
     debug_level = getdvarint(#"_id_E7121222");
 
-    if(isdefined(debug_level) && debug_level) {
+    if(isDefined(debug_level) && debug_level) {
       if(debug_level == 1) {
         mechz_array = getentarray("mechz_zombie_ai");
 
-        for (i = 0; i < mechz_array.size; i++) {
-          if(isdefined(mechz_array[i].goal_pos)) {
+        for(i = 0; i < mechz_array.size; i++) {
+          if(isDefined(mechz_array[i].goal_pos)) {
             debugstar(mechz_array[i].goal_pos, (1, 0, 0), 1);
             line(mechz_array[i].goal_pos, mechz_array[i].origin, (1, 0, 0), 0, 1);
           }
@@ -28,6 +28,7 @@ mechz_debug() {
       }
     }
   }
+
 }
 
 setup_devgui() {
@@ -69,7 +70,7 @@ setup_devgui() {
 }
 
 watch_devgui_mechz() {
-  while (true) {
+  while(true) {
     if(getdvar(#"_id_877D2B64") == "on") {
       mechz_health_increases();
       level.mechz_left_to_spawn = 1;
@@ -86,8 +87,8 @@ watch_devgui_mechz() {
       behavior = getdvar(#"_id_7D9211F9");
       zombies = getaiarray("axis");
 
-      for (i = 0; i < zombies.size; i++) {
-        if(isdefined(zombies[i].is_mechz) && zombies[i].is_mechz)
+      for(i = 0; i < zombies.size; i++) {
+        if(isDefined(zombies[i].is_mechz) && zombies[i].is_mechz)
           zombies[i] thread mechz_force_behavior(behavior);
       }
 
@@ -99,12 +100,12 @@ watch_devgui_mechz() {
       mechz = undefined;
       zombies = getaiarray("axis");
 
-      for (i = 0; i < zombies.size; i++) {
-        if(isdefined(zombies[i].is_mechz) && zombies[i].is_mechz)
+      for(i = 0; i < zombies.size; i++) {
+        if(isDefined(zombies[i].is_mechz) && zombies[i].is_mechz)
           mechz = zombies[i];
       }
 
-      if(!isdefined(mechz)) {
+      if(!isDefined(mechz)) {
         continue;
       }
       mechz.not_interruptable = 1;
@@ -119,12 +120,12 @@ watch_devgui_mechz() {
       mechz = undefined;
       zombies = getaiarray("axis");
 
-      for (i = 0; i < zombies.size; i++) {
-        if(isdefined(zombies[i].is_mechz) && zombies[i].is_mechz)
+      for(i = 0; i < zombies.size; i++) {
+        if(isDefined(zombies[i].is_mechz) && zombies[i].is_mechz)
           mechz = zombies[i];
       }
 
-      if(!isdefined(mechz)) {
+      if(!isDefined(mechz)) {
         continue;
       }
       mechz.not_interruptable = 1;
@@ -138,8 +139,8 @@ watch_devgui_mechz() {
       setdvar("test_mechz_sprint", "off");
       zombies = getaiarray("axis");
 
-      for (i = 0; i < zombies.size; i++) {
-        if(isdefined(zombies[i].is_mechz) && zombies[i].is_mechz)
+      for(i = 0; i < zombies.size; i++) {
+        if(isDefined(zombies[i].is_mechz) && zombies[i].is_mechz)
           zombies[i].force_sprint = 1;
       }
     }
@@ -148,8 +149,8 @@ watch_devgui_mechz() {
       setdvar("reset_mechz_thinking", "off");
       zombies = getaiarray("axis");
 
-      for (i = 0; i < zombies.size; i++) {
-        if(isdefined(zombies[i].is_mechz) && zombies[i].is_mechz) {
+      for(i = 0; i < zombies.size; i++) {
+        if(isDefined(zombies[i].is_mechz) && zombies[i].is_mechz) {
           zombies[i].not_interruptable = 0;
           zombies[i].force_sprint = 0;
         }
@@ -158,6 +159,7 @@ watch_devgui_mechz() {
 
     wait 0.1;
   }
+
 }
 
 mechz_force_behavior(behavior) {
@@ -192,6 +194,7 @@ mechz_force_behavior(behavior) {
     self.force_behavior = 0;
     self notify("kill_force_behavior");
   }
+
 }
 
 get_behavior_orient() {
@@ -200,7 +203,7 @@ get_behavior_orient() {
 }
 
 setup_force_behavior() {
-  if(!isdefined(level.test_align_struct)) {
+  if(!isDefined(level.test_align_struct)) {
     player = get_players()[0];
     pos = player.origin;
     offset = anglestoforward(player.angles);
@@ -219,7 +222,7 @@ setup_force_behavior() {
 }
 
 align_test_struct() {
-  while (true) {
+  while(true) {
     pos = level.players[0].origin;
     offset = anglestoforward(level.players[0].angles);
     offset = vectornormalize(offset);
@@ -228,6 +231,7 @@ align_test_struct() {
     level.test_align_struct.angles = get_behavior_orient();
     wait 0.05;
   }
+
 }
 
 scripted_behavior(anim_scripted_name, notify_name) {
@@ -239,18 +243,19 @@ mechz_force_jump_in() {
   self endon("kill_force_behavior");
   self setup_force_behavior();
 
-  while (true) {
+  while(true) {
     self animscripted(self.origin, self.angles, "zm_idle");
     wait 0.2;
     self scripted_behavior("zm_spawn", "jump_anim");
   }
+
 }
 
 mechz_force_jump_out() {
   self endon("kill_force_behavior");
   self setup_force_behavior();
 
-  while (true) {
+  while(true) {
     self animscripted(self.origin, self.angles, "zm_idle");
     wait 0.2;
     self scripted_behavior("zm_fly_out", "jump_anim");
@@ -260,6 +265,7 @@ mechz_force_jump_out() {
     self show();
     self scripted_behavior("zm_fly_in", "jump_anim");
   }
+
 }
 
 #using_animtree("mechz_claw");
@@ -273,7 +279,7 @@ mechz_force_flamethrower() {
   wait 0.2;
   self scripted_behavior("zm_flamethrower_aim_start", "flamethrower_anim");
 
-  while (true) {
+  while(true) {
     if(curr_timer > 3) {
       curr_aim_anim++;
       curr_timer = 0;
@@ -295,6 +301,7 @@ mechz_force_flamethrower() {
       curr_timer = curr_timer + length;
     }
   }
+
 }
 
 fake_launch_claw() {
@@ -338,13 +345,13 @@ mechz_force_claw_attack() {
   self endon("kill_force_behavior");
   self setup_force_behavior();
 
-  while (true) {
+  while(true) {
     self animscripted(self.origin, self.angles, "zm_idle");
     wait 0.2;
     self scripted_behavior("zm_grapple_aim_start", "grapple_anim");
     self thread fake_launch_claw();
 
-    while (isdefined(self.launching_claw) && self.launching_claw) {
+    while(isDefined(self.launching_claw) && self.launching_claw) {
       self clearanim( % root, 0);
       wait 0.05;
       self scripted_behavior("zm_grapple_aim_5", "grapple_anim");
@@ -352,13 +359,14 @@ mechz_force_claw_attack() {
 
     self scripted_behavior("zm_flamethrower_claw_victim", "flamethrower_anim");
   }
+
 }
 
 mechz_force_damage_armor() {
   self endon("kill_force_behavior");
   self setup_force_behavior();
 
-  if(!isdefined(self.next_armor_piece))
+  if(!isDefined(self.next_armor_piece))
     self.next_armor_piece = 0;
 
   self thread scripted_behavior("zm_idle", "idle_anim");
@@ -366,16 +374,16 @@ mechz_force_damage_armor() {
   if(self.next_armor_piece == self.armor_state.size) {
     self.next_armor_piece = 0;
 
-    for (i = 0; i < self.armor_state.size; i++) {
+    for(i = 0; i < self.armor_state.size; i++) {
       self.fx_field = self.fx_field & ~(1 << self.armor_state[i].index);
 
-      if(isdefined(self.armor_state[i].model))
+      if(isDefined(self.armor_state[i].model))
         self attach(self.armor_state[i].model, self.armor_state[i].tag);
     }
   } else {
     self.fx_field = self.fx_field | 1 << self.armor_state[self.next_armor_piece].index;
 
-    if(isdefined(self.armor_state[self.next_armor_piece].model))
+    if(isDefined(self.armor_state[self.next_armor_piece].model))
       self detach(self.armor_state[self.next_armor_piece].model, self.armor_state[self.next_armor_piece].tag);
 
     self.next_armor_piece++;
@@ -383,7 +391,7 @@ mechz_force_damage_armor() {
 
   self setclientfield("mechz_fx", self.fx_field);
 
-  while (true)
+  while(true)
     self scripted_behavior("zm_idle", "idle_anim");
 }
 
@@ -392,7 +400,7 @@ mechz_force_damage_faceplate() {
   self setup_force_behavior();
   self thread scripted_behavior("zm_idle", "idle_anim");
 
-  if(isdefined(self.has_helmet) && self.has_helmet) {
+  if(isDefined(self.has_helmet) && self.has_helmet) {
     self.has_helmet = 0;
     self detach("c_zom_mech_faceplate", "J_Helmet");
     self.fx_field = self.fx_field | 1024;
@@ -406,7 +414,7 @@ mechz_force_damage_faceplate() {
 
   self setclientfield("mechz_fx", self.fx_field);
 
-  while (true)
+  while(true)
     self scripted_behavior("zm_idle", "idle_anim");
 }
 
@@ -414,9 +422,10 @@ mechz_force_melee() {
   self endon("kill_force_behavior");
   self setup_force_behavior();
 
-  while (true) {
+  while(true) {
     self animscripted(self.origin, self.angles, "zm_idle");
     wait 0.2;
     self scripted_behavior("zm_melee_stand", "melee_anim");
   }
+
 }

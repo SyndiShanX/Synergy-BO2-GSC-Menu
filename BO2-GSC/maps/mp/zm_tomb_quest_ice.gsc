@@ -112,13 +112,13 @@ update_ternary_display() {
   a_ice_ternary_digit_brushes = getentarray("ice_chamber_digit", "targetname");
   level endon("ice_puzzle_1_complete");
 
-  while (true) {
+  while(true) {
     level waittill("update_ice_chamber_digits", newval);
 
     foreach(digit in a_ice_ternary_digit_brushes) {
       digit ghost();
 
-      if(isdefined(newval)) {
+      if(isDefined(newval)) {
         digit_slot = int(digit.script_noteworthy);
         shown_value = level.ternary_digits[newval][digit_slot];
         digit_value = int(digit.script_string);
@@ -147,7 +147,7 @@ process_gem_shooting() {
   ice_gem.value = -1;
   ice_gem setcandamage(1);
 
-  while (true) {
+  while(true) {
     self waittill("damage", damage, attacker, direction_vec, point, mod, tagname, modelname, partname, weaponname);
 
     if(weaponname == "staff_water_zm")
@@ -161,7 +161,7 @@ ice_puzzle_1_run() {
 }
 
 ceiling_tile_flip(b_flip_to_tile_side) {
-  if(!isdefined(b_flip_to_tile_side))
+  if(!isDefined(b_flip_to_tile_side))
     b_flip_to_tile_side = !self.showing_tile_side;
 
   if(b_flip_to_tile_side == self.showing_tile_side) {
@@ -190,7 +190,7 @@ ceiling_tile_process_damage() {
   self setcandamage(1);
   ice_gem setcandamage(1);
 
-  while (true) {
+  while(true) {
     self waittill("damage", damage, attacker, direction_vec, point, mod, tagname, modelname, partname, weaponname);
 
     if(issubstr(weaponname, "water") && self.showing_tile_side && !flag("ice_tile_flipping")) {
@@ -217,7 +217,6 @@ ceiling_tile_process_damage() {
 }
 
 ice_puzzle_2_init() {
-
 }
 
 ice_puzzle_2_run() {
@@ -240,7 +239,7 @@ ice_stone_run() {
   playfx(level._effect["digging"], self.origin);
   self.e_model setcandamage(1);
 
-  for (has_tried = 0; !flag("ice_puzzle_2_complete"); has_tried = 1) {
+  for(has_tried = 0; !flag("ice_puzzle_2_complete"); has_tried = 1) {
     self.e_model waittill("damage", amount, inflictor, direction, point, type, tagname, modelname, partname, weaponname, idflags);
     level notify("vo_try_puzzle_water2", inflictor);
 
@@ -254,7 +253,7 @@ ice_stone_run() {
   self.e_model setclientfield("stone_frozen", 1);
   playsoundatposition("zmb_squest_ice_stone_freeze", self.origin);
 
-  while (!flag("ice_puzzle_2_complete")) {
+  while(!flag("ice_puzzle_2_complete")) {
     self.e_model waittill("damage", amount, inflictor, direction, point, type, tagname, modelname, partname, weaponname, idflags);
 
     if(!issubstr(weaponname, "staff") && issubstr(type, "BULLET")) {

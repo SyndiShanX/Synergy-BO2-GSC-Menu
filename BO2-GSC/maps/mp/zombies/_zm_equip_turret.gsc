@@ -27,7 +27,7 @@ init() {
 }
 
 onplayerconnect() {
-  for (;;) {
+  for(;;) {
     level waittill("connecting", player);
     player thread onplayerspawned();
   }
@@ -37,7 +37,7 @@ onplayerspawned() {
   self endon("disconnect");
   self thread setupwatchers();
 
-  for (;;) {
+  for(;;) {
     self waittill("spawned_player");
     self thread watchturretuse();
   }
@@ -55,7 +55,7 @@ watchturretuse() {
   self endon("death");
   self endon("disconnect");
 
-  for (;;) {
+  for(;;) {
     self waittill("equipment_placed", weapon, weapname);
 
     if(weapname == level.turret_name) {
@@ -67,27 +67,27 @@ watchturretuse() {
 }
 
 cleanupoldturret() {
-  if(isdefined(self.buildableturret)) {
-    if(isdefined(self.buildableturret.stub)) {
+  if(isDefined(self.buildableturret)) {
+    if(isDefined(self.buildableturret.stub)) {
       thread maps\mp\zombies\_zm_unitrigger::unregister_unitrigger(self.buildableturret.stub);
       self.buildableturret.stub = undefined;
     }
 
-    if(isdefined(self.buildableturret.turret)) {
-      if(isdefined(self.buildableturret.turret.sound_ent))
+    if(isDefined(self.buildableturret.turret)) {
+      if(isDefined(self.buildableturret.turret.sound_ent))
         self.buildableturret.turret.sound_ent delete();
 
       self.buildableturret.turret delete();
     }
 
-    if(isdefined(self.buildableturret.sound_ent)) {
+    if(isDefined(self.buildableturret.sound_ent)) {
       self.buildableturret.sound_ent delete();
       self.buildableturret.sound_ent = undefined;
     }
 
     self.buildableturret delete();
     self.turret_health = undefined;
-  } else if(isdefined(self.turret)) {
+  } else if(isDefined(self.turret)) {
     self.turret notify("stop_burst_fire_unmanned");
     self.turret delete();
   }
@@ -106,7 +106,7 @@ watchforcleanup() {
 placeturret(origin, angles) {
   item = self maps\mp\zombies\_zm_equipment::placed_equipment_think("p6_anim_zm_buildable_turret", "equip_turret_zm", origin, angles);
 
-  if(isdefined(item))
+  if(isDefined(item))
     item.owner = self;
 
   return item;
@@ -115,7 +115,7 @@ placeturret(origin, angles) {
 dropturret() {
   item = self maps\mp\zombies\_zm_equipment::dropped_equipment_think("p6_anim_zm_buildable_turret", "equip_turret_zm", self.origin, self.angles);
 
-  if(isdefined(item))
+  if(isDefined(item))
     item.turret_health = self.turret_health;
 
   self.turret_health = undefined;
@@ -140,7 +140,7 @@ transferturret(fromplayer, toplayer) {
   toplayer thread startturretdeploy(toplayer.buildableturret);
   fromplayer notify("equip_turret_zm_taken");
 
-  if(isdefined(fromplayer.buildableturret)) {
+  if(isDefined(fromplayer.buildableturret)) {
     fromplayer thread startturretdeploy(fromplayer.buildableturret);
     fromplayer.buildableturret.original_owner = fromplayer;
     fromplayer.buildableturret.owner = fromplayer;
@@ -158,20 +158,20 @@ startturretdeploy(weapon) {
   self endon("equip_turret_zm_taken");
   self thread watchforcleanup();
 
-  if(!isdefined(self.turret_health))
+  if(!isDefined(self.turret_health))
     self.turret_health = 60;
 
-  if(isdefined(weapon)) {
+  if(isDefined(weapon)) {
     weapon hide();
     wait 0.1;
 
-    if(isdefined(weapon.power_on) && weapon.power_on)
+    if(isDefined(weapon.power_on) && weapon.power_on)
       weapon.turret notify("stop_burst_fire_unmanned");
 
-    if(!isdefined(weapon)) {
+    if(!isDefined(weapon)) {
       return;
     }
-    if(isdefined(self.turret)) {
+    if(isDefined(self.turret)) {
       self.turret notify("stop_burst_fire_unmanned");
       self.turret notify("turret_deactivated");
       self.turret delete();
@@ -198,7 +198,7 @@ startturretdeploy(weapon) {
     weapon.turret = turret;
     self.turret = turret;
 
-    if(isdefined(level.equipment_turret_needs_power) && level.equipment_turret_needs_power) {
+    if(isDefined(level.equipment_turret_needs_power) && level.equipment_turret_needs_power) {
       weapon.power_on = 0;
       maps\mp\zombies\_zm_power::add_temp_powered_item(::turret_power_on, ::turret_power_off, ::turret_in_range, maps\mp\zombies\_zm_power::cost_high, 1, weapon.power_on, weapon);
     } else
@@ -209,14 +209,14 @@ startturretdeploy(weapon) {
     else
       self iprintlnbold(&"ZOMBIE_NEED_LOCAL_POWER");
 
-    if(!(isdefined(level.equipment_turret_needs_power) && level.equipment_turret_needs_power))
+    if(!(isDefined(level.equipment_turret_needs_power) && level.equipment_turret_needs_power))
       self thread turretdecay(weapon);
 
     self thread maps\mp\zombies\_zm_buildables::delete_on_disconnect(weapon);
 
-    while (isdefined(weapon)) {
+    while(isDefined(weapon)) {
       if(!is_true(weapon.power_on)) {
-        if(isdefined(self.buildableturret.sound_ent)) {
+        if(isDefined(self.buildableturret.sound_ent)) {
           self.buildableturret.sound_ent playsound("wpn_zmb_turret_stop");
           self.buildableturret.sound_ent delete();
           self.buildableturret.sound_ent = undefined;
@@ -226,13 +226,13 @@ startturretdeploy(weapon) {
       wait 0.1;
     }
 
-    if(isdefined(self.buildableturret.sound_ent)) {
+    if(isDefined(self.buildableturret.sound_ent)) {
       self.buildableturret.sound_ent playsound("wpn_zmb_turret_stop");
       self.buildableturret.sound_ent delete();
       self.buildableturret.sound_ent = undefined;
     }
 
-    if(isdefined(turret)) {
+    if(isDefined(turret)) {
       turret notify("stop_burst_fire_unmanned");
       turret notify("turret_deactivated");
       turret delete();
@@ -253,14 +253,14 @@ turret_in_range(delta, origin, radius) {
 turret_power_on(origin, radius) {
   println("^1ZM POWER: turret on\\n");
 
-  if(!isdefined(self.target)) {
+  if(!isDefined(self.target)) {
     return;
   }
   self.target.power_on = 1;
   self.target.turret thread maps\mp\zombies\_zm_mgturret::burst_fire_unmanned();
   player = self.target.turret.owner;
 
-  if(!isdefined(player.buildableturret.sound_ent))
+  if(!isDefined(player.buildableturret.sound_ent))
     player.buildableturret.sound_ent = spawn("script_origin", self.target.turret.origin);
 
   player.buildableturret.sound_ent playsound("wpn_zmb_turret_start");
@@ -270,14 +270,14 @@ turret_power_on(origin, radius) {
 turret_power_off(origin, radius) {
   println("^1ZM POWER: turret off\\n");
 
-  if(!isdefined(self.target)) {
+  if(!isDefined(self.target)) {
     return;
   }
   self.target.power_on = 0;
   self.target.turret notify("stop_burst_fire_unmanned");
   player = self.target.turret.owner;
 
-  if(isdefined(player.buildableturret.sound_ent)) {
+  if(isDefined(player.buildableturret.sound_ent)) {
     player.buildableturret.sound_ent playsound("wpn_zmb_turret_stop");
     player.buildableturret.sound_ent delete();
     player.buildableturret.sound_ent = undefined;
@@ -288,7 +288,7 @@ turretdecay(weapon) {
   self endon("death");
   self endon("disconnect");
 
-  while (isdefined(weapon)) {
+  while(isDefined(weapon)) {
     if(weapon.power_on) {
       self.turret_health--;
 
@@ -304,8 +304,9 @@ turretdecay(weapon) {
 }
 
 debugturret(radius) {
-  while (isdefined(self)) {
+  while(isDefined(self)) {
     circle(self.origin, radius, (1, 1, 1), 0, 1, 1);
     wait 0.05;
   }
+
 }

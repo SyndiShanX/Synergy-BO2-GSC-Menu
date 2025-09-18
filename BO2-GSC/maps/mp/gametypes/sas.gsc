@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\gametypes\sas.gsc
-***************************************/
+**************************************/
 
 #include maps\mp\_utility;
 #include maps\mp\gametypes\_hud_util;
@@ -94,8 +94,8 @@ givecustomloadout() {
 
 onplayerdamage(einflictor, eattacker, idamage, idflags, smeansofdeath, sweapon, vpoint, vdir, shitloc, psoffsettime) {
   if(sweapon == "crossbow_mp" && smeansofdeath == "MOD_IMPACT") {
-    if(isdefined(eattacker) && isplayer(eattacker)) {
-      if(!isdefined(eattacker.pers["sticks"]))
+    if(isDefined(eattacker) && isplayer(eattacker)) {
+      if(!isDefined(eattacker.pers["sticks"]))
         eattacker.pers["sticks"] = 1;
       else
         eattacker.pers["sticks"]++;
@@ -108,7 +108,7 @@ onplayerdamage(einflictor, eattacker, idamage, idflags, smeansofdeath, sweapon, 
 }
 
 onplayerkilled(einflictor, attacker, idamage, smeansofdeath, sweapon, vdir, shitloc, psoffsettime, deathanimduration) {
-  if(isdefined(attacker) && isplayer(attacker) && attacker != self) {
+  if(isDefined(attacker) && isplayer(attacker) && attacker != self) {
     baseweaponname = getreffromitemindex(getbaseweaponitemindex(sweapon)) + "_mp";
 
     if(smeansofdeath == "MOD_MELEE")
@@ -142,7 +142,7 @@ onplayerkilled(einflictor, attacker, idamage, smeansofdeath, sweapon, vdir, shit
       attacker maps\mp\gametypes\_globallogic_score::givepointstowin(level.pointspersecondarykill);
     }
 
-    if(isdefined(level.setbackweapon) && baseweaponname == level.setbackweapon) {
+    if(isDefined(level.setbackweapon) && baseweaponname == level.setbackweapon) {
       self.pers["humiliated"]++;
       self.humiliated = self.pers["humiliated"];
 
@@ -208,7 +208,7 @@ onstartgametype() {
   level.usestartspawns = 0;
   level.displayroundendtext = 0;
 
-  if(isdefined(game["roundsplayed"]) && game["roundsplayed"] > 0) {
+  if(isDefined(game["roundsplayed"]) && game["roundsplayed"] > 0) {
     game["dialog"]["gametype"] = undefined;
     game["dialog"]["offense_obj"] = undefined;
     game["dialog"]["defense_obj"] = undefined;
@@ -232,19 +232,19 @@ onspawnplayer(predictedspawn) {
 onwagerawards() {
   tomahawks = self maps\mp\gametypes\_globallogic_score::getpersstat("tomahawks");
 
-  if(!isdefined(tomahawks))
+  if(!isDefined(tomahawks))
     tomahawks = 0;
 
   self maps\mp\gametypes\_persistence::setafteractionreportstat("wagerAwards", tomahawks, 0);
   sticks = self maps\mp\gametypes\_globallogic_score::getpersstat("sticks");
 
-  if(!isdefined(sticks))
+  if(!isDefined(sticks))
     sticks = 0;
 
   self maps\mp\gametypes\_persistence::setafteractionreportstat("wagerAwards", sticks, 1);
   bestkillstreak = self maps\mp\gametypes\_globallogic_score::getpersstat("best_kill_streak");
 
-  if(!isdefined(bestkillstreak))
+  if(!isDefined(bestkillstreak))
     bestkillstreak = 0;
 
   self maps\mp\gametypes\_persistence::setafteractionreportstat("wagerAwards", bestkillstreak, 2);

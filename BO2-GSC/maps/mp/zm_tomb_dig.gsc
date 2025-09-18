@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\zm_tomb_dig.gsc
-***************************************/
+**************************************/
 
 #include common_scripts\utility;
 #include maps\mp\_utility;
@@ -29,7 +29,7 @@ init_shovel() {
   a_shovel_zone = [];
 
   foreach(s_shovel_pos in a_shovel_pos) {
-    if(!isdefined(a_shovel_zone[s_shovel_pos.script_noteworthy]))
+    if(!isDefined(a_shovel_zone[s_shovel_pos.script_noteworthy]))
       a_shovel_zone[s_shovel_pos.script_noteworthy] = [];
 
     a_shovel_zone[s_shovel_pos.script_noteworthy][a_shovel_zone[s_shovel_pos.script_noteworthy].size] = s_shovel_pos;
@@ -55,6 +55,7 @@ init_shovel() {
   registerclientfield("world", "helmet_player2", 14000, 1, "int", undefined, 0);
   registerclientfield("world", "helmet_player3", 14000, 1, "int", undefined, 0);
   registerclientfield("world", "helmet_player4", 14000, 1, "int", undefined, 0);
+
   level thread setup_dig_devgui();
 }
 
@@ -97,7 +98,7 @@ shovel_prompt_update(e_player) {
 
   self.hint_string = & "ZM_TOMB_SHPU";
 
-  if(isdefined(e_player.dig_vars["has_shovel"]) && e_player.dig_vars["has_shovel"])
+  if(isDefined(e_player.dig_vars["has_shovel"]) && e_player.dig_vars["has_shovel"])
     self.hint_string = & "ZM_TOMB_SHAG";
 
   return true;
@@ -106,13 +107,13 @@ shovel_prompt_update(e_player) {
 shovel_unitrigger_think() {
   self endon("kill_trigger");
 
-  while (true) {
+  while(true) {
     self waittill("trigger", e_player);
 
     if(e_player != self.parent_player) {
       continue;
     }
-    if(!(isdefined(e_player.dig_vars["has_shovel"]) && e_player.dig_vars["has_shovel"])) {
+    if(!(isDefined(e_player.dig_vars["has_shovel"]) && e_player.dig_vars["has_shovel"])) {
       e_player.dig_vars["has_shovel"] = 1;
       e_player playsound("zmb_craftable_pickup");
       e_player dig_reward_dialog("pickup_shovel");
@@ -126,7 +127,7 @@ shovel_unitrigger_think() {
 }
 
 dig_reward_dialog(str_category) {
-  if(!(isdefined(self.dig_vo_cooldown) && self.dig_vo_cooldown)) {
+  if(!(isDefined(self.dig_vo_cooldown) && self.dig_vo_cooldown)) {
     self do_player_general_vox("digging", str_category);
 
     if(str_category != "pickup_shovel")
@@ -167,19 +168,21 @@ dig_spots_init() {
   level.a_dig_spots = getstructarray("dig_spot", "targetname");
 
   foreach(s_dig_spot in level.a_dig_spots) {
-    if(!isdefined(s_dig_spot.angles))
+    if(!isDefined(s_dig_spot.angles))
       s_dig_spot.angles = (0, 0, 0);
 
-    if(isdefined(s_dig_spot.script_noteworthy) && s_dig_spot.script_noteworthy == "initial_spot")
+    if(isDefined(s_dig_spot.script_noteworthy) && s_dig_spot.script_noteworthy == "initial_spot")
       s_dig_spot thread dig_spot_spawn();
     else
       s_dig_spot.dug = 1;
 
     s_dig_spot.str_zone = maps\mp\zombies\_zm_zonemgr::get_zone_from_position(s_dig_spot.origin + vectorscale((0, 0, 1), 32.0), 1);
 
-    if(!isdefined(s_dig_spot.str_zone)) {
+    if(!isDefined(s_dig_spot.str_zone)) {
       s_dig_spot.str_zone = "";
+
       assertmsg("Dig spot at ( " + s_dig_spot.origin[0] + ", " + s_dig_spot.origin[1] + ", " + s_dig_spot.origin[2] + ") is not in a zone.");
+
     }
 
     wait_network_frame();
@@ -189,7 +192,7 @@ dig_spots_init() {
 }
 
 dig_spots_respawn(a_dig_spots) {
-  while (true) {
+  while(true) {
     level waittill("end_of_round");
     wait 2;
     a_dig_spots = array_randomize(level.a_dig_spots);
@@ -204,8 +207,8 @@ dig_spots_respawn(a_dig_spots) {
     if(level.weather_snow == 0)
       n_respawned_max = n_respawned_max + randomint(get_players().size);
 
-    for (i = 0; i < a_dig_spots.size; i++) {
-      if(isdefined(a_dig_spots[i].dug) && a_dig_spots[i].dug && n_respawned < n_respawned_max && level.n_dig_spots_cur <= level.n_dig_spots_max) {
+    for(i = 0; i < a_dig_spots.size; i++) {
+      if(isDefined(a_dig_spots[i].dug) && a_dig_spots[i].dug && n_respawned < n_respawned_max && level.n_dig_spots_cur <= level.n_dig_spots_max) {
         a_dig_spots[i].dug = undefined;
         a_dig_spots[i] thread dig_spot_spawn();
         wait_network_frame();
@@ -219,8 +222,8 @@ dig_spots_respawn(a_dig_spots) {
         n_active_mounds = 0;
 
         foreach(s_dig_spot in level.a_dig_spots) {
-          if(isdefined(s_dig_spot.str_zone) && issubstr(s_dig_spot.str_zone, s_staff.zone_substr)) {
-            if(!(isdefined(s_dig_spot.dug) && s_dig_spot.dug)) {
+          if(isDefined(s_dig_spot.str_zone) && issubstr(s_dig_spot.str_zone, s_staff.zone_substr)) {
+            if(!(isDefined(s_dig_spot.dug) && s_dig_spot.dug)) {
               n_active_mounds++;
               continue;
             }
@@ -260,7 +263,7 @@ dig_spot_spawn() {
 }
 
 dig_spot_trigger_visibility(player) {
-  if(isdefined(player.dig_vars["has_shovel"]) && player.dig_vars["has_shovel"])
+  if(isDefined(player.dig_vars["has_shovel"]) && player.dig_vars["has_shovel"])
     self sethintstring(&"ZM_TOMB_X2D");
   else
     self sethintstring(&"ZM_TOMB_NS");
@@ -269,10 +272,10 @@ dig_spot_trigger_visibility(player) {
 }
 
 waittill_dug(s_dig_spot) {
-  while (true) {
+  while(true) {
     self waittill("trigger", player);
 
-    if(isdefined(player.dig_vars["has_shovel"]) && player.dig_vars["has_shovel"]) {
+    if(isDefined(player.dig_vars["has_shovel"]) && player.dig_vars["has_shovel"]) {
       player playsound("evt_dig");
       s_dig_spot.dug = 1;
       level.n_dig_spots_cur--;
@@ -282,7 +285,7 @@ waittill_dug(s_dig_spot) {
       player maps\mp\zombies\_zm_stats::increment_player_stat("tomb_dig");
       s_staff_piece = s_dig_spot maps\mp\zm_tomb_main_quest::dig_spot_get_staff_piece(player);
 
-      if(isdefined(s_staff_piece)) {
+      if(isDefined(s_staff_piece)) {
         s_staff_piece maps\mp\zm_tomb_main_quest::show_ice_staff_piece(self.origin);
         player dig_reward_dialog("dig_staff_part");
       } else {
@@ -482,12 +485,12 @@ dig_up_weapon(digger) {
   m_weapon.trigger notify("weapon_grabbed");
   m_weapon.trigger thread swap_weapon(str_weapon, player);
 
-  if(isdefined(m_weapon.trigger)) {
+  if(isDefined(m_weapon.trigger)) {
     m_weapon.trigger tomb_unitrigger_delete();
     m_weapon.trigger = undefined;
   }
 
-  if(isdefined(m_weapon))
+  if(isDefined(m_weapon))
     m_weapon delete();
 
   if(player != digger)
@@ -519,7 +522,7 @@ swap_weapon(str_weapon, e_player) {
 take_old_weapon_and_give_new(current_weapon, weapon) {
   a_weapons = self getweaponslistprimaries();
 
-  if(isdefined(a_weapons) && a_weapons.size >= get_player_weapon_limit(self))
+  if(isDefined(a_weapons) && a_weapons.size >= get_player_weapon_limit(self))
     self takeweapon(current_weapon);
 
   self giveweapon(weapon);
@@ -533,24 +536,24 @@ timer_til_despawn(v_float, n_dist) {
   self waittill("movedone");
   self notify("dig_up_weapon_timed_out");
 
-  if(isdefined(self.trigger)) {
+  if(isDefined(self.trigger)) {
     self.trigger tomb_unitrigger_delete();
     self.trigger = undefined;
   }
 
-  if(isdefined(self))
+  if(isDefined(self))
     self delete();
 }
 
 get_player_perk_purchase_limit() {
-  if(isdefined(self.player_perk_purchase_limit))
+  if(isDefined(self.player_perk_purchase_limit))
     return self.player_perk_purchase_limit;
 
   return level.perk_purchase_limit;
 }
 
 increment_player_perk_purchase_limit() {
-  if(!isdefined(self.player_perk_purchase_limit))
+  if(!isDefined(self.player_perk_purchase_limit))
     self.player_perk_purchase_limit = level.perk_purchase_limit;
 
   if(self.player_perk_purchase_limit < 8)
@@ -568,18 +571,18 @@ ee_zombie_blood_dig() {
   self.t_zombie_blood_dig sethintstring(&"ZM_TOMB_X2D");
   self.t_zombie_blood_dig maps\mp\zombies\_zm_powerup_zombie_blood::make_zombie_blood_entity();
 
-  while (n_z_spots_found < 4) {
+  while(n_z_spots_found < 4) {
     a_randomized = array_randomize(a_z_spots);
     n_index = undefined;
 
-    for (i = 0; i < a_randomized.size; i++) {
-      if(!isdefined(a_randomized[i].n_player)) {
+    for(i = 0; i < a_randomized.size; i++) {
+      if(!isDefined(a_randomized[i].n_player)) {
         n_index = i;
         break;
       }
     }
 
-    assert(isdefined(n_index), "No more zombie blood dig spots.Add more to the map.");
+    assert(isDefined(n_index), "No more zombie blood dig spots.Add more to the map.");
     s_z_spot = a_randomized[n_index];
     s_z_spot.n_player = self getentitynumber();
     s_z_spot create_zombie_blood_dig_spot(self);
@@ -593,16 +596,16 @@ ee_zombie_blood_dig() {
 ee_zombie_blood_dig_disconnect_watch() {
   self waittill("disconnect");
 
-  if(isdefined(self.t_zombie_blood_dig))
+  if(isDefined(self.t_zombie_blood_dig))
     self.t_zombie_blood_dig delete();
 
   a_z_spots = getstructarray("zombie_blood_dig_spot", "targetname");
 
   foreach(s_pos in a_z_spots) {
-    if(isdefined(s_pos.n_player) && s_pos.n_player == self getentitynumber())
+    if(isDefined(s_pos.n_player) && s_pos.n_player == self getentitynumber())
       s_pos.n_player = undefined;
 
-    if(isdefined(s_pos.m_dig))
+    if(isDefined(s_pos.m_dig))
       s_pos delete();
   }
 }
@@ -615,19 +618,22 @@ create_zombie_blood_dig_spot(e_player) {
   self.m_dig moveto(self.origin, 3, 0, 1);
   self.m_dig waittill("movedone");
   self.m_dig.e_unique_player = e_player;
+
   self thread puzzle_debug_position("+", vectorscale((0, 0, 1), 255.0), self.origin);
+
   e_player.t_zombie_blood_dig.origin = self.origin + vectorscale((0, 0, 1), 20.0);
   e_player.t_zombie_blood_dig waittill_zombie_blood_dug(self);
+
   self notify("stop_debug_position");
 }
 
 waittill_zombie_blood_dug(s_dig_spot) {
   self endon("death");
 
-  while (true) {
+  while(true) {
     self waittill("trigger", player);
 
-    if(isdefined(player.dig_vars["has_shovel"]) && player.dig_vars["has_shovel"]) {
+    if(isDefined(player.dig_vars["has_shovel"]) && player.dig_vars["has_shovel"]) {
       player.t_zombie_blood_dig.origin = (0, 0, 0);
       player playsound("evt_dig");
       playfx(level._effect["digging"], self.origin);
@@ -652,13 +658,13 @@ spawn_perk_upgrade_bottle(v_origin, e_player) {
   m_bottle linkto(m_fx);
   m_fx thread rotate_perk_upgrade_bottle();
 
-  while (isdefined(e_player) && !e_player istouching(m_bottle))
+  while(isDefined(e_player) && !e_player istouching(m_bottle))
     wait 0.05;
 
   m_bottle delete();
   m_fx delete();
 
-  if(isdefined(e_player)) {
+  if(isDefined(e_player)) {
     e_player increment_player_perk_purchase_limit();
     e_player maps\mp\zombies\_zm_stats::increment_client_stat("tomb_perk_extension", 0);
     e_player maps\mp\zombies\_zm_stats::increment_player_stat("tomb_perk_extension");
@@ -668,7 +674,7 @@ spawn_perk_upgrade_bottle(v_origin, e_player) {
 rotate_perk_upgrade_bottle() {
   self endon("death");
 
-  while (true) {
+  while(true) {
     self rotateyaw(360, 5);
     self waittill("rotatedone");
   }
@@ -688,7 +694,7 @@ dig_powerups_tracking() {
   level.dig_n_zombie_bloods_spawned = 0;
   level.dig_n_powerups_spawned = 0;
 
-  while (true) {
+  while(true) {
     level waittill("end_of_round");
 
     foreach(str_powerup, value in level.dig_powerups_tracking)
@@ -700,7 +706,7 @@ dig_powerups_tracking() {
 }
 
 dig_has_powerup_spawned(str_powerup) {
-  if(!isdefined(level.dig_powerups_tracking[str_powerup]))
+  if(!isDefined(level.dig_powerups_tracking[str_powerup]))
     level.dig_powerups_tracking[str_powerup] = 0;
 
   return level.dig_powerups_tracking[str_powerup];
@@ -733,7 +739,7 @@ setup_dig_devgui() {
 }
 
 watch_devgui_dig() {
-  while (true) {
+  while(true) {
     if(getdvar(#"_id_C817F0A0") == "on") {
       setdvar("give_shovel", "off");
 
@@ -770,8 +776,8 @@ watch_devgui_dig() {
       setdvar("spawn_max_mounds", "off");
       a_dig_spots = array_randomize(level.a_dig_spots);
 
-      for (i = 0; i < a_dig_spots.size; i++) {
-        if(isdefined(a_dig_spots[i].dug) && a_dig_spots[i].dug && level.n_dig_spots_cur <= level.n_dig_spots_max) {
+      for(i = 0; i < a_dig_spots.size; i++) {
+        if(isDefined(a_dig_spots[i].dug) && a_dig_spots[i].dug && level.n_dig_spots_cur <= level.n_dig_spots_max) {
           a_dig_spots[i].dug = undefined;
           a_dig_spots[i] thread dig_spot_spawn();
           wait_network_frame();
@@ -783,8 +789,8 @@ watch_devgui_dig() {
       setdvar("spawn_all_mounds", "off");
       a_dig_spots = array_randomize(level.a_dig_spots);
 
-      for (i = 0; i < a_dig_spots.size; i++) {
-        if(isdefined(a_dig_spots[i].dug) && a_dig_spots[i].dug) {
+      for(i = 0; i < a_dig_spots.size; i++) {
+        if(isDefined(a_dig_spots[i].dug) && a_dig_spots[i].dug) {
           a_dig_spots[i].dug = undefined;
           a_dig_spots[i] thread dig_spot_spawn();
           wait_network_frame();
@@ -852,4 +858,5 @@ watch_devgui_dig() {
 
     wait 0.05;
   }
+
 }

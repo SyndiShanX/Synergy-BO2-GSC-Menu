@@ -68,50 +68,50 @@ hideloadoutonkill() {
 }
 
 freegameplayhudelems() {
-  if(isdefined(self.perkicon)) {
-    for (numspecialties = 0; numspecialties < level.maxspecialties; numspecialties++) {
-      if(isdefined(self.perkicon[numspecialties])) {
+  if(isDefined(self.perkicon)) {
+    for(numspecialties = 0; numspecialties < level.maxspecialties; numspecialties++) {
+      if(isDefined(self.perkicon[numspecialties])) {
         self.perkicon[numspecialties] destroyelem();
         self.perkname[numspecialties] destroyelem();
       }
     }
   }
 
-  if(isdefined(self.perkhudelem))
+  if(isDefined(self.perkhudelem))
     self.perkhudelem destroyelem();
 
-  if(isdefined(self.killstreakicon)) {
-    if(isdefined(self.killstreakicon[0]))
+  if(isDefined(self.killstreakicon)) {
+    if(isDefined(self.killstreakicon[0]))
       self.killstreakicon[0] destroyelem();
 
-    if(isdefined(self.killstreakicon[1]))
+    if(isDefined(self.killstreakicon[1]))
       self.killstreakicon[1] destroyelem();
 
-    if(isdefined(self.killstreakicon[2]))
+    if(isDefined(self.killstreakicon[2]))
       self.killstreakicon[2] destroyelem();
 
-    if(isdefined(self.killstreakicon[3]))
+    if(isDefined(self.killstreakicon[3]))
       self.killstreakicon[3] destroyelem();
 
-    if(isdefined(self.killstreakicon[4]))
+    if(isDefined(self.killstreakicon[4]))
       self.killstreakicon[4] destroyelem();
   }
 
   self notify("perks_hidden");
 
-  if(isdefined(self.lowermessage))
+  if(isDefined(self.lowermessage))
     self.lowermessage destroyelem();
 
-  if(isdefined(self.lowertimer))
+  if(isDefined(self.lowertimer))
     self.lowertimer destroyelem();
 
-  if(isdefined(self.proxbar))
+  if(isDefined(self.proxbar))
     self.proxbar destroyelem();
 
-  if(isdefined(self.proxbartext))
+  if(isDefined(self.proxbartext))
     self.proxbartext destroyelem();
 
-  if(isdefined(self.carryicon))
+  if(isDefined(self.carryicon))
     self.carryicon destroyelem();
 }
 
@@ -119,7 +119,7 @@ teamplayercountsequal(playercounts) {
   count = undefined;
 
   foreach(team in level.teams) {
-    if(!isdefined(count)) {
+    if(!isDefined(count)) {
       count = playercounts[team];
       continue;
     }
@@ -150,7 +150,7 @@ menuautoassign(comingfrommenu) {
   assignment = teamkeys[randomint(teamkeys.size)];
   self closemenus();
 
-  if(isdefined(level.forceallallies) && level.forceallallies)
+  if(isDefined(level.forceallallies) && level.forceallallies)
     assignment = "allies";
   else if(level.teambased) {
     if(getdvarint(#"party_autoteams") == 1) {
@@ -170,14 +170,14 @@ menuautoassign(comingfrommenu) {
             assignment = teamkeys[2];
             break;
           case 4:
-            if(!isdefined(level.forceautoassign) || !level.forceautoassign) {
+            if(!isDefined(level.forceautoassign) || !level.forceautoassign) {
               self setclientscriptmainmenu(game["menu_class"]);
               return;
             }
           default:
             assignment = "";
 
-            if(isdefined(level.teams[team]))
+            if(isDefined(level.teams[team]))
               assignment = team;
             else if(team == "spectator" && !level.forceautoassign) {
               self setclientscriptmainmenu(game["menu_class"]);
@@ -200,7 +200,7 @@ menuautoassign(comingfrommenu) {
     if(level.allow_teamchange != "1" || !self.hasspawned && !comingfrommenu) {
       team = getassignedteam(self);
 
-      if(isdefined(level.teams[team]))
+      if(isDefined(level.teams[team]))
         assignment = team;
       else if(team == "spectator" && !level.forceautoassign) {
         self setclientscriptmainmenu(game["menu_class"]);
@@ -245,7 +245,7 @@ teamscoresequal() {
   score = undefined;
 
   foreach(team in level.teams) {
-    if(!isdefined(score)) {
+    if(!isDefined(score)) {
       score = getteamscore(team);
       continue;
     }
@@ -281,8 +281,8 @@ pickteamfromscores(teams) {
 }
 
 getsplitscreenteam() {
-  for (index = 0; index < level.players.size; index++) {
-    if(!isdefined(level.players[index])) {
+  for(index = 0; index < level.players.size; index++) {
+    if(!isDefined(level.players[index])) {
       continue;
     }
     if(level.players[index] == self) {
@@ -318,7 +318,7 @@ closemenus() {
 }
 
 beginclasschoice(forcenewchoice) {
-  assert(isdefined(level.teams[self.pers["team"]]));
+  assert(isDefined(level.teams[self.pers["team"]]));
   team = self.pers["team"];
 
   if(level.disablecac == 1) {
@@ -342,7 +342,7 @@ beginclasschoice(forcenewchoice) {
 }
 
 showmainmenuforteam() {
-  assert(isdefined(level.teams[self.pers["team"]]));
+  assert(isDefined(level.teams[self.pers["team"]]));
   team = self.pers["team"];
 
   if(level.wagermatch)
@@ -354,11 +354,11 @@ showmainmenuforteam() {
 menuteam(team) {
   self closemenus();
 
-  if(!level.console && level.allow_teamchange == "0" && (isdefined(self.hasdonecombat) && self.hasdonecombat)) {
+  if(!level.console && level.allow_teamchange == "0" && (isDefined(self.hasdonecombat) && self.hasdonecombat)) {
     return;
   }
   if(self.pers["team"] != team) {
-    if(level.ingraceperiod && (!isdefined(self.hasdonecombat) || !self.hasdonecombat))
+    if(level.ingraceperiod && (!isDefined(self.hasdonecombat) || !self.hasdonecombat))
       self.hasspawned = 0;
 
     if(self.sessionstate == "playing") {

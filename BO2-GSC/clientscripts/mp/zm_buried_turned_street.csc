@@ -1,7 +1,7 @@
-/********************************************************
+/***********************************************************
  * Decompiled and Edited by SyndiShanX
  * Script: clientscripts\mp\zm_buried_turned_street.csc
-********************************************************/
+***********************************************************/
 
 #include clientscripts\mp\_utility;
 #include clientscripts\mp\zombies\_zm_weapons;
@@ -9,10 +9,6 @@
 #include clientscripts\mp\_audio;
 #include clientscripts\mp\_visionset_mgr;
 #include clientscripts\mp\zombies\_zm_game_mode_objects;
-
-precache() {
-
-}
 
 premain() {
   clientscripts\mp\_visionset_mgr::vsmgr_register_overlay_info_style_burn("zm_transit_burn", 1, 15, 2);

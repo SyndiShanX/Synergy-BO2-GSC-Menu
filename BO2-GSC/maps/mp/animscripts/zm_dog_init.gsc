@@ -38,15 +38,15 @@ main() {
   level.lastdogmeleeplayertime = 0;
   level.dogmeleeplayercounter = 0;
 
-  if(!isdefined(level.dog_hits_before_kill))
+  if(!isDefined(level.dog_hits_before_kill))
     level.dog_hits_before_kill = 1;
 }
 
 setmeleeattackdist() {
   self endon("death");
 
-  while (true) {
-    if(isdefined(self.enemy)) {
+  while(true) {
+    if(isDefined(self.enemy)) {
       if(isplayer(self.enemy))
         self.meleeattackdist = 64;
       else

@@ -50,7 +50,7 @@ clearfinalkillcamteam(team) {
 }
 
 recordkillcamsettings(spectatorclient, targetentityindex, sweapon, deathtime, deathtimeoffset, offsettime, entityindex, entitystarttime, perks, killstreaks, attacker) {
-  if(level.teambased && isdefined(attacker.team) && isdefined(level.teams[attacker.team])) {
+  if(level.teambased && isDefined(attacker.team) && isDefined(level.teams[attacker.team])) {
     team = attacker.team;
     level.finalkillcamsettings[team].spectatorclient = spectatorclient;
     level.finalkillcamsettings[team].weapon = sweapon;
@@ -88,7 +88,7 @@ erasefinalkillcam() {
 }
 
 finalkillcamwaiter() {
-  if(!isdefined(level.finalkillcam_winner))
+  if(!isDefined(level.finalkillcam_winner))
     return false;
 
   level waittill("final_killcam_done");
@@ -96,7 +96,7 @@ finalkillcamwaiter() {
 }
 
 postroundfinalkillcam() {
-  if(isdefined(level.sidebet) && level.sidebet) {
+  if(isDefined(level.sidebet) && level.sidebet) {
     return;
   }
   level notify("play_final_killcam");
@@ -109,22 +109,22 @@ dofinalkillcam() {
   level.infinalkillcam = 1;
   winner = "none";
 
-  if(isdefined(level.finalkillcam_winner))
+  if(isDefined(level.finalkillcam_winner))
     winner = level.finalkillcam_winner;
 
-  if(!isdefined(level.finalkillcamsettings[winner].targetentityindex)) {
+  if(!isDefined(level.finalkillcamsettings[winner].targetentityindex)) {
     level.infinalkillcam = 0;
     level notify("final_killcam_done");
     return;
   }
 
-  if(isdefined(level.finalkillcamsettings[winner].attacker))
+  if(isDefined(level.finalkillcamsettings[winner].attacker))
     maps\mp\_challenges::getfinalkill(level.finalkillcamsettings[winner].attacker);
 
   visionsetnaked(getdvar(#"mapname"), 0.0);
   players = level.players;
 
-  for (index = 0; index < players.size; index++) {
+  for(index = 0; index < players.size; index++) {
     player = players[index];
     player closemenu();
     player closeingamemenu();
@@ -133,7 +133,7 @@ dofinalkillcam() {
 
   wait 0.1;
 
-  while (areanyplayerswatchingthekillcam())
+  while(areanyplayerswatchingthekillcam())
     wait 0.05;
 
   level notify("final_killcam_done");
@@ -141,16 +141,15 @@ dofinalkillcam() {
 }
 
 startlastkillcam() {
-
 }
 
 areanyplayerswatchingthekillcam() {
   players = level.players;
 
-  for (index = 0; index < players.size; index++) {
+  for(index = 0; index < players.size; index++) {
     player = players[index];
 
-    if(isdefined(player.killcam))
+    if(isDefined(player.killcam))
       return true;
   }
 
@@ -171,7 +170,7 @@ killcam(attackernum, targetnum, killcamentity, killcamentityindex, killcamentity
   postdelay = calcpostdelay();
   killcamlength = camtime + postdelay;
 
-  if(isdefined(maxtime) && killcamlength > maxtime) {
+  if(isDefined(maxtime) && killcamlength > maxtime) {
     if(maxtime < 2) {
       return;
     }
@@ -279,10 +278,10 @@ waitskipkillcambutton() {
   self endon("disconnect");
   self endon("end_killcam");
 
-  while (self usebuttonpressed())
+  while(self usebuttonpressed())
     wait 0.05;
 
-  while (!self usebuttonpressed())
+  while(!self usebuttonpressed())
     wait 0.05;
 
   self notify("end_killcam");
@@ -300,10 +299,10 @@ waitskipkillcamsafespawnbutton() {
   self endon("disconnect");
   self endon("end_killcam");
 
-  while (self fragbuttonpressed())
+  while(self fragbuttonpressed())
     wait 0.05;
 
-  while (!self fragbuttonpressed())
+  while(!self fragbuttonpressed())
     wait 0.05;
 
   self.wantsafespawn = 1;
@@ -311,10 +310,10 @@ waitskipkillcamsafespawnbutton() {
 }
 
 endkillcam(final) {
-  if(isdefined(self.kc_skiptext))
+  if(isDefined(self.kc_skiptext))
     self.kc_skiptext.alpha = 0;
 
-  if(isdefined(self.kc_timer))
+  if(isDefined(self.kc_timer))
     self.kc_timer.alpha = 0;
 
   self.killcam = undefined;
@@ -329,7 +328,7 @@ checkforabruptkillcamend() {
   self endon("disconnect");
   self endon("end_killcam");
 
-  while (true) {
+  while(true) {
     if(self.archivetime <= 0) {
       break;
     }
@@ -397,7 +396,7 @@ cancelkillcamonuse_specificbutton(pressingbuttonfunc, finishedfunc) {
   self endon("disconnect");
   level endon("game_ended");
 
-  for (;;) {
+  for(;;) {
     if(!self[[pressingbuttonfunc]]()) {
       wait 0.05;
       continue;
@@ -405,7 +404,7 @@ cancelkillcamonuse_specificbutton(pressingbuttonfunc, finishedfunc) {
 
     buttontime = 0;
 
-    while (self[[pressingbuttonfunc]]()) {
+    while(self[[pressingbuttonfunc]]()) {
       buttontime = buttontime + 0.05;
       wait 0.05;
     }
@@ -415,7 +414,7 @@ cancelkillcamonuse_specificbutton(pressingbuttonfunc, finishedfunc) {
     }
     buttontime = 0;
 
-    while (!self[[pressingbuttonfunc]]() && buttontime < 0.5) {
+    while(!self[[pressingbuttonfunc]]() && buttontime < 0.5) {
       buttontime = buttontime + 0.05;
       wait 0.05;
     }
@@ -542,7 +541,7 @@ calckillcamtime(sweapon, entitystarttime, predelay, respawn, maxtime) {
   } else
     camtime = getdvarfloat(#"_id_C45D9077");
 
-  if(isdefined(maxtime)) {
+  if(isDefined(maxtime)) {
     if(camtime > maxtime)
       camtime = maxtime;
 
@@ -569,7 +568,7 @@ calcpostdelay() {
 }
 
 addkillcamskiptext(respawn) {
-  if(!isdefined(self.kc_skiptext)) {
+  if(!isDefined(self.kc_skiptext)) {
     self.kc_skiptext = newclienthudelem(self);
     self.kc_skiptext.archived = 0;
     self.kc_skiptext.x = 0;
@@ -598,11 +597,10 @@ addkillcamskiptext(respawn) {
 }
 
 addkillcamtimer(camtime) {
-
 }
 
 initkcelements() {
-  if(!isdefined(self.kc_skiptext)) {
+  if(!isDefined(self.kc_skiptext)) {
     self.kc_skiptext = newclienthudelem(self);
     self.kc_skiptext.archived = 0;
     self.kc_skiptext.x = 0;
@@ -624,7 +622,7 @@ initkcelements() {
     }
   }
 
-  if(!isdefined(self.kc_othertext)) {
+  if(!isDefined(self.kc_othertext)) {
     self.kc_othertext = newclienthudelem(self);
     self.kc_othertext.archived = 0;
     self.kc_othertext.y = 48;
@@ -646,7 +644,7 @@ initkcelements() {
     }
   }
 
-  if(!isdefined(self.kc_icon)) {
+  if(!isDefined(self.kc_icon)) {
     self.kc_icon = newclienthudelem(self);
     self.kc_icon.archived = 0;
     self.kc_icon.x = 16;
@@ -661,7 +659,7 @@ initkcelements() {
   }
 
   if(!self issplitscreen()) {
-    if(!isdefined(self.kc_timer)) {
+    if(!isDefined(self.kc_timer)) {
       self.kc_timer = createfontstring("hudbig", 1.0);
       self.kc_timer.archived = 0;
       self.kc_timer.x = 0;

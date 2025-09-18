@@ -146,7 +146,7 @@ musiccmdhandler(clientnum, state, oldstate) {
 }
 
 demofixup() {
-  for (;;) {
+  for(;;) {
     level waittill("demo_jump");
     level.nextmusicstate = "SILENT";
     level notify("new_music");
@@ -154,7 +154,7 @@ demofixup() {
 }
 
 updatemusic() {
-  while (true) {
+  while(true) {
     if(level.activemusicstate == level.nextmusicstate)
       level waittill("new_music");
 
@@ -164,8 +164,9 @@ updatemusic() {
     active = level.activemusicstate;
     next = level.nextmusicstate;
 
-    if(next != "" && !isdefined(level.musicstates[next])) {
+    if(next != "" && !isDefined(level.musicstates[next])) {
       assertmsg("unknown music state '" + next + "'");
+
       level.nextmusicstate = level.activemusicstate;
       continue;
     }
@@ -196,8 +197,9 @@ transitionout(previous, next) {
   if(previous == "") {
     return;
   }
-  if(!isdefined(level.musicstates[previous])) {
+  if(!isDefined(level.musicstates[previous])) {
     assertmsg("unknown music state '" + previous + "'");
+
     return;
   }
 
@@ -234,19 +236,18 @@ transitionout(previous, next) {
       if(waittilldone)
         wait(fadeout);
     } else {
-
     }
   } else if(waittilldone) {
-    while (soundplaying(id))
+    while(soundplaying(id))
       wait 0.1;
   } else
     thread fadeoutandstopsound(id, fadeout);
 
-  while (startdelay > 0 && soundplaying(stingerid) && getplaybacktime(stingerid) < startdelay * 1000)
+  while(startdelay > 0 && soundplaying(stingerid) && getplaybacktime(stingerid) < startdelay * 1000)
     wait 0.01;
 
   if(waittillstingerdone) {
-    while (soundplaying(stingerid))
+    while(soundplaying(stingerid))
       wait 0.1;
   }
 
@@ -277,7 +278,7 @@ transitionin(previous, next) {
     level.musicstates[next].id = playsound(0, oneshotalias, (0, 0, 0));
 
     if(loopalias != "") {
-      while (soundplaying(level.musicstates[next].id)) {
+      while(soundplaying(level.musicstates[next].id)) {
         if(level.nextmusicstate != next) {
           thread fadeoutandstopsound(level.musicstates[next].id, level.musicstates[next].fadeout);
           return;
@@ -299,7 +300,7 @@ transitionin(previous, next) {
 }
 
 declaremusicstate(name) {
-  if(isdefined(level.musicstates[name])) {
+  if(isDefined(level.musicstates[name])) {
     return;
   }
   level.musicdeclarename = name;
@@ -318,33 +319,33 @@ declaremusicstate(name) {
 }
 
 musicwaittilldone() {
-  assert(isdefined(level.musicdeclarename));
+  assert(isDefined(level.musicdeclarename));
   name = level.musicdeclarename;
   level.musicstates[name].waittilldone = 1;
 }
 
 musicwaittillstingerdone() {
-  assert(isdefined(level.musicdeclarename));
+  assert(isDefined(level.musicdeclarename));
   name = level.musicdeclarename;
   level.musicstates[name].waittillstingerdone = 1;
 }
 
 musicstinger(stinger, delay, force) {
-  assert(isdefined(level.musicdeclarename));
+  assert(isDefined(level.musicdeclarename));
 
-  if(!isdefined(delay))
+  if(!isDefined(delay))
     delay = 0;
 
   name = level.musicdeclarename;
   level.musicstates[name].stinger = stinger;
   level.musicstates[name].startdelay = delay;
 
-  if(isdefined(force))
+  if(isDefined(force))
     level.musicstates[name].forcestinger = force;
 }
 
 _musicalias(alias, fadein, fadeout, loop) {
-  assert(isdefined(level.musicdeclarename));
+  assert(isDefined(level.musicdeclarename));
   name = level.musicdeclarename;
 
   if(loop)
@@ -352,10 +353,10 @@ _musicalias(alias, fadein, fadeout, loop) {
   else
     level.musicstates[name].oneshotalias = alias;
 
-  if(!isdefined(fadeout))
+  if(!isDefined(fadeout))
     fadeout = 0.0;
 
-  if(!isdefined(fadein))
+  if(!isDefined(fadein))
     fadein = 0.0;
 
   level.musicstates[name].fadein = fadein;

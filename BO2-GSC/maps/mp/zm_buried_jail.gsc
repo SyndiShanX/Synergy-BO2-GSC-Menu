@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\zm_buried_jail.gsc
-***************************************/
+**************************************/
 
 #include maps\mp\_utility;
 #include common_scripts\utility;
@@ -40,7 +40,7 @@ jail_open_door(jumpback) {
   else
     level.cell_door setanim(level.jail_open, 1, 1, 1);
 
-  if(isdefined(level.cell_door.clip)) {
+  if(isDefined(level.cell_door.clip)) {
     level.cell_door.clip notsolid();
     level.cell_door.clip connectpaths();
   }
@@ -50,7 +50,7 @@ jail_close_door() {
   level.cell_door playsound("zmb_jail_door_close");
   level.cell_door setanim(level.jail_close_cower, 1, 1, 1);
 
-  if(isdefined(level.cell_door.clip)) {
+  if(isDefined(level.cell_door.clip)) {
     level.cell_door.clip solid();
     level.cell_door.clip disconnectpaths();
   }

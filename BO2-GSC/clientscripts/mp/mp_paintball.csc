@@ -22,13 +22,14 @@ main() {
   setsaveddvar("sm_sunshadowsmall", 1);
   setsaveddvar("sm_sunsamplesizenear", 0.35);
   waitforclient(0);
+
   println("*** Client : mp_paintball running...");
 }
 
 destructible_car_lights(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump) {
   player = getlocalplayer(localclientnum);
 
-  if(!isdefined(player)) {
+  if(!isDefined(player)) {
     return;
   }
   if(player getinkillcam(localclientnum)) {
@@ -37,14 +38,14 @@ destructible_car_lights(localclientnum, oldval, newval, bnewent, binitialsnap, f
   if(newval) {
     wait(randomfloatrange(0.1, 0.5));
 
-    if(isdefined(self.fx)) {
+    if(isDefined(self.fx)) {
       stopfx(localclientnum, self.fx);
       self.fx = undefined;
     }
 
     if(fieldname == "police_car_lights")
       self.fx = playfxontag(localclientnum, level._effect["fx_mp_light_police_car"], self, "tag_origin");
-  } else if(isdefined(self.fx)) {
+  } else if(isDefined(self.fx)) {
     stopfx(localclientnum, self.fx);
     self.fx = undefined;
   }

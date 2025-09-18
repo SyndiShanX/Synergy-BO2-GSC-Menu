@@ -10,10 +10,6 @@
 #include clientscripts\mp\zombies\_zm_ai_sloth;
 #include clientscripts\mp\zm_buried_buildables;
 
-precache() {
-
-}
-
 premain() {
   if(is_gametype_active("zclassic")) {
     level thread clientscripts\mp\zombies\_zm_ai_ghost::init();
@@ -25,10 +21,6 @@ premain() {
   clientscripts\mp\zm_buried_buildables::init_buildables(classicbuildables);
   perk_vulture_custom_scripts();
   onplayerconnect_callback(::teller_fx_setup);
-}
-
-main() {
-
 }
 
 teller_fx_setup(clientnum) {
@@ -43,9 +35,7 @@ init_jail_animtree() {
 }
 
 player_flashlight_test(localclientnum) {
-
 }
 
 perk_vulture_custom_scripts() {
-
 }

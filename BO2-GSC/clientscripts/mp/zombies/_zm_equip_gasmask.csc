@@ -1,7 +1,7 @@
-/**********************************************************
+/***************************************************************
  * Decompiled and Edited by SyndiShanX
  * Script: clientscripts\mp\zombies\_zm_equip_gasmask.csc
-**********************************************************/
+***************************************************************/
 
 #include clientscripts\mp\_utility;
 #include clientscripts\mp\_fx;
@@ -9,7 +9,7 @@
 #include clientscripts\mp\zombies\_zm_equipment;
 
 init_filter_indices() {
-  if(isdefined(level.genericfilterinitialized)) {
+  if(isDefined(level.genericfilterinitialized)) {
     return;
   }
   level.genericfilterinitialized = 1;
@@ -23,10 +23,10 @@ init_filter_indices() {
 }
 
 map_material_helper(player, materialname) {
-  if(!isdefined(level.filter_matid))
+  if(!isDefined(level.filter_matid))
     level.filter_matid = [];
 
-  if(isdefined(level.filter_matid[materialname]))
+  if(isDefined(level.filter_matid[materialname]))
     player map_material(level.filter_matid[materialname], materialname);
   else {
     level.filter_matid[materialname] = level.filter_matcount;
@@ -71,7 +71,7 @@ init() {
 }
 
 gasmask_overlay_handler(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump) {
-  if(!self islocalplayer() || isspectating(localclientnum, 0) || isdefined(level.localplayers[localclientnum]) && self getentitynumber() != level.localplayers[localclientnum] getentitynumber()) {
+  if(!self islocalplayer() || isspectating(localclientnum, 0) || isDefined(level.localplayers[localclientnum]) && self getentitynumber() != level.localplayers[localclientnum] getentitynumber()) {
     return;
   }
   if(newval) {
@@ -88,18 +88,18 @@ player_init() {
   wait 1.0;
   players = getlocalplayers();
 
-  for (i = 0; i < players.size; i++)
+  for(i = 0; i < players.size; i++)
     init_filter_hazmat(players[i]);
 }
 
 playsounds_gasmask(on) {
-  if(!isdefined(self.gasmask_audio_ent))
+  if(!isDefined(self.gasmask_audio_ent))
     self.gasmask_audio_ent = spawn(0, (0, 0, 0), "script_origin");
 
   if(on) {
     self.gasmask_audio_ent playloopsound("evt_gasmask_loop", 0.5);
 
-    if(isdefined(level._audio_zombie_gasmask_func))
+    if(isDefined(level._audio_zombie_gasmask_func))
       level thread[[level._audio_zombie_gasmask_func]](on);
   } else {
     playsound(0, "evt_gasmask_off", (0, 0, 0));
@@ -107,7 +107,7 @@ playsounds_gasmask(on) {
     self.gasmask_audio_ent delete();
     self.gasmask_audio_ent = undefined;
 
-    if(isdefined(level._audio_zombie_gasmask_func))
+    if(isDefined(level._audio_zombie_gasmask_func))
       level thread[[level._audio_zombie_gasmask_func]](on);
   }
 }

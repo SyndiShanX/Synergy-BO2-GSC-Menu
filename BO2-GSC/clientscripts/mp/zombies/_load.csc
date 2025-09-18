@@ -49,15 +49,12 @@ setup_default_client_flag_callbacks() {
 }
 
 warnmissilelocking(localclientnum, set) {
-
 }
 
 warnmissilelocked(localclientnum, set) {
-
 }
 
 warnmissilefired(localclientnum, set) {
-
 }
 
 main() {
@@ -76,7 +73,9 @@ main() {
     level thread clientscripts\mp\_sticky_grenade::main();
 
   level thread clientscripts\mp\zombies\_clientfaceanim_zm::init_clientfaceanim();
+
   level thread clientscripts\_radiant_live_update::main();
+
   level thread parse_structs();
 
   if(getdvar(#"r_reflectionProbeGenerate") == "1") {
@@ -87,8 +86,8 @@ main() {
 }
 
 parse_structs() {
-  for (i = 0; i < level.struct.size; i++) {
-    if(isdefined(level.struct[i].targetname)) {
+  for(i = 0; i < level.struct.size; i++) {
+    if(isDefined(level.struct[i].targetname)) {
       if(level.struct[i].targetname == "flak_fire_fx") {
         fx_id = "flak20_fire_fx";
         level._effect["flak20_fire_fx"] = loadfx("weapon/tracer/fx_tracer_flak_single_noExp");

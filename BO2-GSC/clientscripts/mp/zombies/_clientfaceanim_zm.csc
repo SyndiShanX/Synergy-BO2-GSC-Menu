@@ -1,7 +1,7 @@
-/***********************************************************
+/*****************************************************************
  * Decompiled and Edited by SyndiShanX
  * Script: clientscripts\mp\zombies\_clientfaceanim_zm.csc
-***********************************************************/
+*****************************************************************/
 
 #include clientscripts\mp\zombies\_face_utility_zm;
 #include clientscripts\mp\_utility;
@@ -30,12 +30,12 @@ init_clientfaceanim() {
 
 doface(localclientnum) {
   if(self isplayer()) {
-    while (true) {
+    while(true) {
       if(self isplayer()) {
         self thread processfaceevents(localclientnum);
         self waittill("respawn");
 
-        while (!isdefined(self))
+        while(!isDefined(self))
           wait 0.05;
 
         self.face_death = 0;
@@ -49,7 +49,7 @@ doface(localclientnum) {
 #using_animtree("zombie_player");
 
 buildface_player() {
-  if(isdefined(level.face_override_func)) {
+  if(isDefined(level.face_override_func)) {
     [
       [level.face_override_func]
     ]();
@@ -69,11 +69,11 @@ buildface_player() {
 }
 
 do_corpse_face_hack(localclientnum) {
-  if(isdefined(self) && isdefined(level.face_anim_tree) && isdefined(level.facestates)) {
+  if(isDefined(self) && isDefined(level.face_anim_tree) && isDefined(level.facestates)) {
     numanims = level.facestates["face_death"]["animation"].size;
     self waittill_dobj(localclientnum);
 
-    if(!isdefined(self)) {
+    if(!isDefined(self)) {
       return;
     }
     self setanimknob(level.facestates["face_death"]["animation"][randomint(numanims)], 1.0, 0.1, 1.0);

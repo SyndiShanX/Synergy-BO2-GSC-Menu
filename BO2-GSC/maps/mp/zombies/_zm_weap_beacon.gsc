@@ -17,6 +17,7 @@ init() {
     return;
   }
   level.zombiemode_devgui_beacon_give = ::player_give_beacon;
+
   registerclientfield("world", "play_launch_artillery_fx_robot_0", 14000, 1, "int");
   registerclientfield("world", "play_launch_artillery_fx_robot_1", 14000, 1, "int");
   registerclientfield("world", "play_launch_artillery_fx_robot_2", 14000, 1, "int");
@@ -45,20 +46,20 @@ player_handle_beacon() {
   self endon("starting_beacon_watch");
   attract_dist_diff = level.beacon_attract_dist_diff;
 
-  if(!isdefined(attract_dist_diff))
+  if(!isDefined(attract_dist_diff))
     attract_dist_diff = 45;
 
   num_attractors = level.num_beacon_attractors;
 
-  if(!isdefined(num_attractors))
+  if(!isDefined(num_attractors))
     num_attractors = 96;
 
   max_attract_dist = level.beacon_attract_dist;
 
-  if(!isdefined(max_attract_dist))
+  if(!isDefined(max_attract_dist))
     max_attract_dist = 1536;
 
-  while (true) {
+  while(true) {
     grenade = get_thrown_beacon();
     self thread player_throw_beacon(grenade, num_attractors, max_attract_dist, attract_dist_diff);
     wait 0.05;
@@ -72,16 +73,16 @@ watch_for_dud(model, actor) {
   self.monk_scream_vox = 1;
   wait 3;
 
-  if(isdefined(model))
+  if(isDefined(model))
     model delete();
 
-  if(isdefined(actor))
+  if(isDefined(actor))
     actor delete();
 
-  if(isdefined(self.damagearea))
+  if(isDefined(self.damagearea))
     self.damagearea delete();
 
-  if(isdefined(self))
+  if(isDefined(self))
     self delete();
 }
 
@@ -91,7 +92,7 @@ watch_for_emp(model, actor) {
   if(!should_watch_for_emp()) {
     return;
   }
-  while (true) {
+  while(true) {
     level waittill("emp_detonate", origin, radius);
 
     if(distancesquared(origin, self.origin) < radius * radius) {
@@ -101,7 +102,7 @@ watch_for_emp(model, actor) {
 
   self.stun_fx = 1;
 
-  if(isdefined(level._equipment_emp_destroy_fx))
+  if(isDefined(level._equipment_emp_destroy_fx))
     playfx(level._equipment_emp_destroy_fx, self.origin + vectorscale((0, 0, 1), 5.0), (0, randomfloat(360), 0));
 
   wait 0.15;
@@ -111,16 +112,16 @@ watch_for_emp(model, actor) {
   self detonate();
   wait 1;
 
-  if(isdefined(model))
+  if(isDefined(model))
     model delete();
 
-  if(isdefined(actor))
+  if(isDefined(actor))
     actor delete();
 
-  if(isdefined(self.damagearea))
+  if(isDefined(self.damagearea))
     self.damagearea delete();
 
-  if(isdefined(self))
+  if(isDefined(self))
     self delete();
 }
 
@@ -128,7 +129,7 @@ clone_player_angles(owner) {
   self endon("death");
   owner endon("bled_out");
 
-  while (isdefined(self)) {
+  while(isDefined(self)) {
     self.angles = owner.angles;
     wait 0.05;
   }
@@ -137,7 +138,7 @@ clone_player_angles(owner) {
 show_briefly(showtime) {
   self endon("show_owner");
 
-  if(isdefined(self.show_for_time)) {
+  if(isDefined(self.show_for_time)) {
     self.show_for_time = showtime;
     return;
   }
@@ -145,7 +146,7 @@ show_briefly(showtime) {
   self.show_for_time = showtime;
   self setvisibletoall();
 
-  while (self.show_for_time > 0) {
+  while(self.show_for_time > 0) {
     self.show_for_time = self.show_for_time - 0.05;
     wait 0.05;
   }
@@ -162,7 +163,7 @@ show_owner_on_attack(owner) {
   self endon("grenade_dud");
   owner.show_for_time = undefined;
 
-  for (;;) {
+  for(;;) {
     owner waittill("weapon_fired");
     owner thread show_briefly(0.5);
   }
@@ -177,16 +178,18 @@ hide_owner(owner) {
   owner setvisibletoallexceptteam(level.zombie_team);
   owner.hide_owner = 1;
 
-  if(isdefined(level._effect["human_disappears"]))
+  if(isDefined(level._effect["human_disappears"]))
     playfx(level._effect["human_disappears"], owner.origin);
 
   self thread show_owner_on_attack(owner);
   evt = self waittill_any_return("explode", "death", "grenade_dud");
+
   println("ZMCLONE: Player visible again because of " + evt);
+
   owner notify("show_owner");
   owner unsetperk("specialty_immunemms");
 
-  if(isdefined(level._effect["human_disappears"]))
+  if(isDefined(level._effect["human_disappears"]))
     playfx(level._effect["human_disappears"], owner.origin);
 
   owner.no_burning_sfx = undefined;
@@ -198,7 +201,7 @@ hide_owner(owner) {
 proximity_detonate(owner) {
   wait 1.5;
 
-  if(!isdefined(self)) {
+  if(!isDefined(self)) {
     return;
   }
   detonateradius = 96;
@@ -209,20 +212,20 @@ proximity_detonate(owner) {
   damagearea linkto(self);
   self.damagearea = damagearea;
 
-  while (isdefined(self)) {
+  while(isDefined(self)) {
     damagearea waittill("trigger", ent);
 
-    if(isdefined(owner) && ent == owner) {
+    if(isDefined(owner) && ent == owner) {
       continue;
     }
-    if(isdefined(ent.team) && ent.team == owner.team) {
+    if(isDefined(ent.team) && ent.team == owner.team) {
       continue;
     }
     self playsound("wpn_claymore_alert");
     dist = distance(self.origin, ent.origin);
     radiusdamage(self.origin + vectorscale((0, 0, 1), 12.0), explosionradius, 1, 1, owner, "MOD_GRENADE_SPLASH", "beacon_zm");
 
-    if(isdefined(owner))
+    if(isDefined(owner))
       self detonate(owner);
     else
       self detonate(undefined);
@@ -230,7 +233,7 @@ proximity_detonate(owner) {
     break;
   }
 
-  if(isdefined(damagearea))
+  if(isDefined(damagearea))
     damagearea delete();
 }
 
@@ -238,11 +241,11 @@ player_throw_beacon(grenade, num_attractors, max_attract_dist, attract_dist_diff
   self endon("disconnect");
   self endon("starting_beacon_watch");
 
-  if(isdefined(grenade)) {
+  if(isDefined(grenade)) {
     grenade endon("death");
 
     if(self maps\mp\zombies\_zm_laststand::player_is_in_laststand()) {
-      if(isdefined(grenade.damagearea))
+      if(isDefined(grenade.damagearea))
         grenade.damagearea delete();
 
       grenade delete();
@@ -260,7 +263,7 @@ player_throw_beacon(grenade, num_attractors, max_attract_dist, attract_dist_diff
     model.owner = self;
     clone = undefined;
 
-    if(isdefined(level.beacon_dual_view) && level.beacon_dual_view) {
+    if(isDefined(level.beacon_dual_view) && level.beacon_dual_view) {
       model setvisibletoallexceptteam(level.zombie_team);
       clone = maps\mp\zombies\_zm_clone::spawn_player_clone(self, vectorscale((0, 0, -1), 999.0), level.beacon_clone_weapon, undefined);
       model.simulacrum = clone;
@@ -276,21 +279,21 @@ player_throw_beacon(grenade, num_attractors, max_attract_dist, attract_dist_diff
     grenade thread monitor_zombie_groans(info);
     grenade waittill("stationary");
 
-    if(isdefined(level.grenade_planted))
+    if(isDefined(level.grenade_planted))
       self thread[[level.grenade_planted]](grenade, model);
 
-    if(isdefined(grenade)) {
-      if(isdefined(model)) {
+    if(isDefined(grenade)) {
+      if(isDefined(model)) {
         model thread weapon_beacon_anims();
 
-        if(!(isdefined(grenade.backlinked) && grenade.backlinked)) {
+        if(!(isDefined(grenade.backlinked) && grenade.backlinked)) {
           model unlink();
           model.origin = grenade.origin;
           model.angles = grenade.angles;
         }
       }
 
-      if(isdefined(clone)) {
+      if(isDefined(clone)) {
         clone forceteleport(grenade.origin, grenade.angles);
         clone thread hide_owner(self);
         grenade thread proximity_detonate(self);
@@ -303,7 +306,7 @@ player_throw_beacon(grenade, num_attractors, max_attract_dist, attract_dist_diff
       model setclientfield("play_beacon_fx", 1);
       valid_poi = check_point_in_enabled_zone(grenade.origin, undefined, undefined);
 
-      if(isdefined(level.check_valid_poi))
+      if(isDefined(level.check_valid_poi))
         valid_poi = grenade[[level.check_valid_poi]](valid_poi);
 
       if(valid_poi) {
@@ -315,7 +318,7 @@ player_throw_beacon(grenade, num_attractors, max_attract_dist, attract_dist_diff
         model thread wait_and_explode(grenade);
         model.time_thrown = gettime();
 
-        while (isdefined(level.weapon_beacon_busy) && level.weapon_beacon_busy) {
+        while(isDefined(level.weapon_beacon_busy) && level.weapon_beacon_busy) {
           wait 0.1;
           continue;
         }
@@ -345,7 +348,7 @@ weapon_beacon_anims() {
 }
 
 grenade_stolen_by_sam(ent_grenade, ent_model, ent_actor) {
-  if(!isdefined(ent_model)) {
+  if(!isDefined(ent_model)) {
     return;
   }
   direction = ent_model.origin;
@@ -358,7 +361,7 @@ grenade_stolen_by_sam(ent_grenade, ent_model, ent_actor) {
 
   players = get_players();
 
-  for (i = 0; i < players.size; i++) {
+  for(i = 0; i < players.size; i++) {
     if(isalive(players[i]))
       players[i] playlocalsound(level.zmb_laugh_alias);
   }
@@ -368,16 +371,16 @@ grenade_stolen_by_sam(ent_grenade, ent_model, ent_actor) {
   ent_model vibrate(direction, 1.5, 2.5, 1.0);
   ent_model waittill("movedone");
 
-  if(isdefined(self.damagearea))
+  if(isDefined(self.damagearea))
     self.damagearea delete();
 
   ent_model delete();
 
-  if(isdefined(ent_actor))
+  if(isDefined(ent_actor))
     ent_actor delete();
 
-  if(isdefined(ent_grenade)) {
-    if(isdefined(ent_grenade.damagearea))
+  if(isDefined(ent_grenade)) {
+    if(isDefined(ent_grenade.damagearea))
       ent_grenade.damagearea delete();
 
     ent_grenade delete();
@@ -390,12 +393,12 @@ wait_for_attractor_positions_complete() {
 }
 
 beacon_cleanup(parent) {
-  while (true) {
-    if(!isdefined(parent)) {
-      if(isdefined(self) && (isdefined(self.dud) && self.dud))
+  while(true) {
+    if(!isDefined(parent)) {
+      if(isDefined(self) && (isDefined(self.dud) && self.dud))
         wait 6;
 
-      if(isdefined(self.simulacrum))
+      if(isDefined(self.simulacrum))
         self.simulacrum delete();
 
       self_delete();
@@ -409,7 +412,7 @@ beacon_cleanup(parent) {
 do_beacon_sound(model, info) {
   self.monk_scream_vox = 0;
 
-  if(isdefined(level.grenade_safe_to_bounce)) {
+  if(isDefined(level.grenade_safe_to_bounce)) {
     if(![
         [level.grenade_safe_to_bounce]
       ](self.owner, "beacon_zm"))
@@ -417,7 +420,7 @@ do_beacon_sound(model, info) {
   }
 
   if(!self.monk_scream_vox && level.music_override == 0) {
-    if(isdefined(level.beacon_dual_view) && level.beacon_dual_view)
+    if(isDefined(level.beacon_dual_view) && level.beacon_dual_view)
       self playsoundtoteam("null", "allies");
     else
       self playsound("null");
@@ -430,8 +433,8 @@ do_beacon_sound(model, info) {
   level notify("grenade_exploded", position, 100, 5000, 450);
   beacon_index = -1;
 
-  for (i = 0; i < level.beacons.size; i++) {
-    if(!isdefined(level.beacons[i])) {
+  for(i = 0; i < level.beacons.size; i++) {
+    if(!isDefined(level.beacons[i])) {
       beacon_index = i;
       break;
     }
@@ -440,8 +443,8 @@ do_beacon_sound(model, info) {
   if(beacon_index >= 0)
     arrayremoveindex(level.beacons, beacon_index);
 
-  for (i = 0; i < info.sound_attractors.size; i++) {
-    if(isdefined(info.sound_attractors[i]))
+  for(i = 0; i < info.sound_attractors.size; i++) {
+    if(isDefined(info.sound_attractors[i]))
       info.sound_attractors[i] notify("beacon_blown_up");
   }
 
@@ -451,8 +454,7 @@ do_beacon_sound(model, info) {
 play_delayed_explode_vox() {
   wait 6.5;
 
-  if(isdefined(self)) {
-
+  if(isDefined(self)) {
   }
 }
 
@@ -460,7 +462,7 @@ get_thrown_beacon() {
   self endon("disconnect");
   self endon("starting_beacon_watch");
 
-  while (true) {
+  while(true) {
     self waittill("grenade_fire", grenade, weapname);
 
     if(weapname == "beacon_zm") {
@@ -476,18 +478,18 @@ get_thrown_beacon() {
 monitor_zombie_groans(info) {
   self endon("explode");
 
-  while (true) {
-    if(!isdefined(self)) {
+  while(true) {
+    if(!isDefined(self)) {
       return;
     }
-    if(!isdefined(self.attractor_array)) {
+    if(!isDefined(self.attractor_array)) {
       wait 0.05;
       continue;
     }
 
-    for (i = 0; i < self.attractor_array.size; i++) {
+    for(i = 0; i < self.attractor_array.size; i++) {
       if(array_check_for_dupes(info.sound_attractors, self.attractor_array[i])) {
-        if(isdefined(self.origin) && isdefined(self.attractor_array[i].origin)) {
+        if(isDefined(self.origin) && isDefined(self.attractor_array[i].origin)) {
           if(distancesquared(self.origin, self.attractor_array[i].origin) < 250000) {
             info.sound_attractors[info.sound_attractors.size] = self.attractor_array[i];
             self.attractor_array[i] thread play_zombie_groans();
@@ -504,8 +506,8 @@ play_zombie_groans() {
   self endon("death");
   self endon("beacon_blown_up");
 
-  while (true) {
-    if(isdefined(self)) {
+  while(true) {
+    if(isDefined(self)) {
       self playsound("zmb_vox_zombie_groan");
       wait(randomfloatrange(2, 3));
     } else
@@ -514,7 +516,7 @@ play_zombie_groans() {
 }
 
 beacon_exists() {
-  return isdefined(level.zombie_weapons["beacon_zm"]);
+  return isDefined(level.zombie_weapons["beacon_zm"]);
 }
 
 wait_and_explode(grenade) {
@@ -522,7 +524,7 @@ wait_and_explode(grenade) {
   grenade waittill("explode", position);
   self notify("weapon_beacon_timeout");
 
-  if(isdefined(grenade))
+  if(isDefined(grenade))
     grenade notify("robot_artillery_barrage", self.origin);
 }
 
@@ -530,10 +532,10 @@ start_artillery_launch_normal(grenade) {
   self endon("weapon_beacon_timeout");
   sp_giant_robot = undefined;
 
-  while (!isdefined(sp_giant_robot)) {
-    for (i = 0; i < 3; i++) {
-      if(isdefined(level.a_giant_robots[i].is_walking) && level.a_giant_robots[i].is_walking) {
-        if(!(isdefined(level.a_giant_robots[i].weap_beacon_firing) && level.a_giant_robots[i].weap_beacon_firing)) {
+  while(!isDefined(sp_giant_robot)) {
+    for(i = 0; i < 3; i++) {
+      if(isDefined(level.a_giant_robots[i].is_walking) && level.a_giant_robots[i].is_walking) {
+        if(!(isDefined(level.a_giant_robots[i].weap_beacon_firing) && level.a_giant_robots[i].weap_beacon_firing)) {
           sp_giant_robot = level.a_giant_robots[i];
           self thread artillery_fx_logic(sp_giant_robot, grenade);
           self notify("beacon_missile_launch");
@@ -559,11 +561,11 @@ start_artillery_launch_ee(grenade) {
   a_robot_index[1] = 0;
   a_robot_index[2] = 2;
 
-  while (n_index < a_robot_index.size) {
+  while(n_index < a_robot_index.size) {
     n_robot_num = a_robot_index[n_index];
 
-    if(isdefined(level.a_giant_robots[n_robot_num].is_walking) && level.a_giant_robots[n_robot_num].is_walking) {
-      if(!(isdefined(level.a_giant_robots[n_robot_num].weap_beacon_firing) && level.a_giant_robots[n_robot_num].weap_beacon_firing)) {
+    if(isDefined(level.a_giant_robots[n_robot_num].is_walking) && level.a_giant_robots[n_robot_num].is_walking) {
+      if(!(isDefined(level.a_giant_robots[n_robot_num].weap_beacon_firing) && level.a_giant_robots[n_robot_num].weap_beacon_firing)) {
         sp_giant_robot = level.a_giant_robots[n_robot_num];
         self thread artillery_fx_logic_ee(sp_giant_robot, grenade);
         self notify("beacon_missile_launch");
@@ -595,7 +597,7 @@ artillery_fx_logic(sp_giant_robot, grenade) {
   self thread homing_beacon_vo();
   wait 0.5;
 
-  if(isdefined(sp_giant_robot)) {
+  if(isDefined(sp_giant_robot)) {
     level setclientfield("play_launch_artillery_fx_robot_" + sp_giant_robot.giant_robot_id, 0);
     wait 3.0;
     self thread artillery_barrage_logic(grenade);
@@ -611,7 +613,7 @@ artillery_fx_logic_ee(sp_giant_robot, grenade) {
   self thread homing_beacon_vo();
   wait 0.5;
 
-  if(isdefined(sp_giant_robot))
+  if(isDefined(sp_giant_robot))
     level setclientfield("play_launch_artillery_fx_robot_" + sp_giant_robot.giant_robot_id, 0);
 
   wait 1.0;
@@ -619,10 +621,10 @@ artillery_fx_logic_ee(sp_giant_robot, grenade) {
 }
 
 homing_beacon_vo() {
-  if(isdefined(self.owner) && isplayer(self.owner)) {
+  if(isDefined(self.owner) && isplayer(self.owner)) {
     n_time = gettime();
 
-    if(isdefined(self.time_thrown)) {
+    if(isDefined(self.time_thrown)) {
       if(n_time < self.time_thrown + 3000)
         self.owner maps\mp\zombies\_zm_audio::create_and_play_dialog("general", "use_beacon");
     }
@@ -630,10 +632,10 @@ homing_beacon_vo() {
 }
 
 artillery_barrage_logic(grenade, b_ee) {
-  if(!isdefined(b_ee))
+  if(!isDefined(b_ee))
     b_ee = 0;
 
-  if(isdefined(b_ee) && b_ee) {
+  if(isDefined(b_ee) && b_ee) {
     a_v_land_offsets = self build_weap_beacon_landing_offsets_ee();
     a_v_start_offsets = self build_weap_beacon_start_offsets_ee();
     n_num_missiles = 15;
@@ -648,7 +650,7 @@ artillery_barrage_logic(grenade, b_ee) {
   self.a_v_land_spots = [];
   self.a_v_start_spots = [];
 
-  for (i = 0; i < n_num_missiles; i++) {
+  for(i = 0; i < n_num_missiles; i++) {
     self.a_v_start_spots[i] = self.origin + a_v_start_offsets[i];
     self.a_v_land_spots[i] = self.origin + a_v_land_offsets[i];
     v_start_trace = self.a_v_start_spots[i] - vectorscale((0, 0, 1), 5000.0);
@@ -657,7 +659,7 @@ artillery_barrage_logic(grenade, b_ee) {
     wait 0.05;
   }
 
-  for (i = 0; i < n_num_missiles; i++) {
+  for(i = 0; i < n_num_missiles; i++) {
     self setclientfield("play_artillery_barrage", n_clientfield);
     self thread wait_and_do_weapon_beacon_damage(i);
     wait_network_frame();
@@ -777,10 +779,10 @@ wait_and_do_weapon_beacon_damage(index) {
 weap_beacon_zombie_death(model, a_zombies_to_kill) {
   n_interval = 0;
 
-  for (i = 0; i < a_zombies_to_kill.size; i++) {
+  for(i = 0; i < a_zombies_to_kill.size; i++) {
     zombie = a_zombies_to_kill[i];
 
-    if(!isdefined(zombie) || !isalive(zombie)) {
+    if(!isDefined(zombie) || !isalive(zombie)) {
       continue;
     }
     zombie thread set_beacon_damage();
@@ -796,10 +798,10 @@ weap_beacon_zombie_death(model, a_zombies_to_kill) {
 }
 
 weapon_beacon_launch_ragdoll() {
-  if(isdefined(self.is_mechz) && self.is_mechz) {
+  if(isDefined(self.is_mechz) && self.is_mechz) {
     return;
   }
-  if(isdefined(self.is_giant_robot) && self.is_giant_robot) {
+  if(isDefined(self.is_giant_robot) && self.is_giant_robot) {
     return;
   }
   if(level.n_weap_beacon_zombie_thrown_count >= 5) {
@@ -807,7 +809,7 @@ weapon_beacon_launch_ragdoll() {
   }
   level.n_weap_beacon_zombie_thrown_count++;
 
-  if(isdefined(level.ragdoll_limit_check) && ![
+  if(isDefined(level.ragdoll_limit_check) && ![
       [level.ragdoll_limit_check]
     ]()) {
     level thread weap_beacon_gib(self);
@@ -838,7 +840,7 @@ weap_beacon_rumble() {
   a_players = getplayers();
 
   foreach(player in a_players) {
-    if(isalive(player) && isdefined(player)) {
+    if(isalive(player) && isDefined(player)) {
       if(distance2dsquared(player.origin, self.origin) < 250000)
         player thread execute_weap_beacon_rumble();
     }

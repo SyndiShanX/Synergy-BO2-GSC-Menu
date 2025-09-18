@@ -19,19 +19,19 @@ callback_actordamage(einflictor, eattacker, idamage, idflags, smeansofdeath, swe
   if(self.aiteam == "spectator") {
     return;
   }
-  if(isdefined(eattacker) && isplayer(eattacker) && isdefined(eattacker.candocombat) && !eattacker.candocombat) {
+  if(isDefined(eattacker) && isplayer(eattacker) && isDefined(eattacker.candocombat) && !eattacker.candocombat) {
     return;
   }
   self.idflags = idflags;
   self.idflagstime = gettime();
   eattacker = maps\mp\gametypes\_globallogic_player::figureoutattacker(eattacker);
 
-  if(!isdefined(vdir))
+  if(!isDefined(vdir))
     idflags = idflags | level.idflags_no_knockback;
 
   friendly = 0;
 
-  if(self.health == self.maxhealth || !isdefined(self.attackers)) {
+  if(self.health == self.maxhealth || !isDefined(self.attackers)) {
     self.attackers = [];
     self.attackerdata = [];
     self.attackerdamage = [];
@@ -55,10 +55,10 @@ callback_actordamage(einflictor, eattacker, idamage, idflags, smeansofdeath, swe
       self maps\mp\_burnplayer::burnedwithflamethrower();
   }
 
-  if(sweapon == "none" && isdefined(einflictor)) {
-    if(isdefined(einflictor.targetname) && einflictor.targetname == "explodable_barrel")
+  if(sweapon == "none" && isDefined(einflictor)) {
+    if(isDefined(einflictor.targetname) && einflictor.targetname == "explodable_barrel")
       sweapon = "explodable_barrel_mp";
-    else if(isdefined(einflictor.destructible_type) && issubstr(einflictor.destructible_type, "vehicle_"))
+    else if(isDefined(einflictor.destructible_type) && issubstr(einflictor.destructible_type, "vehicle_"))
       sweapon = "destructible_car_mp";
   }
 
@@ -91,29 +91,29 @@ callback_actordamage(einflictor, eattacker, idamage, idflags, smeansofdeath, swe
 
       friendly = 1;
     } else {
-      if(isdefined(eattacker) && isdefined(self.script_owner) && eattacker == self.script_owner && !level.hardcoremode) {
+      if(isDefined(eattacker) && isDefined(self.script_owner) && eattacker == self.script_owner && !level.hardcoremode) {
         return;
       }
-      if(isdefined(eattacker) && isdefined(self.script_owner) && isdefined(eattacker.script_owner) && eattacker.script_owner == self.script_owner) {
+      if(isDefined(eattacker) && isDefined(self.script_owner) && isDefined(eattacker.script_owner) && eattacker.script_owner == self.script_owner) {
         return;
       }
       if(idamage < 1)
         idamage = 1;
 
-      if(isdefined(eattacker) && isplayer(eattacker) && isdefined(sweapon) && !issubstr(smeansofdeath, "MOD_MELEE"))
+      if(isDefined(eattacker) && isplayer(eattacker) && isDefined(sweapon) && !issubstr(smeansofdeath, "MOD_MELEE"))
         eattacker thread maps\mp\gametypes\_weapons::checkhit(sweapon);
 
-      if(issubstr(smeansofdeath, "MOD_GRENADE") && isdefined(einflictor) && isdefined(einflictor.iscooked))
+      if(issubstr(smeansofdeath, "MOD_GRENADE") && isDefined(einflictor) && isDefined(einflictor.iscooked))
         self.wascooked = gettime();
       else
         self.wascooked = undefined;
 
-      self.lastdamagewasfromenemy = isdefined(eattacker) && eattacker != self;
+      self.lastdamagewasfromenemy = isDefined(eattacker) && eattacker != self;
       self finishactordamage(einflictor, eattacker, idamage, idflags, smeansofdeath, sweapon, vpoint, vdir, shitloc, psoffsettime, boneindex);
     }
 
-    if(isdefined(eattacker) && eattacker != self) {
-      if(sweapon != "artillery_mp" && (!isdefined(einflictor) || !isai(einflictor))) {
+    if(isDefined(eattacker) && eattacker != self) {
+      if(sweapon != "artillery_mp" && (!isDefined(einflictor) || !isai(einflictor))) {
         if(idamage > 0)
           eattacker thread maps\mp\gametypes\_damagefeedback::updatedamagefeedback(smeansofdeath, einflictor);
       }
@@ -148,15 +148,15 @@ callback_actorkilled(einflictor, attacker, idamage, smeansofdeath, sweapon, vdir
   if(game["state"] == "postgame") {
     return;
   }
-  if(isai(attacker) && isdefined(attacker.script_owner)) {
+  if(isai(attacker) && isDefined(attacker.script_owner)) {
     if(attacker.script_owner.team != self.aiteam)
       attacker = attacker.script_owner;
   }
 
-  if(attacker.classname == "script_vehicle" && isdefined(attacker.owner))
+  if(attacker.classname == "script_vehicle" && isDefined(attacker.owner))
     attacker = attacker.owner;
 
-  if(isdefined(attacker) && isplayer(attacker)) {
+  if(isDefined(attacker) && isplayer(attacker)) {
     if(!level.teambased || self.aiteam != attacker.pers["team"]) {
       level.globalkillstreaksdestroyed++;
       attacker addweaponstat("dogs_mp", "destroyed", 1);

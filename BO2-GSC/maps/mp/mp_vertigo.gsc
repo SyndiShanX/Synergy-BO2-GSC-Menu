@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\mp_vertigo.gsc
-***************************************/
+**************************************/
 
 #include maps\mp\_utility;
 #include maps\mp\mp_vertigo_fx;
@@ -51,7 +51,7 @@ waitforglassbreak() {
   if(glassexploderssetupcorrectly(1007, 3) == 0) {
     return;
   }
-  for (;;) {
+  for(;;) {
     level waittill("glass_smash", origin);
     playglassexploder(origin, 1000, 3);
     playglassexploder(origin, 1004, 3);
@@ -74,7 +74,7 @@ playglassexploder(origin, exploderbase, explodercount) {
 
   nearestpanedistsq = distancesq;
 
-  for (glassexploderindex = 1; glassexploderindex < explodercount; glassexploderindex++) {
+  for(glassexploderindex = 1; glassexploderindex < explodercount; glassexploderindex++) {
     glassexploder = glassexploderindex + exploderbase;
     currentdistsq = distancesquared(origin, level.createfxexploders[glassexploder][0].v["origin"]);
 
@@ -99,16 +99,18 @@ window_smash_wind_sound(origin) {
 }
 
 glassexploderssetupcorrectly(exploderbase, explodercount) {
-  for (glassexploderindex = 0; glassexploderindex < explodercount; glassexploderindex++) {
+  for(glassexploderindex = 0; glassexploderindex < explodercount; glassexploderindex++) {
     glassexploder = glassexploderindex + exploderbase;
 
-    if(!isdefined(level.createfxexploders[glassexploder])) {
+    if(!isDefined(level.createfxexploders[glassexploder])) {
       assertmsg("Glass exploder " + glassexploder + " is undefined");
+
       return false;
     }
 
-    if(!isdefined(level.createfxexploders[glassexploder][0]) || !isdefined(level.createfxexploders[glassexploder][0].v) || !isdefined(level.createfxexploders[glassexploder][0].v["origin"])) {
+    if(!isDefined(level.createfxexploders[glassexploder][0]) || !isDefined(level.createfxexploders[glassexploder][0].v) || !isDefined(level.createfxexploders[glassexploder][0].v["origin"])) {
       assertmsg("Glass exploder " + glassexploder + " is undefined");
+
       return false;
     }
   }
@@ -124,13 +126,13 @@ ragdoll_override(idamage, smeansofdeath, sweapon, shitloc, vdir, vattackerorigin
     if(animhasnotetrack(deathanim, "start_ragdoll")) {
       times = getnotetracktimes(deathanim, "start_ragdoll");
 
-      if(isdefined(times))
+      if(isDefined(times))
         startfrac = times[0];
     }
 
     self.body = body;
 
-    if(!isdefined(self.switching_teams))
+    if(!isDefined(self.switching_teams))
       thread maps\mp\gametypes\_deathicons::adddeathicon(body, self, self.team, 5.0);
 
     thread startragdollonground(startfrac);
@@ -141,8 +143,8 @@ ragdoll_override(idamage, smeansofdeath, sweapon, shitloc, vdir, vattackerorigin
 }
 
 startragdollonground(deathanimduration) {
-  for (timer = 0; timer < deathanimduration; timer = timer + 0.05) {
-    if(!isdefined(self) || !isdefined(self.body)) {
+  for(timer = 0; timer < deathanimduration; timer = timer + 0.05) {
+    if(!isDefined(self) || !isDefined(self.body)) {
       return;
     }
     if(self isonground()) {
@@ -152,7 +154,7 @@ startragdollonground(deathanimduration) {
     wait 0.05;
   }
 
-  if(!isdefined(self) || !isdefined(self.body)) {
+  if(!isDefined(self) || !isDefined(self.body)) {
     return;
   }
   self.body startragdoll();

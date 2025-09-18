@@ -13,7 +13,6 @@ deleteatlimit() {
 }
 
 lookatentity(looktargetentity, lookduration, lookspeed, eyesonly, interruptothers) {
-
 }
 
 lookatposition(looktargetpos, lookduration, lookspeed, eyesonly, interruptothers) {
@@ -21,7 +20,7 @@ lookatposition(looktargetpos, lookduration, lookspeed, eyesonly, interruptothers
   assert(self.a.targetlookinitilized == 1, "LookAtPosition called on AI that lookThread was not called on");
   assert(lookspeed == "casual" || lookspeed == "alert", "lookSpeed must be casual or alert");
 
-  if(!isdefined(interruptothers) || interruptothers == "interrupt others" || gettime() > self.a.lookendtime) {
+  if(!isDefined(interruptothers) || interruptothers == "interrupt others" || gettime() > self.a.lookendtime) {
     self.a.looktargetpos = looktargetpos;
     self.a.lookendtime = gettime() + lookduration * 1000;
 
@@ -30,7 +29,7 @@ lookatposition(looktargetpos, lookduration, lookspeed, eyesonly, interruptothers
     else
       self.a.looktargetspeed = 1600;
 
-    if(isdefined(eyesonly) && eyesonly == "eyes only")
+    if(isDefined(eyesonly) && eyesonly == "eyes only")
       self notify("eyes look now");
     else
       self notify("look now");
@@ -64,7 +63,7 @@ handledogsoundnotetracks(note) {
 }
 
 growling() {
-  return isdefined(self.script_growl);
+  return isDefined(self.script_growl);
 }
 
 registernotetracks() {
@@ -92,11 +91,10 @@ registernotetracks() {
 }
 
 notetrackstopanim(note, flagname) {
-
 }
 
 notetrackstartragdoll(note, flagname) {
-  if(isdefined(self.noragdoll)) {
+  if(isDefined(self.noragdoll)) {
     return;
   }
   self unlink();
@@ -156,7 +154,7 @@ notetrackgravity(note, flagname) {
 }
 
 notetrackbodyfall(note, flagname) {
-  if(isdefined(self.groundtype))
+  if(isDefined(self.groundtype))
     groundtype = self.groundtype;
   else
     groundtype = "dirt";
@@ -178,7 +176,7 @@ notetrackfootstep(note, flagname) {
 }
 
 notetrackfootscrape(note, flagname) {
-  if(isdefined(self.groundtype))
+  if(isDefined(self.groundtype))
     groundtype = self.groundtype;
   else
     groundtype = "dirt";
@@ -187,7 +185,7 @@ notetrackfootscrape(note, flagname) {
 }
 
 notetrackland(note, flagname) {
-  if(isdefined(self.groundtype))
+  if(isDefined(self.groundtype))
     groundtype = self.groundtype;
   else
     groundtype = "dirt";
@@ -202,7 +200,7 @@ handlenotetrack(note, flagname, customfunction, var1) {
   } else {
     notetrackfunc = anim.notetracks[note];
 
-    if(isdefined(notetrackfunc))
+    if(isDefined(notetrackfunc))
       return [
         [notetrackfunc]
       ](note, flagname);
@@ -213,7 +211,6 @@ handlenotetrack(note, flagname, customfunction, var1) {
     case "finish":
     case "undefined":
       if(isai(self) && self.a.pose == "back") {
-
       }
 
       return note;
@@ -241,8 +238,8 @@ handlenotetrack(note, flagname, customfunction, var1) {
       self.a.meleestate = "left";
       break;
     case "swap taghelmet to tagleft":
-      if(isdefined(self.hatmodel)) {
-        if(isdefined(self.helmetsidemodel)) {
+      if(isDefined(self.hatmodel)) {
+        if(isDefined(self.helmetsidemodel)) {
           self detach(self.helmetsidemodel, "TAG_HELMETSIDE");
           self.helmetsidemodel = undefined;
         }
@@ -254,8 +251,8 @@ handlenotetrack(note, flagname, customfunction, var1) {
 
       break;
     default:
-      if(isdefined(customfunction)) {
-        if(!isdefined(var1))
+      if(isDefined(customfunction)) {
+        if(!isDefined(var1))
           return [
             [customfunction]
           ](note);
@@ -270,26 +267,26 @@ handlenotetrack(note, flagname, customfunction, var1) {
 }
 
 donotetracks(flagname, customfunction, var1) {
-  for (;;) {
+  for(;;) {
     self waittill(flagname, note);
 
-    if(!isdefined(note))
+    if(!isDefined(note))
       note = "undefined";
 
     val = self handlenotetrack(note, flagname, customfunction, var1);
 
-    if(isdefined(val))
+    if(isDefined(val))
       return val;
   }
 }
 
 donotetracksforeverproc(notetracksfunc, flagname, killstring, customfunction, var1) {
-  if(isdefined(killstring))
+  if(isDefined(killstring))
     self endon(killstring);
 
   self endon("killanimscript");
 
-  for (;;) {
+  for(;;) {
     time = gettime();
     returnednote = [
       [notetracksfunc]
@@ -305,6 +302,7 @@ donotetracksforeverproc(notetracksfunc, flagname, killstring, customfunction, va
 
       if(timetaken < 0.05) {
         println(gettime() + " mapsmpanimscriptsshared::DoNoteTracksForever is trying to cause an infinite loop on anim " + flagname + ", returned " + returnednote + ".");
+
         wait(0.05 - timetaken);
       }
     }
@@ -341,8 +339,8 @@ playfootstep(foot) {
 
   groundtype = undefined;
 
-  if(!isdefined(self.groundtype)) {
-    if(!isdefined(self.lastgroundtype)) {
+  if(!isDefined(self.groundtype)) {
+    if(!isDefined(self.lastgroundtype)) {
       if(!level.clientscripts)
         self playsound("fly_step_run_dirt");
 
@@ -365,8 +363,8 @@ playfootstepeffect(foot, groundtype) {
   if(level.clientscripts) {
     return;
   }
-  for (i = 0; i < anim.optionalstepeffects.size; i++) {
-    if(isdefined(self.fire_footsteps) && self.fire_footsteps)
+  for(i = 0; i < anim.optionalstepeffects.size; i++) {
+    if(isDefined(self.fire_footsteps) && self.fire_footsteps)
       groundtype = "fire";
 
     if(groundtype != anim.optionalstepeffects[i]) {
@@ -383,6 +381,7 @@ movetooriginovertime(origin, time) {
 
   if(distancesquared(self.origin, origin) > 256 && !self maymovetopoint(origin)) {
     println("^1Warning: AI starting behavior for node at " + origin + " but could not move to that point.");
+
     return;
   }
 
@@ -391,7 +390,7 @@ movetooriginovertime(origin, time) {
   frames = int(time * 20);
   offsetreduction = vectorscale(offset, 1.0 / frames);
 
-  for (i = 0; i < frames; i++) {
+  for(i = 0; i < frames; i++) {
     offset = offset - offsetreduction;
     self teleport(origin + offset);
     wait 0.05;

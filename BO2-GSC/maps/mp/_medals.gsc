@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\_medals.gsc
-***************************************/
+**************************************/
 
 #include maps\mp\_utility;
 #include maps\mp\_scoreevents;
@@ -15,7 +15,7 @@ init() {
 }
 
 onplayerconnect() {
-  for (;;) {
+  for(;;) {
     level waittill("connected", player);
     player.lastkilledby = undefined;
   }

@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\zm_buried_ee.gsc
-***************************************/
+**************************************/
 
 #include common_scripts\utility;
 #include maps\mp\_utility;
@@ -14,14 +14,16 @@ init_ghost_piano() {
   t_bullseye = getent("bullseye", "script_noteworthy");
   t_chalk_line = getent("ee_bar_chalk_line_trigger", "targetname");
 
-  if(!isdefined(t_bullseye) || !isdefined(t_chalk_line)) {
+  if(!isDefined(t_bullseye) || !isDefined(t_chalk_line)) {
     return;
   }
   t_bullseye thread wait_for_valid_damage();
   t_chalk_line thread set_flags_while_players_stand_in_trigger();
   level thread mansion_ghost_plays_piano();
   level thread reward_think();
+
   level thread devgui_support_ee();
+
   flag_init("player_piano_song_active");
 }
 
@@ -32,11 +34,11 @@ init_ee_ghost_piano_flags() {
 wait_for_valid_damage() {
   self setcandamage(1);
 
-  while (true) {
+  while(true) {
     self waittill("damage", undefined, e_inflictor, undefined, undefined, undefined, undefined, undefined, undefined, str_weapon_name, undefined);
 
     if(is_ballistic_knife_variant(str_weapon_name)) {
-      if(isdefined(e_inflictor) && e_inflictor ent_flag_exist("ee_standing_behind_chalk_line") && e_inflictor ent_flag("ee_standing_behind_chalk_line") && !flag("player_piano_song_active"))
+      if(isDefined(e_inflictor) && e_inflictor ent_flag_exist("ee_standing_behind_chalk_line") && e_inflictor ent_flag("ee_standing_behind_chalk_line") && !flag("player_piano_song_active"))
         level notify("player_can_interact_with_ghost_piano_player", e_inflictor);
     }
   }
@@ -47,7 +49,7 @@ is_ballistic_knife_variant(str_weapon) {
 }
 
 set_flags_while_players_stand_in_trigger() {
-  while (true) {
+  while(true) {
     self waittill("trigger", player);
 
     if(!player ent_flag_exist("ee_standing_behind_chalk_line"))
@@ -62,7 +64,7 @@ clear_flag_when_player_leaves_trigger(trigger) {
   self endon("death_or_disconnect");
   self ent_flag_set("ee_standing_behind_chalk_line");
 
-  while (self istouching(trigger))
+  while(self istouching(trigger))
     wait 0.25;
 
   self ent_flag_clear("ee_standing_behind_chalk_line");
@@ -72,19 +74,22 @@ clear_flag_when_player_leaves_trigger(trigger) {
 
 player_piano_starts() {
   iprintln("player piano tune song start");
+
   flag_set("player_piano_song_active");
   level notify("piano_play");
   level setclientfield("mansion_piano_play", 1);
   level setclientfield("saloon_piano_play", 1);
   wait(getanimlength( % fxanim_gp_piano_old_anim));
+
   iprintln("player piano song done");
+
   level setclientfield("mansion_piano_play", 0);
   level setclientfield("saloon_piano_play", 0);
   flag_clear("player_piano_song_active");
 }
 
 mansion_ghost_plays_piano() {
-  while (true) {
+  while(true) {
     flag_wait("player_piano_song_active");
     e_ghost = spawn_and_animate_ghost_pianist();
     flag_waitopen("player_piano_song_active");
@@ -103,7 +108,9 @@ spawn_and_animate_ghost_pianist() {
   e_temp useanimtree(#animtree);
   e_temp setanim( % ai_zombie_ghost_playing_piano);
   e_temp setclientfield("sndGhostAudio", 1);
+
   iprintln("ghost piano player spawned");
+
   return e_temp;
 }
 
@@ -112,7 +119,7 @@ reward_think() {
   t_use sethintstring(&"ZM_BURIED_HINT_GHOST_PIANO", 10);
   t_use setinvisibletoall();
 
-  while (true) {
+  while(true) {
     level waittill("player_can_interact_with_ghost_piano_player", player);
     level thread player_piano_starts();
 
@@ -133,7 +140,7 @@ player_can_use_ghost_piano_trigger(player) {
 
   do
     self waittill("trigger", user);
-  while (user != player || player.score < 10 || !is_player_valid(player));
+  while(user != player || player.score < 10 || !is_player_valid(player));
 
   if(!player has_player_received_reward())
     self give_reward(player);
@@ -161,11 +168,12 @@ delete_ghost_pianist() {
   self playsound("zmb_ai_ghost_death");
   wait_network_frame();
   self delete();
+
   iprintln("ghost piano player deleted");
 }
 
 devgui_support_ee() {
-  while (true) {
+  while(true) {
     str_notify = level waittill_any_return("ghost_piano_warp_to_mansion_piano", "ghost_piano_warp_to_bar");
 
     if(str_notify == "ghost_piano_warp_to_mansion_piano")
@@ -176,12 +184,12 @@ devgui_support_ee() {
 }
 
 warp_to_struct(str_value, str_key) {
-  if(!isdefined(str_key))
+  if(!isDefined(str_key))
     str_key = "targetname";
 
   s_warp = getstruct(str_value, str_key);
   self setorigin(s_warp.origin);
 
-  if(isdefined(s_warp.angles))
+  if(isDefined(s_warp.angles))
     self setplayerangles(s_warp.angles);
 }

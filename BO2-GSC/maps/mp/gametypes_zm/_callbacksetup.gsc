@@ -11,7 +11,7 @@
 #include maps\mp\gametypes_zm\_hostmigration;
 
 codecallback_startgametype() {
-  if(!isdefined(level.gametypestarted) || !level.gametypestarted) {
+  if(!isDefined(level.gametypestarted) || !level.gametypestarted) {
     [
       [level.callbackstartgametype]
     ]();
@@ -37,21 +37,25 @@ codecallback_playerdisconnect() {
 
 codecallback_hostmigration() {
   println("****CodeCallback_HostMigration****");
+
   [[level.callbackhostmigration]]();
 }
 
 codecallback_hostmigrationsave() {
   println("****CodeCallback_HostMigrationSave****");
+
   [[level.callbackhostmigrationsave]]();
 }
 
 codecallback_prehostmigrationsave() {
   println("****CodeCallback_PreHostMigrationSave****");
+
   [[level.callbackprehostmigrationsave]]();
 }
 
 codecallback_playermigrated() {
   println("****CodeCallback_PlayerMigrated****");
+
   [[level.callbackplayermigrated]]();
 }
 
@@ -88,18 +92,17 @@ codecallback_vehicledamage(einflictor, eattacker, idamage, idflags, smeansofdeat
 }
 
 codecallback_vehicleradiusdamage(einflictor, eattacker, idamage, finnerdamage, fouterdamage, idflags, smeansofdeath, sweapon, vpoint, fradius, fconeanglecos, vconedir, timeoffset) {
-
 }
 
 codecallback_faceeventnotify(notify_msg, ent) {
-  if(isdefined(ent) && isdefined(ent.do_face_anims) && ent.do_face_anims) {
-    if(isdefined(level.face_event_handler) && isdefined(level.face_event_handler.events[notify_msg]))
+  if(isDefined(ent) && isDefined(ent.do_face_anims) && ent.do_face_anims) {
+    if(isDefined(level.face_event_handler) && isDefined(level.face_event_handler.events[notify_msg]))
       ent sendfaceevent(level.face_event_handler.events[notify_msg]);
   }
 }
 
 codecallback_menuresponse(action, arg) {
-  if(!isdefined(level.menuresponsequeue)) {
+  if(!isDefined(level.menuresponsequeue)) {
     level.menuresponsequeue = [];
     level thread menuresponsequeuepump();
   }
@@ -113,7 +116,7 @@ codecallback_menuresponse(action, arg) {
 }
 
 menuresponsequeuepump() {
-  while (true) {
+  while(true) {
     level waittill("menuresponse_queue");
 
     do {
@@ -121,7 +124,7 @@ menuresponsequeuepump() {
       arrayremoveindex(level.menuresponsequeue, 0, 0);
       wait 0.05;
     }
-    while (level.menuresponsequeue.size > 0);
+    while(level.menuresponsequeue.size > 0);
   }
 }
 
@@ -158,6 +161,7 @@ setdefaultcallbacks() {
 
 abortlevel() {
   println("ERROR: Aborting level - gametype is not supported");
+
   level.callbackstartgametype = ::callbackvoid;
   level.callbackplayerconnect = ::callbackvoid;
   level.callbackplayerdisconnect = ::callbackvoid;
@@ -177,5 +181,4 @@ codecallback_glasssmash(pos, dir) {
 }
 
 callbackvoid() {
-
 }

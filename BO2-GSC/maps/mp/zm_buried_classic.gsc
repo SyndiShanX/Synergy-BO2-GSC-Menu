@@ -65,15 +65,17 @@ main() {
   maps\mp\gametypes_zm\_zm_gametype::setup_standard_objects("processing");
   maps\mp\zombies\_zm_game_module::set_current_game_module(level.game_module_standard_index);
 
-  if(!isdefined(level.zombie_include_buildables))
+  if(!isDefined(level.zombie_include_buildables))
     setup_buildables();
 
   level thread maps\mp\zombies\_zm_buildables::think_buildables();
   level thread maps\mp\zm_buried_power::electric_switch();
   level thread maps\mp\zm_buried_maze::maze_think();
+
   level thread setup_temp_sloth_triggers();
   level thread generator_open_sesame();
   level thread fountain_open_sesame();
+
   flag_wait("initial_blackscreen_passed");
   level thread vo_level_start();
   level thread vo_stay_topside();
@@ -97,7 +99,7 @@ main() {
   level.insta_kill_triggers = getentarray("instant_death", "targetname");
   array_thread(level.insta_kill_triggers, ::squashed_death_init, 0);
 
-  if(isdefined(level.sloth)) {
+  if(isDefined(level.sloth)) {
     level.sloth.custom_crawler_pickup_func = ::sloth_crawler_pickup_vulture_fx_correction_func;
     level.sloth.custom_box_move_func = ::sloth_box_move_show_vulture_fx;
   }
@@ -116,14 +118,14 @@ vo_stay_topside() {
   wait 4;
   players_in_start_area = maps\mp\zombies\_zm_zonemgr::get_players_in_zone("zone_start", 1);
 
-  if(isdefined(players_in_start_area) && players_in_start_area.size > 0)
+  if(isDefined(players_in_start_area) && players_in_start_area.size > 0)
     random(players_in_start_area) maps\mp\zombies\_zm_audio::create_and_play_dialog("general", "stay_topside");
 }
 
 vo_fall_down_hole() {
   stables_roof_trigger = spawn("trigger_radius", (-1304, -320, 332), 0, 128, 128);
 
-  while (true) {
+  while(true) {
     stables_roof_trigger waittill("trigger", player);
 
     if(isplayer(player)) {
@@ -136,12 +138,12 @@ vo_fall_down_hole() {
     wait 0.05;
   }
 
-  while (isdefined(player) && (isdefined(player.isspeaking) && player.isspeaking))
+  while(isDefined(player) && (isDefined(player.isspeaking) && player.isspeaking))
     wait 1;
 
   players_in_start_area = maps\mp\zombies\_zm_zonemgr::get_players_in_zone("zone_start", 1);
 
-  if(isdefined(players_in_start_area) && players_in_start_area.size > 0)
+  if(isDefined(players_in_start_area) && players_in_start_area.size > 0)
     random(players_in_start_area) maps\mp\zombies\_zm_audio::create_and_play_dialog("general", "fall_down_hole_response");
 
   stables_roof_trigger delete();
@@ -150,11 +152,11 @@ vo_fall_down_hole() {
 vo_find_town() {
   level waittill("stables_roof_discovered");
 
-  while (true) {
+  while(true) {
     players_in_town_area = maps\mp\zombies\_zm_zonemgr::get_players_in_zone("zone_street_lighteast", 1);
     players_in_town_area = arraycombine(players_in_town_area, maps\mp\zombies\_zm_zonemgr::get_players_in_zone("zone_street_lightwest", 1), 0, 0);
 
-    if(isdefined(players_in_town_area) && players_in_town_area.size > 0) {
+    if(isDefined(players_in_town_area) && players_in_town_area.size > 0) {
       random(players_in_town_area) maps\mp\zombies\_zm_audio::create_and_play_dialog("general", "find_town");
       return;
     }
@@ -167,7 +169,7 @@ generator_oil_lamp_control() {
   lignts_on = 0;
   level.generator_power_states_color = 0;
 
-  while (true) {
+  while(true) {
     wait_for_buildable("oillamp_zm");
     level.generator_is_active = 1;
     level setclientfield("GENERATOR_POWER_STATES_COLOR", level.generator_power_states_color);
@@ -175,13 +177,13 @@ generator_oil_lamp_control() {
     level thread reset_generator_lerp_val();
     exploder(300);
 
-    if(isdefined(level.oil_lamp_power)) {
+    if(isDefined(level.oil_lamp_power)) {
       oil_lamp_power = level.oil_lamp_power;
       level.oil_lamp_power = undefined;
     } else
       oil_lamp_power = 1.0;
 
-    if(!isdefined(level.generator_buildable_full_power_time))
+    if(!isDefined(level.generator_buildable_full_power_time))
       level.generator_buildable_full_power_time = 300;
 
     full_power_wait_time = level.generator_buildable_full_power_time * oil_lamp_power;
@@ -225,7 +227,7 @@ lerp_generator_lights(total_time, start_val, end_val) {
   lerp_step = 1.0;
   last_lerp = start_time;
 
-  while (true) {
+  while(true) {
     time = gettime();
 
     if(time >= end_time) {
@@ -260,7 +262,7 @@ collapsing_holes_init() {
     parts = getentarray(trig.target, "targetname");
 
     foreach(part in parts) {
-      if(isdefined(part.script_noteworthy) && part.script_noteworthy == "clip") {
+      if(isDefined(part.script_noteworthy) && part.script_noteworthy == "clip") {
         trig.clip = part;
         continue;
       }
@@ -268,16 +270,16 @@ collapsing_holes_init() {
       trig.boards = part;
     }
 
-    if(isdefined(trig.script_string))
+    if(isDefined(trig.script_string))
       clientfieldnames[trig.script_string] = 1;
   }
 
   keys = getarraykeys(clientfieldnames);
 
-  for (i = 0; i < keys.size; i++)
+  for(i = 0; i < keys.size; i++)
     registerclientfield("world", keys[i], 12000, 1, "int");
 
-  if(isdefined(trigs)) {
+  if(isDefined(trigs)) {
     array_thread(trigs, ::collapsing_holes);
     array_thread(trigs, ::tunnel_breach);
   }
@@ -286,24 +288,25 @@ collapsing_holes_init() {
 collapsing_holes() {
   self endon("breached");
 
-  if(!isdefined(self) && !isdefined(self.boards)) {
+  if(!isDefined(self) && !isDefined(self.boards)) {
     return;
   }
   self waittill("trigger", who);
 
   if(is_player_valid(who)) {
-    if(isdefined(self.script_string)) {
+    if(isDefined(self.script_string)) {
       level setclientfield(self.script_string, 1);
       note = "none";
 
-      if(isdefined(self.script_noteworthy))
+      if(isDefined(self.script_noteworthy))
         note = self.script_noteworthy;
 
       println("***!!!*** Set client field " + self.script_string + " Associated script_noteworthy " + note);
+
     }
 
-    if(isdefined(self.boards)) {
-      if(isdefined(self.script_int))
+    if(isDefined(self.boards)) {
+      if(isDefined(self.script_int))
         exploder(self.script_int);
       else
         playfx(level._effect["wood_chunk_destory"], self.boards.origin);
@@ -311,7 +314,7 @@ collapsing_holes() {
       self thread sndcollapsing();
       self.boards delete();
 
-      if(isdefined(self.clip))
+      if(isDefined(self.clip))
         self.clip delete();
 
       self notify("breached");
@@ -321,7 +324,7 @@ collapsing_holes() {
 }
 
 sndcollapsing() {
-  if(!isdefined(self.script_noteworthy)) {
+  if(!isDefined(self.script_noteworthy)) {
     return;
   }
   if(self.script_noteworthy == "hole_small_2")
@@ -336,38 +339,38 @@ tunnel_breach() {
   level endon("intermission");
   self endon("breached");
 
-  if(!isdefined(self) && !isdefined(self.boards)) {
+  if(!isDefined(self) && !isDefined(self.boards)) {
     return;
   }
   self.boards.health = 99999;
   self.boards setcandamage(1);
   self.boards.damage_state = 0;
 
-  while (true) {
+  while(true) {
     self.boards waittill("damage", amount, attacker, direction, point, dmg_type, modelname, tagname, partname, weaponname);
 
-    if(isdefined(weaponname) && (weaponname == "emp_grenade_zm" || weaponname == "ray_gun_zm" || weaponname == "ray_gun_upgraded_zm")) {
+    if(isDefined(weaponname) && (weaponname == "emp_grenade_zm" || weaponname == "ray_gun_zm" || weaponname == "ray_gun_upgraded_zm")) {
       continue;
     }
-    if(isdefined(amount) && amount <= 1) {
+    if(isDefined(amount) && amount <= 1) {
       continue;
     }
     if(isplayer(attacker) && (dmg_type == "MOD_PROJECTILE" || dmg_type == "MOD_PROJECTILE_SPLASH" || dmg_type == "MOD_EXPLOSIVE" || dmg_type == "MOD_EXPLOSIVE_SPLASH" || dmg_type == "MOD_GRENADE" || dmg_type == "MOD_GRENADE_SPLASH")) {
       if(self.boards.damage_state == 0)
         self.boards.damage_state = 1;
 
-      if(isdefined(self.script_int))
+      if(isDefined(self.script_int))
         exploder(self.script_int);
       else
         playfx(level._effect["wood_chunk_destory"], self.origin);
 
-      if(isdefined(self.script_string))
+      if(isDefined(self.script_string))
         level setclientfield(self.script_string, 1);
 
-      if(isdefined(self.script_flag))
+      if(isDefined(self.script_flag))
         flag_set(self.script_flag);
 
-      if(isdefined(self.clip)) {
+      if(isDefined(self.clip)) {
         self.clip connectpaths();
         self.clip delete();
       }
@@ -384,10 +387,10 @@ quick_revive_solo_watch() {
   machine_triggers = getentarray("vending_revive", "target");
   machine_trigger = machine_triggers[0];
 
-  while (true) {
+  while(true) {
     level waittill_any("solo_revive", "revive_off", "revive_hide");
 
-    if(isdefined(machine_trigger.machine))
+    if(isDefined(machine_trigger.machine))
       machine_trigger.machine maps\mp\zombies\_zm_equip_headchopper::destroyheadchopperstouching();
   }
 }
@@ -421,21 +424,21 @@ sliding_bookcase_init() {
 }
 
 sliding_bookcase_think() {
-  while (true) {
+  while(true) {
     self waittill("trigger", who);
 
-    if(isdefined(who.bookcase_entering_callback))
+    if(isDefined(who.bookcase_entering_callback))
       who thread[[who.bookcase_entering_callback]](self.doors[0]);
 
     self playsound("zmb_sliding_bookcase_open");
 
-    if(isdefined(self.doors[0].door_moving) && self.doors[0].door_moving || isdefined(self._door_open) && self._door_open) {
+    if(isDefined(self.doors[0].door_moving) && self.doors[0].door_moving || isDefined(self._door_open) && self._door_open) {
       continue;
     }
     foreach(piece in self.doors)
     piece thread sliding_bookcase_activate(1);
 
-    while (isdefined(self.doors[0].door_moving) && self.doors[0].door_moving || self sliding_bookcase_occupied())
+    while(isDefined(self.doors[0].door_moving) && self.doors[0].door_moving || self sliding_bookcase_occupied())
       wait 0.1;
 
     foreach(piece in self.doors)
@@ -447,19 +450,17 @@ sliding_bookcase_think() {
 }
 
 sliding_bookcase_activate(open) {
-  if(!isdefined(open))
+  if(!isDefined(open))
     open = 1;
 
-  if(isdefined(self.door_moving)) {
+  if(isDefined(self.door_moving)) {
     return;
   }
   self.door_moving = 1;
 
-  if(isdefined(self.script_sound)) {
+  if(isDefined(self.script_sound)) {
     if(open) {
-
     } else {
-
     }
   }
 
@@ -473,19 +474,19 @@ sliding_bookcase_activate(open) {
 
   switch (self.script_string) {
     case "move":
-      if(isdefined(self.script_vector)) {
+      if(isDefined(self.script_vector)) {
         vector = vectorscale(self.script_vector, scale);
         movetopos = self.origin;
 
         if(open) {
-          if(isdefined(self.startpos))
+          if(isDefined(self.startpos))
             movetopos = self.startpos + vector;
           else
             movetopos = self.origin + vector;
 
           self._door_open = 1;
         } else {
-          if(isdefined(self.startpos))
+          if(isDefined(self.startpos))
             movetopos = self.startpos;
           else
             movetopos = self.origin - vector;
@@ -533,7 +534,7 @@ sliding_bookcase_occupied() {
   }
 
   if(is_occupied > 0) {
-    if(isdefined(self.doors[0].startpos) && self.doors[0].startpos == self.doors[0].origin) {
+    if(isDefined(self.doors[0].startpos) && self.doors[0].startpos == self.doors[0].origin) {
       foreach(piece in self.doors)
       piece thread sliding_bookcase_activate(1);
 
@@ -547,11 +548,11 @@ sliding_bookcase_occupied() {
 }
 
 sliding_bookcase_wobble(model) {
-  while (true) {
-    if(isdefined(self.doors[0].door_moving) && self.doors[0].door_moving) {
+  while(true) {
+    if(isDefined(self.doors[0].door_moving) && self.doors[0].door_moving) {
       model rotateto((randomfloatrange(-2.5, 2.5), randomfloatrange(-0.5, 0.5), randomfloatrange(-0.5, 0.5)), 0.5, 0.125, 0.125);
       wait(0.5 - 0.125);
-    } else if(isdefined(model.startang) && model.angles != model.startang) {
+    } else if(isDefined(model.startang) && model.angles != model.startang) {
       model rotateto(model.startang, 0.5, 0.125, 0.125);
       model waittill("rotatedone");
     } else
@@ -562,7 +563,7 @@ sliding_bookcase_wobble(model) {
 dart_game_init() {
   dart_board = getentarray("dart_board", "targetname");
 
-  if(!isdefined(dart_board)) {
+  if(!isDefined(dart_board)) {
     return;
   }
   foreach(piece in dart_board)
@@ -572,10 +573,10 @@ dart_game_init() {
 dart_game_piece_think() {
   self setcandamage(1);
 
-  while (true) {
+  while(true) {
     self waittill("damage", amount, inflictor, direction, point, type, tagname, modelname, partname, weaponname, idflags);
 
-    if(isdefined(inflictor) && isplayer(inflictor) && dart_game_is_valid_weapon(weaponname)) {
+    if(isDefined(inflictor) && isplayer(inflictor) && dart_game_is_valid_weapon(weaponname)) {
       if(!inflictor dart_game_is_award_valid()) {
         continue;
       }
@@ -608,8 +609,8 @@ dart_game_is_valid_weapon(weaponname) {
 }
 
 dart_game_is_award_valid() {
-  if(isdefined(self.dart_round) && self.dart_round == level.round_number) {
-    if(isdefined(self.dart_round_score) && self.dart_round_score >= 200)
+  if(isDefined(self.dart_round) && self.dart_round == level.round_number) {
+    if(isDefined(self.dart_round_score) && self.dart_round_score >= 200)
       return false;
   } else {
     self.dart_round = level.round_number;
@@ -638,11 +639,12 @@ pianothink() {
   self sethintstring(&"NULL_EMPTY");
   self setcursorhint("HINT_NOICON");
 
-  for (;;) {
+  for(;;) {
     self waittill("trigger", who);
 
     if(who istouching(self)) {
       iprintlnbold("Playing Piano Key: " + note);
+
       self playsound("zmb_piano_" + note);
     }
   }
@@ -651,12 +653,13 @@ pianothink() {
 pianodamagethink() {
   noise_level = array("soft", "loud");
 
-  for (;;) {
+  for(;;) {
     self waittill("trigger", who);
     type = random(noise_level);
 
-    if(isdefined(who) && isplayer(who)) {
+    if(isDefined(who) && isplayer(who)) {
       iprintlnbold("Piano Damage: " + type);
+
       self playsound("zmb_piano_damage_" + type);
     }
   }
@@ -666,7 +669,7 @@ zm_treasure_chest_init() {
   done = 0;
   level.maze_chests = [];
 
-  while (isdefined(level.chests) && !done) {
+  while(isDefined(level.chests) && !done) {
     done = 1;
 
     foreach(chest in level.chests) {
@@ -682,12 +685,12 @@ zm_treasure_chest_init() {
   maps\mp\zombies\_zm_magicbox::init_starting_chest_location("start_chest");
   trig = getent("maze_box_trigger", "targetname");
 
-  if(isdefined(trig)) {
+  if(isDefined(trig)) {
     trig waittill("trigger", who);
 
     if(is_player_valid(who)) {
-      if(isdefined(level.maze_chests) && level.maze_chests.size > 0) {
-        for (i = 0; i < level.maze_chests.size; i++)
+      if(isDefined(level.maze_chests) && level.maze_chests.size > 0) {
+        for(i = 0; i < level.maze_chests.size; i++)
           level.chests[level.chests.size] = level.maze_chests[i];
       }
 
@@ -697,10 +700,11 @@ zm_treasure_chest_init() {
 }
 
 generator_open_sesame() {
-  while (true) {
+  while(true) {
     level waittill_any("open_sesame", "generator_lights_on");
     level.oil_lamp_power = 60.0;
   }
+
 }
 
 fountain_open_sesame() {
@@ -728,15 +732,15 @@ watch_opensesame() {
 }
 
 open_barricade(script_flag, target) {
-  if(isdefined(script_flag) && level flag_exists(script_flag))
+  if(isDefined(script_flag) && level flag_exists(script_flag))
     flag_set(script_flag);
 
-  if(isdefined(target)) {
+  if(isDefined(target)) {
     barricades = getentarray(target, "targetname");
 
-    if(isdefined(barricades) && barricades.size) {
+    if(isDefined(barricades) && barricades.size) {
       foreach(barricade in barricades) {
-        if(isdefined(self.func_no_delete)) {
+        if(isDefined(self.func_no_delete)) {
           barricade[[self.func_no_delete]]();
           continue;
         }
@@ -746,14 +750,13 @@ open_barricade(script_flag, target) {
     }
   }
 
-  if(isdefined(self.func_no_delete))
+  if(isDefined(self.func_no_delete))
     self[[self.func_no_delete]]();
   else
     self delete();
 }
 
 perk_vulture_custom_scripts() {
-
 }
 
 zm_traversal_override(traversealias) {
@@ -762,13 +765,13 @@ zm_traversal_override(traversealias) {
   if(is_true(self.is_sloth)) {
     node = self getnegotiationstartnode();
 
-    if(isdefined(node)) {
-      if(isdefined(self.buildable_model)) {
-        if(isdefined(node.script_parameters))
+    if(isDefined(node)) {
+      if(isDefined(self.buildable_model)) {
+        if(isDefined(node.script_parameters))
           return node.script_parameters;
       }
 
-      if(isdefined(node.script_string))
+      if(isDefined(node.script_string))
         return node.script_string;
     }
   }
@@ -790,29 +793,31 @@ mantle_over_40_move_speed_override() {
       traversealias = "barrier_walk_floating";
       break;
     default:
+
       assertmsg("Zombie move speed of '" + self.zombie_move_speed + "' is not supported for mantle_over_40.");
+
   }
 
   return traversealias;
 }
 
 hide_boxes_for_minigame() {
-  if(isdefined(level.chests) && isdefined(level.chest_index)) {
+  if(isDefined(level.chests) && isDefined(level.chest_index)) {
     chest = level.chests[level.chest_index];
 
-    if(!isdefined(chest)) {
+    if(!isDefined(chest)) {
       return;
     }
-    if(isdefined(chest.unitrigger_stub))
+    if(isDefined(chest.unitrigger_stub))
       thread maps\mp\zombies\_zm_unitrigger::unregister_unitrigger(chest.unitrigger_stub);
 
-    if(isdefined(chest.pandora_light))
+    if(isDefined(chest.pandora_light))
       chest.pandora_light delete();
 
     chest.hidden = 1;
 
-    if(isdefined(chest.zbarrier)) {
-      for (i = 0; i < chest.zbarrier getnumzbarrierpieces(); i++)
+    if(isDefined(chest.zbarrier)) {
+      for(i = 0; i < chest.zbarrier getnumzbarrierpieces(); i++)
         chest.zbarrier hidezbarrierpiece(i);
 
       chest.zbarrier notify("zbarrier_state_change");
@@ -826,7 +831,7 @@ hide_boxes_for_minigame() {
 unhide_boxes_for_minigame() {
   chest = level.chests[level.chest_index];
 
-  if(!isdefined(chest)) {
+  if(!isDefined(chest)) {
     return;
   }
   chest thread[[level.pandora_fx_func]]();
@@ -838,8 +843,9 @@ unhide_boxes_for_minigame() {
 store_worldstate_for_minigame() {
   flag_set("sq_minigame_active");
 
-  if(isdefined(level._world_state_stored_for_minigame)) {
+  if(isDefined(level._world_state_stored_for_minigame)) {
     assertmsg("store_worldstate_for_minigame called more than once.");
+
     return;
   }
 
@@ -851,8 +857,9 @@ store_worldstate_for_minigame() {
 }
 
 restore_worldstate_for_minigame() {
-  if(!isdefined(level._world_state_stored_for_minigame)) {
+  if(!isDefined(level._world_state_stored_for_minigame)) {
     assertmsg("restore_worldstate_for_minigame called with no prior call to store_worldstate_for_minigame.");
+
     return;
   }
 
@@ -931,16 +938,16 @@ minigame_blockers_disable() {
   a_sloth_barriers = get_minigame_sloth_barriers();
 
   foreach(barrier in a_sloth_barriers) {
-    if(isdefined(barrier.target)) {
+    if(isDefined(barrier.target)) {
       a_pieces = getentarray(barrier.target, "targetname");
 
       foreach(piece in a_pieces) {
-        if(isdefined(piece.is_hidden) && !piece.is_hidden)
+        if(isDefined(piece.is_hidden) && !piece.is_hidden)
           piece maps\mp\zombies\_zm_ai_sloth::hide_sloth_barrier();
       }
     }
 
-    if(isdefined(barrier.is_hidden) && !barrier.is_hidden)
+    if(isDefined(barrier.is_hidden) && !barrier.is_hidden)
       barrier maps\mp\zombies\_zm_ai_sloth::hide_sloth_barrier();
   }
 }
@@ -963,16 +970,16 @@ minigame_blockers_enable() {
   a_sloth_barriers = get_minigame_sloth_barriers();
 
   foreach(barrier in a_sloth_barriers) {
-    if(isdefined(barrier.target)) {
+    if(isDefined(barrier.target)) {
       a_pieces = getentarray(barrier.target, "targetname");
 
       foreach(piece in a_pieces) {
-        if(isdefined(piece.is_hidden) && piece.is_hidden)
+        if(isDefined(piece.is_hidden) && piece.is_hidden)
           piece maps\mp\zombies\_zm_ai_sloth::unhide_sloth_barrier();
       }
     }
 
-    if(isdefined(barrier.is_hidden) && barrier.is_hidden)
+    if(isDefined(barrier.is_hidden) && barrier.is_hidden)
       barrier maps\mp\zombies\_zm_ai_sloth::unhide_sloth_barrier();
   }
 }
@@ -988,8 +995,8 @@ get_minigame_sloth_barriers() {
     else
       a_blocked_barrier_list = [];
 
-    for (i = 0; i < a_sloth_barriers.size; i++) {
-      if(isdefined(a_sloth_barriers[i].script_location) && isinarray(a_blocked_barrier_list, a_sloth_barriers[i].script_location))
+    for(i = 0; i < a_sloth_barriers.size; i++) {
+      if(isDefined(a_sloth_barriers[i].script_location) && isinarray(a_blocked_barrier_list, a_sloth_barriers[i].script_location))
         a_barriers_filtered[a_barriers_filtered.size] = a_sloth_barriers[i];
     }
   }
@@ -1045,17 +1052,17 @@ get_minigame_clip_brushes(str_name_append) {
 }
 
 _append_name(str_name, str_name_append) {
-  if(isdefined(str_name_append))
+  if(isDefined(str_name_append))
     str_name = str_name + "_" + str_name_append;
 
   return str_name;
 }
 
 blocker_model_promote() {
-  assert(isdefined(self.model), "model not set for minigame blocker at " + self.origin);
+  assert(isDefined(self.model), "model not set for minigame blocker at " + self.origin);
   m_blocker = spawn("script_model", self.origin + vectorscale((0, 0, -1), 100.0));
 
-  if(!isdefined(self.angles))
+  if(!isDefined(self.angles))
     self.angles = (0, 0, 0);
 
   m_blocker.angles = self.angles;
@@ -1071,20 +1078,20 @@ blocker_model_remove() {
   self movez(-100, 5, 0.5, 0.5);
   self waittill("movedone");
 
-  if(isdefined(self))
+  if(isDefined(self))
     self delete();
 }
 
 toggle_doors_along_richtofen_street(b_should_close) {
-  if(!isdefined(b_should_close))
+  if(!isDefined(b_should_close))
     b_should_close = 1;
 
   a_door_names = array("general_store_door1");
   a_doors = getentarray("zombie_door", "targetname");
 
-  for (i = 0; i < a_door_names.size; i++) {
-    for (j = 0; j < a_doors.size; j++) {
-      if(isdefined(a_doors[j].script_flag) && a_doors[j].script_flag == a_door_names[i]) {
+  for(i = 0; i < a_door_names.size; i++) {
+    for(j = 0; j < a_doors.size; j++) {
+      if(isDefined(a_doors[j].script_flag) && a_doors[j].script_flag == a_door_names[i]) {
         if(b_should_close) {
           a_doors[j] thread close_open_door();
           continue;
@@ -1097,15 +1104,15 @@ toggle_doors_along_richtofen_street(b_should_close) {
 }
 
 close_open_door() {
-  if(isdefined(self._door_open) && self._door_open || isdefined(self.has_been_opened) && self.has_been_opened) {
-    if(isdefined(self.is_moving) && self.is_moving)
+  if(isDefined(self._door_open) && self._door_open || isDefined(self.has_been_opened) && self.has_been_opened) {
+    if(isDefined(self.is_moving) && self.is_moving)
       self waittill_either("movedone", "rotatedone");
 
-    for (i = 0; i < self.doors.size; i++) {
-      if(isdefined(self.doors[i].og_angles)) {
+    for(i = 0; i < self.doors.size; i++) {
+      if(isDefined(self.doors[i].og_angles)) {
         self.doors[i].saved_angles = self.doors[i].angles;
 
-        if(isdefined(self.doors[i].script_string) && self.doors[i].script_string == "rotate")
+        if(isDefined(self.doors[i].script_string) && self.doors[i].script_string == "rotate")
           self.doors[i] rotateto(self.doors[i].og_angles, 0.05, 0, 0);
 
         self.doors[i] solid();
@@ -1121,16 +1128,16 @@ close_open_door() {
 }
 
 open_closed_door(bignoreminigameflag) {
-  if(!isdefined(bignoreminigameflag))
+  if(!isDefined(bignoreminigameflag))
     bignoreminigameflag = 0;
 
-  if(bignoreminigameflag || isdefined(self.closed_by_minigame) && self.closed_by_minigame) {
-    if(isdefined(self.is_moving) && self.is_moving)
+  if(bignoreminigameflag || isDefined(self.closed_by_minigame) && self.closed_by_minigame) {
+    if(isDefined(self.is_moving) && self.is_moving)
       self waittill_either("movedone", "rotatedone");
 
-    for (i = 0; i < self.doors.size; i++) {
-      if(bignoreminigameflag || isdefined(self.doors[i].closed_by_minigame) && self.doors[i].closed_by_minigame) {
-        if(isdefined(self.doors[i].script_string) && self.doors[i].script_string == "rotate")
+    for(i = 0; i < self.doors.size; i++) {
+      if(bignoreminigameflag || isDefined(self.doors[i].closed_by_minigame) && self.doors[i].closed_by_minigame) {
+        if(isDefined(self.doors[i].script_string) && self.doors[i].script_string == "rotate")
           self.doors[i] rotateto(self.doors[i].script_angles, 1, 0, 0);
 
         self.doors[i] connectpaths();
@@ -1147,14 +1154,14 @@ open_closed_door(bignoreminigameflag) {
 }
 
 toggle_door_triggers(b_allow_use) {
-  if(!isdefined(b_allow_use))
+  if(!isDefined(b_allow_use))
     b_allow_use = 1;
 
   a_triggers = getentarray("zombie_door", "targetname");
 
-  for (i = 0; i < a_triggers.size; i++) {
+  for(i = 0; i < a_triggers.size; i++) {
     if(b_allow_use) {
-      if(isdefined(a_triggers[i].minigame_disabled) && a_triggers[i].minigame_disabled) {
+      if(isDefined(a_triggers[i].minigame_disabled) && a_triggers[i].minigame_disabled) {
         a_triggers[i] trigger_on();
         a_triggers[i].minigame_disabled = undefined;
       }
@@ -1171,30 +1178,30 @@ minigame_blockers_precache() {
   a_structs = get_minigame_blocker_structs();
 
   foreach(struct in a_structs) {
-    assert(isdefined(struct.model), "blocker struct is missing model at " + struct.origin);
+    assert(isDefined(struct.model), "blocker struct is missing model at " + struct.origin);
     precachemodel(struct.model);
   }
 }
 
 buried_set_start_area_lighting() {
-  if(isdefined(self.underground_lighting))
+  if(isDefined(self.underground_lighting))
     self setclientfieldtoplayer("clientfield_underground_lighting", 0);
 
   self.underground_lighting = undefined;
 }
 
 squashed_death_init(kill_if_falling) {
-  while (true) {
+  while(true) {
     self waittill("trigger", who);
 
-    if(!(isdefined(who.insta_killed) && who.insta_killed)) {
+    if(!(isDefined(who.insta_killed) && who.insta_killed)) {
       if(isplayer(who))
         who thread insta_kill_player(1, kill_if_falling);
       else if(isai(who)) {
         who dodamage(who.health + 100, who.origin);
         who.insta_killed = 1;
 
-        if(!(isdefined(who.has_been_damaged_by_player) && who.has_been_damaged_by_player))
+        if(!(isDefined(who.has_been_damaged_by_player) && who.has_been_damaged_by_player))
           level.zombie_total++;
       }
     }
@@ -1202,7 +1209,7 @@ squashed_death_init(kill_if_falling) {
 }
 
 classic_player_damage_callback(e_inflictor, e_attacker, n_damage, n_dflags, str_means_of_death, str_weapon, v_point, v_dir, str_hit_loc, psoffsettime, b_damage_from_underneath, n_model_index, str_part_name) {
-  if(isdefined(self.is_in_fountain_transport_trigger) && self.is_in_fountain_transport_trigger && str_means_of_death == "MOD_FALLING")
+  if(isDefined(self.is_in_fountain_transport_trigger) && self.is_in_fountain_transport_trigger && str_means_of_death == "MOD_FALLING")
     return 0;
 
   return n_damage;
@@ -1211,10 +1218,10 @@ classic_player_damage_callback(e_inflictor, e_attacker, n_damage, n_dflags, str_
 insta_kill_player(perks_can_respawn_player, kill_if_falling) {
   self endon("disconnect");
 
-  if(isdefined(self.is_in_fountain_transport_trigger) && self.is_in_fountain_transport_trigger) {
+  if(isDefined(self.is_in_fountain_transport_trigger) && self.is_in_fountain_transport_trigger) {
     return;
   }
-  if(isdefined(perks_can_respawn_player) && perks_can_respawn_player == 0) {
+  if(isDefined(perks_can_respawn_player) && perks_can_respawn_player == 0) {
     if(self hasperk("specialty_quickrevive"))
       self unsetperk("specialty_quickrevive");
 
@@ -1224,10 +1231,10 @@ insta_kill_player(perks_can_respawn_player, kill_if_falling) {
 
   self maps\mp\zombies\_zm_buildables::player_return_piece_to_original_spawn();
 
-  if(isdefined(self.insta_killed) && self.insta_killed) {
+  if(isDefined(self.insta_killed) && self.insta_killed) {
     return;
   }
-  if(isdefined(self.ignore_insta_kill)) {
+  if(isDefined(self.ignore_insta_kill)) {
     self.disable_chugabud_corpse = 1;
     return;
   }
@@ -1248,11 +1255,11 @@ insta_kill_player(perks_can_respawn_player, kill_if_falling) {
       in_last_stand = 1;
 
     if(getnumconnectedplayers() == 1) {
-      if(isdefined(self.lives) && self.lives > 0) {
+      if(isDefined(self.lives) && self.lives > 0) {
         self.waiting_to_revive = 1;
         found_node = get_insta_kill_spawn_point_from_nodes(self.origin, 400, 2000, 1000, 1);
 
-        if(isdefined(found_node) && found_node) {
+        if(isDefined(found_node) && found_node) {
           v_point = level.chugabud_spawn_struct.origin;
           v_angles = self.angles;
         } else {
@@ -1297,21 +1304,21 @@ insta_kill_player(perks_can_respawn_player, kill_if_falling) {
 }
 
 get_insta_kill_spawn_point_from_nodes(v_origin, min_radius, max_radius, max_height, ignore_targetted_nodes) {
-  if(!isdefined(level.chugabud_spawn_struct))
+  if(!isDefined(level.chugabud_spawn_struct))
     level.chugabud_spawn_struct = spawnstruct();
 
   found_node = undefined;
   a_nodes = getnodesinradiussorted(v_origin, max_radius, min_radius, max_height, "pathnodes");
 
-  if(isdefined(a_nodes) && a_nodes.size > 0) {
+  if(isDefined(a_nodes) && a_nodes.size > 0) {
     a_player_volumes = getentarray("player_volume", "script_noteworthy");
     index = a_nodes.size - 1;
 
-    for (i = index; i >= 0; i--) {
+    for(i = index; i >= 0; i--) {
       n_node = a_nodes[i];
 
       if(ignore_targetted_nodes == 1) {
-        if(isdefined(n_node.target))
+        if(isDefined(n_node.target))
           continue;
       }
 
@@ -1324,7 +1331,7 @@ get_insta_kill_spawn_point_from_nodes(v_origin, min_radius, max_radius, max_heig
           if(trace["fraction"] < 1) {
             override_abort = 0;
 
-            if(isdefined(level._chugabud_reject_node_override_func))
+            if(isDefined(level._chugabud_reject_node_override_func))
               override_abort = [
                 [level._chugabud_reject_node_override_func]
               ](v_origin, n_node);
@@ -1339,7 +1346,7 @@ get_insta_kill_spawn_point_from_nodes(v_origin, min_radius, max_radius, max_heig
     }
   }
 
-  if(isdefined(found_node)) {
+  if(isDefined(found_node)) {
     level.chugabud_spawn_struct.origin = found_node.origin;
     v_dir = vectornormalize(v_origin - level.chugabud_spawn_struct.origin);
     level.chugabud_spawn_struct.angles = vectortoangles(v_dir);
@@ -1350,7 +1357,7 @@ get_insta_kill_spawn_point_from_nodes(v_origin, min_radius, max_radius, max_heig
 }
 
 is_player_killable(player, checkignoremeflag) {
-  if(!isdefined(player))
+  if(!isDefined(player))
     return false;
 
   if(!isalive(player))
@@ -1365,10 +1372,10 @@ is_player_killable(player, checkignoremeflag) {
   if(player.sessionstate == "intermission")
     return false;
 
-  if(isdefined(self.intermission) && self.intermission)
+  if(isDefined(self.intermission) && self.intermission)
     return false;
 
-  if(isdefined(checkignoremeflag) && player.ignoreme)
+  if(isDefined(checkignoremeflag) && player.ignoreme)
     return false;
 
   return true;
@@ -1377,14 +1384,14 @@ is_player_killable(player, checkignoremeflag) {
 buried_set_underground_lighting() {
   e_info_volume = getent("flashlight_found_info_volume", "targetname");
 
-  while (true) {
+  while(true) {
     a_players = getplayers();
 
-    if(isdefined(a_players)) {
-      for (i = 0; i < a_players.size; i++) {
+    if(isDefined(a_players)) {
+      for(i = 0; i < a_players.size; i++) {
         player = a_players[i];
 
-        if(!isdefined(player.underground_lighting)) {
+        if(!isDefined(player.underground_lighting)) {
           if(player istouching(e_info_volume)) {
             player setclientfieldtoplayer("clientfield_underground_lighting", 1);
             player.underground_lighting = 1;
@@ -1403,12 +1410,12 @@ lsat_trigger_tweak() {
   candidate_list = [];
 
   foreach(zone in level.zones) {
-    if(isdefined(zone.unitrigger_stubs))
+    if(isDefined(zone.unitrigger_stubs))
       candidate_list = arraycombine(candidate_list, zone.unitrigger_stubs, 1, 0);
   }
 
   foreach(stub in candidate_list) {
-    if(isdefined(stub.weapon_upgrade) && stub.weapon_upgrade == "lsat_zm")
+    if(isDefined(stub.weapon_upgrade) && stub.weapon_upgrade == "lsat_zm")
       stub thread hide_wallbuy();
   }
 }
@@ -1416,7 +1423,7 @@ lsat_trigger_tweak() {
 hide_wallbuy() {
   level waittill("lsat_purchased");
 
-  if(isdefined(level.catwalk_collapsed) && level.catwalk_collapsed) {
+  if(isDefined(level.catwalk_collapsed) && level.catwalk_collapsed) {
     return;
   }
   maps\mp\zombies\_zm_unitrigger::unregister_unitrigger(self);
@@ -1425,7 +1432,7 @@ hide_wallbuy() {
 }
 
 sloth_crawler_pickup_vulture_fx_correction_func() {
-  if(isdefined(self.is_stink_zombie) && self.is_stink_zombie && isdefined(self.stink_ent)) {
+  if(isDefined(self.is_stink_zombie) && self.is_stink_zombie && isDefined(self.stink_ent)) {
     self maps\mp\zombies\_zm_perk_vulture::vulture_clientfield_actor_clear("vulture_stink_trail_fx");
     e_temp = self.stink_ent;
     e_temp.origin = self.origin + vectorscale((0, 0, -1), 10000.0);
@@ -1435,7 +1442,7 @@ sloth_crawler_pickup_vulture_fx_correction_func() {
     e_temp.origin = self gettagorigin("J_SpineLower");
     e_temp linkto(self, "J_SpineLower");
 
-    while (isalive(self))
+    while(isalive(self))
       wait_network_frame();
 
     e_temp unlink();
@@ -1444,6 +1451,6 @@ sloth_crawler_pickup_vulture_fx_correction_func() {
 }
 
 sloth_box_move_show_vulture_fx(b_show_fx) {
-  if(isdefined(level.chests) && level.chests.size > 0 && isdefined(level.chest_index))
+  if(isDefined(level.chests) && level.chests.size > 0 && isDefined(level.chest_index))
     level.chests[level.chest_index].zbarrier maps\mp\zombies\_zm_perk_vulture::vulture_perk_shows_mystery_box(b_show_fx);
 }

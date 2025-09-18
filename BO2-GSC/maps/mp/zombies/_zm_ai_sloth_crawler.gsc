@@ -14,7 +14,7 @@
 crawler_condition() {
   zombies = get_round_enemy_array();
 
-  for (i = 0; i < zombies.size; i++) {
+  for(i = 0; i < zombies.size; i++) {
     zombie = zombies[i];
 
     if(!is_true(zombie.has_legs)) {
@@ -23,7 +23,7 @@ crawler_condition() {
       if(dist < 32400) {
         self.crawler = zombie;
 
-        if(isdefined(level.sloth.custom_crawler_pickup_func))
+        if(isDefined(level.sloth.custom_crawler_pickup_func))
           self.crawler thread[[level.sloth.custom_crawler_pickup_func]]();
 
         return true;
@@ -46,7 +46,7 @@ crawler_action() {
   sloth_goal = getstartorigin(self.crawler.origin, self.crawler.angles, anim_id);
   sloth_offset = distance(sloth_goal, self.crawler.origin);
 
-  while (true) {
+  while(true) {
     if(self sloth_is_traversing()) {
       wait 0.1;
       continue;
@@ -65,7 +65,7 @@ crawler_action() {
       self setgoalpos(start_pos);
     }
 
-    if(!isdefined(self.crawler) || self.crawler.health <= 0) {
+    if(!isDefined(self.crawler) || self.crawler.health <= 0) {
       self.context_done = 1;
       return;
     }
@@ -109,7 +109,7 @@ crawler_action() {
   roam = array_randomize(level.roam_points);
   roam_index = 0;
 
-  while (true) {
+  while(true) {
     if(is_true(self.release_crawler)) {
       break;
     }
@@ -177,7 +177,7 @@ crawler_action() {
   self.crawler animscripted(self.origin, self.angles, crawler_kill);
   maps\mp\animscripts\zm_shared::donotetracks("sloth_kill_crawler_anim");
 
-  if(isdefined(self.crawler)) {
+  if(isDefined(self.crawler)) {
     self.crawler dodamage(self.crawler.health * 10, self.crawler.origin);
     self.crawler playsound("zmb_ai_sloth_attack_impact");
   }
@@ -191,17 +191,17 @@ crawler_action() {
 watch_sloth_on_exit_side() {
   self endon("death");
 
-  while (true) {
+  while(true) {
     if(is_true(self.context_done)) {
       return;
     }
     self.on_exit_side = 0;
     player = self.candy_player;
 
-    if(isdefined(player) && is_true(player.is_in_ghost_zone)) {
+    if(isDefined(player) && is_true(player.is_in_ghost_zone)) {
       name = player.current_ghost_room_name;
 
-      if(isdefined(name)) {
+      if(isDefined(name)) {
         room = level.ghost_rooms[name];
 
         if(is_true(room.to_maze)) {
@@ -221,14 +221,14 @@ watch_sloth_on_exit_side() {
 watch_sloth_on_same_side() {
   self endon("death");
 
-  while (true) {
+  while(true) {
     if(is_true(self.context_done)) {
       return;
     }
     self.on_same_side = 0;
     player = self.candy_player;
 
-    if(isdefined(player)) {
+    if(isDefined(player)) {
       if(self maps\mp\zombies\_zm_ai_sloth::sloth_behind_mansion()) {
         if(player maps\mp\zombies\_zm_ai_sloth::behind_mansion_zone())
           self.on_same_side = 1;
@@ -243,7 +243,7 @@ watch_sloth_on_same_side() {
 sloth_move_to_same_side() {
   self endon("death");
 
-  if(isdefined(self.teleport_time)) {
+  if(isDefined(self.teleport_time)) {
     if(gettime() - self.teleport_time < 1000)
       return false;
   }
@@ -268,7 +268,7 @@ sloth_is_same_zone(player) {
   zone_sloth = self get_current_zone();
   zone_player = player get_current_zone();
 
-  if(!isdefined(zone_sloth) || !isdefined(zone_player))
+  if(!isDefined(zone_sloth) || !isDefined(zone_player))
     return false;
 
   if(zone_sloth == zone_player)
@@ -302,9 +302,10 @@ crawler_watch_death() {
   self endon("stop_crawler_watch");
   self.crawler waittill("death");
   self stop_action();
+
   sloth_print("crawler died");
 
-  if(isdefined(self.crawler))
+  if(isDefined(self.crawler))
     self.crawler unlink();
 
   self.setanimstatefromspeed = undefined;
@@ -327,7 +328,7 @@ crawler_traverse_idle() {
   self endon("death");
   self endon("stop_traverse_idle");
 
-  while (true) {
+  while(true) {
     self setanimstatefromasd("zm_crawler_sloth_crawlerhold_slung_idle");
     wait 0.1;
   }
@@ -352,14 +353,14 @@ crawler_damage_func(einflictor, eattacker, idamage, idflags, smeansofdeath, swea
 }
 
 is_crawler_alive() {
-  if(isdefined(self.crawler) && self.crawler.health > 0)
+  if(isDefined(self.crawler) && self.crawler.health > 0)
     return true;
 
   return false;
 }
 
 slothanimstatefromspeed(animstate, substate) {
-  if(isdefined(self.crawler)) {
+  if(isDefined(self.crawler)) {
     crawler_walk = "zm_crawler_crawlerhold_walk";
 
     if(self.is_inside)

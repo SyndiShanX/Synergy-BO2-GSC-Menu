@@ -12,7 +12,7 @@
 #include maps\mp\zombies\_zm_weap_tomahawk;
 
 init() {
-  if(isdefined(level.gamedifficulty) && level.gamedifficulty == 0) {
+  if(isDefined(level.gamedifficulty) && level.gamedifficulty == 0) {
     sq_bg_easy_cleanup();
     return;
   }
@@ -31,7 +31,9 @@ wait_for_initial_conditions() {
   t_reward_pickup = getent("sq_bg_reward_pickup", "targetname");
   t_reward_pickup sethintstring("");
   t_reward_pickup setcursorhint("HINT_NOICON");
+
   level thread debug_sq_bg_quest_starter();
+
   level waittill("bouncing_tomahawk_zm_aquired");
   level.sq_bg_macguffins = [];
   a_s_mcguffin = getstructarray("struct_sq_bg_macguffin", "targetname");
@@ -62,7 +64,7 @@ sq_bg_macguffin_think() {
   self setcandamage(1);
   self setforcenocull();
 
-  while (true) {
+  while(true) {
     self waittill("damage", amount, attacker);
 
     if(attacker == level || isplayer(attacker) && attacker getcurrentweapon() == "lightning_hands_zm") {
@@ -83,7 +85,7 @@ wait_and_hide_sq_bg_macguffin() {
 }
 
 tomahawk_the_macguffin(grenade, n_grenade_charge_power) {
-  if(!isdefined(level.sq_bg_macguffins) || level.sq_bg_macguffins.size <= 0)
+  if(!isDefined(level.sq_bg_macguffins) || level.sq_bg_macguffins.size <= 0)
     return false;
 
   foreach(macguffin in level.sq_bg_macguffins) {
@@ -106,7 +108,7 @@ tomahawk_the_macguffin(grenade, n_grenade_charge_power) {
 give_player_macguffin_upon_receipt(m_tomahawk, m_macguffin) {
   self endon("disconnect");
 
-  while (isdefined(m_tomahawk))
+  while(isDefined(m_tomahawk))
     wait 0.05;
 
   m_macguffin notify("sq_bg_macguffin_received_by_player");
@@ -120,7 +122,7 @@ check_sq_bg_progress() {
   n_macguffins_total = level.sq_bg_macguffins.size;
   n_macguffins_collected = 0;
 
-  while (true) {
+  while(true) {
     level waittill("sq_bg_macguffin_collected", player);
     n_macguffins_collected++;
 
@@ -145,7 +147,7 @@ give_sq_bg_reward() {
   s_reward_origin = getstruct("sq_bg_reward", "targetname");
   t_near = spawn("trigger_radius", s_reward_origin.origin, 0, 196, 64);
 
-  while (true) {
+  while(true) {
     t_near waittill("trigger", ent);
 
     if(isplayer(ent)) {
@@ -176,13 +178,14 @@ give_sq_bg_reward() {
   level setclientfield("sq_bg_reward_portal", 1);
   self sethintstring(str_loc);
 
-  while (true) {
+  while(true) {
     self waittill("trigger", player);
     current_weapon = player getcurrentweapon();
 
     if(is_player_valid(player) && !(player.is_drinking > 0) && !is_placeable_mine(current_weapon) && !is_equipment(current_weapon) && level.revive_tool != current_weapon && "none" != current_weapon && !player hacker_active()) {
       if(player hasweapon(str_reward_weapon)) {
         iprintln("Player has" + str_reward_weapon + " , so don't give him another one");
+
         continue;
       } else {
         self delete();
@@ -207,7 +210,7 @@ sq_bg_spawn_rumble() {
 }
 
 take_old_weapon_and_give_reward(current_weapon, reward_weapon, weapon_limit_override) {
-  if(!isdefined(weapon_limit_override))
+  if(!isDefined(weapon_limit_override))
     weapon_limit_override = 0;
 
   if(weapon_limit_override == 1)
@@ -215,7 +218,7 @@ take_old_weapon_and_give_reward(current_weapon, reward_weapon, weapon_limit_over
   else {
     primaries = self getweaponslistprimaries();
 
-    if(isdefined(primaries) && primaries.size >= 2)
+    if(isDefined(primaries) && primaries.size >= 2)
       self takeweapon(current_weapon);
   }
 
@@ -226,7 +229,7 @@ take_old_weapon_and_give_reward(current_weapon, reward_weapon, weapon_limit_over
 }
 
 debug_sq_bg_quest_starter() {
-  while (true) {
+  while(true) {
     a_players = getplayers();
 
     foreach(player in a_players) {
@@ -238,4 +241,5 @@ debug_sq_bg_quest_starter() {
 
     wait 1.0;
   }
+
 }

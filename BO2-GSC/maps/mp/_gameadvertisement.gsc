@@ -10,11 +10,13 @@
 init() {
   level.sessionadvertstatus = 1;
   thread sessionadvertismentupdatedebughud();
+
   thread sessionadvertisementcheck();
 }
 
 setadvertisedstatus(onoff) {
   level.sessionadvertstatus = onoff;
+
   changeadvertisedstatus(onoff);
 }
 
@@ -29,13 +31,13 @@ sessionadvertisementcheck() {
 
   runrules = getgametyperules();
 
-  if(!isdefined(runrules)) {
+  if(!isDefined(runrules)) {
     return;
   }
   level endon("game_end");
   level waittill("prematch_over");
 
-  while (true) {
+  while(true) {
     sessionadvertcheckwait = getdvarintdefault("sessionAdvertCheckwait", 1);
     wait(sessionadvertcheckwait);
     advertise = [
@@ -90,11 +92,13 @@ teamscorelimitcheck(rulescorepercent) {
 
       if(rulescorepercent >= scorepercentageleft) {
         updatedebughud(3, "Score Percentage Left: ", int(scorepercentageleft));
+
         return false;
       }
     }
 
     updatedebughud(3, "Score Percentage Left: ", int(minscorepercentageleft));
+
   }
 
   return true;
@@ -116,6 +120,7 @@ timelimitcheck(ruletimeleft) {
 dm_rules() {
   rulescorepercent = 35;
   ruletimeleft = 60000 * 1.5;
+
   updatedebughud(1, "Any player is within percent of score cap: ", rulescorepercent);
   updatedebughud(2, "Time limit has less than minutes remaining: ", ruletimeleft / 60000);
 
@@ -123,12 +128,13 @@ dm_rules() {
     highestscore = 0;
     players = get_players();
 
-    for (i = 0; i < players.size; i++) {
+    for(i = 0; i < players.size; i++) {
       if(players[i].pointstowin > highestscore)
         highestscore = players[i].pointstowin;
     }
 
     scorepercentageleft = 100 - highestscore / level.scorelimit * 100;
+
     updatedebughud(3, "Score Percentage Left: ", int(scorepercentageleft));
 
     if(rulescorepercent >= scorepercentageleft)
@@ -144,6 +150,7 @@ dm_rules() {
 tdm_rules() {
   rulescorepercent = 15;
   ruletimeleft = 60000 * 1.5;
+
   updatedebughud(1, "Any player is within percent of score cap: ", rulescorepercent);
   updatedebughud(2, "Time limit has less than minutes remaining: ", ruletimeleft / 60000);
 
@@ -161,6 +168,7 @@ dom_rules() {
   ruletimeleft = 60000 * 1.5;
   ruleround = 3;
   currentround = game["roundsplayed"] + 1;
+
   updatedebughud(1, "Time limit 1.5 minutes remaining in final round. Any player is within percent of score cap: ", rulescorepercent);
   updatedebughud(2, "Is round: ", ruleround);
   updatedebughud(4, "Current Round: ", currentround);
@@ -185,7 +193,9 @@ hq_rules() {
 
 sd_rules() {
   ruleround = 3;
+
   updatedebughud(1, "Any team has won rounds: ", ruleround);
+
   maxroundswon = 0;
 
   foreach(team in level.teams) {
@@ -196,11 +206,13 @@ sd_rules() {
 
     if(ruleround <= roundswon) {
       updatedebughud(3, "Max Rounds Won: ", maxroundswon);
+
       return false;
     }
   }
 
   updatedebughud(3, "Max Rounds Won: ", maxroundswon);
+
   return true;
 }
 
@@ -211,6 +223,7 @@ dem_rules() {
 ctf_rules() {
   ruleround = 3;
   roundsplayed = game["roundsplayed"];
+
   updatedebughud(1, "Is round or later: ", ruleround);
   updatedebughud(3, "Rounds Played: ", roundsplayed);
 
@@ -223,6 +236,7 @@ ctf_rules() {
 koth_rules() {
   rulescorepercent = 20;
   ruletimeleft = 60000 * 1.5;
+
   updatedebughud(1, "Any player is within percent of score cap: ", rulescorepercent);
   updatedebughud(2, "Time limit has less than minutes remaining: ", ruletimeleft / 60000);
 
@@ -241,12 +255,14 @@ conf_rules() {
 
 oic_rules() {
   updatedebughud(1, "No join in progress, so shouldn’t advertise to matchmaking once the countdown timer ends.", 0);
+
   return false;
 }
 
 sas_rules() {
   rulescorepercent = 35;
   ruletimeleft = 60000 * 1.5;
+
   updatedebughud(1, "Any player is within percent of score cap: ", rulescorepercent);
   updatedebughud(2, "Time limit has less than minutes remaining: ", ruletimeleft / 60000);
 
@@ -261,7 +277,9 @@ sas_rules() {
 
 gun_rules() {
   ruleweaponsleft = 3;
+
   updatedebughud(1, "Any player is within X weapons from winning: ", ruleweaponsleft);
+
   minweaponsleft = level.gunprogression.size;
 
   foreach(player in level.players) {
@@ -272,17 +290,20 @@ gun_rules() {
 
     if(ruleweaponsleft >= minweaponsleft) {
       updatedebughud(3, "Weapons Left: ", minweaponsleft);
+
       return false;
     }
   }
 
   updatedebughud(3, "Weapons Left: ", minweaponsleft);
+
   return true;
 }
 
 shrp_rules() {
   rulescorepercent = 35;
   ruletimeleft = 60000 * 1.5;
+
   updatedebughud(1, "Any player is within percent of score cap: ", rulescorepercent);
   updatedebughud(2, "Time limit has less than minutes remaining: ", ruletimeleft / 60000);
 
@@ -332,6 +353,7 @@ updatedebughud(hudindex, text, value) {
       level.sessionadverthud_4b_text = value;
       break;
   }
+
 }
 
 sessionadvertismentupdatedebughud() {
@@ -355,7 +377,7 @@ sessionadvertismentupdatedebughud() {
   level.sessionadverthud_4a_text = "";
   level.sessionadverthud_4b_text = "";
 
-  while (true) {
+  while(true) {
     wait 1;
     showdebughud = getdvarintdefault("sessionAdvertShowDebugHud", 0);
     level.sessionadverthud_0_text = "Session is advertised";
@@ -363,10 +385,10 @@ sessionadvertismentupdatedebughud() {
     if(level.sessionadvertstatus == 0)
       level.sessionadverthud_0_text = "Session is not advertised";
 
-    if(!isdefined(sessionadverthud_0) && showdebughud != 0) {
+    if(!isDefined(sessionadverthud_0) && showdebughud != 0) {
       host = gethostplayer();
 
-      if(!isdefined(host)) {
+      if(!isDefined(host)) {
         continue;
       }
       sessionadverthud_0 = host sessionadvertismentcreatedebughud(0, 0);
@@ -384,7 +406,7 @@ sessionadvertismentupdatedebughud() {
       sessionadverthud_2b.color = vectorscale((0, 1, 0), 0.5);
     }
 
-    if(isdefined(sessionadverthud_0)) {
+    if(isDefined(sessionadverthud_0)) {
       if(showdebughud == 0) {
         sessionadverthud_0 destroy();
         sessionadverthud_1a destroy();
@@ -434,4 +456,5 @@ sessionadvertismentupdatedebughud() {
       }
     }
   }
+
 }

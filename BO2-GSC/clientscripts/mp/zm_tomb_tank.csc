@@ -22,9 +22,11 @@ play_tread_fx(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, 
   }
   if(newval == 1) {
     println("Mark IV Tank Tread FX ON");
+
     self thread tread_fx_loop(localclientnum);
   } else if(newval == 0) {
     println("Mark IV Tank Tread FX OFF");
+
     self notify("tread_fx_stop");
   }
 }
@@ -38,7 +40,7 @@ flamethrower_fx_loop(localclientnum, str_tag) {
   sndent playloopsound("zmb_tank_flame_loop", 0.6);
   self thread sndstopflamethrower(sndent);
 
-  while (true) {
+  while(true) {
     self.flame_fx = playfxontag(localclientnum, level._effect["mech_wpn_flamethrower"], self, str_tag);
     wait 0.2;
   }
@@ -55,7 +57,7 @@ sndstopflamethrower(ent) {
 play_flamethrower_fx(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump) {
   self notify("stop_flamethrower");
 
-  if(!isdefined(self.sndflame))
+  if(!isDefined(self.sndflame))
     self.sndflame = spawn(0, (0, 0, 0), "script_origin");
 
   if(newval == 0) {
@@ -91,7 +93,7 @@ play_exhaust_fx(localclientnum, is_overheat) {
   else
     self thread sndplayexhaust();
 
-  while (true) {
+  while(true) {
     playfxontag(localclientnum, fx_id, self, "tag_origin");
     wait 0.1;
   }
@@ -120,12 +122,12 @@ sndplayexhaust() {
 play_tank_fx(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump) {
   self notify("stop_exhaust_fx");
 
-  if(isdefined(self.light_fx1)) {
+  if(isDefined(self.light_fx1)) {
     stopfx(localclientnum, self.light_fx1);
     self.light_fx1 = undefined;
   }
 
-  if(isdefined(self.light_fx2)) {
+  if(isDefined(self.light_fx2)) {
     stopfx(localclientnum, self.light_fx2);
     self.light_fx2 = undefined;
   }
@@ -150,7 +152,7 @@ tread_fx_loop(localclientnum) {
   self endon("tread_fx_stop");
   self thread sndplaymud();
 
-  while (true) {
+  while(true) {
     self.tread_fx_left = playfxontag(localclientnum, level._effect["tank_treads"], self, "tag_wheel_back_left");
     self.tread_fx_right = playfxontag(localclientnum, level._effect["tank_treads"], self, "tag_wheel_back_right");
     wait 0.5;

@@ -8,7 +8,6 @@
 #include clientscripts\mp\_fx;
 
 precache_util_fx() {
-
 }
 
 precache_scripted_fx() {
@@ -121,7 +120,7 @@ main() {
   precache_fxanim_props_dlc4();
   disablefx = getdvarint(#"_id_C9B177D6");
 
-  if(!isdefined(disablefx) || disablefx <= 0)
+  if(!isDefined(disablefx) || disablefx <= 0)
     precache_scripted_fx();
 
   level thread trap_fx_monitor("flame_trap", "str_flame_trap");
@@ -171,7 +170,7 @@ setup_prop_anims() {
   waitforclient(0);
   players = level.localplayers;
 
-  for (i = 0; i < players.size; i++)
+  for(i = 0; i < players.size; i++)
     players[i] thread play_fx_prop_anims(i);
 }
 
@@ -183,17 +182,17 @@ play_fx_prop_anims(localclientnum) {
 }
 
 fxanim_props_wait_1(localclientnum) {
-  if(isdefined(self.fxanim_waittill_1))
+  if(isDefined(self.fxanim_waittill_1))
     level waittill(self.fxanim_waittill_1);
 
-  if(isdefined(self.fxanim_wait))
+  if(isDefined(self.fxanim_wait))
     wait(self.fxanim_wait);
 
-  if(isdefined(self.fxanim_scene_1)) {
-    if(isdefined(level.scr_anim["fxanim_props"][self.fxanim_scene_1]))
+  if(isDefined(self.fxanim_scene_1)) {
+    if(isDefined(level.scr_anim["fxanim_props"][self.fxanim_scene_1]))
       self setflaggedanim("tomb_fxanim", level.scr_anim["fxanim_props"][self.fxanim_scene_1], 1.0, 0.0, 1.0);
 
-    if(isdefined(level.scr_anim["fxanim_props_dlc4"][self.fxanim_scene_1])) {
+    if(isDefined(level.scr_anim["fxanim_props_dlc4"][self.fxanim_scene_1])) {
       if(issubstr(self.fxanim_scene_1, "chamber_rocks"))
         self thread chamber_rocks_think();
       else
@@ -207,7 +206,7 @@ chamber_rocks_think() {
   self endon("entityshutdown");
   self endon("delete");
 
-  while (true) {
+  while(true) {
     self setflaggedanim("tomb_fxanim", level.scr_anim["fxanim_props_dlc4"][self.fxanim_scene_1], 1.0, 0.0, 1.0);
     self waittillmatch("tomb_fxanim", "end");
     self hide();
@@ -218,11 +217,11 @@ chamber_rocks_think() {
 }
 
 trap_fx_monitor(str_name, str_side) {
-  while (true) {
+  while(true) {
     level waittill(str_name);
     a_trap_points = getstructarray(str_name, "targetname");
 
-    for (i = 0; i < a_trap_points.size; i++) {
+    for(i = 0; i < a_trap_points.size; i++) {
       if(str_name == "flame_trap")
         a_trap_points[i] thread flame_trap_fx(str_name, str_side);
     }
@@ -233,25 +232,25 @@ flame_trap_fx(str_name, str_side) {
   vec_ang = self.angles;
   vec_forward = anglestoforward(vec_ang);
 
-  if(isdefined(self.a_loopfx)) {
-    for (i = 0; i < self.a_loopfx.size; i++)
+  if(isDefined(self.a_loopfx)) {
+    for(i = 0; i < self.a_loopfx.size; i++)
       stopfx(i, self.a_loopfx[i]);
 
     self.a_loopfx = [];
   }
 
-  if(!isdefined(self.a_loopfx))
+  if(!isDefined(self.a_loopfx))
     self.a_loopfx = [];
 
   a_players = getlocalplayers();
 
-  for (i = 0; i < a_players.size; i++) {
+  for(i = 0; i < a_players.size; i++) {
     self.a_loopfx[i] = playfx(i, level._effect["flame_trap_start"], self.origin, vec_forward);
     wait 1;
     level.b_play_fire_loop_fx = 1;
     level thread monitor_fire_loop();
 
-    while (level.b_play_fire_loop_fx) {
+    while(level.b_play_fire_loop_fx) {
       self.a_loopfx[i] = playfx(i, level._effect["flame_trap_loop"], self.origin, vec_forward);
       wait 1;
     }
@@ -262,7 +261,7 @@ flame_trap_fx(str_name, str_side) {
 
   level waittill(str_side + "off");
 
-  for (i = 0; i < self.a_loopfx.size; i++)
+  for(i = 0; i < self.a_loopfx.size; i++)
     stopfx(i, self.a_loopfx[i]);
 
   self.a_loopfx = [];

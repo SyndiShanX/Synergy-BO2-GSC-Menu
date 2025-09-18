@@ -79,14 +79,14 @@ spawnedperclient(localclientnum, islocalized, scramblerhandle) {
   owner = self getowner(localclientnum);
   scramblerindex = undefined;
 
-  for (i = 0; i < level.scramblers.size; i++) {
+  for(i = 0; i < level.scramblers.size; i++) {
     if(level.scramblers[i].scramblerhandle == scramblerhandle) {
       scramblerindex = i;
       break;
     }
   }
 
-  if(!isdefined(scramblerindex)) {
+  if(!isDefined(scramblerindex)) {
     return;
   }
   if(!isenemy) {
@@ -94,12 +94,12 @@ spawnedperclient(localclientnum, islocalized, scramblerhandle) {
       if(owner == player && !isspectating(localclientnum, 0))
         player addfriendlyscrambler(self.origin[0], self.origin[1], scramblerhandle);
 
-      if(isdefined(level.scramblers[scramblerindex].sndent)) {
+      if(isDefined(level.scramblers[scramblerindex].sndent)) {
         level.scramblers[scramblerindex].sndid = level.scramblers[scramblerindex].sndent playloopsound(level.scramblesoundalert);
         playsound(0, level.scramblesoundburst, level.scramblers[scramblerindex].sndent.origin);
       }
 
-      if(isdefined(level.scramblers[scramblerindex].sndpingent))
+      if(isDefined(level.scramblers[scramblerindex].sndpingent))
         level.scramblers[scramblerindex].sndpingid = level.scramblers[scramblerindex].sndpingent playloopsound(level.scramblesoundping);
     }
   } else {
@@ -108,7 +108,7 @@ spawnedperclient(localclientnum, islocalized, scramblerhandle) {
     if(islocalized == 0)
       scramblesound = level.globalscramblesound;
 
-    if(isdefined(level.scramblers[scramblerindex].sndent))
+    if(isDefined(level.scramblers[scramblerindex].sndent))
       level.scramblers[scramblerindex].sndid = level.scramblers[scramblerindex].sndent playloopsound(scramblesound);
   }
 
@@ -119,16 +119,16 @@ scramblerupdate(localclientnum) {
   nearestenemy = level.scramblervoouterradius;
   nearestfriendly = level.scramblervoouterradius;
 
-  for (;;) {
+  for(;;) {
     players = level.localplayers;
 
-    for (localclientnum = 0; localclientnum < players.size; localclientnum++) {
+    for(localclientnum = 0; localclientnum < players.size; localclientnum++) {
       player = players[localclientnum];
 
-      if(!isdefined(player.team)) {
+      if(!isDefined(player.team)) {
         continue;
       }
-      if(!isdefined(level.playerpersistent[localclientnum])) {
+      if(!isDefined(level.playerpersistent[localclientnum])) {
         level.playerpersistent[localclientnum] = spawnstruct();
         level.playerpersistent[localclientnum].previousteam = player.team;
         player removeallfriendlyscramblers();
@@ -148,15 +148,15 @@ scramblerupdate(localclientnum) {
       disttoscrambler = level.scramblervoouterradius;
       nearestenemyscramblercent = undefined;
 
-      for (i = 0; i < level.scramblers.size; i++) {
-        if(!isdefined(level.scramblers[i].cent)) {
+      for(i = 0; i < level.scramblers.size; i++) {
+        if(!isDefined(level.scramblers[i].cent)) {
           continue;
         }
-        if(isdefined(level.scramblers[i].cent.stunned) && level.scramblers[i].cent.stunned) {
+        if(isDefined(level.scramblers[i].cent.stunned) && level.scramblers[i].cent.stunned) {
           level.scramblers[i].cent.reenable = 1;
           player removefriendlyscrambler(level.scramblers[i].scramblerhandle);
           continue;
-        } else if(isdefined(level.scramblers[i].cent.reenable) && level.scramblers[i].cent.reenable) {
+        } else if(isDefined(level.scramblers[i].cent.reenable) && level.scramblers[i].cent.reenable) {
           teamchanged = 1;
           level.scramblers[i].cent.reenable = 0;
         }
@@ -215,7 +215,7 @@ scramblerupdate(localclientnum) {
 
       player setfriendlyscrambleramount(friendlyscrambleramount);
 
-      if(level.scramblers.size > 0 && isdefined(nearestenemyscramblercent))
+      if(level.scramblers.size > 0 && isDefined(nearestenemyscramblercent))
         player setnearestenemyscrambler(nearestenemyscramblercent);
       else
         player clearnearestenemyscrambler();
@@ -241,7 +241,7 @@ cleanupscramblerondelete(scramblerent, scramblerhandle, islocalized, localclient
   scramblerent waittill("entityshutdown");
   players = level.localplayers;
 
-  for (j = 0; j < level.scramblers.size; j++) {
+  for(j = 0; j < level.scramblers.size; j++) {
     size = level.scramblers.size;
 
     if(scramblerhandle == level.scramblers[j].scramblerhandle) {
@@ -260,7 +260,7 @@ cleanupscramblerondelete(scramblerent, scramblerhandle, islocalized, localclient
   }
 
   if(islocalized) {
-    for (i = 0; i < players.size; i++)
+    for(i = 0; i < players.size; i++)
       players[i] removefriendlyscrambler(scramblerhandle);
   }
 }
@@ -268,18 +268,19 @@ cleanupscramblerondelete(scramblerent, scramblerhandle, islocalized, localclient
 isenemyscrambler(localclientnum) {
   if(getdvarintdefault("scr_forceEnemyScrambler", 0))
     return 1;
+
   enemy = !friendnotfoe(localclientnum);
   return enemy;
 }
 
 checkforplayerswitch() {
-  while (true) {
+  while(true) {
     level waittill("player_switch");
     waittillframeend;
     players = level.localplayers;
 
-    for (localclientnum = 0; localclientnum < players.size; localclientnum++) {
-      for (j = 0; j < level.scramblers.size; j++) {
+    for(localclientnum = 0; localclientnum < players.size; localclientnum++) {
+      for(j = 0; j < level.scramblers.size; j++) {
         ent = level.scramblers[j].cent;
         ent thread clientscripts\mp\_fx::stop_blinky_light(localclientnum);
         ent thread clientscripts\mp\_fx::blinky_light(localclientnum, "tag_light", level._effect["scrambler_friendly_light"], level._effect["scrambler_enemy_light"]);

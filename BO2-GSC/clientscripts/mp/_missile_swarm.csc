@@ -11,7 +11,7 @@ main() {
 swarm_start(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump) {
   player = getlocalplayer(localclientnum);
 
-  if(!isdefined(player)) {
+  if(!isDefined(player)) {
     return;
   }
   if(player getinkillcam(localclientnum)) {
@@ -37,7 +37,7 @@ swarm_think(localclientnum, sound_origin) {
   self.missile_swarm_max = 12;
   level thread swarm_sound(localclientnum, sound_origin);
 
-  for (;;) {
+  for(;;) {
     if(self.missile_swarm_count < 0)
       self.missile_swarm_count = 0;
 
@@ -49,7 +49,7 @@ swarm_think(localclientnum, sound_origin) {
     count = randomintrange(1, 3);
     self.missile_swarm_count = self.missile_swarm_count + count;
 
-    for (i = 0; i < count; i++)
+    for(i = 0; i < count; i++)
       self projectile_spawn(localclientnum);
 
     wait(self.missile_swarm_count / self.missile_swarm_max);
@@ -84,7 +84,7 @@ projectile_move_think(localclientnum, player, start, end) {
   self moveto(end, randomfloatrange(12, 18));
   self waittill("movedone");
 
-  if(isdefined(player))
+  if(isDefined(player))
     player.missile_swarm_count--;
 
   self delete();
@@ -109,6 +109,6 @@ projectile_delete_think(localclientnum) {
   self endon("death");
   level waittill("missile_emp_death");
 
-  if(isdefined(self))
+  if(isDefined(self))
     self delete();
 }

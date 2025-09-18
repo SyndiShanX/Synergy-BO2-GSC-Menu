@@ -26,7 +26,7 @@ init() {
 }
 
 quadrotor_dealt_no_damage_to_player(einflictor, eattacker, idamage, idflags, smeansofdeath, sweapon, vpoint, vdir, shitloc, psoffsettime) {
-  if(isdefined(sweapon) && sweapon == "quadrotorturret_zm")
+  if(isDefined(sweapon) && sweapon == "quadrotorturret_zm")
     return 0;
 
   return idamage;
@@ -42,10 +42,10 @@ quadrotor_think() {
   self.vehfovcosinebusy = 0.574;
   self.vehaircraftcollisionenabled = 1;
 
-  if(!isdefined(self.goalradius))
+  if(!isDefined(self.goalradius))
     self.goalradius = 128;
 
-  if(!isdefined(self.goalpos))
+  if(!isDefined(self.goalpos))
     self.goalpos = self.origin;
 
   self thread quadrotor_death();
@@ -58,7 +58,7 @@ follow_ent(e_followee) {
   level endon("end_game");
   self endon("death");
 
-  while (isdefined(e_followee)) {
+  while(isDefined(e_followee)) {
     if(!self.returning_home) {
       v_facing = e_followee getplayerangles();
       v_forward = anglestoforward((0, v_facing[1], 0));
@@ -102,7 +102,7 @@ quadrotor_ambient_vo() {
   current_ambient_line_cooldown = randomintrange(10000, 30000);
   wait(current_ambient_line_cooldown);
 
-  while (true) {
+  while(true) {
     current_time = gettime();
 
     if(current_time - self.time_last_spoke_attack_line > current_ambient_line_cooldown) {
@@ -126,8 +126,8 @@ quadrotor_fireupdate() {
   current_attack_line_cooldown = 10000;
   current_killed_line_cooldown = 10000;
 
-  while (true) {
-    if(isdefined(self.enemy) && self vehcansee(self.enemy)) {
+  while(true) {
+    if(isDefined(self.enemy) && self vehcansee(self.enemy)) {
       dist_squared = distancesquared(self.enemy.origin, self.origin);
 
       if(dist_squared < 384 * 384 && dist_squared > 96 * 96) {
@@ -144,7 +144,7 @@ quadrotor_fireupdate() {
         self quadrotor_fire_for_time(randomfloatrange(1.5, 3.0));
       }
 
-      if(isdefined(self.enemy) && isai(self.enemy))
+      if(isDefined(self.enemy) && isai(self.enemy))
         wait(randomfloatrange(0.5, 1.0));
       else {
         current_time = gettime();
@@ -185,11 +185,13 @@ quadrotor_watch_for_game_end() {
   self endon("death");
   level waittill("end_game");
 
-  if(isdefined(self)) {
+  if(isDefined(self)) {
     playfx(level._effect["tesla_elec_kill"], self.origin);
     self playsound("zmb_qrdrone_leave");
     self delete();
+
     iprintln("Maxis deleted");
+
   }
 }
 
@@ -203,7 +205,7 @@ quadrotor_check_move(position) {
 }
 
 quadrotor_adjust_goal_for_enemy_height(goalpos) {
-  if(isdefined(self.enemy)) {
+  if(isDefined(self.enemy)) {
     if(isai(self.enemy))
       offset = 45;
     else
@@ -255,7 +257,7 @@ quadrotor_movementupdate() {
   self.goalpos = self make_sure_goal_is_well_above_ground(self.goalpos);
 
   if(!self.vehonpath) {
-    if(isdefined(self.attachedpath))
+    if(isDefined(self.attachedpath))
       self script_delay();
     else if(distancesquared(self.origin, self.goalpos) < 10000 && (self.goalpos[2] > old_goalpos[2] + 10 || self.origin[2] + 10 < self.goalpos[2])) {
       self setvehgoalpos(self.goalpos, 1, 2, 0);
@@ -272,7 +274,7 @@ quadrotor_movementupdate() {
   self setvehicleavoidance(1);
   goalfailures = 0;
 
-  while (true) {
+  while(true) {
     self waittill_pathing_done();
     self thread quadrotor_blink_lights();
 
@@ -291,6 +293,7 @@ quadrotor_movementupdate() {
 
       self setneargoalnotifydist(8);
       str_zone = level.quadrotor_status.str_zone;
+
       iprintln("EXIT ZONE: " + str_zone);
 
       switch (str_zone) {
@@ -303,7 +306,6 @@ quadrotor_movementupdate() {
             exit_path = getvehiclenode("quadrotor_bunker_north_exit_path", "targetname");
             is_valid_exit_path_found = self setvehgoalpos(exit_path.origin, 1, 2, 1);
           } else {
-
           }
 
           if(!is_valid_exit_path_found) {
@@ -311,7 +313,6 @@ quadrotor_movementupdate() {
               exit_path = getvehiclenode("quadrotor_bunker_west_exit_path", "targetname");
               is_valid_exit_path_found = self setvehgoalpos(exit_path.origin, 1, 2, 1);
             } else {
-
             }
           }
 
@@ -320,7 +321,6 @@ quadrotor_movementupdate() {
               exit_path = getvehiclenode("quadrotor_bunker_south_exit_path", "targetname");
               is_valid_exit_path_found = self setvehgoalpos(exit_path.origin, 1, 2, 1);
             } else {
-
             }
           }
 
@@ -349,10 +349,10 @@ quadrotor_movementupdate() {
       self waittill_any("near_goal", "force_goal", "reached_end_node", "return_timeout");
     }
 
-    if(!isdefined(self.revive_target)) {
+    if(!isDefined(self.revive_target)) {
       player = self player_in_last_stand_within_range(500);
 
-      if(isdefined(player)) {
+      if(isDefined(player)) {
         self.revive_target = player;
         player.quadrotor_revive = 1;
         vox_line = "vox_maxi_drone_revive_" + randomintrange(0, 5);
@@ -360,7 +360,7 @@ quadrotor_movementupdate() {
       }
     }
 
-    if(isdefined(self.revive_target)) {
+    if(isDefined(self.revive_target)) {
       origin = self.revive_target.origin;
       origin = (origin[0], origin[1], origin[2] + 150);
       z = self getheliheightlockheight(origin);
@@ -371,7 +371,7 @@ quadrotor_movementupdate() {
         level thread watch_for_fail_revive(self);
         wait 1;
 
-        if(isdefined(self.revive_target) && self.revive_target maps\mp\zombies\_zm_laststand::player_is_in_laststand()) {
+        if(isDefined(self.revive_target) && self.revive_target maps\mp\zombies\_zm_laststand::player_is_in_laststand()) {
           playfxontag(level._effect["staff_charge"], self.revive_target, "tag_origin");
           self.revive_target notify("remote_revive", self.player_owner);
           self.revive_target do_player_general_vox("quadrotor", "rspnd_drone_revive", undefined, 100);
@@ -390,7 +390,7 @@ quadrotor_movementupdate() {
 
     a_powerups = [];
 
-    if(level.active_powerups.size > 0 && isdefined(self.player_owner))
+    if(level.active_powerups.size > 0 && isDefined(self.player_owner))
       a_powerups = get_array_of_closest(self.player_owner.origin, level.active_powerups, undefined, undefined, 500);
 
     if(a_powerups.size > 0) {
@@ -400,7 +400,7 @@ quadrotor_movementupdate() {
         if(self setvehgoalpos(powerup.origin, 1, 2, 1)) {
           self waittill_any("near_goal", "force_goal", "reached_end_node");
 
-          if(isdefined(powerup)) {
+          if(isDefined(powerup)) {
             self.player_owner.ignore_range_powerup = powerup;
             b_got_powerup = 1;
           }
@@ -418,13 +418,13 @@ quadrotor_movementupdate() {
 
     a_special_items = getentarray("quad_special_item", "script_noteworthy");
 
-    if(level.n_ee_medallions > 0 && isdefined(self.player_owner)) {
+    if(level.n_ee_medallions > 0 && isDefined(self.player_owner)) {
       e_special_item = getclosest(self.player_owner.origin, a_special_items, 500);
 
-      if(isdefined(e_special_item)) {
+      if(isDefined(e_special_item)) {
         self setneargoalnotifydist(4);
 
-        if(isdefined(e_special_item.target)) {
+        if(isDefined(e_special_item.target)) {
           s_start_pos = getstruct(e_special_item.target, "targetname");
           self setvehgoalpos(s_start_pos.origin, 1, 0, 1);
           self waittill_any("near_goal", "force_goal", "reached_end_node");
@@ -438,7 +438,7 @@ quadrotor_movementupdate() {
         level.n_ee_medallions--;
         level notify("quadrotor_medallion_found", self);
 
-        if(isdefined(e_special_item.target)) {
+        if(isDefined(e_special_item.target)) {
           s_start_pos = getstruct(e_special_item.target, "targetname");
           self setvehgoalpos(s_start_pos.origin, 1, 0, 1);
           self waittill_any("near_goal", "force_goal", "reached_end_node");
@@ -460,7 +460,7 @@ quadrotor_movementupdate() {
       }
     }
 
-    if(isdefined(level.quadrotor_custom_behavior))
+    if(isDefined(level.quadrotor_custom_behavior))
       self[[level.quadrotor_custom_behavior]]();
 
     goalpos = quadrotor_find_new_position();
@@ -468,28 +468,28 @@ quadrotor_movementupdate() {
     if(self setvehgoalpos(goalpos, 1, 2, 1)) {
       goalfailures = 0;
 
-      if(isdefined(self.goal_node))
+      if(isDefined(self.goal_node))
         self.goal_node.quadrotor_claimed = 1;
 
-      if(isdefined(self.enemy) && self vehcansee(self.enemy)) {
+      if(isDefined(self.enemy) && self vehcansee(self.enemy)) {
         if(randomint(100) > 50)
           self setlookatent(self.enemy);
       }
 
       self waittill_any_timeout(12, "near_goal", "force_goal", "reached_end_node");
 
-      if(isdefined(self.enemy) && self vehcansee(self.enemy)) {
+      if(isDefined(self.enemy) && self vehcansee(self.enemy)) {
         self setlookatent(self.enemy);
         wait(randomfloatrange(1, 4));
         self clearlookatent();
       }
 
-      if(isdefined(self.goal_node))
+      if(isDefined(self.goal_node))
         self.goal_node.quadrotor_claimed = undefined;
     } else {
       goalfailures++;
 
-      if(isdefined(self.goal_node))
+      if(isDefined(self.goal_node))
         self.goal_node.quadrotor_fails = 1;
 
       if(goalfailures == 1) {
@@ -504,6 +504,7 @@ quadrotor_movementupdate() {
       } else if(goalfailures > 3) {
         println("WARNING: Quadrotor can't find path to goal over 4 times." + self.origin + " " + goalpos);
         line(self.origin, goalpos, (1, 1, 1), 1, 100);
+
         self.goalpos = make_sure_goal_is_well_above_ground(goalpos);
       }
 
@@ -530,15 +531,18 @@ quadrotor_movementupdate() {
 
 quadrotor_escape_into_air() {
   iprintln("couldn't path to exit");
+
   self.goalpos = self.origin + vectorscale((0, 0, 1), 2048.0);
   can_path_straight_up = self setvehgoalpos(self.goalpos, 1, 0, 1);
   trace_goalpos = physicstrace(self.origin, self.goalpos);
 
   if(can_path_straight_up && trace_goalpos["position"] == self.goalpos) {
     iprintln("I can go straight up");
+
     self notify("attempting_return");
   } else {
     iprintln("Failed pathing straight up");
+
     self notify("attempting_return");
     playfx(level._effect["tesla_elec_kill"], self.origin);
     self playsound("zmb_qrdrone_leave");
@@ -564,7 +568,7 @@ quadrotor_get_closest_node() {
 }
 
 quadrotor_find_new_position() {
-  if(!isdefined(self.goalpos))
+  if(!isDefined(self.goalpos))
     self.goalpos = self.origin;
 
   origin = self.goalpos;
@@ -583,7 +587,7 @@ quadrotor_find_new_position() {
     if(node.type == "BAD NODE" || !node has_spawnflag(2097152)) {
       continue;
     }
-    if(isdefined(node.quadrotor_fails) || isdefined(node.quadrotor_claimed))
+    if(isDefined(node.quadrotor_fails) || isDefined(node.quadrotor_claimed))
       score = randomfloat(30);
     else
       score = randomfloat(100);
@@ -594,7 +598,7 @@ quadrotor_find_new_position() {
     }
   }
 
-  if(isdefined(best_node)) {
+  if(isDefined(best_node)) {
     origin = best_node.origin + (0, 0, self.flyheight + randomfloatrange(-30, 40));
     z = self getheliheightlockheight(origin);
     origin = (origin[0], origin[1], z);
@@ -611,10 +615,10 @@ quadrotor_teleport_to_nearest_node() {
 quadrotor_damage() {
   self endon("crash_done");
 
-  while (isdefined(self)) {
+  while(isDefined(self)) {
     self waittill("damage", damage, undefined, dir, point, type);
 
-    if(isdefined(self.off)) {
+    if(isDefined(self.off)) {
       continue;
     }
     if(type == "MOD_EXPLOSIVE" || type == "MOD_GRENADE_SPLASH" || type == "MOD_PROJECTILE_SPLASH") {
@@ -640,7 +644,7 @@ quadrotor_damage() {
 }
 
 quadrotor_cleanup_fx() {
-  if(isdefined(self.stun_fx))
+  if(isDefined(self.stun_fx))
     self.stun_fx delete();
 }
 
@@ -650,11 +654,11 @@ quadrotor_death() {
   self waittill("death", attacker, damagefromunderneath, weaponname, point, dir);
   self notify("nodeath_thread");
 
-  if(isdefined(self.goal_node) && isdefined(self.goal_node.quadrotor_claimed))
+  if(isDefined(self.goal_node) && isDefined(self.goal_node.quadrotor_claimed))
     self.goal_node.quadrotor_claimed = undefined;
 
-  if(isdefined(self.delete_on_death)) {
-    if(isdefined(self)) {
+  if(isDefined(self.delete_on_death)) {
+    if(isDefined(self)) {
       self quadrotor_cleanup_fx();
       self delete();
       level.maxis_quadrotor = undefined;
@@ -663,7 +667,7 @@ quadrotor_death() {
     return;
   }
 
-  if(!isdefined(self)) {
+  if(!isDefined(self)) {
     return;
   }
   self endon("death");
@@ -679,7 +683,7 @@ quadrotor_death() {
 }
 
 death_fx() {
-  if(isdefined(self.deathfx))
+  if(isDefined(self.deathfx))
     playfxontag(self.deathfx, self, self.deathfxtag);
 
   self playsound("veh_qrdrone_sparks");
@@ -695,7 +699,7 @@ quadrotor_crash_movement(attacker, hitdir) {
   self setphysacceleration(vectorscale((0, 0, -1), 800.0));
   self.vehcheckforpredictedcrash = 1;
 
-  if(!isdefined(hitdir))
+  if(!isDefined(hitdir))
     hitdir = (1, 0, 0);
 
   side_dir = vectorcross(hitdir, (0, 0, 1));
@@ -711,18 +715,18 @@ quadrotor_crash_movement(attacker, hitdir) {
   self setangularvelocity(ang_vel);
   self.crash_accel = randomfloatrange(75, 110);
 
-  if(!isdefined(self.off))
+  if(!isDefined(self.off))
     self thread quadrotor_crash_accel();
 
   self thread quadrotor_collision();
   self playsound("veh_qrdrone_dmg_hit");
 
-  if(!isdefined(self.off))
+  if(!isDefined(self.off))
     self thread qrotor_dmg_snd();
 
   wait 0.1;
 
-  if(randomint(100) < 40 && !isdefined(self.off))
+  if(randomint(100) < 40 && !isDefined(self.off))
     self thread quadrotor_fire_for_time(randomfloatrange(0.7, 2.0));
 
   wait 15;
@@ -745,7 +749,7 @@ quadrotor_fire_for_time(totalfiretime) {
   self endon("change_state");
   self endon("death");
 
-  if(isdefined(self.emped)) {
+  if(isDefined(self.emped)) {
     return;
   }
   weaponname = self seatgetweapon(0);
@@ -753,8 +757,8 @@ quadrotor_fire_for_time(totalfiretime) {
   time = 0;
   firecount = 1;
 
-  while (time < totalfiretime && !isdefined(self.emped)) {
-    if(isdefined(self.enemy) && isdefined(self.enemy.attackeraccuracy) && self.enemy.attackeraccuracy == 0)
+  while(time < totalfiretime && !isDefined(self.emped)) {
+    if(isDefined(self.enemy) && isDefined(self.enemy.attackeraccuracy) && self.enemy.attackeraccuracy == 0)
       self fireweapon(undefined, undefined, 1);
     else
       self fireweapon();
@@ -771,7 +775,7 @@ quadrotor_crash_accel() {
   self endon("death");
   count = 0;
 
-  while (true) {
+  while(true) {
     self setvehvelocity(self.velocity + anglestoup(self.angles) * self.crash_accel);
     self.crash_accel = self.crash_accel * 0.98;
     wait 0.1;
@@ -797,7 +801,7 @@ quadrotor_predicted_collision() {
   self endon("crash_done");
   self endon("death");
 
-  while (true) {
+  while(true) {
     self waittill("veh_predictedcollision", velocity, normal);
 
     if(normal[2] >= 0.6)
@@ -811,11 +815,11 @@ quadrotor_collision_player() {
   self endon("crash_done");
   self endon("death");
 
-  while (true) {
+  while(true) {
     self waittill("veh_collision", velocity, normal);
     driver = self getseatoccupant(0);
 
-    if(isdefined(driver) && lengthsquared(velocity) > 4900) {
+    if(isDefined(driver) && lengthsquared(velocity) > 4900) {
       earthquake(0.25, 0.25, driver.origin, 50);
       driver playrumbleonentity("damage_heavy");
     }
@@ -834,12 +838,12 @@ quadrotor_collision() {
   self.bounce_count = 0;
   time_of_last_bounce = 0;
 
-  while (true) {
+  while(true) {
     self waittill("veh_collision", velocity, normal);
     ang_vel = self getangularvelocity() * 0.5;
     self setangularvelocity(ang_vel);
 
-    if(normal[2] < 0.6 || isalive(self) && !isdefined(self.emped)) {
+    if(normal[2] < 0.6 || isalive(self) && !isDefined(self.emped)) {
       self setvehvelocity(self.velocity + normal * 90);
       self playsound("veh_qrdrone_wall");
 
@@ -862,8 +866,8 @@ quadrotor_collision() {
         self.bounce_count = 0;
 
       time_of_last_bounce = gettime();
-    } else if(isdefined(self.emped)) {
-      if(isdefined(self.bounced)) {
+    } else if(isDefined(self.emped)) {
+      if(isDefined(self.bounced)) {
         self playsound("veh_qrdrone_wall");
         self setvehvelocity((0, 0, 0));
         self setangularvelocity((0, 0, 0));
@@ -915,7 +919,7 @@ quadrotor_set_team(team) {
   self.vteam = team;
   self setteam(team);
 
-  if(!isdefined(self.off))
+  if(!isDefined(self.off))
     quadrotor_blink_lights();
 }
 
@@ -934,7 +938,7 @@ quadrotor_self_destruct() {
   self_destruct = 0;
   self_destruct_time = 0;
 
-  while (true) {
+  while(true) {
     if(!self_destruct) {
       if(level.player meleebuttonpressed()) {
         self_destruct = 1;
@@ -951,7 +955,7 @@ quadrotor_self_destruct() {
       if(self_destruct_time == 0) {
         driver = self getseatoccupant(0);
 
-        if(isdefined(driver))
+        if(isDefined(driver))
           driver disableinvulnerability();
 
         earthquake(3, 1, self.origin, 256);
@@ -970,7 +974,7 @@ quadrotor_level_out_for_landing() {
   self endon("emped");
   self endon("landed");
 
-  while (isdefined(self.emped)) {
+  while(isDefined(self.emped)) {
     velocity = self.velocity;
     self.angles = (self.angles[0] * 0.85, self.angles[1], self.angles[2] * 0.85);
     ang_vel = self getangularvelocity() * 0.85;
@@ -986,11 +990,11 @@ quadrotor_temp_bullet_shield(invulnerable_time) {
   self.bullet_shield = 1;
   wait(invulnerable_time);
 
-  if(isdefined(self)) {
+  if(isDefined(self)) {
     self.bullet_shield = undefined;
     wait 3;
 
-    if(isdefined(self) && self.health < 40)
+    if(isDefined(self) && self.health < 40)
       self.health = 40;
   }
 }
@@ -1004,25 +1008,25 @@ lights_off() {
 }
 
 death_radius_damage() {
-  if(!isdefined(self) || self.radiusdamageradius <= 0) {
+  if(!isDefined(self) || self.radiusdamageradius <= 0) {
     return;
   }
   wait 0.05;
 
-  if(isdefined(self))
+  if(isDefined(self))
     self radiusdamage(self.origin + vectorscale((0, 0, 1), 15.0), self.radiusdamageradius, self.radiusdamagemax, self.radiusdamagemin, self, "MOD_EXPLOSIVE");
 }
 
 set_death_model(smodel, fdelay) {
-  assert(isdefined(smodel));
+  assert(isDefined(smodel));
 
-  if(isdefined(fdelay) && fdelay > 0)
+  if(isDefined(fdelay) && fdelay > 0)
     wait(fdelay);
 
-  if(!isdefined(self)) {
+  if(!isDefined(self)) {
     return;
   }
-  if(isdefined(self.deathmodel_attached)) {
+  if(isDefined(self.deathmodel_attached)) {
     return;
   }
   self setmodel(smodel);
@@ -1035,7 +1039,7 @@ player_in_last_stand_within_range(range) {
     return;
   }
   foreach(player in players) {
-    if(player maps\mp\zombies\_zm_laststand::player_is_in_laststand() && distancesquared(self.origin, player.origin) < range * range && !isdefined(player.quadrotor_revive))
+    if(player maps\mp\zombies\_zm_laststand::player_is_in_laststand() && distancesquared(self.origin, player.origin) < range * range && !isDefined(player.quadrotor_revive))
       return player;
   }
 }
@@ -1051,7 +1055,7 @@ watch_for_fail_revive(quad_rotor) {
   revive_target revive_hud_show_n_fade(1.0);
   wait 1;
 
-  if(isdefined(revive_target))
+  if(isDefined(revive_target))
     revive_target.quadrotor_revive = undefined;
 }
 
@@ -1064,8 +1068,8 @@ kill_fx_if_target_revive(quadrotor, revive_target) {
   e_fx moveto(revive_target.origin, 1);
   timer = 0;
 
-  while (true) {
-    if(isdefined(revive_target) && revive_target maps\mp\zombies\_zm_laststand::player_is_in_laststand() && isdefined(quadrotor)) {
+  while(true) {
+    if(isDefined(revive_target) && revive_target maps\mp\zombies\_zm_laststand::player_is_in_laststand() && isDefined(quadrotor)) {
       wait 0.1;
       timer = timer + 0.1;
 

@@ -17,5 +17,6 @@ main() {
   thread clientscripts\mp\_audio::audio_init(0);
   thread clientscripts\mp\mp_dig_amb::main();
   waitforclient(0);
+
   println("*** Client : mp_dig running...");
 }

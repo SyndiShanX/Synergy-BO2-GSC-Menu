@@ -41,7 +41,7 @@ init() {
   array_thread(crates, ::sound_pit_move);
   crate_data = [];
 
-  for (i = 0; i < crates.size; i++) {
+  for(i = 0; i < crates.size; i++) {
     crates[i] disconnectpaths();
     data = spawnstruct();
     data.origin = crates[i].origin;
@@ -107,7 +107,7 @@ crane_dvar_init() {
 wire_render() {
   self endon("movedone");
 
-  for (;;) {
+  for(;;) {
     wait 0.05;
 
     foreach(wire in self.wires) {
@@ -125,8 +125,8 @@ crane_think(claw, rail, crates, crate_data, placements) {
   wait 1;
   claw arms_open();
 
-  for (;;) {
-    for (i = 0; i < crates.size - placements.size; i++) {
+  for(;;) {
+    for(i = 0; i < crates.size - placements.size; i++) {
       crate = getclosest(crate_data[i].origin, crates);
       rail crane_move(claw, crate_data[i], -318);
       level notify("wires_move");
@@ -136,10 +136,10 @@ crane_think(claw, rail, crates, crate_data, placements) {
       target_crate = getclosest(crate_data[target].origin, crates);
 
       if(cointoss()) {
-        for (placement_index = 0; placement_index < placements.size; placement_index++) {
+        for(placement_index = 0; placement_index < placements.size; placement_index++) {
           placement = placements[placement_index];
 
-          if(!isdefined(placement.crate)) {
+          if(!isDefined(placement.crate)) {
             lower = 0;
             break;
           }
@@ -229,7 +229,7 @@ physics_move() {
   self endon("rotatedone");
   self endon("movedone");
 
-  for (;;) {
+  for(;;) {
     wait 0.05;
     crates = getentarray("care_package", "script_noteworthy");
 
@@ -259,7 +259,7 @@ claw_crate_grab(crate, z_dist) {
 }
 
 sound_wires_move() {
-  while (true) {
+  while(true) {
     level waittill("wires_move");
     self playsound("amb_crane_wire_start");
     self playloopsound("amb_crane_wire_lp");
@@ -271,7 +271,7 @@ sound_wires_move() {
 }
 
 sound_ring_move() {
-  while (true) {
+  while(true) {
     level waittill("ring_move");
     self playsound("amb_crane_ring_start");
     self playloopsound("amb_crane_ring_lp");
@@ -283,7 +283,7 @@ sound_ring_move() {
 }
 
 sound_pit_move() {
-  while (true) {
+  while(true) {
     level waittill("pit_move");
     self playsound("amb_crane_pit_start");
     self playloopsound("amb_crane_pit_lp");
@@ -464,7 +464,7 @@ crate_drop_think(claw) {
   claw thread claw_drop_think();
   corpse_delay = 0;
 
-  for (;;) {
+  for(;;) {
     wait 0.2;
     entities = getdamageableentarray(self.origin, 200);
 
@@ -472,7 +472,7 @@ crate_drop_think(claw) {
       if(!entity istouching(self.kill_trigger)) {
         continue;
       }
-      if(isdefined(entity.model) && entity.model == "t6_wpn_tac_insert_world") {
+      if(isDefined(entity.model) && entity.model == "t6_wpn_tac_insert_world") {
         entity maps\mp\_tacticalinsertion::destroy_tactical_insertion();
         continue;
       }
@@ -480,7 +480,7 @@ crate_drop_think(claw) {
       if(!isalive(entity)) {
         continue;
       }
-      if(isdefined(entity.targetname)) {
+      if(isDefined(entity.targetname)) {
         if(entity.targetname == "talon") {
           entity notify("death");
           continue;
@@ -493,17 +493,17 @@ crate_drop_think(claw) {
         }
       }
 
-      if(isdefined(entity.helitype) && entity.helitype == "qrdrone") {
+      if(isDefined(entity.helitype) && entity.helitype == "qrdrone") {
         watcher = entity.owner maps\mp\gametypes\_weaponobjects::getweaponobjectwatcher("qrdrone");
         watcher thread maps\mp\gametypes\_weaponobjects::waitanddetonate(entity, 0.0, undefined);
         continue;
       }
 
       if(entity.classname == "grenade") {
-        if(!isdefined(entity.name)) {
+        if(!isDefined(entity.name)) {
           continue;
         }
-        if(!isdefined(entity.owner)) {
+        if(!isDefined(entity.owner)) {
           continue;
         }
         if(entity.name == "proximity_grenade_mp") {
@@ -517,7 +517,7 @@ crate_drop_think(claw) {
         }
         watcher = entity.owner getwatcherforweapon(entity.name);
 
-        if(!isdefined(watcher)) {
+        if(!isDefined(watcher)) {
           continue;
         }
         watcher thread maps\mp\gametypes\_weaponobjects::waitanddetonate(entity, 0.0, undefined, "script_mover_mp");
@@ -525,7 +525,7 @@ crate_drop_think(claw) {
       }
 
       if(entity.classname == "auto_turret") {
-        if(!isdefined(entity.damagedtodeath) || !entity.damagedtodeath)
+        if(!isDefined(entity.damagedtodeath) || !entity.damagedtodeath)
           entity domaxdamage(self.origin + (0, 0, 1), self, self, 0, "MOD_CRUSH");
 
         continue;
@@ -600,20 +600,20 @@ destroy_supply_crates() {
 destroy_corpses() {
   corpses = getcorpsearray();
 
-  for (i = 0; i < corpses.size; i++) {
+  for(i = 0; i < corpses.size; i++) {
     if(distancesquared(corpses[i].origin, self.origin) < 40000)
       corpses[i] delete();
   }
 }
 
 getwatcherforweapon(weapname) {
-  if(!isdefined(self))
+  if(!isDefined(self))
     return undefined;
 
   if(!isplayer(self))
     return undefined;
 
-  for (i = 0; i < self.weaponobjectwatcherarray.size; i++) {
+  for(i = 0; i < self.weaponobjectwatcherarray.size; i++) {
     if(self.weaponobjectwatcherarray[i].weapon != weapname) {
       continue;
     }

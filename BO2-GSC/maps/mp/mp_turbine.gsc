@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\mp_turbine.gsc
-***************************************/
+**************************************/
 
 #include maps\mp\_utility;
 #include maps\mp\mp_turbine_fx;
@@ -104,7 +104,7 @@ rotate_blades(time) {
   self endon("game_ended");
   revolutions = 1000;
 
-  while (true) {
+  while(true) {
     self rotateroll(360 * revolutions, time * revolutions);
     self waittill("rotatedone");
   }

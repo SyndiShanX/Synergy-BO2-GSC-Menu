@@ -1,7 +1,7 @@
-/************************************************************
+/*******************************************************************
  * Decompiled and Edited by SyndiShanX
  * Script: clientscripts\mp\zombies\_zm_magicbox_prison.csc
-************************************************************/
+*******************************************************************/
 
 #include clientscripts\mp\_utility;
 #include clientscripts\mp\zombies\_zm_utility;
@@ -22,7 +22,7 @@ init() {
 }
 
 magicbox_leaving_fx(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump) {
-  if(!isdefined(self.fx_obj)) {
+  if(!isDefined(self.fx_obj)) {
     self.fx_obj = spawn(localclientnum, self.origin, "script_model");
     self.fx_obj.angles = self.angles;
     self.fx_obj setmodel("tag_origin");
@@ -33,7 +33,7 @@ magicbox_leaving_fx(localclientnum, oldval, newval, bnewent, binitialsnap, field
 }
 
 magicbox_open_fx(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump) {
-  if(!isdefined(self.fx_obj)) {
+  if(!isDefined(self.fx_obj)) {
     self.fx_obj = spawn(localclientnum, self.origin, "script_model");
     self.fx_obj.angles = self.angles;
     self.fx_obj setmodel("tag_origin");
@@ -46,7 +46,7 @@ magicbox_open_fx(localclientnum, oldval, newval, bnewent, binitialsnap, fieldnam
 }
 
 magicbox_initial_closed_fx(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump) {
-  if(!isdefined(self.fx_obj)) {
+  if(!isDefined(self.fx_obj)) {
     self.fx_obj = spawn(localclientnum, self.origin, "script_model");
     self.fx_obj.angles = self.angles;
     self.fx_obj setmodel("tag_origin");
@@ -60,13 +60,13 @@ magicbox_initial_closed_fx(localclientnum, oldval, newval, bnewent, binitialsnap
 }
 
 magicbox_ambient_fx(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump) {
-  if(!isdefined(self.fx_obj)) {
+  if(!isDefined(self.fx_obj)) {
     self.fx_obj = spawn(localclientnum, self.origin, "script_model");
     self.fx_obj.angles = self.angles;
     self.fx_obj setmodel("tag_origin");
   }
 
-  if(isdefined(self.fx_obj.curr_amb_fx))
+  if(isDefined(self.fx_obj.curr_amb_fx))
     stopfx(localclientnum, self.fx_obj.curr_amb_fx);
 
   if(newval == 0) {

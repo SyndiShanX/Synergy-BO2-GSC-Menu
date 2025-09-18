@@ -1,7 +1,7 @@
-/*****************************************************************
+/*****************************************************************************
  * Decompiled and Edited by SyndiShanX
  * Script: clientscripts\mp\zombies\_zm_powerup_zombie_blood.csc
-*****************************************************************/
+*****************************************************************************/
 
 #include clientscripts\mp\_utility;
 #include clientscripts\mp\zombies\_zm_utility;
@@ -52,7 +52,7 @@ zombie_blood_overlay_lerp(n_fraction_start, n_fraction_end, n_trans_time) {
   n_fraction_delta = n_fraction_end - n_fraction_start;
   set_filter_zombie_blood_overlay_amount(self, 1, n_fraction_start);
 
-  for (n_time = 0.0; n_time < n_trans_time; n_time = n_time + 0.0166667) {
+  for(n_time = 0.0; n_time < n_trans_time; n_time = n_time + 0.0166667) {
     n_fraction = n_fraction_start + n_fraction_delta * n_time / n_trans_time;
     set_filter_zombie_blood_overlay_amount(self, 1, n_fraction);
     wait 0.0166667;
@@ -67,13 +67,13 @@ toggle_player_zombie_blood_fx(localclientnum, oldval, newval, bnewent, binitials
   }
   if(newval == 1) {
     if(self islocalplayer() && self getlocalclientnumber() == localclientnum) {
-      if(!isdefined(self.zombie_blood_fx)) {
+      if(!isDefined(self.zombie_blood_fx)) {
         self.zombie_blood_fx = playviewmodelfx(localclientnum, level._effect["zombie_blood_1st"], "tag_camera");
         playsound(localclientnum, "zmb_zombieblood_start", (0, 0, 0));
         playloopat("zmb_zombieblood_loop", (0, 0, 0));
       }
     }
-  } else if(isdefined(self.zombie_blood_fx)) {
+  } else if(isDefined(self.zombie_blood_fx)) {
     stopfx(localclientnum, self.zombie_blood_fx);
     playsound(localclientnum, "zmb_zombieblood_stop", (0, 0, 0));
     stoploopat("zmb_zombieblood_loop", (0, 0, 0));

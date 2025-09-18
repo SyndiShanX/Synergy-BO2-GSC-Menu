@@ -16,6 +16,7 @@
 
 include_craftable(craftable_struct) {
   println("ZM >> include_craftable = " + craftable_struct.name);
+
   maps\mp\zombies\_zm_craftables::include_zombie_craftable(craftable_struct);
 }
 
@@ -47,7 +48,7 @@ is_team_on_golden_gate_bridge() {
 }
 
 create_tutorial_message(str_msg) {
-  if(!isdefined(self.client_hint)) {
+  if(!isDefined(self.client_hint)) {
     self.client_hint = newclienthudelem(self);
     self.client_hint.alignx = "center";
     self.client_hint.aligny = "middle";
@@ -72,12 +73,12 @@ create_tutorial_message(str_msg) {
 }
 
 destroy_tutorial_message() {
-  if(isdefined(self.client_hint)) {
+  if(isDefined(self.client_hint)) {
     self.client_hint fadeovertime(0.5);
     self.client_hint.alpha = 0;
     wait 0.5;
 
-    if(isdefined(self.client_hint)) {
+    if(isDefined(self.client_hint)) {
       self.client_hint destroy();
       self.client_hint = undefined;
     }
@@ -87,10 +88,10 @@ destroy_tutorial_message() {
 get_array_of_farthest(org, array, excluders, max) {
   sorted_array = get_array_of_closest(org, array, excluders);
 
-  if(isdefined(max)) {
+  if(isDefined(max)) {
     temp_array = [];
 
-    for (i = 0; i < sorted_array.size; i++)
+    for(i = 0; i < sorted_array.size; i++)
       temp_array[temp_array.size] = sorted_array[sorted_array.size - i];
 
     sorted_array = temp_array;
@@ -103,17 +104,17 @@ get_array_of_farthest(org, array, excluders, max) {
 drop_all_barriers() {
   zkeys = getarraykeys(level.zones);
 
-  for (z = 0; z < level.zones.size; z++) {
+  for(z = 0; z < level.zones.size; z++) {
     if(zkeys[z] != "zone_start" && zkeys[z] != "zone_library") {
       zbarriers = get_all_zone_zbarriers(zkeys[z]);
 
-      if(!isdefined(zbarriers)) {
+      if(!isDefined(zbarriers)) {
         continue;
       }
       foreach(zbarrier in zbarriers) {
         zbarrier_pieces = zbarrier getnumzbarrierpieces();
 
-        for (i = 0; i < zbarrier_pieces; i++) {
+        for(i = 0; i < zbarrier_pieces; i++) {
           zbarrier hidezbarrierpiece(i);
           zbarrier setzbarrierpiecestate(i, "open");
         }
@@ -125,7 +126,7 @@ drop_all_barriers() {
 }
 
 get_all_zone_zbarriers(zone_name) {
-  if(!isdefined(zone_name))
+  if(!isDefined(zone_name))
     return undefined;
 
   zone = level.zones[zone_name];
@@ -136,7 +137,7 @@ blundergat_change_hintstring(hint_string) {
   self notify("new_change_hint_string");
   self endon("new_change_hint_string");
 
-  while (isdefined(self.is_locked) && self.is_locked)
+  while(isDefined(self.is_locked) && self.is_locked)
     wait 0.05;
 
   self sethintstring(hint_string);
@@ -164,11 +165,11 @@ blundergat_upgrade_station() {
   m_converter.n_idle_time = getanimlength(m_converter.fxanims["inject"]);
   m_converter.n_end_time = getanimlength(m_converter.fxanims["open"]);
 
-  while (true) {
+  while(true) {
     t_upgrade thread blundergat_change_hintstring(&"ZM_PRISON_CONVERT_START");
     t_upgrade waittill("trigger", player);
 
-    if(isdefined(level.custom_craftable_validation)) {
+    if(isDefined(level.custom_craftable_validation)) {
       valid = t_upgrade[[level.custom_craftable_validation]](player);
 
       if(!valid)
@@ -182,7 +183,7 @@ blundergat_upgrade_station() {
     else if(player hasweapon("blundergat_upgraded_zm"))
       str_valid_weapon = "blundergat_upgraded_zm";
 
-    if(isdefined(str_valid_weapon)) {
+    if(isDefined(str_valid_weapon)) {
       player takeweapon(str_valid_weapon);
       player.is_pack_splatting = 1;
       t_upgrade setinvisibletoall();
@@ -190,7 +191,7 @@ blundergat_upgrade_station() {
       m_converter blundergat_upgrade_station_inject(str_valid_weapon);
       t_upgrade thread blundergat_change_hintstring(&"ZM_PRISON_CONVERT_PICKUP");
 
-      if(isdefined(player)) {
+      if(isDefined(player)) {
         t_upgrade setvisibletoplayer(player);
         t_upgrade thread wait_for_player_to_take(player, str_valid_weapon);
       }
@@ -198,7 +199,7 @@ blundergat_upgrade_station() {
       t_upgrade thread wait_for_timeout();
       t_upgrade waittill_any("acid_timeout", "acid_taken");
 
-      if(isdefined(player))
+      if(isDefined(player))
         player.is_pack_splatting = undefined;
 
       m_converter.worldgun delete();
@@ -215,10 +216,10 @@ wait_for_player_to_take(player, str_valid_weapon) {
   self endon("acid_timeout");
   player endon("disconnect");
 
-  while (true) {
+  while(true) {
     self waittill("trigger", trigger_player);
 
-    if(isdefined(level.custom_craftable_validation)) {
+    if(isDefined(level.custom_craftable_validation)) {
       valid = self[[level.custom_craftable_validation]](player);
 
       if(!valid)
@@ -234,7 +235,7 @@ wait_for_player_to_take(player, str_valid_weapon) {
         weapon_limit = 2;
         primaries = player getweaponslistprimaries();
 
-        if(isdefined(primaries) && primaries.size >= weapon_limit)
+        if(isDefined(primaries) && primaries.size >= weapon_limit)
           player takeweapon(current_weapon);
 
         str_new_weapon = undefined;
@@ -274,7 +275,7 @@ blundergat_upgrade_station_inject(str_weapon_model) {
   self setanim(self.fxanims["close"], 1, 0, 1);
   wait(self.n_start_time);
 
-  for (i = 0; i < 3; i++) {
+  for(i = 0; i < 3; i++) {
     self setanim(self.fxanims["inject"], 1, 0, 1);
     wait(self.n_idle_time);
   }
@@ -292,12 +293,12 @@ blundergat_upgrade_station_inject(str_weapon_model) {
 }
 
 player_lost_blundersplat_watcher() {
-  while (isdefined(self)) {
+  while(isDefined(self)) {
     if(isalive(self)) {
       primaries = self getweaponslistprimaries();
 
       if(!isinarray(primaries, "blundersplat_zm") && !isinarray(primaries, "blundersplat_upgraded_zm")) {
-        if(!(isdefined(self.afterlife) && self.afterlife)) {
+        if(!(isDefined(self.afterlife) && self.afterlife)) {
           break;
         }
       }
@@ -319,30 +320,30 @@ player_lightning_manager() {
   a_bad_zones[6] = "zone_infirmary_roof";
   a_bad_zones[7] = "zone_citadel_shower";
 
-  while (true) {
+  while(true) {
     str_player_zone = self get_player_zone();
 
-    if(!isdefined(str_player_zone)) {
+    if(!isDefined(str_player_zone)) {
       wait 1;
       continue;
     }
 
-    if(isdefined(level.hostmigrationtimer)) {
+    if(isDefined(level.hostmigrationtimer)) {
       level waittill("host_migration_end");
       self.b_lightning = 0;
       self setclientfieldtoplayer("toggle_lightning", 0);
       wait 1;
     }
 
-    if(isdefined(self.afterlife) && self.afterlife || isdefined(self.scary_lightning) && self.scary_lightning) {
+    if(isDefined(self.afterlife) && self.afterlife || isDefined(self.scary_lightning) && self.scary_lightning) {
       self.b_lightning = 0;
       self setclientfieldtoplayer("toggle_lightning", 0);
 
-      while (isdefined(self.afterlife) && self.afterlife || isdefined(self.scary_lightning) && self.scary_lightning)
+      while(isDefined(self.afterlife) && self.afterlife || isDefined(self.scary_lightning) && self.scary_lightning)
         wait 0.05;
     }
 
-    if(isdefined(self.b_lightning) && self.b_lightning) {
+    if(isDefined(self.b_lightning) && self.b_lightning) {
       foreach(str_bad_zone in a_bad_zones) {
         if(str_player_zone == str_bad_zone) {
           self.b_lightning = 0;
@@ -358,7 +359,7 @@ player_lightning_manager() {
           self.b_lightning = 0;
       }
 
-      if(isdefined(self.b_lightning) && self.b_lightning)
+      if(isDefined(self.b_lightning) && self.b_lightning)
         self setclientfieldtoplayer("toggle_lightning", 1);
     }
 
@@ -400,7 +401,7 @@ disable_powerup_if_player_on_bridge() {
   self endon("disconnect");
   flag_wait("afterlife_start_over");
 
-  while (true) {
+  while(true) {
     if(self maps\mp\zombies\_zm_zonemgr::is_player_in_zone("zone_golden_gate_bridge")) {
       if(flag("zombie_drop_powerups"))
         flag_clear("zombie_drop_powerups");
@@ -413,7 +414,7 @@ disable_powerup_if_player_on_bridge() {
 enable_powerup_if_no_player_on_bridge() {
   flag_wait("afterlife_start_over");
 
-  while (true) {
+  while(true) {
     n_player_total = 0;
     n_player_total = n_player_total + get_players_in_zone("zone_golden_gate_bridge");
 
@@ -539,7 +540,7 @@ init_level_specific_audio() {
 alcatraz_add_player_dialogue(speaker, category, type, alias, response, chance) {
   level.vox zmbvoxadd(speaker, category, type, alias, response);
 
-  if(isdefined(chance))
+  if(isDefined(chance))
     add_vox_response_chance(type, chance);
 }
 
@@ -549,13 +550,13 @@ alcatraz_audio_get_mod_type_override(impact, mod, weapon, zombie, instakill, dis
   far_dist = 75625;
   a_str_mod = [];
 
-  if(isdefined(zombie.my_soul_catcher)) {
-    if(!(isdefined(zombie.my_soul_catcher.wolf_kill_cooldown) && zombie.my_soul_catcher.wolf_kill_cooldown)) {
-      if(!(isdefined(player.soul_catcher_cooldown) && player.soul_catcher_cooldown)) {
-        if(isdefined(zombie.my_soul_catcher.souls_received) && zombie.my_soul_catcher.souls_received > 0)
+  if(isDefined(zombie.my_soul_catcher)) {
+    if(!(isDefined(zombie.my_soul_catcher.wolf_kill_cooldown) && zombie.my_soul_catcher.wolf_kill_cooldown)) {
+      if(!(isDefined(player.soul_catcher_cooldown) && player.soul_catcher_cooldown)) {
+        if(isDefined(zombie.my_soul_catcher.souls_received) && zombie.my_soul_catcher.souls_received > 0)
           a_str_mod[a_str_mod.size] = "wolf_kill";
-        else if(isdefined(zombie.my_soul_catcher.souls_received) && zombie.my_soul_catcher.souls_received == 0) {
-          if(!(isdefined(level.wolf_encounter_vo_played) && level.wolf_encounter_vo_played)) {
+        else if(isDefined(zombie.my_soul_catcher.souls_received) && zombie.my_soul_catcher.souls_received == 0) {
+          if(!(isDefined(level.wolf_encounter_vo_played) && level.wolf_encounter_vo_played)) {
             if(level.soul_catchers_charged == 0)
               zombie.my_soul_catcher thread maps\mp\zm_alcatraz_weap_quest::first_wolf_encounter_vo();
           }
@@ -567,13 +568,13 @@ alcatraz_audio_get_mod_type_override(impact, mod, weapon, zombie, instakill, dis
   if(weapon == "blundergat_zm" || weapon == "blundergat_upgraded_zm")
     a_str_mod[a_str_mod.size] = "blundergat";
 
-  if(isdefined(zombie.damageweapon) && zombie.damageweapon == "blundersplat_explosive_dart_zm")
+  if(isDefined(zombie.damageweapon) && zombie.damageweapon == "blundersplat_explosive_dart_zm")
     a_str_mod[a_str_mod.size] = "acidgat";
 
-  if(isdefined(zombie.damageweapon) && zombie.damageweapon == "bouncing_tomahawk_zm")
+  if(isDefined(zombie.damageweapon) && zombie.damageweapon == "bouncing_tomahawk_zm")
     a_str_mod[a_str_mod.size] = "retriever";
 
-  if(isdefined(zombie.damageweapon) && zombie.damageweapon == "upgraded_tomahawk_zm")
+  if(isDefined(zombie.damageweapon) && zombie.damageweapon == "upgraded_tomahawk_zm")
     a_str_mod[a_str_mod.size] = "redeemer";
 
   if(weapon == "minigun_alcatraz_zm" || weapon == "minigun_alcatraz_upgraded_zm")
@@ -582,7 +583,7 @@ alcatraz_audio_get_mod_type_override(impact, mod, weapon, zombie, instakill, dis
   if(is_headshot(weapon, impact, mod) && dist >= far_dist)
     a_str_mod[a_str_mod.size] = "headshot";
 
-  if(is_explosive_damage(mod) && weapon != "ray_gun_zm" && weapon != "ray_gun_upgraded_zm" && !(isdefined(zombie.is_on_fire) && zombie.is_on_fire)) {
+  if(is_explosive_damage(mod) && weapon != "ray_gun_zm" && weapon != "ray_gun_upgraded_zm" && !(isDefined(zombie.is_on_fire) && zombie.is_on_fire)) {
     if(!isinarray(a_str_mod, "retriever") && !isinarray(a_str_mod, "redeemer")) {
       if(!instakill)
         a_str_mod[a_str_mod.size] = "explosive";
@@ -618,7 +619,7 @@ alcatraz_audio_get_mod_type_override(impact, mod, weapon, zombie, instakill, dis
   else if(a_str_mod.size == 1)
     str_mod_final = a_str_mod[0];
   else {
-    for (i = 0; i < a_str_mod.size; i++) {
+    for(i = 0; i < a_str_mod.size; i++) {
       if(cointoss())
         str_mod_final = a_str_mod[i];
     }
@@ -705,10 +706,10 @@ setup_conversation_vo() {
 alcatraz_custom_zombie_oh_shit_vox() {
   self endon("death_or_disconnect");
 
-  while (true) {
+  while(true) {
     wait 1;
 
-    if(isdefined(self.oh_shit_vo_cooldown) && self.oh_shit_vo_cooldown) {
+    if(isDefined(self.oh_shit_vo_cooldown) && self.oh_shit_vo_cooldown) {
       continue;
     }
     players = get_players();
@@ -728,15 +729,15 @@ alcatraz_custom_zombie_oh_shit_vox() {
 
     close_zombs = 0;
 
-    for (i = 0; i < zombs.size; i++) {
-      if(isdefined(zombs[i].favoriteenemy) && zombs[i].favoriteenemy == self || !isdefined(zombs[i].favoriteenemy)) {
+    for(i = 0; i < zombs.size; i++) {
+      if(isDefined(zombs[i].favoriteenemy) && zombs[i].favoriteenemy == self || !isDefined(zombs[i].favoriteenemy)) {
         if(distancesquared(zombs[i].origin, self.origin) < n_distance * n_distance)
           close_zombs++;
       }
     }
 
     if(close_zombs >= n_zombies) {
-      if(randomint(100) < n_chance && !(isdefined(self.isonbus) && self.isonbus)) {
+      if(randomint(100) < n_chance && !(isDefined(self.isonbus) && self.isonbus)) {
         self maps\mp\zombies\_zm_audio::create_and_play_dialog("general", "oh_shit");
         self thread global_oh_shit_cooldown_timer(n_cooldown_time);
         wait(n_cooldown_time);
@@ -755,10 +756,10 @@ global_oh_shit_cooldown_timer(n_cooldown_time) {
 alcatraz_custom_crawler_spawned_vo() {
   self endon("death");
 
-  if(isdefined(self.a.gib_ref) && isalive(self)) {
+  if(isDefined(self.a.gib_ref) && isalive(self)) {
     if(self.a.gib_ref == "no_legs" || self.a.gib_ref == "right_leg" || self.a.gib_ref == "left_leg") {
-      if(isdefined(self.attacker) && isplayer(self.attacker)) {
-        if(isdefined(self.attacker.crawler_created_vo_cooldown) && self.attacker.crawler_created_vo_cooldown) {
+      if(isDefined(self.attacker) && isplayer(self.attacker)) {
+        if(isDefined(self.attacker.crawler_created_vo_cooldown) && self.attacker.crawler_created_vo_cooldown) {
           return;
         }
         rand = randomintrange(0, 100);
@@ -792,10 +793,10 @@ wait_and_play_first_magic_box_seen_vo(struct) {
   self endon("disconnect");
   level endon("first_maigc_box_discovered");
 
-  while (true) {
+  while(true) {
     if(distancesquared(self.origin, struct.origin) < 40000) {
       if(self is_player_looking_at(struct.origin, 0.25)) {
-        if(!(isdefined(self.dontspeak) && self.dontspeak)) {
+        if(!(isDefined(self.dontspeak) && self.dontspeak)) {
           self thread maps\mp\zombies\_zm_audio::create_and_play_dialog("general", "discover_box");
           level notify("first_maigc_box_discovered");
           break;
@@ -811,7 +812,7 @@ alcatraz_audio_custom_weapon_check(weapon, magic_box) {
   self endon("death");
   self endon("disconnect");
 
-  if(isdefined(magic_box) && magic_box) {
+  if(isDefined(magic_box) && magic_box) {
     type = self maps\mp\zombies\_zm_weapons::weapon_type_check(weapon);
     return type;
   }
@@ -830,13 +831,13 @@ alcatraz_audio_custom_weapon_check(weapon, magic_box) {
 brutus_spawn_vo_watcher() {
   level.total_brutuses_spawned = 0;
 
-  while (true) {
+  while(true) {
     level waittill("brutus_spawned", ai_brutus);
 
-    if(!isdefined(ai_brutus)) {
+    if(!isDefined(ai_brutus)) {
       continue;
     }
-    if(isdefined(level.brutus_spawn_vo_cooldown) && level.brutus_spawn_vo_cooldown) {
+    if(isDefined(level.brutus_spawn_vo_cooldown) && level.brutus_spawn_vo_cooldown) {
       continue;
     }
     ai_brutus thread brutus_reaction_vo_watcher();
@@ -855,8 +856,8 @@ brutus_spawn_vo_watcher() {
     a_players = getplayers();
     a_closest = get_array_of_closest(ai_brutus.origin, a_players);
 
-    for (i = 0; i < a_closest.size; i++) {
-      if(!(isdefined(a_closest[i].dontspeak) && a_closest[i].dontspeak)) {
+    for(i = 0; i < a_closest.size; i++) {
+      if(!(isDefined(a_closest[i].dontspeak) && a_closest[i].dontspeak)) {
         if(isalive(a_closest[i]) && isalive(ai_brutus)) {
           a_closest[i] thread maps\mp\zombies\_zm_audio::create_and_play_dialog("general", str_vo_category);
           level thread brutus_spawn_vo_cooldown();
@@ -876,13 +877,13 @@ brutus_reaction_vo_watcher() {
   self endon("death");
   level endon("restart_brutus_reaction_vo_watcher");
 
-  while (isalive(self)) {
+  while(isalive(self)) {
     wait(randomfloatrange(20, 40));
     a_players = getplayers();
     a_closest = get_array_of_closest(self.origin, a_players);
 
-    for (i = 0; i < a_closest.size; i++) {
-      if(!(isdefined(a_closest[i].dontspeak) && a_closest[i].dontspeak)) {
+    for(i = 0; i < a_closest.size; i++) {
+      if(!(isDefined(a_closest[i].dontspeak) && a_closest[i].dontspeak)) {
         if(distancesquared(a_closest[i].origin, self.origin) < 1000000)
           a_closest[i] thread maps\mp\zombies\_zm_audio::create_and_play_dialog("general", "brutus_reaction");
       }
@@ -903,7 +904,7 @@ brutus_helmet_pop_vo_watcher() {
 }
 
 brutus_killed_vo_watcher() {
-  while (true) {
+  while(true) {
     level waittill("brutus_killed", player);
     wait 5.0;
 
@@ -918,12 +919,12 @@ easter_egg_song_vo(player) {
   if(isalive(player))
     player thread maps\mp\zombies\_zm_audio::create_and_play_dialog("quest", "find_secret");
   else {
-    while (true) {
+    while(true) {
       a_players = getplayers();
 
       foreach(player in a_players) {
         if(isalive(player)) {
-          if(!(isdefined(player.dontspeak) && player.dontspeak))
+          if(!(isDefined(player.dontspeak) && player.dontspeak))
             player thread maps\mp\zombies\_zm_audio::create_and_play_dialog("quest", "find_secret");
         }
       }
@@ -939,7 +940,7 @@ player_portal_clue_vo() {
   flag_wait("afterlife_start_over");
   wait 1;
 
-  while (true) {
+  while(true) {
     self waittill("player_fake_corpse_created");
     self.e_afterlife_corpse waittill("player_revived", e_reviver);
 
@@ -1043,7 +1044,7 @@ play_vo_category_on_closest_player(category, type) {
 }
 
 check_for_special_weapon_limit_exist(weapon) {
-  if(isdefined(level.raygun2_included) && level.raygun2_included) {
+  if(isDefined(level.raygun2_included) && level.raygun2_included) {
     if(weapon == "ray_gun_zm") {
       if(self has_weapon_or_upgrade("raygun_mark2_zm") || maps\mp\zombies\_zm_afterlife::is_weapon_available_in_afterlife_corpse("raygun_mark2_zm", self))
         return false;
@@ -1079,9 +1080,9 @@ check_for_special_weapon_limit_exist(weapon) {
     limit = level.limited_weapons["minigun_alcatraz_zm"];
   }
 
-  for (i = 0; i < players.size; i++) {
+  for(i = 0; i < players.size; i++) {
     if(weapon == "blundergat_zm") {
-      if(players[i] has_weapon_or_upgrade("blundersplat_zm") || isdefined(players[i].is_pack_splatting) && players[i].is_pack_splatting) {
+      if(players[i] has_weapon_or_upgrade("blundersplat_zm") || isDefined(players[i].is_pack_splatting) && players[i].is_pack_splatting) {
         count++;
         continue;
       }
@@ -1098,7 +1099,7 @@ check_for_special_weapon_limit_exist(weapon) {
 }
 
 afterlife_weapon_limit_check(limited_weapon) {
-  if(isdefined(self.afterlife) && self.afterlife) {
+  if(isDefined(self.afterlife) && self.afterlife) {
     if(limited_weapon == "blundergat_zm") {
       foreach(weapon in self.loadout.weapons) {
         if(weapon == "blundergat_zm" || weapon == "blundergat_upgraded_zm" || weapon == "blundersplat_zm" || weapon == "blundersplat_upgraded_zm")

@@ -29,6 +29,7 @@ init() {
   setkillstreakteamkillpenaltyscale("missile_swarm_mp", 0.0);
   maps\mp\killstreaks\_killstreaks::createkillstreaktimer("missile_swarm_mp");
   registerclientfield("world", "missile_swarm", 1, 2, "int");
+
   set_dvar_int_if_unset("scr_missile_swarm_cam", 0);
 }
 
@@ -80,15 +81,15 @@ swarm_killstreak_start(owner, killstreak_id) {
   missiles = getentarray("swarm_missile", "targetname");
 
   foreach(missile in missiles) {
-    if(isdefined(missile)) {
+    if(isDefined(missile)) {
       missile detonate();
       wait 0.1;
     }
   }
 
-  if(isdefined(level.missile_swarm_fx)) {
-    for (i = 0; i < level.missile_swarm_fx.size; i++) {
-      if(isdefined(level.missile_swarm_fx[i]))
+  if(isDefined(level.missile_swarm_fx)) {
+    for(i = 0; i < level.missile_swarm_fx.size; i++) {
+      if(isDefined(level.missile_swarm_fx[i]))
         level.missile_swarm_fx[i] delete();
     }
   }
@@ -110,7 +111,7 @@ swarm_killstreak_start(owner, killstreak_id) {
 swarm_killstreak_end(owner, detonate, killstreak_id) {
   level notify("swarm_end");
 
-  if(isdefined(detonate) && detonate)
+  if(isDefined(detonate) && detonate)
     level setclientfield("missile_swarm", 2);
   else
     level setclientfield("missile_swarm", 0);
@@ -118,25 +119,25 @@ swarm_killstreak_end(owner, detonate, killstreak_id) {
   missiles = getentarray("swarm_missile", "targetname");
 
   if(is_true(detonate)) {
-    for (i = 0; i < level.missile_swarm_fx.size; i++) {
-      if(isdefined(level.missile_swarm_fx[i]))
+    for(i = 0; i < level.missile_swarm_fx.size; i++) {
+      if(isDefined(level.missile_swarm_fx[i]))
         level.missile_swarm_fx[i] delete();
     }
 
     foreach(missile in missiles) {
-      if(isdefined(missile)) {
+      if(isDefined(missile)) {
         missile detonate();
         wait 0.1;
       }
     }
   } else {
     foreach(missile in missiles) {
-      if(isdefined(missile)) {
+      if(isDefined(missile)) {
         yaw = randomintrange(0, 360);
         angles = (0, yaw, 0);
         forward = anglestoforward(angles);
 
-        if(isdefined(missile.goal))
+        if(isDefined(missile.goal))
           missile.goal.origin = missile.origin + forward * level.missile_swarm_flydist * 1000;
       }
     }
@@ -148,7 +149,7 @@ swarm_killstreak_end(owner, detonate, killstreak_id) {
   level.missile_swarm_sound delete();
   recordstreakindex = level.killstreakindices[level.killstreaks["missile_swarm_mp"].menuname];
 
-  if(isdefined(recordstreakindex))
+  if(isDefined(recordstreakindex))
     owner recordkillstreakendevent(recordstreakindex);
 
   maps\mp\killstreaks\_killstreakrules::killstreakstop("missile_swarm_mp", level.missile_swarm_team, killstreak_id);
@@ -157,7 +158,7 @@ swarm_killstreak_end(owner, detonate, killstreak_id) {
   missiles = getentarray("swarm_missile", "targetname");
 
   foreach(missile in missiles) {
-    if(isdefined(missile)) {
+    if(isDefined(missile)) {
       missile delete();
       wait 0.1;
     }
@@ -165,8 +166,8 @@ swarm_killstreak_end(owner, detonate, killstreak_id) {
 
   wait 6;
 
-  for (i = 0; i < level.missile_swarm_fx.size; i++) {
-    if(isdefined(level.missile_swarm_fx[i]))
+  for(i = 0; i < level.missile_swarm_fx.size; i++) {
+    if(isDefined(level.missile_swarm_fx[i]))
       level.missile_swarm_fx[i] delete();
   }
 }
@@ -220,20 +221,20 @@ swarm_killstreak_fx() {
   level setclientfield("missile_swarm", 1);
   current = 1;
 
-  while (true) {
-    if(!isdefined(level.missile_swarm_fx[current])) {
+  while(true) {
+    if(!isDefined(level.missile_swarm_fx[current])) {
       level.missile_swarm_fx[current] = spawn("script_model", level.missile_swarm_origin);
       level.missile_swarm_fx[current] setmodel("tag_origin");
     }
 
     yaw = randomint(360);
 
-    if(isdefined(level.missile_swarm_fx[current]))
+    if(isDefined(level.missile_swarm_fx[current]))
       level.missile_swarm_fx[current].angles = (-90, yaw, 0);
 
     wait 0.1;
 
-    if(isdefined(level.missile_swarm_fx[current]))
+    if(isDefined(level.missile_swarm_fx[current]))
       playfxontag(level.swarm_fx["swarm"], level.missile_swarm_fx[current], "tag_origin");
 
     current = (current + 1) % 7;
@@ -247,7 +248,7 @@ swarm_think(owner, killstreak_id) {
   end_time = gettime() + lifetime * 1000;
   level.missile_swarm_count = 0;
 
-  while (gettime() < end_time) {
+  while(gettime() < end_time) {
     assert(level.missile_swarm_count >= 0);
 
     if(level.missile_swarm_count >= level.missile_swarm_max) {
@@ -258,7 +259,7 @@ swarm_think(owner, killstreak_id) {
     count = 1;
     level.missile_swarm_count = level.missile_swarm_count + count;
 
-    for (i = 0; i < count; i++)
+    for(i = 0; i < count; i++)
       self thread projectile_spawn(owner);
 
     wait(level.missile_swarm_count / level.missile_swarm_max + 0.4);
@@ -287,7 +288,7 @@ projectile_cam(player) {
 projectile_goal_move() {
   self endon("death");
 
-  for (;;) {
+  for(;;) {
     wait 0.25;
 
     if(distancesquared(self.origin, self.goal.origin) < 65536) {
@@ -298,7 +299,7 @@ projectile_goal_move() {
 
       enemy = projectile_find_random_player(self.owner, self.team);
 
-      if(isdefined(enemy))
+      if(isDefined(enemy))
         self.goal.origin = enemy.origin + (0, 0, self.origin[2]);
       else {
         pitch = randomintrange(-45, 45);
@@ -311,7 +312,7 @@ projectile_goal_move() {
       nfz = crossesnoflyzone(self.origin, self.goal.origin);
       tries = 20;
 
-      while (isdefined(nfz) && tries > 0) {
+      while(isDefined(nfz) && tries > 0) {
         tries--;
         pitch = randomintrange(-45, 45);
         yaw = randomintrange(0, 360);
@@ -328,11 +329,11 @@ projectile_target_search(acceptskyexposure, acquiretime, allowplayeroffset) {
   self endon("death");
   wait(acquiretime);
 
-  for (;;) {
+  for(;;) {
     wait(randomfloatrange(0.5, 1.0));
     target = self projectile_find_target(acceptskyexposure);
 
-    if(isdefined(target)) {
+    if(isDefined(target)) {
       self.swarm_target = target["entity"];
       target["entity"].swarm = self;
 
@@ -346,7 +347,7 @@ projectile_target_search(acceptskyexposure, acquiretime, allowplayeroffset) {
 
       self playsound("veh_harpy_drone_swarm_incomming");
 
-      if(!isdefined(target["entity"].swarmsound) || target["entity"].swarmsound == 0)
+      if(!isDefined(target["entity"].swarmsound) || target["entity"].swarmsound == 0)
         self thread target_sounds(target["entity"]);
 
       target["entity"] waittill_any("death", "disconnect", "joined_team");
@@ -364,13 +365,13 @@ target_sounds(targetent) {
   self endon("death");
   dist = 3000;
 
-  if(isdefined(self.warningsounddist))
+  if(isDefined(self.warningsounddist))
     dist = self.warningsounddist;
 
-  while (distancesquared(self.origin, targetent.origin) > dist * dist)
+  while(distancesquared(self.origin, targetent.origin) > dist * dist)
     wait 0.05;
 
-  if(isdefined(targetent.swarmsound) && targetent.swarmsound == 1) {
+  if(isDefined(targetent.swarmsound) && targetent.swarmsound == 1) {
     return;
   }
   targetent.swarmsound = 1;
@@ -386,14 +387,14 @@ target_sounds(targetent) {
 target_stop_sounds(targetent) {
   targetent waittill_any("disconnect", "death", "joined_team");
 
-  if(isdefined(targetent) && isplayer(targetent))
+  if(isDefined(targetent) && isplayer(targetent))
     targetent stoplocalsound(level.missiledronesoundstart);
 }
 
 reset_sound_blocker(target) {
   wait 2;
 
-  if(isdefined(target))
+  if(isDefined(target))
     target.swarmsound = 0;
 }
 
@@ -407,7 +408,7 @@ projectile_spawn(owner) {
   target = level.mapcenter + upvector + forward * level.missile_swarm_flydist;
   enemy = projectile_find_random_player(owner, owner.team);
 
-  if(isdefined(enemy))
+  if(isDefined(enemy))
     target = enemy.origin + upvector;
 
   projectile = projectile_spawn_utility(owner, target, origin, "missile_swarm_projectile_mp", "swarm_missile", 1);
@@ -417,7 +418,7 @@ projectile_spawn(owner) {
   projectile thread projectile_goal_move();
   wait 0.1;
 
-  if(isdefined(projectile))
+  if(isDefined(projectile))
     projectile setclientfield("missile_drone_projectile_animate", 1);
 }
 
@@ -429,8 +430,10 @@ projectile_spawn_utility(owner, target, origin, weapon, targetname, movegoal) {
   p.team = owner.team;
   p.goal = goal;
   p.targetname = "swarm_missile";
+
   if(!is_true(owner.swarm_cam) && getdvarint(#"_id_492656A6") == 1)
     p thread projectile_cam(owner);
+
   return p;
 }
 
@@ -450,11 +453,11 @@ projectile_find_target(acceptskyexposure) {
   ks = projectile_find_target_killstreak(acceptskyexposure);
   player = projectile_find_target_player(acceptskyexposure);
 
-  if(isdefined(ks) && !isdefined(player))
+  if(isDefined(ks) && !isDefined(player))
     return ks;
-  else if(!isdefined(ks) && isdefined(player))
+  else if(!isDefined(ks) && isDefined(player))
     return player;
-  else if(isdefined(ks) && isdefined(player)) {
+  else if(isDefined(ks) && isDefined(player)) {
     if(cointoss())
       return ks;
 
@@ -481,18 +484,18 @@ projectile_find_target_killstreak(acceptskyexposure) {
   targets = arraysort(targets, self.origin);
 
   foreach(target in targets) {
-    if(isdefined(target.owner) && target.owner == self.owner) {
+    if(isDefined(target.owner) && target.owner == self.owner) {
       continue;
     }
-    if(isdefined(target.script_owner) && target.script_owner == self.owner) {
+    if(isDefined(target.script_owner) && target.script_owner == self.owner) {
       continue;
     }
-    if(level.teambased && isdefined(target.team)) {
+    if(level.teambased && isDefined(target.team)) {
       if(target.team == self.team)
         continue;
     }
 
-    if(level.teambased && isdefined(target.aiteam)) {
+    if(level.teambased && isDefined(target.aiteam)) {
       if(target.aiteam == self.team)
         continue;
     }
@@ -570,7 +573,7 @@ projectile_find_random_player(owner, team) {
     if(!player_valid_target(player, team, owner)) {
       continue;
     }
-    if(!isdefined(level.playertargetedtimes[player.clientid]))
+    if(!isDefined(level.playertargetedtimes[player.clientid]))
       level.playertargetedtimes[player.clientid] = 0;
 
     if(level.playertargetedtimes[player.clientid] < lowest || level.playertargetedtimes[player.clientid] == lowest && randomint(100) > 50) {
@@ -579,7 +582,7 @@ projectile_find_random_player(owner, team) {
     }
   }
 
-  if(isdefined(target)) {
+  if(isDefined(target)) {
     level.playertargetedtimes[target.clientid] = level.playertargetedtimes[target.clientid] + 1;
     return target;
   }
@@ -605,10 +608,11 @@ player_valid_target(player, team, owner) {
   if(player cantargetplayerwithspecialty() == 0)
     return false;
 
-  if(isdefined(player.lastspawntime) && gettime() - player.lastspawntime < 3000)
+  if(isDefined(player.lastspawntime) && gettime() - player.lastspawntime < 3000)
     return false;
 
   if(player isinmovemode("ufo", "noclip"))
     return false;
+
   return true;
 }

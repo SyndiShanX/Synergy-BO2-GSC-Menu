@@ -35,7 +35,9 @@ main() {
   setdvar("scr_hydro_water_rush_up_time", "8");
   setdvar("scr_hydro_water_rush_down_time", "4.5");
   waitforclient(0);
+
   println("*** Client : mp_hydro running...");
+
   level thread water_animation();
 }
 
@@ -50,7 +52,7 @@ water_animation() {
   multiplier = 1;
   alpha = 0;
 
-  for (;;) {
+  for(;;) {
     color_u_rate = 0.0000933333;
     color_v_rate = 0.00035;
     dist_u_rate = -0.00014;
@@ -81,7 +83,7 @@ water_animation() {
 }
 
 hydroplayerconnected(localclientnum) {
-  for (;;) {
+  for(;;) {
     level waittill("snap_processed", snapshotlocalclientnum);
 
     if(snapshotlocalclientnum == localclientnum) {
@@ -106,33 +108,33 @@ water_killstreak_fx(localclientnum) {
     return;
   }
   ents = level.createfxexploders[2001];
-  assert(isdefined(ents));
+  assert(isDefined(ents));
 
   foreach(ent in ents) {
-    if(!isdefined(ent.loopfx))
+    if(!isDefined(ent.loopfx))
       ent.loopfx = [];
   }
 
   airborne = 2 | 4 | 8;
 
-  for (;;) {
+  for(;;) {
     level waittill("snap_processed", snapshotlocalclientnum);
 
     if(snapshotlocalclientnum == localclientnum) {
       player = getlocalplayer(localclientnum);
 
-      if(!isdefined(player)) {
+      if(!isDefined(player)) {
         continue;
       }
       foreach(ent in ents) {
         if(player.eflags2 & airborne) {
-          if(!isdefined(ent.loopfx[localclientnum]))
+          if(!isDefined(ent.loopfx[localclientnum]))
             ent.loopfx[localclientnum] = playfx(localclientnum, level._effect[ent.v["fxid"]], ent.v["origin"], ent.v["forward"], ent.v["up"]);
 
           continue;
         }
 
-        if(isdefined(ent.loopfx[localclientnum])) {
+        if(isDefined(ent.loopfx[localclientnum])) {
           stopfx(localclientnum, ent.loopfx[localclientnum]);
           ent.loopfx[localclientnum] = undefined;
         }
@@ -142,7 +144,7 @@ water_killstreak_fx(localclientnum) {
 }
 
 water_prone_fx(localclientnum) {
-  for (;;) {
+  for(;;) {
     self waittill("trigger", player);
 
     if(!player islocalplayer()) {
@@ -150,13 +152,13 @@ water_prone_fx(localclientnum) {
     }
     clientnum = player getlocalclientnumber();
 
-    if(!isdefined(clientnum)) {
+    if(!isDefined(clientnum)) {
       continue;
     }
     if(clientnum != localclientnum) {
       continue;
     }
-    while (player istouching(self)) {
+    while(player istouching(self)) {
       if(player getstance(localclientnum) == "prone")
         startwatersheetingfx(localclientnum);
       else
@@ -164,7 +166,7 @@ water_prone_fx(localclientnum) {
 
       wait 0.1;
 
-      if(!isdefined(player)) {
+      if(!isDefined(player)) {
         break;
       }
     }
@@ -177,7 +179,7 @@ playprewave(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bw
   if(localclientnum != 0) {
     return;
   }
-  if(!isdefined(level.water_multiplier))
+  if(!isDefined(level.water_multiplier))
     level.water_multiplier = 1;
 
   if(newval) {
@@ -203,7 +205,7 @@ playbigwave(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bw
   }
   player = getlocalplayer(localclientnum);
 
-  if(!isdefined(player)) {
+  if(!isDefined(player)) {
     return;
   }
   if(player getinkillcam(localclientnum)) {
@@ -228,7 +230,7 @@ playbigwave(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bw
 waterlevel() {
   level endon("playBigWaveSingleton");
 
-  for (i = 1; i < 101; i++) {
+  for(i = 1; i < 101; i++) {
     setsaveddvar("R_WaterWaveBase", 0 + i * 0.205);
     setsaveddvar("r_waterwavenormalscale", 0.25 + i * 0.0375);
     wait 0.025;
@@ -236,7 +238,7 @@ waterlevel() {
 
   wait 2.5;
 
-  for (i = 100; i > -1; i--) {
+  for(i = 100; i > -1; i--) {
     setsaveddvar("R_WaterWaveBase", 0 + i * 0.205);
     setsaveddvar("r_waterwavenormalscale", 0.25 + i * 0.0375);
     wait 0.015;
@@ -246,7 +248,7 @@ waterlevel() {
 waterwaves() {
   level endon("playBigWaveSingleton");
 
-  for (i = 1; i < 18; i++) {
+  for(i = 1; i < 18; i++) {
     amp = i + " 0 0 0";
     setsaveddvar("r_waterwaveamplitude", amp);
     wait 0.15;
@@ -254,7 +256,7 @@ waterwaves() {
 
   wait 2.8;
 
-  for (i = 16; i > 0; i--) {
+  for(i = 16; i > 0; i--) {
     amp = i + " 0 0 0";
     setsaveddvar("r_waterwaveamplitude", amp);
     wait 0.15;
@@ -265,10 +267,10 @@ cameratrackplayer(localclientnum) {
   pitch = self.angles[0];
   roll = self.angles[2];
 
-  for (;;) {
+  for(;;) {
     localplayer = getnonpredictedlocalplayer(0);
 
-    if(isdefined(localplayer) && isdefined(localplayer.origin)) {
+    if(isDefined(localplayer) && isDefined(localplayer.origin)) {
       direction = localplayer.origin - self.origin;
       angles = vectortoangles(direction);
       flattenedangles = (pitch, angles[1] + 90, roll);

@@ -1,7 +1,7 @@
-/*******************************************************
+/*********************************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\killstreaks\_killstreak_weapons.gsc
-*******************************************************/
+*********************************************************/
 
 #include common_scripts\utility;
 #include maps\mp\_utility;
@@ -43,7 +43,7 @@ init() {
 }
 
 onplayerconnect() {
-  for (;;) {
+  for(;;) {
     level waittill("connecting", player);
     player thread onplayerspawned();
   }
@@ -52,7 +52,7 @@ onplayerconnect() {
 onplayerspawned() {
   self endon("disconnect");
 
-  for (;;) {
+  for(;;) {
     self waittill("spawned_player");
     self.firedkillstreakweapon = 0;
     self.usingkillstreakheldweapon = undefined;
@@ -68,7 +68,7 @@ watchkillstreakweapondelay() {
   self endon("disconnect");
   self endon("death");
 
-  while (true) {
+  while(true) {
     currentweapon = self getcurrentweapon();
     self waittill("weapon_change", newweapon);
 
@@ -100,7 +100,7 @@ usekillstreakweapondrop(hardpointtype) {
   result = self maps\mp\killstreaks\_supplydrop::usesupplydropmarker();
   self notify("supply_drop_marker_done");
 
-  if(!isdefined(result) || !result)
+  if(!isDefined(result) || !result)
     return 0;
 
   return result;
@@ -112,7 +112,7 @@ usecarriedkillstreakweapon(hardpointtype) {
     return false;
   }
 
-  if(!isdefined(hardpointtype))
+  if(!isDefined(hardpointtype))
     return false;
 
   currentweapon = self getcurrentweapon();
@@ -129,7 +129,7 @@ usecarriedkillstreakweapon(hardpointtype) {
 
   currentammo = self getammocount(hardpointtype);
 
-  if((hardpointtype == "minigun_mp" || hardpointtype == "inventory_minigun_mp") && (!isdefined(self.minigunstart) || self.minigunstart == 0) || (hardpointtype == "m32_mp" || hardpointtype == "inventory_m32_mp") && (!isdefined(self.m32start) || self.m32start == 0)) {
+  if((hardpointtype == "minigun_mp" || hardpointtype == "inventory_minigun_mp") && (!isDefined(self.minigunstart) || self.minigunstart == 0) || (hardpointtype == "m32_mp" || hardpointtype == "inventory_m32_mp") && (!isDefined(self.m32start) || self.m32start == 0)) {
     if(hardpointtype == "minigun_mp" || hardpointtype == "inventory_minigun_mp")
       self.minigunstart = 1;
     else
@@ -153,7 +153,7 @@ usecarriedkillstreakweapon(hardpointtype) {
   }
 
   if(hardpointtype == "minigun_mp" || hardpointtype == "inventory_minigun_mp") {
-    if(!isdefined(self.minigunactive) || !self.minigunactive) {
+    if(!isDefined(self.minigunactive) || !self.minigunactive) {
       killstreak_id = self maps\mp\killstreaks\_killstreakrules::killstreakstart(hardpointtype, self.team, 0, 0);
 
       if(hardpointtype == "inventory_minigun_mp")
@@ -163,7 +163,7 @@ usecarriedkillstreakweapon(hardpointtype) {
       self.minigunactive = 1;
     } else
       killstreak_id = self.minigunid;
-  } else if(!isdefined(self.m32active) || !self.m32active) {
+  } else if(!isDefined(self.m32active) || !self.m32active) {
     killstreak_id = self maps\mp\killstreaks\_killstreakrules::killstreakstart(hardpointtype, self.team, 0, 0);
 
     if(hardpointtype == "inventory_m32_mp")
@@ -198,7 +198,7 @@ usecarriedkillstreakweapon(hardpointtype) {
 }
 
 usekillstreakweaponfromcrate(hardpointtype) {
-  if(!isdefined(hardpointtype))
+  if(!isDefined(hardpointtype))
     return false;
 
   if(hardpointtype == "none")
@@ -228,7 +228,7 @@ watchkillstreakweaponswitch(killstreakweapon, killstreak_id, isfrominventory) {
   self endon("disconnect");
   self endon("death");
 
-  while (true) {
+  while(true) {
     currentweapon = self getcurrentweapon();
     self waittill("weapon_change", newweapon);
 
@@ -244,7 +244,7 @@ watchkillstreakweaponswitch(killstreakweapon, killstreak_id, isfrominventory) {
     if(isfrominventory && currentammo > 0) {
       killstreakindex = self maps\mp\killstreaks\_killstreaks::getkillstreakindexbyid(killstreak_id);
 
-      if(isdefined(killstreakindex)) {
+      if(isDefined(killstreakindex)) {
         self.pers["killstreak_ammo_count"][killstreakindex] = currentammo;
         self.pers["held_killstreak_clip_count"][killstreakweapon] = currentammoinclip;
       }
@@ -270,7 +270,7 @@ watchkillstreakweaponswitch(killstreakweapon, killstreak_id, isfrominventory) {
     self.usingkillstreakheldweapon = undefined;
     waittillframeend;
 
-    if(currentammo == 0 || self.pers["killstreak_quantity"][killstreakweapon] > 0 || isfrominventory && isdefined(killstreakid) && killstreakid != killstreak_id) {
+    if(currentammo == 0 || self.pers["killstreak_quantity"][killstreakweapon] > 0 || isfrominventory && isDefined(killstreakid) && killstreakid != killstreak_id) {
       maps\mp\killstreaks\_killstreakrules::killstreakstop(killstreakweapon, self.team, killstreak_id);
 
       if(killstreakweapon == "minigun_mp" || killstreakweapon == "inventory_minigun_mp") {
@@ -333,7 +333,7 @@ watchkillstreakweapondeath(hardpointtype, killstreak_id, isfrominventory) {
 
   self.usingkillstreakheldweapon = 0;
 
-  if(newammo <= 0 || self.pers["killstreak_quantity"][hardpointtype] > 0 || isfrominventory && isdefined(killstreakid) && killstreakid != killstreak_id) {
+  if(newammo <= 0 || self.pers["killstreak_quantity"][hardpointtype] > 0 || isfrominventory && isDefined(killstreakid) && killstreakid != killstreak_id) {
     maps\mp\killstreaks\_killstreakrules::killstreakstop(hardpointtype, oldteam, killstreak_id);
 
     if(hardpointtype == "minigun_mp" || hardpointtype == "inventory_minigun_mp") {
@@ -344,7 +344,7 @@ watchkillstreakweapondeath(hardpointtype, killstreak_id, isfrominventory) {
       self.m32active = 0;
     }
 
-    if(isdefined(self.pers["killstreak_quantity"][hardpointtype]) && self.pers["killstreak_quantity"][hardpointtype] > 0) {
+    if(isDefined(self.pers["killstreak_quantity"][hardpointtype]) && self.pers["killstreak_quantity"][hardpointtype] > 0) {
       self.pers["held_killstreak_ammo_count"][hardpointtype] = maxammo;
       self.pers["held_killstreak_clip_count"][hardpointtype] = maxclipsize;
       self setweaponammoclip(hardpointtype, self.pers["held_killstreak_clip_count"][hardpointtype]);
@@ -360,7 +360,7 @@ watchkillstreakweapondeath(hardpointtype, killstreak_id, isfrominventory) {
   } else if(isfrominventory) {
     killstreakindex = self maps\mp\killstreaks\_killstreaks::getkillstreakindexbyid(killstreak_id);
 
-    if(isdefined(killstreakindex))
+    if(isDefined(killstreakindex))
       self.pers["killstreak_ammo_count"][killstreakindex] = self.pers["held_killstreak_ammo_count"][hardpointtype];
   }
 }
@@ -407,7 +407,7 @@ watchkillstreakroundchange(isfrominventory, killstreak_id) {
   if(isfrominventory && currentammo > 0) {
     killstreakindex = self maps\mp\killstreaks\_killstreaks::getkillstreakindexbyid(killstreak_id);
 
-    if(isdefined(killstreakindex)) {
+    if(isDefined(killstreakindex)) {
       self.pers["killstreak_ammo_count"][killstreakindex] = currentammo;
       self.pers["held_killstreak_clip_count"][currentweapon] = maxclipsize <= currentammo ? maxclipsize : currentammo;
     }
@@ -422,7 +422,7 @@ checkifswitchableweapon(currentweapon, newweapon, killstreakweapon, currentkills
   topkillstreak = maps\mp\killstreaks\_killstreaks::gettopkillstreak();
   killstreakid = maps\mp\killstreaks\_killstreaks::gettopkillstreakuniqueid();
 
-  if(!isdefined(killstreakid))
+  if(!isDefined(killstreakid))
     killstreakid = -1;
 
   if(self hasweapon(killstreakweapon) && !self getammocount(killstreakweapon))
@@ -431,9 +431,9 @@ checkifswitchableweapon(currentweapon, newweapon, killstreakweapon, currentkills
     switchableweapon = 1;
   else if(isweaponequipment(newweapon))
     switchableweapon = 1;
-  else if(isdefined(level.grenade_array[newweapon]))
+  else if(isDefined(level.grenade_array[newweapon]))
     switchableweapon = 0;
-  else if(isheldkillstreakweapon(newweapon) && isheldkillstreakweapon(currentweapon) && (!isdefined(currentkillstreakid) || currentkillstreakid != killstreakid))
+  else if(isheldkillstreakweapon(newweapon) && isheldkillstreakweapon(currentweapon) && (!isDefined(currentkillstreakid) || currentkillstreakid != killstreakid))
     switchableweapon = 1;
   else if(maps\mp\killstreaks\_killstreaks::iskillstreakweapon(newweapon))
     switchableweapon = 0;
@@ -443,7 +443,7 @@ checkifswitchableweapon(currentweapon, newweapon, killstreakweapon, currentkills
     switchableweapon = 1;
   else if(self.lastnonkillstreakweapon == killstreakweapon)
     switchableweapon = 0;
-  else if(isdefined(topkillstreak) && topkillstreak == killstreakweapon && currentkillstreakid == killstreakid)
+  else if(isDefined(topkillstreak) && topkillstreak == killstreakweapon && currentkillstreakid == killstreakid)
     switchableweapon = 0;
 
   return switchableweapon;
@@ -453,7 +453,7 @@ watchkillstreakweaponusage() {
   self endon("disconnect");
   self endon("death");
 
-  while (true) {
+  while(true) {
     self waittill("weapon_fired", killstreakweapon);
 
     if(!isheldkillstreakweapon(killstreakweapon)) {

@@ -73,7 +73,7 @@ sndweathertriggersetup() {
 sndupdateambienttrigger(name, is_default, reverb, context, inorout) {
   weather = "_default";
 
-  if(!isdefined(level.sndambweathernames))
+  if(!isDefined(level.sndambweathernames))
     level.sndambweathernames = [];
 
   level.sndambweathernames[level.sndambweathernames.size] = name;
@@ -83,7 +83,7 @@ sndupdateambienttrigger(name, is_default, reverb, context, inorout) {
   setambientroomcontext(name, "ringoff_plr", context);
   setambientroomtone(name, "amb_weather_2d" + weather + inorout, 0.5, 0.5);
 
-  while (true) {
+  while(true) {
     level waittill("sndWeatherUpdate");
 
     if(is_true(level.sndweather.israin))
@@ -120,7 +120,7 @@ sndambientcontextonplayer(room, player) {
 sndcapturezonetrigs() {
   trigs = getentarray(0, "sndCaptureZone", "targetname");
 
-  if(isdefined(trigs)) {
+  if(isDefined(trigs)) {
     foreach(trig in trigs) {
       trig.players = 0;
       trig.active = 0;
@@ -132,7 +132,7 @@ sndcapturezonetrigs() {
 sndcapturezonetrig() {
   self thread sndcapturezonetrig_deactivate();
 
-  while (true) {
+  while(true) {
     self waittill("trigger", who);
 
     if(who isplayer() && !is_true(who.sndincapzone)) {
@@ -151,12 +151,12 @@ sndcapturezonetrig() {
 }
 
 sndcapturezonetrig_player(player) {
-  while (isdefined(self) && isdefined(player) && player istouching(self))
+  while(isDefined(self) && isDefined(player) && player istouching(self))
     wait 0.1;
 
   self.players--;
 
-  if(isdefined(player))
+  if(isDefined(player))
     player.sndincapzone = 0;
 
   self notify("player_left");
@@ -172,7 +172,7 @@ sndcapturezonetrig_activate() {
 }
 
 sndcapturezonetrig_deactivate() {
-  while (true) {
+  while(true) {
     self waittill("player_left");
 
     if(self.players <= 0) {
@@ -226,7 +226,7 @@ snd_start_autofx_audio() {
 }
 
 flyovers() {
-  while (true) {
+  while(true) {
     playsound(0, "amb_flyover", (0, 0, 0));
     wait(randomintrange(2, 8));
   }
@@ -245,15 +245,15 @@ sndactivatemudloop() {
   self endon("stop_mud");
   self endon("entityshutdown");
 
-  if(!isdefined(self.sndwadeent)) {
+  if(!isDefined(self.sndwadeent)) {
     self.sndwadeent = spawn(0, self.origin, "script_origin");
     self.sndwadeent linkto(self, "tag_origin");
   }
 
   self.sndwadeent playloopsound("zmb_tomb_slowed_movement_loop", 1);
 
-  while (true) {
-    if(!isdefined(self)) {
+  while(true) {
+    if(!isDefined(self)) {
       return;
     }
     mud_speed = abs(self getspeed());
@@ -274,6 +274,7 @@ init() {
   init_heli_sound_values("qrdrone", "turbine_idle", 30, 0.8, 0.0, 16, 0.9, 1.1);
   init_heli_sound_values("qrdrone", "turbine_moving", 30, 0.0, 0.9, 20, 0.9, 1.1);
   init_heli_sound_values("qrdrone", "turn", 5, 0, 1, 1, 1, 1);
+
   if(getdvar(#"_id_21D60E03") == "")
     setdvar("helisounds", "");
 
@@ -281,10 +282,10 @@ init() {
 }
 
 init_heli_sound_values(heli_type, part_type, max_speed_vol, min_vol, max_vol, max_speed_pitch, min_pitch, max_pitch) {
-  if(!isdefined(level.helisoundvalues[heli_type]))
+  if(!isDefined(level.helisoundvalues[heli_type]))
     level.helisoundvalues[heli_type] = [];
 
-  if(!isdefined(level.helisoundvalues[heli_type][part_type]))
+  if(!isDefined(level.helisoundvalues[heli_type][part_type]))
     level.helisoundvalues[heli_type][part_type] = spawnstruct();
 
   level.helisoundvalues[heli_type][part_type].speedvolumemax = max_speed_vol;
@@ -293,6 +294,7 @@ init_heli_sound_values(heli_type, part_type, max_speed_vol, min_vol, max_vol, ma
   level.helisoundvalues[heli_type][part_type].volumemax = max_vol;
   level.helisoundvalues[heli_type][part_type].pitchmin = min_pitch;
   level.helisoundvalues[heli_type][part_type].pitchmax = max_pitch;
+
   if(getdvarint(#"_id_55AD9BED") > 0) {
     println("Init Heli Sounds heli_type: " + heli_type);
     println("Init Heli Sounds part_type: " + part_type);
@@ -303,37 +305,38 @@ init_heli_sound_values(heli_type, part_type, max_speed_vol, min_vol, max_vol, ma
     println("Init Heli Sounds min_pitch: " + min_pitch);
     println("Init Heli Sounds max_pitch: " + max_pitch);
   }
+
 }
 
 command_parser() {
-  while (true) {
+  while(true) {
     command = getdvar(#"_id_21D60E03");
 
     if(command != "") {
       success = 1;
       tokens = strtok(command, " ");
 
-      if(!isdefined(tokens[0]) || !isdefined(level.helisoundvalues[tokens[0]])) {
-        if(isdefined(tokens[0]))
+      if(!isDefined(tokens[0]) || !isDefined(level.helisoundvalues[tokens[0]])) {
+        if(isDefined(tokens[0]))
           println("helisounds Did not recognize helicopter type:" + tokens[0]);
         else
           println("helisounds Did not recognize helicopter type");
 
         println("helisounds usage: helisounds <heli name> <part name> <value name> <value>");
         success = 0;
-      } else if(!isdefined(tokens[1])) {
-        if(isdefined(tokens[1]))
+      } else if(!isDefined(tokens[1])) {
+        if(isDefined(tokens[1]))
           println("helisounds Did not recognize helicopter part:" + tokens[0] + " for heli: " + tokens[1]);
         else
           println("helisounds Did not recognize helicopter part for heli: " + tokens[0]);
 
         println("helisounds usage: helisounds <heli name> <part name> <value name> <value>");
         success = 0;
-      } else if(!isdefined(tokens[2])) {
+      } else if(!isDefined(tokens[2])) {
         println("helisounds Did not recognize helicopter value name for heli:" + tokens[0] + " part: " + tokens[1]);
         println("helisounds usage: helisounds <heli name> <part name> <value name> <value>");
         success = 0;
-      } else if(!isdefined(tokens[3])) {
+      } else if(!isDefined(tokens[3])) {
         println("helisounds Did not recognize helicopter value for heli:" + tokens[0] + " part: " + tokens[1]);
         println("helisounds usage: helisounds <heli name> <part name> <value name> <value>");
         success = 0;
@@ -380,6 +383,7 @@ command_parser() {
 
     wait 0.1;
   }
+
 }
 
 init_heli_sounds_player_drone() {
@@ -390,7 +394,7 @@ init_heli_sounds_player_drone() {
 }
 
 sound_linkto(parent, tag) {
-  if(isdefined(tag))
+  if(isDefined(tag))
     self linkto(parent, tag);
   else
     self linkto(parent, "tag_body");
@@ -404,21 +408,21 @@ setup_heli_sounds(bone_location, type, tag, run, dmg1, dmg2, dmg3) {
   self.heli[bone_location].run.alias = run;
   self thread heli_loop_sound_delete(self.heli[bone_location].run);
 
-  if(isdefined(dmg1)) {
+  if(isDefined(dmg1)) {
     self.heli[bone_location].idle = spawn(0, self.origin, "script_origin");
     self.heli[bone_location].idle sound_linkto(self, tag);
     self.heli[bone_location].idle.alias = dmg1;
     self thread heli_loop_sound_delete(self.heli[bone_location].dmg1);
   }
 
-  if(isdefined(dmg2)) {
+  if(isDefined(dmg2)) {
     self.heli[bone_location].idle = spawn(0, self.origin, "script_origin");
     self.heli[bone_location].idle sound_linkto(self, tag);
     self.heli[bone_location].idle.alias = dmg2;
     self thread heli_loop_sound_delete(self.heli[bone_location].dmg2);
   }
 
-  if(isdefined(dmg3)) {
+  if(isDefined(dmg3)) {
     self.heli[bone_location].idle = spawn(0, self.origin, "script_origin");
     self.heli[bone_location].idle sound_linkto(self, tag);
     self.heli[bone_location].idle.alias = dmg3;
@@ -427,7 +431,7 @@ setup_heli_sounds(bone_location, type, tag, run, dmg1, dmg2, dmg3) {
 }
 
 start_helicopter_sounds(localclientnum) {
-  if(isdefined(self.vehicletype)) {
+  if(isDefined(self.vehicletype)) {
     self.heli = [];
     self.terrain = [];
     self.sound_ents = [];
@@ -459,7 +463,9 @@ heli_sound_play(heli_bone) {
     case "wind":
       break;
     default:
+
       println("^6 unknown helicopter type: " + heli_bone.type + " expecting \"wind\" or \"engine\"");
+
       break;
   }
 }
@@ -476,12 +482,13 @@ heli_idle_run_transition(heli_type, heli_part, wait_time, updown) {
   heli_bone = self.heli[heli_part];
   run_id = heli_bone.run playloopsound(heli_bone.run.alias, 0.5);
 
-  if(!isdefined(wait_time))
+  if(!isDefined(wait_time))
     wait_time = 0.5;
 
-  while (isdefined(self)) {
-    if(!isdefined(level.helisoundvalues[heli_type]) || !isdefined(level.helisoundvalues[heli_type][heli_part])) {
+  while(isDefined(self)) {
+    if(!isDefined(level.helisoundvalues[heli_type]) || !isDefined(level.helisoundvalues[heli_type][heli_part])) {
       println("^5a speed vol/pitch parameter was not defined.");
+
       return;
     }
 
@@ -496,22 +503,24 @@ heli_idle_run_transition(heli_type, heli_part, wait_time, updown) {
     run_volume = scale_speed(self.idle_run_trans_speed, max_speed_vol, min_vol, max_vol, self.cur_speed);
     run_pitch = scale_speed(self.idle_run_trans_speed, max_speed_pitch, min_pitch, max_pitch, self.cur_speed);
 
-    if(isdefined(updown)) {
-      if(!isdefined(self.qrdrone_z_difference))
+    if(isDefined(updown)) {
+      if(!isDefined(self.qrdrone_z_difference))
         self.qrdrone_z_difference = 0;
 
       run_volume_vertical = scale_speed(5, 50, 0, 1, abs(self.qrdrone_z_difference));
       run_volume = run_volume - run_volume_vertical;
     }
 
-    if(isdefined(run_volume) && isdefined(run_pitch)) {
+    if(isDefined(run_volume) && isDefined(run_pitch)) {
       heli_bone.run setloopstate(heli_bone.run.alias, run_volume, run_pitch, 1, 0.15);
+
       if(getdvarint(#"_id_55AD9BED") > 0) {
         println("^5a self.cur_speed = " + self.cur_speed);
         println("^5a run_pitch . " + run_pitch);
         println("^5a self.cur_speed = " + self.cur_speed);
         println("^5a run_volume. " + run_volume);
       }
+
     }
 
     wait(wait_time);
@@ -519,10 +528,10 @@ heli_idle_run_transition(heli_type, heli_part, wait_time, updown) {
 }
 
 get_heli_sound_ent(sound_ent) {
-  if(!isdefined(sound_ent)) {
+  if(!isDefined(sound_ent)) {
     tag = "tag_origin";
 
-    if(isdefined(self.warning_tag))
+    if(isDefined(self.warning_tag))
       tag = self.warning_tag;
 
     sound_ent = spawn(0, self gettagorigin(tag), "script_origin");
@@ -571,7 +580,7 @@ drone_up_down_transition() {
   qr_ent_either linkto(self, tag);
   self thread drone_button_watch();
 
-  while (true) {
+  while(true) {
     last_pos = self.origin[2];
     wait 0.1;
     self.qrdrone_z_difference = last_pos - self.origin[2];
@@ -613,7 +622,7 @@ drone_rotate_angle(heli_type, heli_part) {
   tag = "tag_body";
   qr_ent_angle linkto(self, tag);
 
-  while (true) {
+  while(true) {
     last_angle = abs(self.angles[1]);
     wait 0.1;
     turning_speed = last_angle - abs(self.angles[1]);
@@ -629,7 +638,7 @@ drone_button_watch() {
   player = getlocalplayers()[0];
   return_to_zero = 1;
 
-  while (true) {
+  while(true) {
     if(abs(self.qrdrone_z_difference) > 5 && return_to_zero) {
       self playsound(0, "veh_qrdrone_move_start");
       return_to_zero = 0;
@@ -801,12 +810,12 @@ snd_play_loopers() {
 sndchargeshot(localclientnum, weaponname, chargeshotlevel) {
   self.sndcurrentcharge = chargeshotlevel;
 
-  if(!isdefined(self.sndchargeloopent))
+  if(!isDefined(self.sndchargeloopent))
     self.sndchargeloopent = spawn(0, (0, 0, 0), "script_origin");
 
   self thread sndstoploopent();
 
-  if(!isdefined(self.sndlastcharge) || self.sndcurrentcharge != self.sndlastcharge) {
+  if(!isDefined(self.sndlastcharge) || self.sndcurrentcharge != self.sndlastcharge) {
     alias = "wpn_firestaff_charge_";
 
     if(weaponname == "staff_water_upgraded_zm")
@@ -847,7 +856,7 @@ sndtombbgplayers(localclientnum) {
   self.sndbgalias = "mus_underscore_default";
   self.sndbgaliaslast = "null";
 
-  while (true) {
+  while(true) {
     if(self.sndbgaliaslast != self.sndbgalias) {
       self.sndbgaliaslast = self.sndbgalias;
       self.sndent notify("sndBackgroundChanging");
@@ -862,11 +871,11 @@ sndtombbgtriggers(localclientnum) {
   self endon("disconnect");
   self endon("death");
 
-  while (true) {
+  while(true) {
     self waittill("trigger", who);
 
-    if(isdefined(who) && who islocalplayer()) {
-      if(isdefined(level.sndchambermusoverride) && self.script_sound == "mus_underscore_chamber")
+    if(isDefined(who) && who islocalplayer()) {
+      if(isDefined(level.sndchambermusoverride) && self.script_sound == "mus_underscore_chamber")
         who.sndbgalias = level.sndchambermusoverride;
       else
         who.sndbgalias = self.script_sound;
@@ -884,7 +893,7 @@ sndtombbgtrigger_timeout() {
   self endon("sndBGTImeout");
   wait 4;
 
-  if(isdefined(self) && self islocalplayer())
+  if(isDefined(self) && self islocalplayer())
     self.sndbgalias = "mus_underscore_default";
 }
 
@@ -897,7 +906,7 @@ sndtombbgmusic(alias) {
 }
 
 sndmaelstrom(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump) {
-  if(!isdefined(level.sndmaelstrom))
+  if(!isDefined(level.sndmaelstrom))
     level.sndmaelstrom = spawn(0, (0, 0, 0), "script_origin");
 
   players = getlocalplayers();

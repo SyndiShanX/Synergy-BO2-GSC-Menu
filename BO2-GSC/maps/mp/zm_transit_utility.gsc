@@ -19,7 +19,7 @@ playercanafford(player, cost) {
   if(player in_revive_trigger())
     return false;
 
-  if(isdefined(cost)) {
+  if(isDefined(cost)) {
     if(player.score < cost)
       return false;
 
@@ -32,7 +32,7 @@ playercanafford(player, cost) {
 setinvisibletoall() {
   players = get_players();
 
-  for (playerindex = 0; playerindex < players.size; playerindex++)
+  for(playerindex = 0; playerindex < players.size; playerindex++)
     self setinvisibletoplayer(players[playerindex]);
 }
 
@@ -55,17 +55,17 @@ spawnandlinkfxtooffset(effect, ent, offsetorigin, offsetangles) {
 }
 
 custom_weapon_wall_prices() {
-  if(!isdefined(level.zombie_include_weapons)) {
+  if(!isDefined(level.zombie_include_weapons)) {
     return;
   }
   weapon_spawns = [];
   weapon_spawns = getentarray("weapon_upgrade", "targetname");
 
-  for (i = 0; i < weapon_spawns.size; i++) {
-    if(!isdefined(level.zombie_weapons[weapon_spawns[i].zombie_weapon_upgrade])) {
+  for(i = 0; i < weapon_spawns.size; i++) {
+    if(!isDefined(level.zombie_weapons[weapon_spawns[i].zombie_weapon_upgrade])) {
       continue;
     }
-    if(isdefined(weapon_spawns[i].script_int)) {
+    if(isDefined(weapon_spawns[i].script_int)) {
       cost = weapon_spawns[i].script_int;
       level.zombie_weapons[weapon_spawns[i].zombie_weapon_upgrade].cost = cost;
     }
@@ -73,7 +73,7 @@ custom_weapon_wall_prices() {
 }
 
 pause_zombie_spawning() {
-  if(!isdefined(level.spawnpausecount))
+  if(!isDefined(level.spawnpausecount))
     level.spawnpausecount = 0;
 
   level.spawnpausecount++;
@@ -81,7 +81,7 @@ pause_zombie_spawning() {
 }
 
 try_resume_zombie_spawning() {
-  if(!isdefined(level.spawnpausecount))
+  if(!isDefined(level.spawnpausecount))
     level.spawnpausecount = 0;
 
   level.spawnpausecount--;
@@ -93,7 +93,7 @@ try_resume_zombie_spawning() {
 }
 
 automatonspeak(category, type, response, force_variant, override) {
-  if(isdefined(level.automaton) && !is_true(level.automaton.disabled_by_emp)) {
+  if(isDefined(level.automaton) && !is_true(level.automaton.disabled_by_emp)) {
     if(getdvar(#"_id_6DF184E8") == "")
       iprintlnbold("Automaton VO: " + type);
 
@@ -145,7 +145,7 @@ transit_breakable_glass() {
   self setcandamage(1);
   self.damage_state = 0;
 
-  while (true) {
+  while(true) {
     self waittill("damage", amount, attacker, direction, point, dmg_type);
 
     if(isplayer(attacker)) {
@@ -159,12 +159,12 @@ transit_breakable_glass() {
 }
 
 glass_gets_destroyed() {
-  if(isdefined(level._effect["glass_impact"]))
+  if(isDefined(level._effect["glass_impact"]))
     playfx(level._effect["glass_impact"], self.origin, anglestoforward(self.angles));
 
   wait 0.1;
 
-  if(isdefined(self.model) && self.damage_state == 0) {
+  if(isDefined(self.model) && self.damage_state == 0) {
     self setmodel(self.model + "_broken");
     self.damage_state = 1;
     return;
@@ -190,7 +190,7 @@ disconnect_door_zones(zone_a, zone_b, flag_name) {
   level endon("intermission");
   level endon("end_game");
 
-  while (true) {
+  while(true) {
     flag_wait(flag_name);
     azone = level.zones[zone_a].adjacent_zones[zone_b];
     azone maps\mp\zombies\_zm_zonemgr::door_close_disconnect(flag_name);

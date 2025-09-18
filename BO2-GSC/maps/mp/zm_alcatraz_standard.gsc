@@ -10,10 +10,6 @@
 #include maps\mp\zombies\_zm_game_module;
 #include maps\mp\zombies\_zm_magicbox;
 
-precache() {
-
-}
-
 main() {
   maps\mp\gametypes_zm\_zm_gametype::setup_standard_objects("working");
   maps\mp\zombies\_zm_game_module::set_current_game_module(level.game_module_standard_index);

@@ -32,29 +32,32 @@
 #include clientscripts\mp\_fx;
 
 statechange(clientnum, system, newstate) {
-  if(!isdefined(level._systemstates))
+  if(!isDefined(level._systemstates))
     level._systemstates = [];
 
-  if(!isdefined(level._systemstates[system]))
+  if(!isDefined(level._systemstates[system]))
     level._systemstates[system] = spawnstruct();
 
   level._systemstates[system].state = newstate;
 
-  if(isdefined(level._systemstates[system].callback))
+  if(isDefined(level._systemstates[system].callback))
     [[level._systemstates[system].callback]](clientnum, newstate);
   else {
     println("*** Unhandled client system state change - " + system + " - has no registered callback function.");
+
   }
 }
 
 maprestart() {
   println("*** Client script VM map restart.");
+
   waitforclient(0);
   level thread clientscripts\mp\_utility::initutility();
 }
 
 localclientconnect(clientnum) {
   println("*** Client script VM : Local client connect " + clientnum);
+
   level thread clientscripts\mp\_players::on_connect(clientnum);
 }
 
@@ -65,7 +68,7 @@ localclientdisconnect(clientnum) {
 glass_smash(org, dir) {
   level notify("glass_smash", org, dir);
 
-  if(isdefined(level._glasssmashcbfunc))
+  if(isDefined(level._glasssmashcbfunc))
     level thread[[level._glasssmashcbfunc]](org, dir);
 }
 
@@ -84,35 +87,35 @@ soundplayuidecodeloop(decodestring, playtimems) {
 playerspawned(localclientnum) {
   self endon("entityshutdown");
 
-  if(isdefined(level._playerspawned_override)) {
+  if(isDefined(level._playerspawned_override)) {
     self thread[[level._playerspawned_override]](localclientnum);
     return;
   }
 
   println("Player spawned");
+
   self thread clientscripts\mp\_explode::playerspawned(localclientnum);
   self thread clientscripts\mp\_players::dtp_effects();
 
   if(!sessionmodeiszombiesgame()) {
-
   }
 
-  if(isdefined(level._faceanimcbfunc))
+  if(isDefined(level._faceanimcbfunc))
     self thread[[level._faceanimcbfunc]](localclientnum);
 }
 
 codecallback_gibevent(localclientnum, type, locations) {
-  if(isdefined(level._gibeventcbfunc))
+  if(isDefined(level._gibeventcbfunc))
     self thread[[level._gibeventcbfunc]](localclientnum, type, locations);
 }
 
 codecallback_precachegametype() {
-  if(isdefined(level.callbackprecachegametype))
+  if(isDefined(level.callbackprecachegametype))
     [[level.callbackprecachegametype]]();
 }
 
 codecallback_startgametype() {
-  if(isdefined(level.callbackstartgametype) && (!isdefined(level.gametypestarted) || !level.gametypestarted)) {
+  if(isDefined(level.callbackstartgametype) && (!isDefined(level.gametypestarted) || !level.gametypestarted)) {
     [
       [level.callbackstartgametype]
     ]();
@@ -123,13 +126,14 @@ codecallback_startgametype() {
 entityspawned(localclientnum) {
   self endon("entityshutdown");
 
-  if(isdefined(level._entityspawned_override)) {
+  if(isDefined(level._entityspawned_override)) {
     self thread[[level._entityspawned_override]](localclientnum);
     return;
   }
 
-  if(!isdefined(self.type)) {
+  if(!isDefined(self.type)) {
     println("Entity type undefined!");
+
     return;
   }
 
@@ -169,7 +173,7 @@ entityspawned(localclientnum) {
   }
 
   if(self.type == "vehicle") {
-    if(!isdefined(level.vehicles_inited))
+    if(!isDefined(level.vehicles_inited))
       clientscripts\mp\_vehicle::init_vehicles();
 
     if(self.vehicleclass == "4 wheel") {
@@ -209,7 +213,7 @@ codecallback_soundnotify(localclientnum, entity, note) {
 }
 
 entityshutdown_callback(localclientnum, entity) {
-  if(isdefined(level._entityshutdowncbfunc))
+  if(isDefined(level._entityshutdowncbfunc))
     [[level._entityshutdowncbfunc]](localclientnum, entity);
 }
 
@@ -241,8 +245,11 @@ airsupport(localclientnum, x, y, z, type, yaw, team, teamfaction, owner, exittyp
       teamfaction = "russian";
       break;
     default:
+
       println("Warning: Invalid team char provided, defaulted to marines");
+
       println("Teamfaction received: " + teamfaction + "\\n");
+
       teamfaction = "marines";
       break;
   }
@@ -258,7 +265,9 @@ airsupport(localclientnum, x, y, z, type, yaw, team, teamfaction, owner, exittyp
       team = "free";
       break;
     default:
+
       println("Invalid team used with playclientAirstike/napalm: " + team + "\\n");
+
       team = "allies";
       break;
   }
@@ -303,6 +312,7 @@ airsupport(localclientnum, x, y, z, type, yaw, team, teamfaction, owner, exittyp
     println("Unhandled airsupport type, only A (airstrike) and N (napalm) supported");
     println(type);
     println("");
+
     return;
   }
 }
@@ -334,6 +344,7 @@ killcam_end(localclientnum, time) {
 
 stunned_callback(localclientnum, set) {
   self.stunned = set;
+
   println("stunned_callback");
 
   if(set)
@@ -344,6 +355,7 @@ stunned_callback(localclientnum, set) {
 
 emp_callback(localclientnum, set) {
   self.emp = set;
+
   println("emp_callback");
 
   if(set)
@@ -362,23 +374,25 @@ client_flag_debug(msg) {
 }
 
 client_flag_callback(localclientnum, flag, set) {
-  assert(isdefined(level._client_flag_callbacks));
+  assert(isDefined(level._client_flag_callbacks));
+
   client_flag_debug("*** client_flag_callback(): localClientNum: " + localclientnum + " flag: " + flag + " set: " + set + " self: " + self getentitynumber() + " self.type: " + self.type);
 
-  if(!isdefined(level._client_flag_callbacks[self.type])) {
+  if(!isDefined(level._client_flag_callbacks[self.type])) {
     client_flag_debug("*** client_flag_callback(): no callback defined for self.type: " + self.type);
+
     return;
   }
 
   if(isarray(level._client_flag_callbacks[self.type])) {
-    if(isdefined(level._client_flag_callbacks[self.type][flag]))
+    if(isDefined(level._client_flag_callbacks[self.type][flag]))
       self thread[[level._client_flag_callbacks[self.type][flag]]](localclientnum, set);
   } else
     self thread[[level._client_flag_callbacks[self.type]]](localclientnum, flag, set);
 }
 
 client_flagasval_callback(localclientnum, val) {
-  if(isdefined(level._client_flagasval_callbacks) && isdefined(level._client_flagasval_callbacks[self.type]))
+  if(isDefined(level._client_flagasval_callbacks) && isDefined(level._client_flagasval_callbacks[self.type]))
     self thread[[level._client_flagasval_callbacks[self.type]]](localclientnum, val);
 }
 
@@ -394,7 +408,7 @@ codecallback_playerjump(client_num, player, ground_type, firstperson, quiet, isl
 codecallback_playerland(client_num, player, ground_type, firstperson, quiet, damageplayer, islouder) {
   clientscripts\mp\_footsteps::playerland(client_num, player, ground_type, firstperson, quiet, damageplayer, islouder);
 
-  if(isdefined(level.playerland))
+  if(isDefined(level.playerland))
     level thread[[level.playerland]](client_num, player, ground_type, firstperson, quiet, damageplayer);
 }
 
@@ -411,60 +425,60 @@ onfinalizeinitialization_callback(func) {
 }
 
 addcallback(event, func) {
-  assert(isdefined(event), "Trying to set a callback on an undefined event.");
+  assert(isDefined(event), "Trying to set a callback on an undefined event.");
 
-  if(!isdefined(level._callbacks) || !isdefined(level._callbacks[event]))
+  if(!isDefined(level._callbacks) || !isDefined(level._callbacks[event]))
     level._callbacks[event] = [];
 
   level._callbacks[event] = add_to_array(level._callbacks[event], func, 0);
 }
 
 callback(event) {
-  if(isdefined(level._callbacks) && isdefined(level._callbacks[event])) {
-    for (i = 0; i < level._callbacks[event].size; i++) {
+  if(isDefined(level._callbacks) && isDefined(level._callbacks[event])) {
+    for(i = 0; i < level._callbacks[event].size; i++) {
       callback = level._callbacks[event][i];
 
-      if(isdefined(callback))
+      if(isDefined(callback))
         self thread[[callback]]();
     }
   }
 }
 
 callback_activate_exploder(exploder_id) {
-  if(!isdefined(level._exploder_ids)) {
+  if(!isDefined(level._exploder_ids)) {
     return;
   }
   keys = getarraykeys(level._exploder_ids);
   exploder = undefined;
 
-  for (i = 0; i < keys.size; i++) {
+  for(i = 0; i < keys.size; i++) {
     if(level._exploder_ids[keys[i]] == exploder_id) {
       exploder = keys[i];
       break;
     }
   }
 
-  if(!isdefined(exploder)) {
+  if(!isDefined(exploder)) {
     return;
   }
   clientscripts\mp\_fx::activate_exploder(exploder);
 }
 
 callback_deactivate_exploder(exploder_id) {
-  if(!isdefined(level._exploder_ids)) {
+  if(!isDefined(level._exploder_ids)) {
     return;
   }
   keys = getarraykeys(level._exploder_ids);
   exploder = undefined;
 
-  for (i = 0; i < keys.size; i++) {
+  for(i = 0; i < keys.size; i++) {
     if(level._exploder_ids[keys[i]] == exploder_id) {
       exploder = keys[i];
       break;
     }
   }
 
-  if(!isdefined(exploder)) {
+  if(!isDefined(exploder)) {
     return;
   }
   clientscripts\mp\_fx::deactivate_exploder(exploder);

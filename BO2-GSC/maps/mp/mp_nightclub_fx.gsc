@@ -8,11 +8,9 @@
 #include maps\mp\createart\mp_nightclub_art;
 
 precache_util_fx() {
-
 }
 
 precache_scripted_fx() {
-
 }
 
 precache_createfx_fx() {

@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\_createfxmenu.gsc
-***************************************/
+**************************************/
 
 #include common_scripts\utility;
 #include maps\mp\_utility;
@@ -115,6 +115,7 @@ create_fx_menu() {
     } else
       menu_fx_type();
   }
+
 }
 
 exit_menu() {
@@ -133,7 +134,7 @@ menu_fx_creation() {
   picked_fx = undefined;
   keys = get_level_ambient_fx();
 
-  for (i = level.effect_list_offset; i < keys.size; i++) {
+  for(i = level.effect_list_offset; i < keys.size; i++) {
     count = count + 1;
     button_to_check = count;
 
@@ -150,7 +151,7 @@ menu_fx_creation() {
     }
   }
 
-  if(!isdefined(picked_fx)) {
+  if(!isDefined(picked_fx)) {
     return;
   }
   if(menu("change_fxid")) {
@@ -195,7 +196,7 @@ menu_fx_creation() {
 
 finish_creating_entity(ent) {
   ent.v["angles"] = vectortoangles(ent.v["origin"] + vectorscale((0, 0, 1), 100.0) - ent.v["origin"]);
-  assert(isdefined(ent));
+  assert(isDefined(ent));
   ent post_entity_creation_function();
   clear_entity_selection();
   select_last_entity("skip_undo");
@@ -213,7 +214,7 @@ change_effect_to_oneshot(ent) {
     ent.v["soundalias"] = undefined;
   }
 
-  if(!isdefined(ent.v["delay"]) || ent.v["delay"] == 0) {
+  if(!isDefined(ent.v["delay"]) || ent.v["delay"] == 0) {
     delay_min = getdvarint(#"createfx_oneshot_min_delay");
     delay_max = getdvarint(#"createfx_oneshot_max_delay");
 
@@ -239,7 +240,7 @@ change_effect_to_loop(ent) {
     ent.v["soundalias"] = undefined;
   }
 
-  if(!isdefined(ent.v["delay"]) || ent.v["delay"] <= 0)
+  if(!isDefined(ent.v["delay"]) || ent.v["delay"] <= 0)
     ent.v["delay"] = 1;
 
   ent.v["type"] = "loopfx";
@@ -251,7 +252,7 @@ change_effect_to_exploder(ent) {
   }
   ent.v["type"] = "exploder";
 
-  if(!isdefined(ent.v["delay"]) || ent.v["delay"] < 0)
+  if(!isDefined(ent.v["delay"]) || ent.v["delay"] < 0)
     ent.v["delay"] = 0;
 
   ent.v["exploder"] = 1;
@@ -263,15 +264,16 @@ change_ent_type(newtype) {
   level.cfx_last_action = "ent_type";
 
   if(newtype == "oneshotfx") {
-    for (i = 0; i < level.selected_fx_ents.size; i++)
+    for(i = 0; i < level.selected_fx_ents.size; i++)
       change_effect_to_oneshot(level.selected_fx_ents[i]);
   } else if(newtype == "loopfx") {
-    for (i = 0; i < level.selected_fx_ents.size; i++)
+    for(i = 0; i < level.selected_fx_ents.size; i++)
       change_effect_to_loop(level.selected_fx_ents[i]);
   } else if(newtype == "exploder") {
-    for (i = 0; i < level.selected_fx_ents.size; i++)
+    for(i = 0; i < level.selected_fx_ents.size; i++)
       change_effect_to_exploder(level.selected_fx_ents[i]);
   }
+
 }
 
 menu_init() {
@@ -337,10 +339,10 @@ menu_change_selected_fx() {
   drawncount = 0;
   ent = get_last_selected_ent();
 
-  for (i = 0; i < level.createfx_options.size; i++) {
+  for(i = 0; i < level.createfx_options.size; i++) {
     option = level.createfx_options[i];
 
-    if(!isdefined(ent.v[option["name"]])) {
+    if(!isDefined(ent.v[option["name"]])) {
       continue;
     }
     count++;
@@ -363,6 +365,7 @@ menu_change_selected_fx() {
       break;
     }
   }
+
 }
 
 prepare_option_for_change(option, drawncount) {
@@ -447,7 +450,7 @@ menu_selection() {
   if(level.selected_fx_ents.size < 1)
     set_fx_hudelement("No ent is selected.");
   else {
-    for (i = level.effect_list_offset; i < level.createfx_options.size; i++) {
+    for(i = level.effect_list_offset; i < level.createfx_options.size; i++) {
       if(drawncount > level.effect_list_offset_max) {
         break;
       }
@@ -459,7 +462,7 @@ menu_selection() {
       prop_name = level.createfx_options[i]["name"];
       option_number = drawncount + 1;
 
-      if(isdefined(ent.v[prop_name])) {
+      if(isDefined(ent.v[prop_name])) {
         if(button_is_clicked(option_number + "") && !button_is_held("f")) {
           level.cfx_selected_prop = prop_name;
           menunone();
@@ -490,7 +493,7 @@ apply_option_to_selected_fx(option, setting) {
     level.cfx_last_action = option["name"];
   }
 
-  for (i = 0; i < level.selected_fx_ents.size; i++) {
+  for(i = 0; i < level.selected_fx_ents.size; i++) {
     ent = level.selected_fx_ents[i];
 
     if(mask(option["mask"], ent.v["type"]))
@@ -502,13 +505,14 @@ apply_option_to_selected_fx(option, setting) {
 }
 
 set_option_index(name) {
-  for (i = 0; i < level.createfx_options.size; i++) {
+  for(i = 0; i < level.createfx_options.size; i++) {
     if(level.createfx_options[i]["name"] != name) {
       continue;
     }
     level.selected_fx_option_index = i;
     return;
   }
+
 }
 
 get_selected_option() {
@@ -516,7 +520,7 @@ get_selected_option() {
 }
 
 mask(type, name) {
-  return isdefined(level.createfxmasks[type][name]);
+  return isDefined(level.createfxmasks[type][name]);
 }
 
 addoption(type, name, description, defaultsetting, mask) {
@@ -530,10 +534,11 @@ addoption(type, name, description, defaultsetting, mask) {
 }
 
 get_option(name) {
-  for (i = 0; i < level.createfx_options.size; i++) {
+  for(i = 0; i < level.createfx_options.size; i++) {
     if(level.createfx_options[i]["name"] == name)
       return level.createfx_options[i];
   }
+
 }
 
 display_fx_info(ent) {
@@ -553,10 +558,10 @@ display_fx_info(ent) {
     count = 0;
     drawncount = 0;
 
-    for (i = 0; i < level.createfx_options.size; i++) {
+    for(i = 0; i < level.createfx_options.size; i++) {
       option = level.createfx_options[i];
 
-      if(!isdefined(ent.v[option["name"]])) {
+      if(!isDefined(ent.v[option["name"]])) {
         continue;
       }
       count++;
@@ -585,6 +590,7 @@ display_fx_info(ent) {
     set_fx_hudelement("Origin: " + ent.v["origin"]);
     set_fx_hudelement("Angles: " + ent.v["angles"]);
   }
+
 }
 
 display_fx_add_options(ent) {
@@ -602,10 +608,10 @@ display_fx_add_options(ent) {
   if(level.effect_list_offset >= level.createfx_options.size)
     level.effect_list_offset = 0;
 
-  for (i = 0; i < level.createfx_options.size; i++) {
+  for(i = 0; i < level.createfx_options.size; i++) {
     option = level.createfx_options[i];
 
-    if(isdefined(ent.v[option["name"]])) {
+    if(isDefined(ent.v[option["name"]])) {
       continue;
     }
     if(!mask(option["mask"], ent.v["type"])) {
@@ -644,12 +650,13 @@ display_fx_add_options(ent) {
 }
 
 add_option_to_selected_entities(option) {
-  for (i = 0; i < level.selected_fx_ents.size; i++) {
+  for(i = 0; i < level.selected_fx_ents.size; i++) {
     ent = level.selected_fx_ents[i];
 
     if(mask(option["mask"], ent.v["type"]))
       ent.v[option["name"]] = option["default"];
   }
+
 }
 
 menunone() {
@@ -661,7 +668,7 @@ menunone() {
 draw_effects_list(title) {
   clear_fx_hudelements();
 
-  if(!isdefined(title))
+  if(!isDefined(title))
     title = "Pick an effect:";
 
   set_fx_hudelement(title);
@@ -674,7 +681,7 @@ draw_effects_list(title) {
   else if(level.effect_list_offset < 0)
     level.effect_list_offset = int(floor(keys.size / level.effect_list_offset_max) * level.effect_list_offset_max);
 
-  for (i = level.effect_list_offset; i < keys.size; i++) {
+  for(i = level.effect_list_offset; i < keys.size; i++) {
     count = count + 1;
     set_fx_hudelement(count + ". " + keys[i]);
 
@@ -689,6 +696,7 @@ draw_effects_list(title) {
     current_page = level.effect_list_offset / level.effect_list_offset_max + 1;
     set_fx_hudelement("(<-) Page " + current_page + " of " + pages + " (->)");
   }
+
 }
 
 increment_list_offset() {
@@ -704,7 +712,7 @@ jump_to_effect() {
   picked_fxid = undefined;
   keys = get_level_ambient_fx();
 
-  for (i = level.effect_list_offset; i < keys.size; i++) {
+  for(i = level.effect_list_offset; i < keys.size; i++) {
     count = count + 1;
     button_to_check = count;
 
@@ -721,13 +729,13 @@ jump_to_effect() {
     }
   }
 
-  if(!isdefined(picked_fxid)) {
+  if(!isDefined(picked_fxid)) {
     return;
   }
   clear_entity_selection();
   ent = get_next_ent_with_same_id(-1, picked_fxid);
 
-  if(isdefined(ent)) {
+  if(isDefined(ent)) {
     level.cfx_next_ent = ent;
     move_player_to_next_same_effect(1);
   } else
@@ -739,12 +747,12 @@ jump_to_effect() {
 }
 
 get_level_ambient_fx() {
-  if(!isdefined(level._effect_keys)) {
+  if(!isDefined(level._effect_keys)) {
     keys = getarraykeys(level._effect);
     level._effect_keys = [];
     k = 0;
 
-    for (i = 0; i < keys.size; i++) {
+    for(i = 0; i < keys.size; i++) {
       if(issubstr(keys[i], "fx_")) {
         level._effect_keys[k] = keys[i];
         k++;

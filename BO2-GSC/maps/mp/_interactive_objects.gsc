@@ -12,19 +12,19 @@ init() {
   all_barrels = [];
   barrels = getentarray("explodable_barrel", "targetname");
 
-  if(isdefined(barrels) && barrels.size > 0) {
+  if(isDefined(barrels) && barrels.size > 0) {
     qbarrels = 1;
 
-    for (i = 0; i < barrels.size; i++)
+    for(i = 0; i < barrels.size; i++)
       all_barrels[all_barrels.size] = barrels[i];
   }
 
   barrels = getentarray("explodable_barrel", "script_noteworthy");
 
-  if(isdefined(barrels) && barrels.size > 0) {
+  if(isDefined(barrels) && barrels.size > 0) {
     qbarrels = 1;
 
-    for (i = 0; i < barrels.size; i++)
+    for(i = 0; i < barrels.size; i++)
       all_barrels[all_barrels.size] = barrels[i];
   }
 
@@ -44,19 +44,19 @@ init() {
   all_crates = [];
   crates = getentarray("flammable_crate", "targetname");
 
-  if(isdefined(crates) && crates.size > 0) {
+  if(isDefined(crates) && crates.size > 0) {
     qcrates = 1;
 
-    for (i = 0; i < crates.size; i++)
+    for(i = 0; i < crates.size; i++)
       all_crates[all_crates.size] = crates[i];
   }
 
   crates = getentarray("flammable_crate", "script_noteworthy");
 
-  if(isdefined(crates) && crates.size > 0) {
+  if(isDefined(crates) && crates.size > 0) {
     qcrates = 1;
 
-    for (i = 0; i < crates.size; i++)
+    for(i = 0; i < crates.size; i++)
       all_crates[all_crates.size] = crates[i];
   }
 
@@ -89,17 +89,18 @@ explodable_barrel_think() {
   if(sessionmodeiszombiesgame())
     self.removeexplodable = 1;
 
-  for (;;) {
+  for(;;) {
     self waittill("damage", amount, attacker, direction_vec, p, type);
+
     println("BARRELDAMAGE: " + type);
 
     if(type == "MOD_MELEE" || type == "MOD_IMPACT") {
       continue;
     }
-    if(isdefined(self.script_requires_player) && self.script_requires_player && !isplayer(attacker)) {
+    if(isDefined(self.script_requires_player) && self.script_requires_player && !isplayer(attacker)) {
       continue;
     }
-    if(isdefined(self.script_selfisattacker) && self.script_selfisattacker)
+    if(isDefined(self.script_selfisattacker) && self.script_selfisattacker)
       self.damageowner = self;
     else
       self.damageowner = attacker;
@@ -125,7 +126,7 @@ explodable_barrel_burn() {
     offset2 = up * vectorscale((0, 0, 1), 22.0) + vectorscale((0, 0, 1), 14.0);
   }
 
-  while (self.health > 0) {
+  while(self.health > 0) {
     if(!startedfx) {
       playfx(level.breakables_fx["barrel"]["burn_start"], self.origin + offset1);
       level thread play_sound_in_space(level.barrelingsound, self.origin);
@@ -173,22 +174,22 @@ explodable_barrel_explode() {
   physicsexplosionsphere(self.origin + offset, 100, 80, 1, maxdamage, mindamage);
   level.barrelexplodingthisframe = 1;
 
-  if(isdefined(self.remove))
+  if(isDefined(self.remove))
     self.remove delete();
 
-  if(isdefined(self.radius))
+  if(isDefined(self.radius))
     blastradius = self.radius;
 
   self radiusdamage(self.origin + vectorscale((0, 0, 1), 56.0), blastradius, maxdamage, mindamage, self.damageowner);
   attacker = undefined;
 
-  if(isdefined(self.damageowner))
+  if(isDefined(self.damageowner))
     attacker = self.damageowner;
 
   level.lastexplodingbarrel["time"] = gettime();
   level.lastexplodingbarrel["origin"] = self.origin + vectorscale((0, 0, 1), 30.0);
 
-  if(isdefined(self.removeexplodable))
+  if(isDefined(self.removeexplodable))
     self hide();
   else
     self setmodel("global_explosive_barrel");
@@ -214,13 +215,13 @@ flammable_crate_think() {
   self.health = level.cratehealth;
   self setcandamage(1);
 
-  for (;;) {
+  for(;;) {
     self waittill("damage", amount, attacker, direction_vec, p, type);
 
-    if(isdefined(self.script_requires_player) && self.script_requires_player && !isplayer(attacker)) {
+    if(isDefined(self.script_requires_player) && self.script_requires_player && !isplayer(attacker)) {
       continue;
     }
-    if(isdefined(self.script_selfisattacker) && self.script_selfisattacker)
+    if(isDefined(self.script_selfisattacker) && self.script_selfisattacker)
       self.damageowner = self;
     else
       self.damageowner = attacker;
@@ -249,7 +250,7 @@ flammable_crate_burn() {
     offset2 = up * vectorscale((0, 0, 1), 22.0) + vectorscale((0, 0, 1), 14.0);
   }
 
-  while (self.health > 0) {
+  while(self.health > 0) {
     if(!startedfx) {
       playfx(level.breakables_fx["ammo_crate"]["burn_start"], self.origin);
       level thread play_sound_in_space(level.crateignsound, self.origin);
@@ -295,15 +296,15 @@ flammable_crate_explode() {
   physicsexplosionsphere(self.origin + offset, 100, 80, 1, maxdamage, mindamage);
   level.barrelexplodingthisframe = 1;
 
-  if(isdefined(self.remove))
+  if(isDefined(self.remove))
     self.remove delete();
 
-  if(isdefined(self.radius))
+  if(isDefined(self.radius))
     blastradius = self.radius;
 
   attacker = undefined;
 
-  if(isdefined(self.damageowner))
+  if(isDefined(self.damageowner))
     attacker = self.damageowner;
 
   self radiusdamage(self.origin + vectorscale((0, 0, 1), 30.0), blastradius, maxdamage, mindamage, attacker);
@@ -322,7 +323,7 @@ flammable_crate_explode() {
 }
 
 breakable_clip() {
-  if(isdefined(self.target)) {
+  if(isDefined(self.target)) {
     targ = getent(self.target, "targetname");
 
     if(targ.classname == "script_brushmodel") {
@@ -331,10 +332,10 @@ breakable_clip() {
     }
   }
 
-  if(isdefined(level.breakables_clip) && level.breakables_clip.size > 0)
+  if(isDefined(level.breakables_clip) && level.breakables_clip.size > 0)
     self.remove = getclosestent(self.origin, level.breakables_clip);
 
-  if(isdefined(self.remove))
+  if(isDefined(self.remove))
     arrayremovevalue(level.breakables_clip, self.remove);
 }
 
@@ -345,7 +346,7 @@ getclosestent(org, array) {
   dist = 256;
   ent = undefined;
 
-  for (i = 0; i < array.size; i++) {
+  for(i = 0; i < array.size; i++) {
     newdist = distance(array[i] getorigin(), org);
 
     if(newdist >= dist) {

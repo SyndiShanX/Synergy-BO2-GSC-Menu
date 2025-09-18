@@ -1,7 +1,7 @@
-/********************************************************
+/***********************************************************
  * Decompiled and Edited by SyndiShanX
  * Script: aitype\clientscripts\zm_transit_basic_05.csc
-********************************************************/
+***********************************************************/
 
 #include character\clientscripts\c_zom_zombie5_01;
 #include character\clientscripts\c_zom_zombie5_02;

@@ -1,12 +1,13 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: clientscripts\mp\_dogs.csc
-***************************************/
+**************************************/
 
 #include clientscripts\mp\_utility;
 
 init() {
   thread dog_dvar_updater();
+
   level.movementstatesound = [];
   level.maxstatesounddistance = 99999999;
   level.movementstatesound["normal"] = spawnstruct();
@@ -36,22 +37,24 @@ init() {
 }
 
 dog_dvar_updater() {
-  while (true) {
+  while(true) {
     level.dog_debug_sound = dog_get_dvar_int("debug_dog_sound", "0");
     level.dog_debug = dog_get_dvar_int("debug_dogs", "0");
     wait 1;
   }
+
 }
 
 spawned(localclientnum) {
   self endon("entityshutdown");
   self thread animcategorywatcher(localclientnum);
   self thread enemywatcher(localclientnum);
+
   self thread shutdownwatcher(localclientnum);
 }
 
 shutdownwatcher(localclientnum) {
-  if(!isdefined(level.dog_debug)) {
+  if(!isDefined(level.dog_debug)) {
     return;
   }
   if(!level.dog_debug) {
@@ -84,13 +87,13 @@ animcategorychanged(localclientnum, animcategory) {
 animcategorywatcher(localclientnum) {
   self endon("entityshutdown");
 
-  if(!isdefined(self.animcategory))
+  if(!isDefined(self.animcategory))
     animcategorychanged(localclientnum, self getanimstatecategory());
 
-  while (true) {
+  while(true) {
     animcategory = self getanimstatecategory();
 
-    if(isdefined(animcategory) && self.animcategory != animcategory && animcategory != "traverse")
+    if(isDefined(animcategory) && self.animcategory != animcategory && animcategory != "traverse")
       animcategorychanged(localclientnum, animcategory);
 
     wait 0.05;
@@ -100,15 +103,17 @@ animcategorywatcher(localclientnum) {
 enemywatcher(localclientnum) {
   self endon("entityshutdown");
 
-  while (true) {
+  while(true) {
     self waittill("enemy");
-    if(isdefined(self.enemy)) {
+
+    if(isDefined(self.enemy)) {
       dog_print("NEW ENEMY " + self.enemy getentnum());
 
       if(islocalplayerenemy(self.enemy))
         self thread playlockonsounds(localclientnum);
     } else
       dog_print("NEW ENEMY CLEARED");
+
   }
 }
 
@@ -124,13 +129,13 @@ getotherteam(team) {
 }
 
 islocalplayerenemy(enemy) {
-  if(!isdefined(enemy))
+  if(!isDefined(enemy))
     return false;
 
   players = level.localplayers;
 
-  if(isdefined(players)) {
-    for (i = 0; i < players.size; i++) {
+  if(isDefined(players)) {
+    for(i = 0; i < players.size; i++) {
       if(players[i] == enemy)
         return true;
     }
@@ -140,10 +145,10 @@ islocalplayerenemy(enemy) {
 }
 
 hasenemychanged(last_enemy) {
-  if(!isdefined(last_enemy) && isdefined(self.enemy))
+  if(!isDefined(last_enemy) && isDefined(self.enemy))
     return true;
 
-  if(isdefined(last_enemy) && !isdefined(self.enemy))
+  if(isDefined(last_enemy) && !isDefined(self.enemy))
     return true;
 
   if(last_enemy != self.enemy)
@@ -156,7 +161,7 @@ getmovementsoundstate() {
   localplayer = islocalplayerenemy(self.enemy);
   closest_dist = level.maxstatesounddistance * level.maxstatesounddistance;
   closest_key = "normal";
-  has_enemy = isdefined(self.enemy);
+  has_enemy = isDefined(self.enemy);
 
   if(has_enemy)
     enemy_distance = distancesquared(self.origin, self.enemy.origin);
@@ -165,7 +170,7 @@ getmovementsoundstate() {
 
   statearray = getarraykeys(level.movementstatesound);
 
-  for (i = 0; i < statearray.size; i++) {
+  for(i = 0; i < statearray.size; i++) {
     if(level.movementstatesound[statearray[i]].localenemyonly && !localplayer) {
       continue;
     }
@@ -191,7 +196,7 @@ playmovementsounds(localclientnum) {
   last_time = 0;
   wait_time = 0;
 
-  while (true) {
+  while(true) {
     state = getmovementsoundstate();
     next_sound = 0;
 
@@ -201,14 +206,14 @@ playmovementsounds(localclientnum) {
     }
 
     if(next_sound || last_time + wait_time < getrealtime()) {
-      if(isdefined(self.enemy))
+      if(isDefined(self.enemy))
         dog_sound_print("enemy distance: " + distance(self.origin, self.enemy.origin));
 
       soundid = self play_dog_sound(localclientnum, level.movementstatesound[state].sound);
       last_state = state;
 
       if(soundid >= 0) {
-        while (soundplaying(soundid))
+        while(soundplaying(soundid))
           wait 0.05;
 
         last_time = getrealtime();
@@ -261,7 +266,7 @@ dog_get_dvar(dvar, def) {
 }
 
 dog_sound_print(message) {
-  if(!isdefined(level.dog_debug_sound)) {
+  if(!isDefined(level.dog_debug_sound)) {
     return;
   }
   if(!level.dog_debug_sound) {
@@ -271,7 +276,7 @@ dog_sound_print(message) {
 }
 
 dog_print(message) {
-  if(!isdefined(level.dog_debug)) {
+  if(!isDefined(level.dog_debug)) {
     return;
   }
   if(!level.dog_debug) {
@@ -283,7 +288,7 @@ dog_print(message) {
 play_dog_sound(localclientnum, sound, position) {
   dog_sound_print("SOUND " + sound);
 
-  if(isdefined(position))
+  if(isDefined(position))
     return self playsound(localclientnum, sound, position);
 
   return self playsound(localclientnum, sound);

@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\gametypes\shrp.gsc
-***************************************/
+**************************************/
 
 #include common_scripts\utility;
 #include maps\mp\_utility;
@@ -125,7 +125,7 @@ attach_compatibility_init() {
   level.attach_compatible = [];
   set_attachtable_id();
 
-  for (i = 0; i < 33; i++) {
+  for(i = 0; i < 33; i++) {
     itemrow = tablelookuprownum(level.attachtableid, 9, i);
 
     if(itemrow > -1) {
@@ -138,19 +138,19 @@ attach_compatibility_init() {
 }
 
 set_attachtable_id() {
-  if(!isdefined(level.attachtableid))
+  if(!isDefined(level.attachtableid))
     level.attachtableid = "mp/attachmentTable.csv";
 }
 
 addguntoprogression(gunname, altname) {
-  if(!isdefined(level.gunprogression))
+  if(!isDefined(level.gunprogression))
     level.gunprogression = [];
 
   newweapon = spawnstruct();
   newweapon.names = [];
   newweapon.names[newweapon.names.size] = gunname;
 
-  if(isdefined(altname))
+  if(isDefined(altname))
     newweapon.names[newweapon.names.size] = altname;
 
   level.gunprogression[level.gunprogression.size] = newweapon;
@@ -161,10 +161,11 @@ getrandomgunfromprogression() {
   numweaponidkeys = weaponidkeys.size;
   gunprogressionsize = 0;
 
-  if(isdefined(level.gunprogression))
+  if(isDefined(level.gunprogression))
     size = level.gunprogression.size;
 
   debug_weapon = getdvar(#"_id_1C6DE858");
+
   allowproneblock = 1;
   players = get_players();
 
@@ -175,7 +176,7 @@ getrandomgunfromprogression() {
     }
   }
 
-  while (true) {
+  while(true) {
     randomindex = randomint(numweaponidkeys + gunprogressionsize);
     baseweaponname = "";
     weaponname = "";
@@ -213,14 +214,14 @@ getrandomgunfromprogression() {
       weaponname = level.gunprogression[randomindex - numweaponidkeys].names[0];
     }
 
-    if(!isdefined(level.usedbaseweapons)) {
+    if(!isDefined(level.usedbaseweapons)) {
       level.usedbaseweapons = [];
       level.usedbaseweapons[0] = "fhj18";
     }
 
     skipweapon = 0;
 
-    for (i = 0; i < level.usedbaseweapons.size; i++) {
+    for(i = 0; i < level.usedbaseweapons.size; i++) {
       if(level.usedbaseweapons[i] == baseweaponname) {
         skipweapon = 1;
         break;
@@ -231,14 +232,16 @@ getrandomgunfromprogression() {
       continue;
     }
     level.usedbaseweapons[level.usedbaseweapons.size] = baseweaponname;
+
     if(debug_weapon != "")
       weaponname = debug_weapon;
+
     return weaponname;
   }
 }
 
 addrandomattachmenttoweaponname(baseweaponname, attachmentlist) {
-  if(!isdefined(attachmentlist))
+  if(!isDefined(attachmentlist))
     return baseweaponname;
 
   attachments = strtok(attachmentlist, " ");
@@ -256,12 +259,12 @@ addrandomattachmenttoweaponname(baseweaponname, attachmentlist) {
   if(issubstr(attachment, "_"))
     attachment = strtok(attachment, "_")[0];
 
-  if(isdefined(level.attach_compatible[attachment]) && level.attach_compatible[attachment].size > 0) {
+  if(isDefined(level.attach_compatible[attachment]) && level.attach_compatible[attachment].size > 0) {
     attachment2 = level.attach_compatible[attachment][randomint(level.attach_compatible[attachment].size)];
     contains = 0;
 
-    for (i = 0; i < attachments.size; i++) {
-      if(isdefined(attachment2) && attachments[i] == attachment2) {
+    for(i = 0; i < attachments.size; i++) {
+      if(isDefined(attachment2) && attachments[i] == attachment2) {
         contains = 1;
         break;
       }
@@ -282,17 +285,19 @@ waitlongdurationwithhostmigrationpause(nextguncycletime, duration) {
   endtime = gettime() + duration * 1000;
   totaltimepassed = 0;
 
-  while (gettime() < endtime) {
+  while(gettime() < endtime) {
     maps\mp\gametypes\_hostmigration::waittillhostmigrationstarts((endtime - gettime()) / 1000);
 
-    if(isdefined(level.hostmigrationtimer)) {
+    if(isDefined(level.hostmigrationtimer)) {
       setdvar("ui_guncycle", 0);
       timepassed = maps\mp\gametypes\_hostmigration::waittillhostmigrationdone();
       totaltimepassed = totaltimepassed + timepassed;
       endtime = endtime + timepassed;
+
       println("[SHRP] timePassed = " + timepassed);
       println("[SHRP] totatTimePassed = " + totaltimepassed);
       println("[SHRP] level.discardTime = " + level.discardtime);
+
       setdvar("ui_guncycle", nextguncycletime + totaltimepassed);
     }
   }
@@ -309,15 +314,15 @@ guncyclewaiter(nextguncycletime, waittime) {
   timepassed = waitlongdurationwithhostmigrationpause(nextguncycletime, (nextguncycletime - gettime()) / 1000 - 6);
   nextguncycletime = nextguncycletime + timepassed;
 
-  for (i = 6; i > 1; i--) {
-    for (j = 0; j < level.players.size; j++)
+  for(i = 6; i > 1; i--) {
+    for(j = 0; j < level.players.size; j++)
       level.players[j] playlocalsound("uin_timer_wager_beep");
 
     timepassed = waitlongdurationwithhostmigrationpause(nextguncycletime, (nextguncycletime - gettime()) / 1000 / i);
     nextguncycletime = nextguncycletime + timepassed;
   }
 
-  for (i = 0; i < level.players.size; i++)
+  for(i = 0; i < level.players.size; i++)
     level.players[i] playlocalsound("uin_timer_wager_last_beep");
 
   if(nextguncycletime - gettime() > 0)
@@ -325,7 +330,7 @@ guncyclewaiter(nextguncycletime, waittime) {
 
   level.shrprandomweapon = getrandomgunfromprogression();
 
-  for (i = 0; i < level.players.size; i++) {
+  for(i = 0; i < level.players.size; i++) {
     level.players[i] notify("remove_planted_weapons");
     level.players[i] givecustomloadout(0, 1);
   }
@@ -346,18 +351,18 @@ chooserandomguns() {
   guncycle = 1;
   numguncycles = int(level.timelimit * 60 / waittime + 0.5);
 
-  while (true) {
+  while(true) {
     nextguncycletime = gettime() + waittime * 1000;
     ispenultimateround = 0;
     issharpshooterround = guncycle == numguncycles - 1;
 
-    for (i = 0; i < level.players.size; i++)
+    for(i = 0; i < level.players.size; i++)
       level.players[i].currentguncyclepoints = 0;
 
     level.currentguncyclemaxpoints = 0;
     guncyclewaiter(nextguncycletime, waittime);
 
-    for (i = 0; i < level.players.size; i++) {
+    for(i = 0; i < level.players.size; i++) {
       player = level.players[i];
 
       if(guncycle + 1 == numguncycles)
@@ -371,19 +376,19 @@ chooserandomguns() {
     if(ispenultimateround) {
       level.sharpshootermultiplier = 2;
 
-      for (i = 0; i < level.players.size; i++)
+      for(i = 0; i < level.players.size; i++)
         level.players[i] thread maps\mp\gametypes\_wager::queuewagerpopup(&"MP_SHRP_PENULTIMATE_RND", 0, & "MP_SHRP_PENULTIMATE_MULTIPLIER", "wm_bonus_rnd");
     } else if(issharpshooterround) {
       lastmultiplier = level.sharpshootermultiplier;
 
-      if(!isdefined(lastmultiplier))
+      if(!isDefined(lastmultiplier))
         lastmultiplier = 1;
 
       level.sharpshootermultiplier = 2;
       setdvar("ui_guncycle", 0);
       level.guncycletimer.alpha = 0;
 
-      for (i = 0; i < level.players.size; i++)
+      for(i = 0; i < level.players.size; i++)
         level.players[i] thread maps\mp\gametypes\_wager::queuewagerpopup(&"MP_SHRP_RND", 0, & "MP_SHRP_FINAL_MULTIPLIER", "wm_shrp_rnd");
 
       break;
@@ -395,7 +400,7 @@ chooserandomguns() {
 }
 
 checkawardmostpointsthiscycle() {
-  if(isdefined(self.currentguncyclepoints) && self.currentguncyclepoints > 0) {
+  if(isDefined(self.currentguncyclepoints) && self.currentguncyclepoints > 0) {
     if(self.currentguncyclepoints == level.currentguncyclemaxpoints)
       maps\mp\_scoreevents::processscoreevent("most_points_shrp", self);
   }
@@ -404,14 +409,14 @@ checkawardmostpointsthiscycle() {
 awardmostpointsmedalgameend() {
   level waittill("game_end");
 
-  for (i = 0; i < level.players.size; i++)
+  for(i = 0; i < level.players.size; i++)
     level.players[i] checkawardmostpointsthiscycle();
 }
 
 givecustomloadout(takeallweapons, alreadyspawned) {
   chooserandombody = 0;
 
-  if(!isdefined(alreadyspawned) || !alreadyspawned)
+  if(!isDefined(alreadyspawned) || !alreadyspawned)
     chooserandombody = 1;
 
   self maps\mp\gametypes\_wager::setupblankrandomplayer(takeallweapons, chooserandombody, level.shrprandomweapon);
@@ -420,10 +425,10 @@ givecustomloadout(takeallweapons, alreadyspawned) {
   self switchtoweapon(level.shrprandomweapon);
   self giveweapon("knife_mp");
 
-  if(!isdefined(alreadyspawned) || !alreadyspawned)
+  if(!isDefined(alreadyspawned) || !alreadyspawned)
     self setspawnweapon(level.shrprandomweapon);
 
-  if(isdefined(takeallweapons) && !takeallweapons)
+  if(isDefined(takeallweapons) && !takeallweapons)
     self thread takeoldweapons();
   else
     self enableweaponcycling();
@@ -435,7 +440,7 @@ takeoldweapons() {
   self endon("disconnect");
   self endon("death");
 
-  for (;;) {
+  for(;;) {
     self waittill("weapon_change", newweapon);
 
     if(newweapon != "none") {
@@ -445,7 +450,7 @@ takeoldweapons() {
 
   weaponslist = self getweaponslist();
 
-  for (i = 0; i < weaponslist.size; i++) {
+  for(i = 0; i < weaponslist.size; i++) {
     if(weaponslist[i] != level.shrprandomweapon && weaponslist[i] != "knife_mp")
       self takeweapon(weaponslist[i]);
   }
@@ -454,16 +459,16 @@ takeoldweapons() {
 }
 
 onplayerkilled(einflictor, attacker, idamage, smeansofdeath, sweapon, vdir, shitloc, psoffsettime, deathanimduration) {
-  if(isdefined(attacker) && isplayer(attacker) && attacker != self) {
-    if(isdefined(level.sharpshootermultiplier) && level.sharpshootermultiplier == 2) {
-      if(!isdefined(attacker.pers["x2kills"]))
+  if(isDefined(attacker) && isplayer(attacker) && attacker != self) {
+    if(isDefined(level.sharpshootermultiplier) && level.sharpshootermultiplier == 2) {
+      if(!isDefined(attacker.pers["x2kills"]))
         attacker.pers["x2kills"] = 1;
       else
         attacker.pers["x2kills"]++;
 
       attacker.x2kills = attacker.pers["x2kills"];
-    } else if(isdefined(level.sharpshootermultiplier) && level.sharpshootermultiplier == 3) {
-      if(!isdefined(attacker.pers["x3kills"]))
+    } else if(isDefined(level.sharpshootermultiplier) && level.sharpshootermultiplier == 3) {
+      if(!isDefined(attacker.pers["x3kills"]))
         attacker.pers["x3kills"] = 1;
       else
         attacker.pers["x3kills"]++;
@@ -471,12 +476,12 @@ onplayerkilled(einflictor, attacker, idamage, smeansofdeath, sweapon, vdir, shit
       attacker.x2kills = attacker.pers["x3kills"];
     }
 
-    if(isdefined(self.scoremultiplier) && self.scoremultiplier >= 2)
+    if(isDefined(self.scoremultiplier) && self.scoremultiplier >= 2)
       maps\mp\_scoreevents::processscoreevent("kill_x2_score_shrp", attacker, self, sweapon);
 
     currentbonus = attacker.currentbonus;
 
-    if(!isdefined(currentbonus))
+    if(!isDefined(currentbonus))
       currentbonus = 0;
 
     if(currentbonus < level.poweruplist.size) {
@@ -491,21 +496,21 @@ onplayerkilled(einflictor, attacker, idamage, smeansofdeath, sweapon, vdir, shit
     }
 
     if(currentbonus >= level.poweruplist.size) {
-      if(isdefined(attacker.powerups) && isdefined(attacker.powerups.size) && attacker.powerups.size > 0)
+      if(isDefined(attacker.powerups) && isDefined(attacker.powerups.size) && attacker.powerups.size > 0)
         attacker thread maps\mp\gametypes\_wager::pulsepowerupicon(attacker.powerups.size - 1);
     }
 
     scoremultiplier = 1;
 
-    if(isdefined(attacker.scoremultiplier))
+    if(isDefined(attacker.scoremultiplier))
       scoremultiplier = attacker.scoremultiplier;
 
-    if(isdefined(level.sharpshootermultiplier))
+    if(isDefined(level.sharpshootermultiplier))
       scoremultiplier = scoremultiplier * level.sharpshootermultiplier;
 
     scoreincrease = attacker.pointstowin;
 
-    for (i = 1; i <= scoremultiplier; i++) {
+    for(i = 1; i <= scoremultiplier; i++) {
       if(smeansofdeath == "MOD_MELEE" && level.shrprandomweapon != "knife_mp" && level.shrprandomweapon != "riotshield_mp") {
         attacker maps\mp\gametypes\_globallogic_score::givepointstowin(level.pointspermeleekill);
 
@@ -519,7 +524,7 @@ onplayerkilled(einflictor, attacker, idamage, smeansofdeath, sweapon, vdir, shit
 
       attacker maps\mp\gametypes\_globallogic_score::givepointstowin(level.pointsperweaponkill);
 
-      if(!isdefined(attacker.currentguncyclepoints))
+      if(!isDefined(attacker.currentguncyclepoints))
         attacker.currentguncyclepoints = 0;
 
       attacker.currentguncyclepoints = attacker.currentguncyclepoints + level.pointsperweaponkill;
@@ -533,7 +538,7 @@ onplayerkilled(einflictor, attacker, idamage, smeansofdeath, sweapon, vdir, shit
 
     scoreincrease = attacker.pointstowin - scoreincrease;
 
-    if(scoremultiplier > 1 || isdefined(level.sharpshootermultiplier) && level.sharpshootermultiplier > 1) {
+    if(scoremultiplier > 1 || isDefined(level.sharpshootermultiplier) && level.sharpshootermultiplier > 1) {
       attacker playlocalsound("uin_alert_cash_register");
       attacker.pers["x2score"] = attacker.pers["x2score"] + scoreincrease;
       attacker.x2score = attacker.pers["x2score"];
@@ -566,7 +571,7 @@ infiniteammo() {
   self endon("death");
   self endon("disconnect");
 
-  for (;;) {
+  for(;;) {
     wait 0.1;
     weapon = self getcurrentweapon();
     self givemaxammo(weapon);
@@ -576,19 +581,19 @@ infiniteammo() {
 onwagerawards() {
   x2kills = self maps\mp\gametypes\_globallogic_score::getpersstat("x2kills");
 
-  if(!isdefined(x2kills))
+  if(!isDefined(x2kills))
     x2kills = 0;
 
   self maps\mp\gametypes\_persistence::setafteractionreportstat("wagerAwards", x2kills, 0);
   headshots = self maps\mp\gametypes\_globallogic_score::getpersstat("headshots");
 
-  if(!isdefined(headshots))
+  if(!isDefined(headshots))
     headshots = 0;
 
   self maps\mp\gametypes\_persistence::setafteractionreportstat("wagerAwards", headshots, 1);
   bestkillstreak = self maps\mp\gametypes\_globallogic_score::getpersstat("best_kill_streak");
 
-  if(!isdefined(bestkillstreak))
+  if(!isDefined(bestkillstreak))
     bestkillstreak = 0;
 
   self maps\mp\gametypes\_persistence::setafteractionreportstat("wagerAwards", bestkillstreak, 2);
@@ -597,7 +602,7 @@ onwagerawards() {
 clearpowerupsongameend() {
   level waittill("game_ended");
 
-  for (i = 0; i < level.players.size; i++) {
+  for(i = 0; i < level.players.size; i++) {
     player = level.players[i];
     player maps\mp\gametypes\_wager::clearpowerups();
   }

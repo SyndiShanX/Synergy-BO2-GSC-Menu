@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\bots\_bot_hack.gsc
-***************************************/
+**************************************/
 
 #include maps\mp\gametypes\ctf;
 #include common_scripts\utility;
@@ -26,7 +26,7 @@ bot_hack_tank_get_goal_origin(tank) {
 bot_hack_has_goal(tank) {
   goal = self getgoal("hack");
 
-  if(isdefined(goal)) {
+  if(isDefined(goal)) {
     if(distancesquared(goal, tank.origin) < 16384)
       return true;
   }
@@ -40,13 +40,13 @@ bot_hack_at_goal() {
 
   goal = self getgoal("hack");
 
-  if(isdefined(goal)) {
+  if(isDefined(goal)) {
     tanks = getentarray("talon", "targetname");
     tanks = arraysort(tanks, self.origin);
 
     foreach(tank in tanks) {
       if(distancesquared(goal, tank.origin) < 16384) {
-        if(isdefined(tank.trigger) && self istouching(tank.trigger))
+        if(isDefined(tank.trigger) && self istouching(tank.trigger))
           return true;
       }
     }
@@ -57,15 +57,15 @@ bot_hack_at_goal() {
 
 bot_hack_goal_pregame(tanks) {
   foreach(tank in tanks) {
-    if(isdefined(tank.owner)) {
+    if(isDefined(tank.owner)) {
       continue;
     }
-    if(isdefined(tank.team) && tank.team == self.team) {
+    if(isDefined(tank.team) && tank.team == self.team) {
       continue;
     }
     goal = self bot_hack_tank_get_goal_origin(tank);
 
-    if(isdefined(goal)) {
+    if(isDefined(goal)) {
       if(self addgoal(goal, 24, 2, "hack")) {
         self.goal_flag = tank;
         return;
@@ -92,16 +92,16 @@ bot_hack_think() {
     self bot_hack_goal_pregame(tanks);
   else {
     foreach(tank in tanks) {
-      if(isdefined(tank.owner) && tank.owner == self) {
+      if(isDefined(tank.owner) && tank.owner == self) {
         continue;
       }
-      if(!isdefined(tank.owner)) {
+      if(!isDefined(tank.owner)) {
         if(self bot_hack_has_goal(tank)) {
           return;
         }
         goal = self bot_hack_tank_get_goal_origin(tank);
 
-        if(isdefined(goal)) {
+        if(isDefined(goal)) {
           self addgoal(goal, 24, 2, "hack");
           return;
         }
@@ -110,7 +110,7 @@ bot_hack_think() {
       if(tank.isstunned && distancesquared(self.origin, tank.origin) < 262144) {
         goal = self bot_hack_tank_get_goal_origin(tank);
 
-        if(isdefined(goal)) {
+        if(isDefined(goal)) {
           self addgoal(goal, 24, 3, "hack");
           return;
         }
@@ -132,7 +132,7 @@ bot_hack_think() {
     }
 
     foreach(tank in tanks) {
-      if(isdefined(tank.owner) && tank.owner == self) {
+      if(isDefined(tank.owner) && tank.owner == self) {
         continue;
       }
       if(tank.isstunned) {
@@ -142,7 +142,7 @@ bot_hack_think() {
         self waittill("grenade_fire");
         goal = self bot_hack_tank_get_goal_origin(tank);
 
-        if(isdefined(goal)) {
+        if(isDefined(goal)) {
           self addgoal(goal, 24, 3, "hack");
           wait 0.5;
           return;

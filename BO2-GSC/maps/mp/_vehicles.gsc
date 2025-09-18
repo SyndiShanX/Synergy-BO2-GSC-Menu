@@ -1,7 +1,7 @@
-/***************************************
+/**************************************
  * Decompiled and Edited by SyndiShanX
  * Script: maps\mp\_vehicles.gsc
-***************************************/
+**************************************/
 
 #include common_scripts\utility;
 #include maps\mp\_utility;
@@ -64,15 +64,15 @@ init() {
     level.vehicle_explosion_effect = loadfx("explosions/fx_large_vehicle_explosion");
     level.veh_husk_models = [];
 
-    if(isdefined(level.use_new_veh_husks))
+    if(isDefined(level.use_new_veh_husks))
       level.veh_husk_models["t34_mp"] = "veh_t34_destroyed_mp";
 
-    if(isdefined(level.onaddvehiclehusks))
+    if(isDefined(level.onaddvehiclehusks))
       [[level.onaddvehiclehusks]]();
 
     keys = getarraykeys(level.veh_husk_models);
 
-    for (i = 0; i < keys.size; i++)
+    for(i = 0; i < keys.size; i++)
       precachemodel(level.veh_husk_models[keys[i]]);
 
     precacherumble("tank_damage_light_mp");
@@ -91,18 +91,18 @@ init() {
 }
 
 water_killbrush_think() {
-  for (;;) {
+  for(;;) {
     self waittill("trigger", entity);
 
-    if(isdefined(entity)) {
-      if(isdefined(entity.targetname)) {
+    if(isDefined(entity)) {
+      if(isDefined(entity.targetname)) {
         if(entity.targetname == "rcbomb")
           entity maps\mp\killstreaks\_rcbomb::rcbomb_force_explode();
         else if(entity.targetname == "talon" && !is_true(entity.dead))
           entity notify("death");
       }
 
-      if(isdefined(entity.helitype) && entity.helitype == "qrdrone")
+      if(isDefined(entity.helitype) && entity.helitype == "qrdrone")
         entity maps\mp\killstreaks\_qrdrone::qrdrone_force_destroy();
     }
   }
@@ -165,8 +165,8 @@ initialize_vehicle_damage_effects_for_level() {
 get_vehicle_name(vehicle) {
   name = "";
 
-  if(isdefined(vehicle)) {
-    if(isdefined(vehicle.vehicletype))
+  if(isDefined(vehicle)) {
+    if(isDefined(vehicle.vehicletype))
       name = vehicle.vehicletype;
   }
 
@@ -180,7 +180,7 @@ get_default_vehicle_name() {
 get_vehicle_name_key_for_damage_states(vehicle) {
   vehicle_name = get_vehicle_name(vehicle);
 
-  if(!isdefined(level.vehicles_damage_states[vehicle_name]))
+  if(!isDefined(level.vehicles_damage_states[vehicle_name]))
     vehicle_name = get_default_vehicle_name();
 
   return vehicle_name;
@@ -190,7 +190,7 @@ get_vehicle_damage_state_index_from_health_percentage(vehicle) {
   damage_state_index = -1;
   vehicle_name = get_vehicle_name_key_for_damage_states();
 
-  for (test_index = 0; test_index < level.vehicles_damage_states[vehicle_name].size; test_index++) {
+  for(test_index = 0; test_index < level.vehicles_damage_states[vehicle_name].size; test_index++) {
     if(vehicle.current_health_percentage <= level.vehicles_damage_states[vehicle_name][test_index].health_percentage) {
       damage_state_index = test_index;
       continue;
@@ -227,8 +227,8 @@ update_damage_effects(vehicle, attacker) {
 play_damage_state_effects(vehicle, start_damage_state_index, end_damage_state_index) {
   vehicle_name = get_vehicle_name_key_for_damage_states(vehicle);
 
-  for (damage_state_index = start_damage_state_index; damage_state_index <= end_damage_state_index; damage_state_index++) {
-    for (effect_index = 0; effect_index < level.vehicles_damage_states[vehicle_name][damage_state_index].effect_array.size; effect_index++) {
+  for(damage_state_index = start_damage_state_index; damage_state_index <= end_damage_state_index; damage_state_index++) {
+    for(effect_index = 0; effect_index < level.vehicles_damage_states[vehicle_name][damage_state_index].effect_array.size; effect_index++) {
       effects = level.vehicles_damage_states[vehicle_name][damage_state_index].effect_array[effect_index];
       vehicle thread play_vehicle_effects(effects);
     }
@@ -239,19 +239,19 @@ play_vehicle_effects(effects, isdamagedtread) {
   self endon("delete");
   self endon("removed");
 
-  if(!isdefined(isdamagedtread) || isdamagedtread == 0)
+  if(!isDefined(isdamagedtread) || isdamagedtread == 0)
     self endon("damage_state_changed");
 
-  if(isdefined(effects.sound_effect))
+  if(isDefined(effects.sound_effect))
     self playsound(effects.sound_effect);
 
   waittime = 0;
 
-  if(isdefined(effects.damage_effect_loop_time))
+  if(isDefined(effects.damage_effect_loop_time))
     waittime = effects.damage_effect_loop_time;
 
-  while (waittime > 0) {
-    if(isdefined(effects.damage_effect))
+  while(waittime > 0) {
+    if(isDefined(effects.damage_effect))
       playfxontag(effects.damage_effect, self, effects.vehicle_tag);
 
     wait(waittime);
@@ -262,32 +262,31 @@ init_vehicle_entities() {
   vehicles = getentarray("script_vehicle", "classname");
   array_thread(vehicles, ::init_original_vehicle);
 
-  if(isdefined(vehicles))
+  if(isDefined(vehicles))
     return vehicles.size;
 
   return 0;
 }
 
 precache_vehicles() {
-
 }
 
 register_vehicle() {
-  if(!isdefined(level.vehicles_list))
+  if(!isDefined(level.vehicles_list))
     level.vehicles_list = [];
 
   level.vehicles_list[level.vehicles_list.size] = self;
 }
 
 manage_vehicles() {
-  if(!isdefined(level.vehicles_list))
+  if(!isDefined(level.vehicles_list))
     return true;
   else {
     max_vehicles = getmaxvehicles();
     newarray = [];
 
-    for (i = 0; i < level.vehicles_list.size; i++) {
-      if(isdefined(level.vehicles_list[i]))
+    for(i = 0; i < level.vehicles_list.size; i++) {
+      if(isDefined(level.vehicles_list[i]))
         newarray[newarray.size] = level.vehicles_list[i];
     }
 
@@ -297,11 +296,11 @@ manage_vehicles() {
     if(vehiclestodelete > 0) {
       newarray = [];
 
-      for (i = 0; i < level.vehicles_list.size; i++) {
+      for(i = 0; i < level.vehicles_list.size; i++) {
         vehicle = level.vehicles_list[i];
 
         if(vehiclestodelete > 0) {
-          if(isdefined(vehicle.is_husk) && !isdefined(vehicle.permanentlyremoved)) {
+          if(isDefined(vehicle.is_husk) && !isDefined(vehicle.permanentlyremoved)) {
             deleted = vehicle husk_do_cleanup();
 
             if(deleted) {
@@ -324,11 +323,13 @@ manage_vehicles() {
 init_vehicle() {
   self register_vehicle();
 
-  if(isdefined(level.vehiclehealths) && isdefined(level.vehiclehealths[self.vehicletype]))
+  if(isDefined(level.vehiclehealths) && isDefined(level.vehiclehealths[self.vehicletype]))
     self.maxhealth = level.vehiclehealths[self.vehicletype];
   else {
     self.maxhealth = getdvarint(#"scr_veh_health_tank");
+
     println("No health specified for vehicle type " + self.vehicletype + "! Using default...");
+
   }
 
   self.health = self.maxhealth;
@@ -357,7 +358,7 @@ vehicle_wait_player_enter_t() {
   self endon("death");
   self endon("delete");
 
-  while (true) {
+  while(true) {
     self waittill("enter_vehicle", player);
     player thread player_wait_exit_vehicle_t();
     player player_update_vehicle_hud(1, self);
@@ -375,12 +376,12 @@ vehicle_wait_damage_t() {
   self endon("death");
   self endon("delete");
 
-  while (true) {
+  while(true) {
     self waittill("damage");
     occupants = self getvehoccupants();
 
-    if(isdefined(occupants)) {
-      for (i = 0; i < occupants.size; i++)
+    if(isDefined(occupants)) {
+      for(i = 0; i < occupants.size; i++)
         occupants[i] player_update_vehicle_hud(1, self);
     }
   }
@@ -388,20 +389,20 @@ vehicle_wait_damage_t() {
 
 player_update_vehicle_hud(show, vehicle) {
   if(show) {
-    if(!isdefined(self.vehiclehud)) {
+    if(!isDefined(self.vehiclehud)) {
       self.vehiclehud = createbar((1, 1, 1), 64, 16);
       self.vehiclehud setpoint("CENTER", "BOTTOM", 0, -40);
       self.vehiclehud.alpha = 0.75;
     }
 
     self.vehiclehud updatebar(vehicle.health / vehicle.initial_state.health);
-  } else if(isdefined(self.vehiclehud))
+  } else if(isDefined(self.vehiclehud))
     self.vehiclehud destroyelem();
 
   if(getdvar(#"_id_480B1A1D") != "") {
     if(getdvarint(#"_id_480B1A1D") != 0) {
       if(show) {
-        if(!isdefined(self.vehiclehudhealthnumbers)) {
+        if(!isDefined(self.vehiclehudhealthnumbers)) {
           self.vehiclehudhealthnumbers = createfontstring("default", 2.0);
           self.vehiclehudhealthnumbers setparent(self.vehiclehud);
           self.vehiclehudhealthnumbers setpoint("LEFT", "RIGHT", 8, 0);
@@ -411,7 +412,7 @@ player_update_vehicle_hud(show, vehicle) {
         }
 
         self.vehiclehudhealthnumbers setvalue(vehicle.health);
-      } else if(isdefined(self.vehiclehudhealthnumbers))
+      } else if(isDefined(self.vehiclehudhealthnumbers))
         self.vehiclehudhealthnumbers destroyelem();
     }
   }
@@ -426,7 +427,7 @@ init_vehicle_threads() {
   self thread vehicle_recycle_spawner_t();
   self thread vehicle_disconnect_paths();
 
-  if(isdefined(level.enablevehiclehealthbar) && level.enablevehiclehealthbar) {
+  if(isDefined(level.enablevehiclehealthbar) && level.enablevehiclehealthbar) {
     self thread vehicle_wait_player_enter_t();
     self thread vehicle_wait_damage_t();
   }
@@ -442,13 +443,13 @@ init_vehicle_threads() {
 }
 
 build_template(type, model, typeoverride) {
-  if(isdefined(typeoverride))
+  if(isDefined(typeoverride))
     type = typeoverride;
 
-  if(!isdefined(level.vehicle_death_fx))
+  if(!isDefined(level.vehicle_death_fx))
     level.vehicle_death_fx = [];
 
-  if(!isdefined(level.vehicle_death_fx[type]))
+  if(!isDefined(level.vehicle_death_fx[type]))
     level.vehicle_death_fx[type] = [];
 
   level.vehicle_compassicon[type] = 0;
@@ -461,11 +462,11 @@ build_template(type, model, typeoverride) {
 }
 
 build_rumble(rumble, scale, duration, radius, basetime, randomaditionaltime) {
-  if(!isdefined(level.vehicle_rumble))
+  if(!isDefined(level.vehicle_rumble))
     level.vehicle_rumble = [];
 
   struct = build_quake(scale, duration, radius, basetime, randomaditionaltime);
-  assert(isdefined(rumble));
+  assert(isDefined(rumble));
   precacherumble(rumble);
   struct.rumble = rumble;
   level.vehicle_rumble[level.vttype] = struct;
@@ -478,10 +479,10 @@ build_quake(scale, duration, radius, basetime, randomaditionaltime) {
   struct.duration = duration;
   struct.radius = radius;
 
-  if(isdefined(basetime))
+  if(isDefined(basetime))
     struct.basetime = basetime;
 
-  if(isdefined(randomaditionaltime))
+  if(isDefined(randomaditionaltime))
     struct.randomaditionaltime = randomaditionaltime;
 
   return struct;
@@ -495,22 +496,26 @@ cleanup_debug_print_t() {
   self endon("transmute");
   self endon("death");
   self endon("delete");
-  while (true) {
-    if(isdefined(self.debug_message) && getdvarint(#"scr_veh_cleanupdebugprint") != 0)
+
+  while(true) {
+    if(isDefined(self.debug_message) && getdvarint(#"scr_veh_cleanupdebugprint") != 0)
       print3d(self.origin + vectorscale((0, 0, 1), 150.0), self.debug_message, (0, 1, 0), 1, 1, 1);
 
     wait 0.01;
   }
+
 }
 
 cleanup_debug_print_clearmsg_t() {
   self endon("transmute");
   self endon("death");
   self endon("delete");
-  while (true) {
+
+  while(true) {
     self waittill("enter_vehicle");
     self.debug_message = undefined;
   }
+
 }
 
 cleanup_debug_print(message) {
@@ -540,10 +545,10 @@ wait_then_cleanup_vehicle(test_name, cleanup_dvar_name) {
 }
 
 wait_until_severely_damaged() {
-  while (true) {
+  while(true) {
     health_percentage = self.health / self.initial_state.health;
 
-    if(isdefined(level.k_severe_damage_health_percentage))
+    if(isDefined(level.k_severe_damage_health_percentage))
       self cleanup_debug_print("Damage Test: Still healthy - (" + health_percentage + " >= " + level.k_severe_damage_health_percentage + ") and working treads");
     else
       self cleanup_debug_print("Damage Test: Still healthy and working treads");
@@ -573,7 +578,7 @@ do_alive_cleanup_wait(test_name) {
   secondswaited = 0.0;
   seconds_per_iteration = 1.0;
 
-  while (true) {
+  while(true) {
     curve_begin = getdvarfloat(#"scr_veh_cleanuptime_dmgfraction_curve_begin");
     curve_end = getdvarfloat(#"scr_veh_cleanuptime_dmgfraction_curve_end");
     factor_min = getdvarfloat(#"scr_veh_cleanuptime_dmgfactor_min");
@@ -614,7 +619,7 @@ do_dead_cleanup_wait(test_name) {
   seconds_waited = 0.0;
   seconds_per_iteration = 1.0;
 
-  while (seconds_waited < total_secs_to_wait) {
+  while(seconds_waited < total_secs_to_wait) {
     self cleanup_debug_print(test_name + ": Waiting " + (total_secs_to_wait - seconds_waited) + "s");
     wait(seconds_per_iteration);
     seconds_waited = seconds_waited + seconds_per_iteration;
@@ -624,8 +629,8 @@ do_dead_cleanup_wait(test_name) {
 cleanup(test_name, cleanup_dvar_name, cleanup_func) {
   keep_waiting = 1;
 
-  while (keep_waiting) {
-    cleanupenabled = !isdefined(cleanup_dvar_name) || getdvarint(cleanup_dvar_name) != 0;
+  while(keep_waiting) {
+    cleanupenabled = !isDefined(cleanup_dvar_name) || getdvarint(cleanup_dvar_name) != 0;
 
     if(cleanupenabled != 0) {
       self[[cleanup_func]]();
@@ -633,9 +638,11 @@ cleanup(test_name, cleanup_dvar_name, cleanup_func) {
     }
 
     keep_waiting = 0;
+
     self cleanup_debug_print("Cleanup disabled for " + test_name + " ( dvar = " + cleanup_dvar_name + " )");
     wait 5.0;
     keep_waiting = 1;
+
   }
 }
 
@@ -644,14 +651,14 @@ vehicle_wait_tread_damage() {
   self endon("delete");
   vehicle_name = get_vehicle_name(self);
 
-  while (true) {
+  while(true) {
     self waittill("broken", brokennotify);
 
     if(brokennotify == "left_tread_destroyed") {
-      if(isdefined(level.vehicles_damage_treadfx[vehicle_name]) && isdefined(level.vehicles_damage_treadfx[vehicle_name][0]))
+      if(isDefined(level.vehicles_damage_treadfx[vehicle_name]) && isDefined(level.vehicles_damage_treadfx[vehicle_name][0]))
         self thread play_vehicle_effects(level.vehicles_damage_treadfx[vehicle_name][0], 1);
     } else if(brokennotify == "right_tread_destroyed") {
-      if(isdefined(level.vehicles_damage_treadfx[vehicle_name]) && isdefined(level.vehicles_damage_treadfx[vehicle_name][1]))
+      if(isDefined(level.vehicles_damage_treadfx[vehicle_name]) && isDefined(level.vehicles_damage_treadfx[vehicle_name][1]))
         self thread play_vehicle_effects(level.vehicles_damage_treadfx[vehicle_name][1], 1);
     }
   }
@@ -663,7 +670,7 @@ wait_for_vehicle_to_stop_outside_min_radius() {
   maxwaittimeenabledistinches = 12 * getdvarfloat(#"scr_veh_waittillstoppedandmindist_maxtimeenabledistfeet");
   initialorigin = self.initial_state.origin;
 
-  for (totalsecondswaited = 0.0; totalsecondswaited < maxwaittime; totalsecondswaited = totalsecondswaited + iterationwaitseconds) {
+  for(totalsecondswaited = 0.0; totalsecondswaited < maxwaittime; totalsecondswaited = totalsecondswaited + iterationwaitseconds) {
     speedmph = self getspeedmph();
     cutoffmph = getdvarfloat(#"scr_veh_cleanupmaxspeedmph");
 
@@ -681,7 +688,7 @@ vehicle_abandoned_by_occupants_t() {
   self endon("death");
   self endon("delete");
 
-  while (true) {
+  while(true) {
     self waittill("exit_vehicle");
     occupants = self getvehoccupants();
 
@@ -693,8 +700,7 @@ vehicle_abandoned_by_occupants_t() {
 }
 
 play_start_stop_sound(sound_alias, modulation) {
-  if(isdefined(self.start_stop_sfxid)) {
-
+  if(isDefined(self.start_stop_sfxid)) {
   }
 
   self.start_stop_sfxid = self playsound(sound_alias);
@@ -705,7 +711,7 @@ vehicle_ghost_entering_occupants_t() {
   self endon("death");
   self endon("delete");
 
-  while (true) {
+  while(true) {
     self waittill("enter_vehicle", player, seat);
     isdriver = seat == 0;
 
@@ -726,7 +732,7 @@ player_is_occupant_invulnerable(smeansofdeath) {
   if(self isremotecontrolling())
     return 0;
 
-  if(!isdefined(level.vehicle_drivers_are_invulnerable))
+  if(!isDefined(level.vehicle_drivers_are_invulnerable))
     level.vehicle_drivers_are_invulnerable = 0;
 
   invulnerable = level.vehicle_drivers_are_invulnerable && self player_is_driver();
@@ -739,10 +745,10 @@ player_is_driver() {
 
   vehicle = self getvehicleoccupied();
 
-  if(isdefined(vehicle)) {
+  if(isDefined(vehicle)) {
     seat = vehicle getoccupantseat(self);
 
-    if(isdefined(seat) && seat == 0)
+    if(isDefined(seat) && seat == 0)
       return true;
   }
 
@@ -753,7 +759,7 @@ player_change_seat_handler_t(vehicle) {
   self endon("disconnect");
   self endon("exit_vehicle");
 
-  while (true) {
+  while(true) {
     self waittill("change_seat", vehicle, oldseat, newseat);
     isdriver = newseat == 0;
 
@@ -781,16 +787,16 @@ vehicle_is_tank() {
 }
 
 vehicle_record_initial_values() {
-  if(!isdefined(self.initial_state))
+  if(!isDefined(self.initial_state))
     self.initial_state = spawnstruct();
 
-  if(isdefined(self.origin))
+  if(isDefined(self.origin))
     self.initial_state.origin = self.origin;
 
-  if(isdefined(self.angles))
+  if(isDefined(self.angles))
     self.initial_state.angles = self.angles;
 
-  if(isdefined(self.health))
+  if(isDefined(self.health))
     self.initial_state.health = self.health;
 
   self initialize_vehicle_damage_state_data();
@@ -801,10 +807,10 @@ vehicle_fireweapon_t() {
   self endon("death");
   self endon("delete");
 
-  for (;;) {
+  for(;;) {
     self waittill("turret_fire", player);
 
-    if(isdefined(player) && isalive(player) && player isinvehicle())
+    if(isDefined(player) && isalive(player) && player isinvehicle())
       self fireweapon();
   }
 }
@@ -826,8 +832,8 @@ wait_for_vehicle_overturn() {
   worldup = anglestoup(vectorscale((0, 1, 0), 90.0));
   overturned = 0;
 
-  while (!overturned) {
-    if(isdefined(self.angles)) {
+  while(!overturned) {
+    if(isDefined(self.angles)) {
       up = anglestoup(self.angles);
       dot = vectordot(up, worldup);
 
@@ -845,10 +851,10 @@ vehicle_overturn_eject_occupants() {
   self endon("death");
   self endon("delete");
 
-  for (;;) {
+  for(;;) {
     self waittill("veh_ejectoccupants");
 
-    if(isdefined(level.onejectoccupants))
+    if(isDefined(level.onejectoccupants))
       [[level.onejectoccupants]]();
 
     wait 0.25;
@@ -858,9 +864,9 @@ vehicle_overturn_eject_occupants() {
 vehicle_eject_all_occupants() {
   occupants = self getvehoccupants();
 
-  if(isdefined(occupants)) {
-    for (i = 0; i < occupants.size; i++) {
-      if(isdefined(occupants[i]))
+  if(isDefined(occupants)) {
+    for(i = 0; i < occupants.size; i++) {
+      if(isDefined(occupants[i]))
         occupants[i] unlink();
     }
   }
@@ -887,7 +893,7 @@ kill_vehicle(attacker) {
 }
 
 value_with_default(preferred_value, default_value) {
-  if(isdefined(preferred_value))
+  if(isDefined(preferred_value))
     return preferred_value;
 
   return default_value;
@@ -906,7 +912,7 @@ vehicle_transmute(attacker) {
   respawn_parameters.targetname = value_with_default(self.targetname, "");
   respawn_parameters.vehicletype = value_with_default(self.vehicletype, "");
   respawn_parameters.destructibledef = self.destructibledef;
-  vehiclewasdestroyed = !isdefined(self.recycling);
+  vehiclewasdestroyed = !isDefined(self.recycling);
 
   if(vehiclewasdestroyed || vehicle_should_explode_on_cleanup()) {
     _spawn_explosion(deathorigin);
@@ -936,7 +942,7 @@ vehicle_transmute(attacker) {
       respawn_vehicle_now = 0;
   }
 
-  if(!isdefined(self.is_husk))
+  if(!isDefined(self.is_husk))
     self remove_vehicle_from_world();
 
   if(getdvarint(#"scr_veh_disablerespawn") != 0)
@@ -955,8 +961,9 @@ respawn_vehicle(respawn_parameters) {
 
   if(!manage_vehicles()) {
     iprintln("Vehicle can't respawn because MAX_VEHICLES has been reached and none of the vehicles could be cleaned up.");
+
   } else {
-    if(isdefined(respawn_parameters.destructibledef))
+    if(isDefined(respawn_parameters.destructibledef))
       vehicle = spawnvehicle(respawn_parameters.modelname, respawn_parameters.targetname, respawn_parameters.vehicletype, respawn_parameters.origin, respawn_parameters.angles, respawn_parameters.destructibledef);
     else
       vehicle = spawnvehicle(respawn_parameters.modelname, respawn_parameters.targetname, respawn_parameters.vehicletype, respawn_parameters.origin, respawn_parameters.angles);
@@ -972,8 +979,8 @@ respawn_vehicle(respawn_parameters) {
 remove_vehicle_from_world() {
   self notify("removed");
 
-  if(isdefined(self.original_vehicle)) {
-    if(!isdefined(self.permanentlyremoved)) {
+  if(isDefined(self.original_vehicle)) {
+    if(!isDefined(self.permanentlyremoved)) {
       self.permanentlyremoved = 1;
       self thread hide_vehicle();
     }
@@ -986,7 +993,6 @@ remove_vehicle_from_world() {
 }
 
 _delete_entity() {
-
   self delete();
 }
 
@@ -1006,11 +1012,11 @@ wait_for_unnoticeable_cleanup_opportunity() {
   maxsecondstowait = getdvarfloat(#"scr_veh_disappear_maxwaittime");
   iterationwaitseconds = 1.0;
 
-  for (secondswaited = 0.0; secondswaited < maxsecondstowait; secondswaited = secondswaited + iterationwaitseconds) {
+  for(secondswaited = 0.0; secondswaited < maxsecondstowait; secondswaited = secondswaited + iterationwaitseconds) {
     players_s = get_all_alive_players_s();
     oktocleanup = 1;
 
-    for (j = 0; j < players_s.a.size && oktocleanup; j++) {
+    for(j = 0; j < players_s.a.size && oktocleanup; j++) {
       player = players_s.a[j];
       distinchessq = distancesquared(self.origin, player.origin);
 
@@ -1041,7 +1047,7 @@ wait_until_vehicle_position_wont_telefrag(position) {
   maxiterations = getdvarint(#"scr_veh_respawnwait_maxiterations");
   iterationwaitseconds = getdvarint(#"scr_veh_respawnwait_iterationwaitseconds");
 
-  for (i = 0; i < maxiterations; i++) {
+  for(i = 0; i < maxiterations; i++) {
     if(!vehicle_position_will_telefrag(position)) {
       return;
     }
@@ -1052,7 +1058,7 @@ wait_until_vehicle_position_wont_telefrag(position) {
 vehicle_position_will_telefrag(position) {
   players_s = get_all_alive_players_s();
 
-  for (i = 0; i < players_s.a.size; i++) {
+  for(i = 0; i < players_s.a.size; i++) {
     if(players_s.a[i] player_vehicle_position_will_telefrag(position))
       return true;
   }
@@ -1065,7 +1071,7 @@ vehicle_telefrag_griefers_at_position(position) {
   inflictor = self;
   players_s = get_all_alive_players_s();
 
-  for (i = 0; i < players_s.a.size; i++) {
+  for(i = 0; i < players_s.a.size; i++) {
     player = players_s.a[i];
 
     if(player player_vehicle_position_will_telefrag(position))
@@ -1084,7 +1090,7 @@ vehicle_recycle_spawner_t() {
   self endon("delete");
   self waittill("death", attacker);
 
-  if(isdefined(self))
+  if(isDefined(self))
     self vehicle_transmute(attacker);
 }
 
@@ -1096,28 +1102,30 @@ vehicle_damage_t() {
   self endon("delete");
   self endon("removed");
 
-  for (;;) {
+  for(;;) {
     self waittill("damage", damage, attacker);
     players = get_players();
 
-    for (i = 0; i < players.size; i++) {
+    for(i = 0; i < players.size; i++) {
       if(!isalive(players[i])) {
         continue;
       }
       vehicle = players[i] getvehicleoccupied();
 
-      if(isdefined(vehicle) && self == vehicle && players[i] player_is_driver()) {
+      if(isDefined(vehicle) && self == vehicle && players[i] player_is_driver()) {
         if(damage > 0)
           earthquake(damage / 400, 1.0, players[i].origin, 512, players[i]);
 
         if(damage > 100.0) {
           println("Playing heavy rumble.");
+
           players[i] playrumbleonentity("tank_damage_heavy_mp");
           continue;
         }
 
         if(damage > 10.0) {
           println("Playing light rumble.");
+
           players[i] playrumbleonentity("tank_damage_light_mp");
         }
       }
@@ -1140,14 +1148,14 @@ _spawn_husk(origin, angles, modelname) {
 }
 
 is_vehicle() {
-  return isdefined(self.vehicletype);
+  return isDefined(self.vehicletype);
 }
 
 swap_to_husk_model() {
-  if(isdefined(self.vehicletype)) {
+  if(isDefined(self.vehicletype)) {
     husk_model = level.veh_husk_models[self.vehicletype];
 
-    if(isdefined(husk_model))
+    if(isDefined(husk_model))
       self setmodel(husk_model);
   }
 }
@@ -1176,6 +1184,7 @@ _init_husk(vehicle_name, respawn_parameters) {
     self physicslaunch(forcepoint, initialvelocity);
 
   self thread husk_cleanup_t();
+
   self thread cleanup_debug_print_t();
 }
 
@@ -1213,7 +1222,7 @@ _spawn_explosion(origin) {
   if(getdvarint(#"scr_veh_explosion_spawnfx") == 0) {
     return;
   }
-  if(isdefined(level.vehicle_explosion_effect)) {
+  if(isDefined(level.vehicle_explosion_effect)) {
     forward = (0, 0, 1);
     rot = randomfloat(360);
     up = (cos(rot), sin(rot), 0);
@@ -1249,7 +1258,7 @@ vehicledeathwaiter() {
   self endon("vehicleDeathWaiter");
   self endon("disconnect");
 
-  while (true) {
+  while(true) {
     self waittill("vehicle_death", vehicle_died);
 
     if(vehicle_died)
@@ -1260,7 +1269,6 @@ vehicledeathwaiter() {
 }
 
 turretdeathwaiter() {
-
 }
 
 vehicle_kill_disconnect_paths_forever() {
@@ -1271,21 +1279,21 @@ vehicle_disconnect_paths() {
   self endon("death");
   self endon("kill_disconnect_paths_forever");
 
-  if(isdefined(self.script_disconnectpaths) && !self.script_disconnectpaths) {
+  if(isDefined(self.script_disconnectpaths) && !self.script_disconnectpaths) {
     self.dontdisconnectpaths = 1;
     return;
   }
 
   wait(randomfloat(1));
 
-  while (isdefined(self)) {
+  while(isDefined(self)) {
     if(self getspeed() < 1) {
-      if(!isdefined(self.dontdisconnectpaths))
+      if(!isDefined(self.dontdisconnectpaths))
         self disconnectpaths();
 
       self notify("speed_zero_path_disconnect");
 
-      while (self getspeed() < 1)
+      while(self getspeed() < 1)
         wait 0.05;
     }
 
@@ -1296,16 +1304,16 @@ vehicle_disconnect_paths() {
 
 follow_path(node) {
   self endon("death");
-  assert(isdefined(node), "vehicle_path() called without a path");
+  assert(isDefined(node), "vehicle_path() called without a path");
   self notify("newpath");
 
-  if(isdefined(node))
+  if(isDefined(node))
     self.attachedpath = node;
 
   pathstart = self.attachedpath;
   self.currentnode = self.attachedpath;
 
-  if(!isdefined(pathstart)) {
+  if(!isDefined(pathstart)) {
     return;
   }
   self attachpath(pathstart);
@@ -1313,12 +1321,12 @@ follow_path(node) {
   self endon("newpath");
   nextpoint = pathstart;
 
-  while (isdefined(nextpoint)) {
+  while(isDefined(nextpoint)) {
     self waittill("reached_node", nextpoint);
     self.currentnode = nextpoint;
     nextpoint notify("trigger", self);
 
-    if(isdefined(nextpoint.script_noteworthy)) {
+    if(isDefined(nextpoint.script_noteworthy)) {
       self notify(nextpoint.script_noteworthy);
       self notify("noteworthy", nextpoint.script_noteworthy, nextpoint);
     }

@@ -49,6 +49,7 @@ main() {
   level notify("sleight_on");
   wait_network_frame();
   level notify("Pack_A_Punch_on");
+
   level thread maps\mp\gametypes_zm\zmeat::spawn_level_meat_manager();
 }
 
@@ -56,7 +57,7 @@ enemy_location_override(zombie, enemy) {
   location = enemy.origin;
 
   if(is_true(self.reroute)) {
-    if(isdefined(self.reroute_origin))
+    if(isDefined(self.reroute_origin))
       location = self.reroute_origin;
   }
 

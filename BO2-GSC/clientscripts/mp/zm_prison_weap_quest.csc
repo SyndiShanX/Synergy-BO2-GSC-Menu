@@ -27,7 +27,7 @@ tomahawk_rune_init() {
   level.a_wolf_structs = getstructarray("wolf_position", "targetname");
   registerclientfield("actor", "make_client_clone", 9000, 4, "int", ::pose_dead_body);
 
-  for (i = 0; i < level.a_wolf_structs.size; i++)
+  for(i = 0; i < level.a_wolf_structs.size; i++)
     registerclientfield("world", level.a_wolf_structs[i].script_parameters, 9000, 3, "int", ::soul_catcher_callback);
 
   level.fake_body_death_anim = % ai_zombie_dreamcatch_impact;
@@ -39,12 +39,12 @@ tomahawk_rune_init() {
   level.wolf_bodies = [];
   players = getlocalplayers();
 
-  for (j = 0; j < players.size; j++) {
+  for(j = 0; j < players.size; j++) {
     level.wolf_heads[j] = [];
     level.wolf_runes[j] = [];
     level.wolf_bodies[j] = [];
 
-    for (i = 0; i < level.a_wolf_structs.size; i++) {
+    for(i = 0; i < level.a_wolf_structs.size; i++) {
       level.wolf_heads[j][level.a_wolf_structs[i].script_parameters] = getent(j, level.a_wolf_structs[i].script_label, "targetname");
       level.wolf_heads[j][level.a_wolf_structs[i].script_parameters] hide();
       level.wolf_heads[j][level.a_wolf_structs[i].script_parameters] useanimtree(#animtree);
@@ -59,12 +59,12 @@ tomahawk_rune_init() {
 }
 
 soul_catcher_callback(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname, bwasdemojump) {
-  while (!isdefined(level.weap_quest_init))
+  while(!isDefined(level.weap_quest_init))
     wait 0.05;
 
   if(binitialsnap) {
     if(newval == 2 || newval == 3 || newval == 5 || newval == 4) {
-      if(!isdefined(level.wolf_heads[localclientnum][fieldname].portal_fx)) {
+      if(!isDefined(level.wolf_heads[localclientnum][fieldname].portal_fx)) {
         rune = level.wolf_runes[localclientnum][fieldname];
         rune_forward = anglestoforward(rune.angles + vectorscale((0, 1, 0), 90.0));
         rune_up = anglestoup(rune.angles);
@@ -73,7 +73,7 @@ soul_catcher_callback(localclientnum, oldval, newval, bnewent, binitialsnap, fie
     }
   } else if(bwasdemojump) {
     if(newval == 2 || newval == 3 || newval == 5 || newval == 4) {
-      if(isdefined(level.wolf_heads[localclientnum][fieldname].portal_fx))
+      if(isDefined(level.wolf_heads[localclientnum][fieldname].portal_fx))
         stopfx(localclientnum, level.wolf_heads[localclientnum][fieldname].portal_fx);
 
       rune = level.wolf_runes[localclientnum][fieldname];
@@ -97,8 +97,8 @@ soul_catcher_callback(localclientnum, oldval, newval, bnewent, binitialsnap, fie
     level.wolf_runes[localclientnum][fieldname] hide();
     level.wolf_bodies[localclientnum][fieldname] hide();
 
-    if(isdefined(level.wolf_bodies[localclientnum][fieldname].head)) {
-      if(isdefined(level.wolf_bodies[localclientnum][fieldname].head.hat))
+    if(isDefined(level.wolf_bodies[localclientnum][fieldname].head)) {
+      if(isDefined(level.wolf_bodies[localclientnum][fieldname].head.hat))
         level.wolf_bodies[localclientnum][fieldname].head.hat hide();
 
       level.wolf_bodies[localclientnum][fieldname].head hide();
@@ -125,7 +125,7 @@ soul_catcher_callback(localclientnum, oldval, newval, bnewent, binitialsnap, fie
     level.wolf_bodies[localclientnum][fieldname].head hide();
     level.wolf_runes[localclientnum][fieldname] stoploopsound();
 
-    if(isdefined(level.wolf_bodies[localclientnum][fieldname].head.hat))
+    if(isDefined(level.wolf_bodies[localclientnum][fieldname].head.hat))
       level.wolf_bodies[localclientnum][fieldname].head.hat hide();
 
     level.wolf_heads[localclientnum][fieldname] thread wolfhead_depart(localclientnum, level.wolf_runes[localclientnum][fieldname]);
@@ -135,7 +135,7 @@ soul_catcher_callback(localclientnum, oldval, newval, bnewent, binitialsnap, fie
     level.wolf_bodies[localclientnum][fieldname] hide();
     level.wolf_bodies[localclientnum][fieldname].head hide();
 
-    if(isdefined(level.wolf_bodies[localclientnum][fieldname].head.hat))
+    if(isDefined(level.wolf_bodies[localclientnum][fieldname].head.hat))
       level.wolf_bodies[localclientnum][fieldname].head.hat hide();
 
     level.wolf_runes[localclientnum][fieldname] setmodel("p6_zm_al_dream_catcher");
@@ -161,7 +161,7 @@ wolfhead_idle() {
   self endon("wolf_departing");
   self notify("wolf_idling");
 
-  if(!isdefined(level.wolf_head_idle_anims)) {
+  if(!isDefined(level.wolf_head_idle_anims)) {
     level.wolf_head_idle_anims = [];
     level.wolf_head_idle_anims[0] = % o_zombie_dreamcatcher_idle;
     level.wolf_head_twitch_anims = [];
@@ -170,7 +170,7 @@ wolfhead_idle() {
     level.wolf_head_twitch_anims[2] = % o_zombie_dreamcatcher_idle_twitch_yawn;
   }
 
-  while (true) {
+  while(true) {
     self clearanim( % root, 0.1);
     random_idle_anim = random(level.wolf_head_idle_anims);
     n_anim_length = getanimlength(random_idle_anim);
@@ -192,19 +192,19 @@ pose_dead_body(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname,
     wait 0.016;
   }
 
-  while (!isdefined(level.weap_quest_init))
+  while(!isDefined(level.weap_quest_init))
     wait 0.05;
 
-  if(!isdefined(self)) {
+  if(!isDefined(self)) {
     return;
   }
   s_closest = get_array_of_closest(self.origin, level.a_wolf_structs);
   fieldname = s_closest[0].script_parameters;
   m_body = level.wolf_bodies[localclientnum][fieldname];
 
-  if(isdefined(m_body)) {
-    if(isdefined(m_body.head)) {
-      if(isdefined(m_body.head.hat))
+  if(isDefined(m_body)) {
+    if(isDefined(m_body.head)) {
+      if(isDefined(m_body.head.hat))
         m_body.head.hat delete();
 
       m_body.head delete();
@@ -252,16 +252,16 @@ pose_dead_body(localclientnum, oldval, newval, bnewent, binitialsnap, fieldname,
   anim_time = getanimlength(level.fake_body_death_anim) / 10;
   wait 0.1;
 
-  if(isdefined(m_head)) {
+  if(isDefined(m_head)) {
     m_head show();
 
-    if(isdefined(m_hat))
+    if(isDefined(m_hat))
       m_hat show();
   }
 
   wait(anim_time);
 
-  if(isdefined(m_body)) {
+  if(isDefined(m_body)) {
     m_body hide();
     m_body.origin = self.origin;
     m_body.angles = self.angles;
@@ -274,7 +274,9 @@ wolfhead_pre_eat_aligned(body, localclientnum, direction) {
   fieldname = s_closest[0].script_parameters;
   m_body = level.wolf_bodies[localclientnum][fieldname];
   m_wolf = level.wolf_heads[localclientnum][fieldname];
+
   iprintlnbold("Eating Zombie on the: " + direction);
+
   m_wolf clearanim( % root, 0.1);
   m_wolf setanimrestart(level.wolfhead_pre_eat_anims[direction], 1, 0.2, 1);
   m_body unlink();
@@ -283,7 +285,7 @@ wolfhead_pre_eat_aligned(body, localclientnum, direction) {
 }
 
 body_moveto_wolf(m_wolf, localclientnum) {
-  if(!isdefined(self.m_soul_fx_player)) {
+  if(!isDefined(self.m_soul_fx_player)) {
     self.m_soul_fx_player = spawn(localclientnum, self gettagorigin("J_SpineLower"), "script_model");
     self.m_soul_fx_player setmodel("tag_origin");
   }
@@ -304,13 +306,13 @@ body_moveto_wolf(m_wolf, localclientnum) {
   self moveto(m_wolf.origin + zombie_move_offset, 0.5, 0.5);
   self waittill("movedone");
 
-  if(!isdefined(self)) {
+  if(!isDefined(self)) {
     return;
   }
-  if(isdefined(move_fx))
+  if(isDefined(move_fx))
     stopfx(localclientnum, move_fx);
 
-  if(isdefined(self.m_soul_fx_player)) {
+  if(isDefined(self.m_soul_fx_player)) {
     self.m_soul_fx_player unlink();
     self.m_soul_fx_player delete();
     self.m_soul_fx_player = undefined;
@@ -337,7 +339,7 @@ wolfhead_eat_aligned(body, localclientnum, direction) {
 }
 
 play_blood_fx_on_bite(localclientnum) {
-  while (true) {
+  while(true) {
     self waittill("bite", note);
 
     if(note == "blood")
@@ -356,7 +358,7 @@ wolfhead_depart(localclientnum, rune) {
   self.portal_fx = playfx(localclientnum, level._effect["hell_portal_close"], rune.origin - rune_forward * 2.5 - rune_up * 24, rune_forward, rune_up);
   self playsound(0, "evt_wolfhead_depart");
 
-  if(isdefined(self.wolf_ent)) {
+  if(isDefined(self.wolf_ent)) {
     self.wolf_ent stoploopsound();
     self.wolf_ent delete();
   }
