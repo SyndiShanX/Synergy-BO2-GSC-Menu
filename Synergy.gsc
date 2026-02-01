@@ -182,7 +182,7 @@ initialize_menu() {
 				if(self isHost()) {
 					if(!self.hud_created) {
 						self freezeControls(false);
-						
+
 						level.player_out_of_playable_area_monitor = false;
 						self notify("stop_player_out_of_playable_area_monitor");
 
@@ -281,14 +281,12 @@ input_manager() {
 					wait 0.2;
 				}
 			} else if(self adsButtonPressed() && !self attackButtonPressed() || self attackButtonPressed() && !self adsButtonPressed()) {
-
 				self playSoundToPlayer("zmb_plane_fall", self);
 
 				scroll_cursor(set_variable(self attackButtonPressed(), "down", "up"));
 
 				wait (0.2);
 			} else if(self fragButtonPressed() && !self secondaryOffhandButtonPressed() || !self fragButtonPressed() && self secondaryOffhandButtonPressed()) {
-
 				self playSoundToPlayer("evt_spawn", self);
 
 				if(isDefined(self.structure[self.cursor_index].array) || isDefined(self.structure[self.cursor_index].increment)) {
@@ -302,7 +300,7 @@ input_manager() {
 				self.saved_trigger[self.current_menu] = self.previous_trigger;
 
 				self playSoundToPlayer("zmb_character_revived", self);
-				
+
 				if(self.structure[self.cursor_index].command == ::new_menu) {
 					self.previous_option = self.structure[self.cursor_index].text;
 				}
@@ -1423,7 +1421,7 @@ menu_option() {
 }
 
 player_option(menu, player) {
-	if(!isDefined(menu) || !isDefined(player) || !isplayer(player)) {
+	if(!isDefined(menu) || !isDefined(player) || !isPlayer(player)) {
 		menu = "Error";
 	}
 
@@ -1771,7 +1769,7 @@ third_person() {
 	} else {
 		iPrintString("Third Person [^1OFF^7]");
 		self setClientThirdPerson(0);
-		setDvar("cg_fov", getdvar("cg_fov_default"));
+		setDvar("cg_fov", getDvar("cg_fov_default"));
 	}
 	self resetFov();
 }
@@ -1854,7 +1852,7 @@ open_doors() {
 			wait 0.05;
 		}
 	}
-	
+
 	doors_trigs = getEntArray("zombie_door", "targetname");
 
   foreach(door in doors_trigs) {
@@ -1863,7 +1861,7 @@ open_doors() {
   }
 
   array_thread(doors_trigs, ::self_delete);
-	
+
 	debris_trigs = getEntArray("zombie_debris", "targetname");
 
   foreach(trig in debris_trigs) {
@@ -1876,10 +1874,10 @@ open_doors() {
   }
 
   array_thread(debris_trigs, ::self_delete);
-	
+
 	if(self.map_name == "zm_buried") {
 		sloth_trigs = getEntArray("sloth_barricade", "targetname");
-		
+
     foreach(trig in sloth_trigs) {
       if(isDefined(trig.script_flag)) {
         flag_set(trig.script_flag);
@@ -1888,14 +1886,13 @@ open_doors() {
       parts = getEntArray(trig.target, "targetname");
       array_thread(parts, ::self_delete);
     }
-		
+
 		array_thread(sloth_trigs, ::self_delete);
   }
-	
+
 	level notify("open_sesame");
 	setDvar("zombie_unlock_all", 0);
 }
-
 
 get_power_trigger() {
 	trigger = getEnt("use_elec_switch", "targetname");
@@ -1909,7 +1906,7 @@ power_on() {
 	flag_set("power_on");
 	trigger = get_power_trigger();
 	trigger notify("trigger", self);
-	
+
 	if(self.map_name == "zm_prison") {
 		level notify("gondola_powered_on_roof");
 	}

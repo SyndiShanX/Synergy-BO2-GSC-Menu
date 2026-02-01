@@ -1,6 +1,6 @@
 # Synergy BO2 GSC Menu
 
-A Black Ops 2 Zombies GSC Mod Menu
+A Black Ops 2 Zombies GSC Mod Menu using [Plutonium](https://plutonium.pw/)
 
 This Menu is a Work-In-Progress, so expect changes and possibly some Bugs
 
