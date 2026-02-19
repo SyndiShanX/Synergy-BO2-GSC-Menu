@@ -108,9 +108,9 @@ initial_variables() {
 	// Powerups
 
 	self.syn["powerups"][0] = getArrayKeys(level.zombie_include_powerups);
-  self.syn["powerups"][1] = [];
-  for(i = 0; i < self.syn["powerups"][0].size; i++) {
-    self.syn["powerups"][1][i] = construct_string(replace_character(self.syn["powerups"][0][i], "_", " "));
+	self.syn["powerups"][1] = [];
+	for(i = 0; i < self.syn["powerups"][0].size; i++) {
+	  self.syn["powerups"][1][i] = construct_string(replace_character(self.syn["powerups"][0][i], "_", " "));
 		if(self.syn["powerups"][1][i] == "Full Ammo") {
 			self.syn["powerups"][1][i] = "Max Ammo";
 		} else if (self.syn["powerups"][1][i] == "Insta Kill") {
@@ -446,6 +446,15 @@ create_text(text, font, font_scale, align_x, align_y, x_offset, y_offset, color,
 	return textElement;
 }
 
+set_text(text) {
+	if(!isDefined(self) || !isDefined(text)) {
+		return;
+	}
+
+	self.text = text;
+	self setText(text);
+}
+
 create_shader(shader, align_x, align_y, x_offset, y_offset, width, height, color, alpha, z_index, hide_when_in_menu) {
 	shaderElement = newClientHudElem(self);
 	shaderElement.elemType = "icon";
@@ -479,15 +488,6 @@ create_shader(shader, align_x, align_y, x_offset, y_offset, width, height, color
 
 	self.element_result++;
 	return shaderElement;
-}
-
-set_text(text) {
-	if(!isDefined(self) || !isDefined(text)) {
-		return;
-	}
-
-	self.text = text;
-	self setText(text);
 }
 
 set_shader(shader, width, height) {
@@ -1446,15 +1446,15 @@ player_option(menu, player) {
 // Menu Options
 
 iPrintString(string) {
-  if(!isDefined(self.syn["string"])) {
-    self.syn["string"] = self create_text(string, "default", 1.5, "center", "top", 0, -115, (1,1,1), 1, 9999, false);
-  } else {
-    self.syn["string"] set_text(string);
-  }
-  self.syn["string"] notify("stop_hud_fade");
-  self.syn["string"].alpha = 1;
-  self.syn["string"] setText(string);
-  self.syn["string"] thread fade_hud(0, 2.5);
+	if(!isDefined(self.syn["string"])) {
+	  self.syn["string"] = self create_text(string, "default", 1.5, "center", "top", 0, -115, (1,1,1), 1, 9999, false);
+	} else {
+	  self.syn["string"] set_text(string);
+	}
+	self.syn["string"] notify("stop_hud_fade");
+	self.syn["string"].alpha = 1;
+	self.syn["string"] setText(string);
+	self.syn["string"] thread fade_hud(0, 2.5);
 }
 
 fade_hud(alpha, time) {
@@ -1764,8 +1764,8 @@ third_person() {
 		iPrintString("Third Person [^2ON^7]");
 		self setClientThirdPerson(1);
 		setDvar("cg_thirdPersonAngle", "5");
-    setDvar("cg_thirdPersonRange", "138");
-    setDvar("cg_fov", "20");
+	  setDvar("cg_thirdPersonRange", "138");
+	  setDvar("cg_fov", "20");
 	} else {
 		iPrintString("Third Person [^1OFF^7]");
 		self setClientThirdPerson(0);
@@ -1855,40 +1855,40 @@ open_doors() {
 
 	doors_trigs = getEntArray("zombie_door", "targetname");
 
-  foreach(door in doors_trigs) {
-    doors = getEntArray(door.target, "targetname");
-    array_thread(doors, ::self_delete);
-  }
+	foreach(door in doors_trigs) {
+	  doors = getEntArray(door.target, "targetname");
+	  array_thread(doors, ::self_delete);
+	}
 
-  array_thread(doors_trigs, ::self_delete);
+	array_thread(doors_trigs, ::self_delete);
 
 	debris_trigs = getEntArray("zombie_debris", "targetname");
 
-  foreach(trig in debris_trigs) {
-    if(isDefined(trig.script_flag)) {
-      flag_set(trig.script_flag);
+	foreach(trig in debris_trigs) {
+	  if(isDefined(trig.script_flag)) {
+	    flag_set(trig.script_flag);
 		}
 
-    parts = getEntArray(trig.target, "targetname");
-    array_thread(parts, ::self_delete);
-  }
+	  parts = getEntArray(trig.target, "targetname");
+	  array_thread(parts, ::self_delete);
+	}
 
-  array_thread(debris_trigs, ::self_delete);
+	array_thread(debris_trigs, ::self_delete);
 
 	if(self.map_name == "zm_buried") {
 		sloth_trigs = getEntArray("sloth_barricade", "targetname");
 
-    foreach(trig in sloth_trigs) {
-      if(isDefined(trig.script_flag)) {
-        flag_set(trig.script_flag);
+	  foreach(trig in sloth_trigs) {
+	    if(isDefined(trig.script_flag)) {
+	      flag_set(trig.script_flag);
 			}
 
-      parts = getEntArray(trig.target, "targetname");
-      array_thread(parts, ::self_delete);
-    }
+	    parts = getEntArray(trig.target, "targetname");
+	    array_thread(parts, ::self_delete);
+	  }
 
 		array_thread(sloth_trigs, ::self_delete);
-  }
+	}
 
 	level notify("open_sesame");
 	setDvar("zombie_unlock_all", 0);
@@ -2018,7 +2018,7 @@ take_weapon() {
 }
 
 drop_weapon() {
-	self dropitem(self getCurrentWeapon());
+	self dropItem(self getCurrentWeapon());
 }
 
 // Zombie Options
@@ -2160,14 +2160,14 @@ update_zombie_speed_loop() {
 }
 
 calculate_health(round_number) {
-  level.zombie_health = level.zombie_vars["zombie_health_start"];
-  for (i = 2; i <= round_number; i++) {
-    if(i >= 10) {
-      old_health = level.zombie_health;
-      level.zombie_health = level.zombie_health + (int(level.zombie_health * 0.1));
-    }
-    level.zombie_health = int(level.zombie_health + 100);
-  }
+	level.zombie_health = level.zombie_vars["zombie_health_start"];
+	for (i = 2; i <= round_number; i++) {
+	  if(i >= 10) {
+	    old_health = level.zombie_health;
+	    level.zombie_health = level.zombie_health + (int(level.zombie_health * 0.1));
+	  }
+	  level.zombie_health = int(level.zombie_health + 100);
+	}
 	return level.zombie_health;
 }
 
